@@ -12,9 +12,15 @@ interface Tool {
 
 export const tools: Array<Tool> = [
     {
-        "name": "gotissues",
+        "name": "gotIssues",
         "description": "An even faster way to answer issues with python.",
         "category": "cards",
-        "credentials": true
+        "credentials": true,
+    },
+    {
+        "name": "junkDaJunk",
+        "description": "An even faster way to junk cards with python.",
+        "category": "cards",
+        "credentials": true,
     }
 ]
