@@ -1,8 +1,10 @@
-export const htmlContent = (content: string) => {
+export const htmlContent = (content: string, style?: string, sortFunction?: string) => {
 	return `
     <html>
     <head>
     <style>
+    ${style ? style : 
+    `
     td.createcol p {
       padding-left: 10em;
     }
@@ -34,23 +36,27 @@ export const htmlContent = (content: string) => {
     tr:hover {
       background-color: lightgrey;
     }
+    `}
     </style>
     </head>
     <body>
     <table>
     ${content}
+    ${sortFunction ? "" : 
+  `
     <tr>
-      <td>
-        <p>
-          <a target="_blank" href="https://this-page-intentionally-left-blank.org/">Done!</a>
-        </p>
-      </td>
-      <td>
-        <p>
-          <a target="_blank" href="https://this-page-intentionally-left-blank.org/">Done!</a>
-        </p>
-      </td>
-    </tr>
+    <td>
+      <p>
+        <a target="_blank" href="https://this-page-intentionally-left-blank.org/">Done!</a>
+      </p>
+    </td>
+    <td>
+      <p>
+        <a target="_blank" href="https://this-page-intentionally-left-blank.org/">Done!</a>
+      </p>
+    </td>
+  </tr>
+    `}
     </table>
     <script>
     document.querySelectorAll("td").forEach(function(el) {
@@ -60,6 +66,7 @@ export const htmlContent = (content: string) => {
         row.parentNode.removeChild(row);
       });
     });
+    ${sortFunction || ""}
     </script>
     </body>
     </html>
