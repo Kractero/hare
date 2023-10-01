@@ -1,4 +1,4 @@
-export function handleDownload(filetype: string, files: Array<string> | string, name: string) {
+export function handleDownload(filetype: string, files: Array<string> | string, name?: string) {
     let blob;
 	if (Array.isArray(files)) {
 		blob = new Blob([files[0]], { type: `text/${filetype}` });
