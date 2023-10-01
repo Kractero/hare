@@ -3,13 +3,14 @@
 	import { htmlContent } from "$lib/htmlContent";
 	import { onDestroy } from "svelte";
 	import InputCredentials from "../../../component/InputCredentials.svelte";
-	import { abortController, parser, sleep } from "../../../globals";
-
+	import { parser, sleep } from "../../../globals";
+    const abortController = new AbortController();
     let progress: Array<string> = [];
     let main = "";
     let puppets = "";
     let password = "";
-    
+    let openNewLinkArr: Array<string> = [];
+	let counter = 0;
     onDestroy(() => abortController.abort())
 
     async function gotIssues(main: string, puppets: string, password?: string) {
@@ -19,7 +20,6 @@
         let packsCount = 0;
         let issuesContent = ""
         let packContent = ""
-        let openNewLinkArr: Array<string> = []
         const interimPacks = []
         for (let i = 0; i < puppetList.length; i++) {
             let nation = puppetList[i];
@@ -48,10 +48,10 @@
                 );
                 const xml = await response.text();
                 const xmlObj = parser.parse(xml);
-                const issueIds = xmlObj.NATION.ISSUES.ISSUE.map(issue => issue["@_id"]);
+                const issueIds = (xmlObj.NATION.ISSUES.ISSUE as Array<{[key: string]: string}>).map(issue => issue["@_id"]);
                 const packs = xmlObj.NATION.PACKS;
                 issueIds.forEach((issue) => {
-                    openNewLinkArr.push(`https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${userAgent}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/`)
+                    openNewLinkArr = [...openNewLinkArr, `https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${userAgent}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/`]
                     issuesContent += `<tr><td><p>${issuesCount+1}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${userAgent}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/">Link to Issue</a></p></td></tr>\n`
                     issuesCount++
                 });
@@ -77,8 +77,22 @@
 <p class="mb-16">An even faster way to answer issues with python.</p>
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8">
-    <form on:submit={() => gotIssues(main, puppets, password)} class="flex flex-col gap-8">
-        <InputCredentials bind:main={main} bind:puppets={puppets} bind:password={password} />
+    <form on:submit|preventDefault={() => gotIssues(main, puppets, password)} class="flex flex-col gap-8">
+        <InputCredentials bind:main={main} bind:puppets={puppets} bind:password={password} authenticated={true} />
+        <div class="max-w-lg flex justify-center gap-4">
+            <button type="submit" class="bg-green-300 rounded-md px-4 py-2 transition duration-300 hover:bg-green-500">
+                Start
+            </button>
+			<button type="button" on:click={() => {
+				if (counter > openNewLinkArr.length - 1) {
+					return;
+				}
+				window.open(openNewLinkArr[counter], "_blank");
+				counter++;
+			}} class="bg-green-300 rounded-md px-4 py-2 transition duration-300 hover:bg-green-500">
+				Open Available Link
+			</button>
+        </div>
     </form>
     <pre class="flex-1 p-2 whitespace-pre-wrap bg-black dark:bg-gray-50 text-white dark:text-black font-medium font-mono inline-block">
         {#if progress && progress[0]}

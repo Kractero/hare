@@ -9,6 +9,6 @@ import Tool from "../component/Tool.svelte";
 </div>
 <div class="grid grid-cols-4">
     {#each tools as tool}
-        <Tool tool={tool.name} description={tool.description} />
+        <Tool slug={tool.slug} tool={tool.name} description={tool.description} />
     {/each}
 </div>

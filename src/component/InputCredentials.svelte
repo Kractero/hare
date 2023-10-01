@@ -1,6 +1,7 @@
 <script lang="ts">
     export let main: string;
     export let puppets: string;
+    export let authenticated: boolean;
     export let password: string = "";
 </script>
 
@@ -12,15 +13,10 @@
     <label class="w-24" for="pup">Puppets</label>
     <textarea required id="pup" rows="10" bind:value={puppets} class="text-black p-1 w-96 rounded-md border border-black dark:border-none" />
 </div>
-{#if password}
+{#if authenticated}
     <div class="flex gap-4 justify-between max-w-lg">
         <label class="w-24" for="main">Password</label>
         <input id="pass" disabled={puppets.includes(',')} bind:value={password} title={puppets.includes(',') ? "A comma is detected in the puppet list, assuming that format." : ""}
             class="text-black p-1  max-w-xs rounded-md border border-black dark:border-none disabled:opacity-25" />
     </div>
 {/if}
-<div class="max-w-lg flex justify-center">
-    <button type="submit" class="bg-green-300 rounded-md px-4 py-2 transition duration-300 hover:bg-green-500">
-        Start
-    </button>
-</div>
