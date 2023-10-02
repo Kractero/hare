@@ -2,9 +2,10 @@
 	import { handleDownload } from '$lib/download';
 	import { htmlContent } from '$lib/htmlContent';
 	import { onDestroy, onMount } from 'svelte';
-	import InputCredentials from '../../../component/InputCredentials.svelte';
-	import { parser, sleep } from '../../../globals';
-	import Terminal from '../../../component/Terminal.svelte';
+	import InputCredentials from '$lib/component/InputCredentials.svelte';
+	import { parser, sleep } from '$lib/globals';
+	import Terminal from '$lib/component/Terminal.svelte';
+	import Head from '$lib/component/Head.svelte';
 	const abortController = new AbortController();
 	let progress: Array<string> = [];
 	let main = '';
@@ -89,6 +90,8 @@
 		downloadable = true;
 	}
 </script>
+
+<Head title={"Hare - gotIssues"} description={"An even faster way to answer issues with JavaScript."} />
 
 <h1 class="text-4xl mb-4">gotIssues</h1>
 <p class="text-xs mb-1">

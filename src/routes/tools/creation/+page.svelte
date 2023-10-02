@@ -3,8 +3,9 @@
 	import { htmlContent } from '$lib/htmlContent';
 	import { nsIterator } from '$lib/txtIterator';
 	import { onMount } from 'svelte';
-	import InputCredentials from '../../../component/InputCredentials.svelte';
-	import Terminal from '../../../component/Terminal.svelte';
+	import InputCredentials from '$lib/component/InputCredentials.svelte';
+	import Terminal from '$lib/component/Terminal.svelte';
+	import Head from '$lib/component/Head.svelte';
 	let progress: Array<string> = [];
 	let puppets = '';
 	let main = '';
@@ -20,6 +21,8 @@
 		downloadable = true;
 	}
 </script>
+
+<Head title={"Hare - Creator Assitant"} description={"Generate a sheet that has links for nation creation that works with the provided userscripts."} />
 
 <h1 class="text-4xl mb-2">Creator Assistant</h1>
 <p class="text-xs mb-1">

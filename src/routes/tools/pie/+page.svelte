@@ -1,7 +1,7 @@
 <!-- <script lang="ts">
 	import { onDestroy } from "svelte";
 	import InputCredentials from "../../../component/InputCredentials.svelte";
-	import { parser, sleep } from "../../../globals";
+	import { parser, sleep } from "$lib/globals";
     const abortController = new AbortController();
     let progress: Array<string> = [];
     let main = "";

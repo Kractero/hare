@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { parser, sleep } from '../../../globals';
+	import { parser, sleep } from '$lib/globals';
+	import Head from '$lib/component/Head.svelte';
 	let progress: string[] = [];
 	let main = '';
 	onMount(() => {
@@ -27,6 +28,8 @@
         progress = xml2.REGION.UNNATIONS.split(',').filter((member: string) => !mainEndorsers.includes(member) && member !== main.toLowerCase().replace(' ', '_'));
 	}
 </script>
+
+<Head title={"Hare - Not Endorsing Nations"} description={"Specify a nation and get all the regionmates not endorsing them."} />
 
 <h1 class="text-4xl mb-2">Not Endorsing Nation</h1>
 <p class="text-xs mb-4">

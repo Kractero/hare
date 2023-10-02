@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import InputCredentials from '../../../component/InputCredentials.svelte';
-	import { parser } from '../../../globals';
+	import InputCredentials from '$lib/component/InputCredentials.svelte';
+	import { parser } from '$lib/globals';
+	import Head from '$lib/component/Head.svelte';
 	let progress: Array<string> = [];
 	let puppets = '';
 	let main = '';
@@ -27,6 +28,8 @@
 		}
 	}
 </script>
+
+<Head title={"Hare - Where's My WA"} description={"Specify your puppets and this script will find which one is in the WA."} />
 
 <h1 class="text-4xl mb-2">Where's My WA</h1>
 <p class="text-xs mb-4">

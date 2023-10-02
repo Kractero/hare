@@ -2,6 +2,7 @@
 	import { handleDownload } from '$lib/download';
 	import { nsIterator } from '$lib/txtIterator';
 	import { onMount } from 'svelte';
+	import Head from '$lib/component/Head.svelte';
 	let progress: Array<string> = [];
 	let puppets = '';
 	let content: Array<string>;
@@ -17,6 +18,8 @@
 		downloadable = true;
 	}
 </script>
+
+<Head title={"Hare - Container Rules"} description={"Generate containerise rules."} />
 
 <h1 class="text-4xl mb-2">Containerise Rules</h1>
 <p class="mb-2">Generate containerise rules.</p>

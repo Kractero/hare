@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import Head from '$lib/component/Head.svelte';
 
 	let puppets = '';
 	let main = '';
@@ -58,6 +59,8 @@
 		localStorage.setItem('stationJDJEpic', String(rarities.epic));
 	}
 </script>
+
+<Head title={"Hare - Config"} description={"Configure your default inputs for each script."} />
 
 <h1 class="text-4xl text-center mb-16">Configure Default Inputs</h1>
 

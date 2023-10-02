@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import { parser, sleep } from '../../../globals';
+	import { parser, sleep } from '$lib/globals';
 	import { handleDownload } from '$lib/download';
 	import { htmlContent } from '$lib/htmlContent';
-	import InputCredentials from '../../../component/InputCredentials.svelte';
-	import Terminal from '../../../component/Terminal.svelte';
+	import InputCredentials from '$lib/component/InputCredentials.svelte';
+	import Terminal from '$lib/component/Terminal.svelte';
+	import Head from '$lib/component/Head.svelte';
 	const abortController = new AbortController();
 	let progress: Array<string> = [];
 	let main = '';
@@ -26,7 +27,7 @@
 		puppets = localStorage.getItem('stationPuppets') || '';
 		main = localStorage.getItem('stationMain') || '';
 		regions = localStorage.getItem('stationRegionalWhitelist') || '';
-		mode = localStorage.getItem('stationJDJDefault') || '';
+		mode = localStorage.getItem('stationJDJDefault') || 'Gift';
 		rarities.common = Number(localStorage.getItem('stationJDJCommon')) || 0.5;
 		rarities.uncommon = Number(localStorage.getItem('stationJDJUncommon')) || 1;
 		rarities.rare = Number(localStorage.getItem('stationJDJRare')) || 1;
@@ -161,6 +162,8 @@
 		downloadable = true;
 	}
 </script>
+
+<Head title={"Hare - JunkDaJunk"} description={"An even faster way to junk cards with JavaScript."} />
 
 <h1 class="text-4xl mb-2">JunkDaJunk</h1>
 <p class="text-xs mb-4">

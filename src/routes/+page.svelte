@@ -1,6 +1,6 @@
 <script>
 	import { tools } from '$lib/tools';
-	import Tool from '../component/Tool.svelte';
+	import Tool from '$lib/component/Tool.svelte';
 	let searchTerm = '';
 </script>
 

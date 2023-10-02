@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import { parser, sleep } from '../../../globals';
+	import { parser, sleep } from '$lib/globals';
 	import { handleDownload } from '$lib/download';
 	import { htmlContent } from '$lib/htmlContent';
-	import InputCredentials from '../../../component/InputCredentials.svelte';
-	import Terminal from '../../../component/Terminal.svelte';
+	import InputCredentials from '$lib/component/InputCredentials.svelte';
+	import Terminal from '$lib/component/Terminal.svelte';
+	import Head from '$lib/component/Head.svelte';
 	const abortController = new AbortController();
 	let progress: Array<string> = [];
 	let main = '';
@@ -19,7 +20,7 @@
 		puppets = localStorage.getItem('stationPuppets') || '';
 		main = localStorage.getItem('stationMain') || '';
         cardIDs = localStorage.getItem('stationFinderList') || '';
-        mode = localStorage.getItem('stationFinderDefault') || '';
+        mode = localStorage.getItem('stationFinderDefault') || 'Gift';
 	});
 	onDestroy(() => abortController.abort());
 
@@ -75,6 +76,8 @@
 		downloadable = true;
 	}
 </script>
+
+<Head title={"Hare - Finder"} description={"Find which of the specified nations have which of the specified cards."} />
 
 <h1 class="text-4xl mb-2">Finder</h1>
 <p class="text-xs mb-4">

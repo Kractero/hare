@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import InputCredentials from '../../../component/InputCredentials.svelte';
-	import { parser, sleep } from '../../../globals';
+	import InputCredentials from '$lib/component/InputCredentials.svelte';
+	import { parser, sleep } from '$lib/globals';
+	import Head from '$lib/component/Head.svelte';
     const abortController = new AbortController();
 	let puppets = '';
 	let main = '';
@@ -40,6 +41,8 @@
 		}
 	}
 </script>
+
+<Head title={"Hare - Wiz"} description={"Query all your nations for their last logged in date."} />
 
 <h1 class="text-4xl mb-2">Wiz</h1>
 <p class="mb-16">Query all your nations for their last logged in date.</p>

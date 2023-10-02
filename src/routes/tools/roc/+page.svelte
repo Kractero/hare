@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import { parser, sleep } from '../../../globals';
+	import { parser, sleep } from '$lib/globals';
+	import Head from '$lib/component/Head.svelte';
 	const abortController = new AbortController();
 	let progress: Array<string> = [];
 	let main = '';
@@ -92,6 +93,8 @@
 		}
 	}
 </script>
+
+<Head title={"Hare - Rate of Change"} description={"Calculate the rate of change in deck value for the top X NS players, over X days."} />
 
 <h1 class="text-4xl mb-2">Rate of Change</h1>
 <p class="text-xs mb-2">

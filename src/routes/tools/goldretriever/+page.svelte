@@ -2,11 +2,12 @@
 	import { handleDownload } from '$lib/download';
 	import { htmlContent } from '$lib/htmlContent';
 	import { onDestroy, onMount } from 'svelte';
-	import InputCredentials from '../../../component/InputCredentials.svelte';
-	import { parser, sleep } from '../../../globals';
+	import InputCredentials from '$lib/component/InputCredentials.svelte';
+	import { parser, sleep } from '$lib/globals';
 	import { sort } from '$lib/sortFunctionString';
 	import { style } from '$lib/sortFunctionString';
-	import Terminal from '../../../component/Terminal.svelte';
+	import Terminal from '$lib/component/Terminal.svelte';
+	import Head from '$lib/component/Head.svelte';
 	const abortController = new AbortController();
 	let progress: Array<string> = [];
 	let main = '';
@@ -92,6 +93,8 @@
 		downloadable = true;
 	}
 </script>
+
+<Head title={"Hare - Gold Retriever"} description={"Get deck value, junk value, and more of all your puppets."} />
 
 <h1 class="text-4xl mb-2">Gold Retriever</h1>
 <p class="text-xs mb-4">

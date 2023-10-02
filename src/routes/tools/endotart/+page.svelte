@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { parser, sleep } from '../../../globals';
+	import { parser, sleep } from '$lib/globals';
+	import Head from '$lib/component/Head.svelte';
 	let progress: string[] = [];
 	let main = '';
     onMount(() => {
@@ -41,6 +42,8 @@
         }
 	}
 </script>
+
+<Head title={"Hare - Endotarting"} description={"Specify a nation and get all the regionmates they are not endorsing."} />
 
 <h1 class="text-4xl mb-2">Endotarting</h1>
 <p class="text-xs mb-4">

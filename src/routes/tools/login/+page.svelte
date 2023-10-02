@@ -3,8 +3,9 @@
 	import { htmlContent } from '$lib/htmlContent';
 	import { nsIterator } from '$lib/txtIterator';
 	import { onMount } from 'svelte';
-	import InputCredentials from '../../../component/InputCredentials.svelte';
-	import Terminal from '../../../component/Terminal.svelte';
+	import InputCredentials from '$lib/component/InputCredentials.svelte';
+	import Terminal from '$lib/component/Terminal.svelte';
+	import Head from '$lib/component/Head.svelte';
 	let progress: Array<string> = [];
 	let puppets = '';
 	let main = '';
@@ -20,6 +21,8 @@
 		downloadable = true;
 	}
 </script>
+
+<Head title={"Hare - Login Sheet"} description={"Generate links to help you quickly log back into containers."} />
 
 <h1 class="text-4xl mb-2">Login Sheet</h1>
 <p class="text-xs mb-1">

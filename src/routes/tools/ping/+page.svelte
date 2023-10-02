@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import InputCredentials from '../../../component/InputCredentials.svelte';
-	import { sleep } from '../../../globals';
+	import InputCredentials from '$lib/component/InputCredentials.svelte';
+	import { sleep } from '$lib/globals';
+	import Head from '$lib/component/Head.svelte';
 	const abortController = new AbortController();
 	let puppets = '';
 	let main = '';
@@ -40,6 +41,8 @@
 		}
 	}
 </script>
+
+<Head title={"Hare - Pinger"} description={"Ping all your inputed nations to keep them from ceasing to exist."} />
 
 <h1 class="text-4xl mb-2">Nation Pinger</h1>
 <p class="text-xs mb-1">Kractero</p>
