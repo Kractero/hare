@@ -5,6 +5,7 @@
 	let progress: Array<string> = [];
 	let puppets = '';
 	let content: Array<string>;
+	let downloadable = false;
 
 	onMount(() => {
 		puppets = localStorage.getItem('stationPuppets') || '';
@@ -13,7 +14,7 @@
 	async function containerise(puppets: string) {
 		content = (await nsIterator(puppets, 'Container Rules')) as Array<string>;
 		progress = [...progress, `Finished processing`];
-		handleDownload('txt', content, '');
+		downloadable = true;
 	}
 </script>
 
@@ -44,12 +45,16 @@
 				class="text-black p-1 w-96 rounded-md border border-black dark:border-none"
 			/>
 		</div>
-		<div class="max-w-lg flex justify-center">
+		<div class="max-w-lg flex justify-center gap-2">
 			<button
 				type="submit"
-				class="bg-green-300 rounded-md px-4 py-2 transition duration-300 hover:bg-green-500"
+				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300"
 			>
 				Start
+			</button>
+			<button disabled={!downloadable} on:click={() => handleDownload('txt', content, '')}
+				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
+				Download
 			</button>
 		</div>
 	</form>

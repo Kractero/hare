@@ -13,6 +13,8 @@
 	let mode = 'Gift';
 	let openNewLinkArr: Array<string> = [];
 	let counter = 0;
+	let junkHtml = '';
+	let downloadable = false;
 	const rarities: { [key: string]: number } = {
 		common: 0.5,
 		uncommon: 1,
@@ -23,11 +25,17 @@
 	onMount(() => {
 		puppets = localStorage.getItem('stationPuppets') || '';
 		main = localStorage.getItem('stationMain') || '';
+		regions = localStorage.getItem('stationRegionalWhitelist') || '';
+		mode = localStorage.getItem('stationJDJDefault') || '';
+		rarities.common = Number(localStorage.getItem('stationJDJCommon')) || 0.5;
+		rarities.uncommon = Number(localStorage.getItem('stationJDJUncommon')) || 1;
+		rarities.rare = Number(localStorage.getItem('stationJDJRare')) || 1;
+		rarities['ultra-rare'] = Number(localStorage.getItem('stationJDJUltraRare')) || 1;
+        rarities.epic = Number(localStorage.getItem('stationJDJEpic')) || 1;
 	});
 	onDestroy(() => abortController.abort());
 
 	async function junkDaJunk(main: string, puppets: string) {
-		let junkHtml = '';
 		let puppetsList = puppets.split('\n');
 		progress = [...progress, `Initiating JunkDaJunk...`];
 		const whiteList = regions.split('\n');
@@ -150,12 +158,15 @@
 			}
 		}
 		progress = [...progress, `Finished processing`];
-		handleDownload('html', htmlContent(junkHtml), 'junkDaJunk');
+		downloadable = true;
 	}
 </script>
 
 <h1 class="text-4xl mb-2">JunkDaJunk</h1>
-<p class="text-xs mb-4">Original by 9003, rewritten in JS for browser use by Kractero</p>
+<p class="text-xs mb-4">
+	<a class="underline" href="https://github.com/jmikk/Card-Proccessor" target="_blank" rel="noreferrer noopener">
+		Original by 9003
+	</a>, rewritten in JS for browser use by Kractero</p>
 <p class="mb-16">
 	An even faster way to junk and gift/sell cards with <span class="line-through">python</span> JavaScript.
 </p>
@@ -260,6 +271,10 @@
 				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500"
 			>
 				Open Available Link
+			</button>
+			<button disabled={!downloadable} on:click={() => handleDownload('html', htmlContent(junkHtml), 'junkDaJunk')}
+				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
+				Download
 			</button>
 		</div>
 	</form>

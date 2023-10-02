@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { parser, sleep } from '../../../globals';
+	const abortController = new AbortController();
 	let progress: Array<string> = [];
 	let main = '';
 	let top = 100;
@@ -11,11 +12,16 @@
 		top = Number(localStorage.getItem('stationTop')) || 100;
 		days = Number(localStorage.getItem('stationDays')) || 30;
 	});
+
+	onDestroy(() => abortController.abort());
 	async function rateOfChange(main: string) {
 		let names = [];
 		let ratesOfChange = [];
 		for (let i = 0; i < top / 20; i++) {
 			let start = 1 + i * 20;
+			if (abortController.signal.aborted) {
+				break;
+			}
 			const response = await fetch(
 				`https://www.nationstates.net/cgi-bin/api.cgi?q=censusranks&scale=86&start=${start}`,
 				{
@@ -34,6 +40,9 @@
 		const fromTimestamp = currentTimestamp - days * 24 * 60 * 60;
 		for (let i = 0; i < names.length; i++) {
 			const nation = names[i];
+			if (abortController.signal.aborted) {
+				break;
+			}
 			progress = [...progress, `Evaluating ${nation}, ${i + 1}/${names.length}`];
 			const response = await fetch(
 				`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nation};q=census;scale=86;mode=history;from=${fromTimestamp}`,
@@ -85,7 +94,10 @@
 </script>
 
 <h1 class="text-4xl mb-2">Rate of Change</h1>
-<p class="text-xs mb-2">Original by Thorn1000, rewritten in JS for browser use by Kractero</p>
+<p class="text-xs mb-2">
+	<a class="underline" href="https://github.com/Thorn1000/NS-RoC" target="_blank" rel="noreferrer noopener">
+		Original by Thorn1000
+	</a>, rewritten in JS for browser use by Kractero</p>
 <p class="mb-16">
 	Calculate the rate of change in deck value for the top X NS players, over X days.
 </p>
@@ -122,7 +134,7 @@
 		<div class="max-w-lg flex justify-center">
 			<button
 				type="submit"
-				class="bg-green-300 rounded-md px-4 py-2 transition duration-300 hover:bg-green-500"
+				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300"
 			>
 				Start
 			</button>

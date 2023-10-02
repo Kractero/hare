@@ -12,6 +12,8 @@
 	let password = '';
 	let openNewLinkArr: Array<string> = [];
 	let counter = 0;
+	let downloadable = false;
+	let issuesContent = '';
 
 	onMount(() => {
 		puppets = localStorage.getItem('stationPuppets') || '';
@@ -25,7 +27,6 @@
 		let puppetList = puppets.split('\n');
 		let issuesCount = 0;
 		let packsCount = 0;
-		let issuesContent = '';
 		let packContent = '';
 		const interimPacks = [];
 		for (let i = 0; i < puppetList.length; i++) {
@@ -47,7 +48,7 @@
 						method: 'GET',
 						headers: {
 							'User-Agent': userAgent,
-							'X-Password': password.replace(' ', '_')
+							'X-Password': password.replaceAll(' ', '_')
 						}
 					}
 				);
@@ -84,18 +85,30 @@
 		}
 		openNewLinkArr = [...openNewLinkArr, ...interimPacks];
 		issuesContent = issuesContent += packContent;
-		progress = [...progress, `Finished processing`];
-		handleDownload('html', htmlContent(issuesContent), 'gotIssues');
+		progress = [...progress, `Finished processing ${puppetList.length} nations, equaling ${issuesCount} issues and ${packsCount} packs!`];
+		downloadable = true;
 	}
 </script>
 
 <h1 class="text-4xl mb-4">gotIssues</h1>
-<p class="text-xs mb-4">Original by 9003, rewritten in JS for browser use by Kractero</p>
-<p class="mb-2">
+<p class="text-xs mb-1">
+	<a class="underline" href="https://github.com/jmikk/gotIssues" target="_blank" rel="noreferrer noopener">
+		Original by 9003
+	</a>, rewritten in JS for browser use by Kractero</p>
+<p class="text-xs mb-4">
+	For optimal use, this script is intended to be used with
+	<a class="underline" href="https://raw.githubusercontent.com/jmikk/gotIssues/master/autoclose%3D1.user.js" target="_blank" rel="noreferrer noopener">
+		autoclose
+	</a> and
+	<a class="underline" href="https://raw.githubusercontent.com/jmikk/gotIssues/master/NsIssueCompactorRand.js" target="_blank" rel="noreferrer noopener">
+		NSIssueCompactorRand
+	</a>
+</p>
+<p class="mb-1">
 	An even faster way to answer issues with <span class="line-through">python</span> JavaScript.
 </p>
-<p class="mb-16">
-	Password input is optional and will be disabled if the puppet list includes a comma.
+<p class="text-xs mb-16">
+	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
 </p>
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
@@ -124,6 +137,10 @@
 				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500"
 			>
 				Open Available Link
+			</button>
+			<button disabled={!downloadable} type="button" on:click={() => handleDownload('html', htmlContent(issuesContent), 'gotIssues')}
+				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
+				Download
 			</button>
 		</div>
 	</form>

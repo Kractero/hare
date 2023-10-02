@@ -12,6 +12,8 @@
 	let main = '';
 	let puppets = '';
 	let password = '';
+	let downloadable = false;
+	let content = `<tr><th>Nation</th><th class='sort' data-order='none'>Bank</th><th class='sort' data-order='none'>Deck Value</th><th class='sort' data-order='none'>Junk Value</th><th class='sort' data-order='none'>Card Count</th></tr>\n`;
 
 	onMount(() => {
 		puppets = localStorage.getItem('stationPuppets') || '';
@@ -24,7 +26,6 @@
 	async function goldRetriever(main: string, puppets: string, password?: string) {
 		let userAgent = `${main} Gotissues Written by 9003, Email NSWA9002@gmail.com,discord: 9003, NSNation 9003`;
 		let puppetList = puppets.split('\n');
-		let content = `<tr><th>Nation</th><th class='sort' data-order='none'>Bank</th><th class='sort' data-order='none'>Deck Value</th><th class='sort' data-order='none'>Junk Value</th><th class='sort' data-order='none'>Card Count</th></tr>\n`;
 		for (let i = 0; i < puppetList.length; i++) {
 			let nation = puppetList[i];
 			if (!password) {
@@ -88,13 +89,18 @@
 			}
 		}
 		progress = [...progress, `Finished processing`];
-		handleDownload('html', htmlContent(content, style, sort), 'Gold Retriever');
+		downloadable = true;
 	}
 </script>
 
 <h1 class="text-4xl mb-2">Gold Retriever</h1>
 <p class="text-xs mb-4">
-	Original by ValentineZ (python in Google Colab), rewritten by Racoda in TypeScript, rewritten also
+	<a class="underline" href="https://colab.research.google.com/drive/1Rrd20eBdX-MvLkUHJGHhIdJP3SrjPbtE" target="_blank" rel="noreferrer noopener">
+		Original by ValentineZ
+	</a> (python in Google Colab), 
+	<a href="https://dithpri.github.io/goldretriever-web/" target="_blank" rel="noreferrer noopener">
+		rewritten by Racoda in TypeScript
+	</a>, rewritten also
 	in JavaScript by Kractero
 </p>
 <p class="mb-16">Get deck value, junk value, and more of all your puppets.</p>
@@ -105,12 +111,16 @@
 		class="flex flex-col gap-8"
 	>
 		<InputCredentials bind:main bind:puppets bind:password authenticated={false} />
-		<div class="max-w-lg flex justify-center">
+		<div class="max-w-lg flex justify-center gap-2">
 			<button
 				type="submit"
-				class="bg-green-300 rounded-md px-4 py-2 transition duration-300 hover:bg-green-500"
+				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300"
 			>
 				Start
+			</button>
+			<button disabled={!downloadable} on:click={() => handleDownload('html', htmlContent(content, style, sort), 'Gold Retriever')}
+				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
+				Download
 			</button>
 		</div>
 	</form>
