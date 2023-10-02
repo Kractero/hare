@@ -57,5 +57,35 @@ export const tools: Array<Tool> = [
 		slug: 'roc',
 		description: 'Calculate the rate of change for an amount of nations over an amount of days.'
 		// "category": "cards"
+	},
+	{
+		name: 'Creator Assistant',
+		slug: 'creation',
+		description: 'Generate a sheet that has links for nation creation that works with the provided userscripts.'
+		// "category": "cards"
+	},
+	{
+		name: 'Wiz',
+		slug: 'wiz',
+		description: 'Output the last login date of the provided puppet list.'
+		// "category": "cards"
+	},
+	{
+		name: 'Endotart',
+		slug: 'endotart',
+		description: 'Specify a nation and get all the regionmates they are not endorsing.'
+		// "category": "cards"
+	},
+	{
+		name: 'Not Endorsing',
+		slug: 'nen',
+		description: 'Specify a nation and get all the regionmates not endorsing them.'
+		// "category": "cards"
+	},
+	{
+		name: 'Finder',
+		slug: 'finder',
+		description: 'Find which of the specified nations have which of the specified cards.'
+		// "category": "cards"
 	}
 ];

@@ -18,6 +18,11 @@ export async function nsIterator(puppets: string, mode: string, main?: string) {
 				puppetsList.length
 			}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/nation=${nation_formatted}/page=upload_flag/test=1/User_agent=${main}">Link to Nation</a></p></td></tr>`;
 		}
+		if (mode === 'Creator') {
+			buildString += `<tr><td><p>${i + 1} of ${
+				puppetsList.length
+			}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/nation=${nation_formatted}/page=create_nation/name=${nation}">Link to Nation</a></p></td></tr>`;
+		}
 	}
 	return mode === 'Container Rules' ? [containerise_nation, containerise_container] : buildString;
 }
