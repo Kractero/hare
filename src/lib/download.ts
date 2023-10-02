@@ -1,5 +1,5 @@
 export function handleDownload(filetype: string, files: Array<string> | string, name?: string) {
-    let blob;
+	let blob;
 	if (Array.isArray(files)) {
 		blob = new Blob([files[0]], { type: `text/${filetype}` });
 		urlObject(blob, 'Containerise (Container)');
@@ -11,12 +11,12 @@ export function handleDownload(filetype: string, files: Array<string> | string, 
 	}
 }
 
-export function urlObject(blob, mode) {
+export function urlObject(blob: Blob | MediaSource, mode: string | undefined) {
 	const url = window.URL.createObjectURL(blob);
 	const link = document.createElement('a');
 	link.href = url;
 	link.download = `${mode}.${
-		['gotIssues', 'Login Sheet', 'junkDaJunk'].includes(mode) ? 'html' : 'txt'
+		mode ? 'html' : 'txt'
 	}`;
 	link.click();
 	window.URL.revokeObjectURL(url);

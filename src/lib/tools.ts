@@ -1,8 +1,7 @@
 interface Tool {
-    name: string;
-    slug?: string;
-    description: string;
-    category: string;
+	name: string;
+	slug: string;
+	description: string;
 }
 
 /*
@@ -11,52 +10,52 @@ interface Tool {
 */
 
 export const tools: Array<Tool> = [
-    {
-        "name": "gotIssues",
-        "slug": "gotissues",
-        "description": "An even faster way to answer issues with python.",
-        "category": "cards"
-    },
-    {
-        "name": "junkDaJunk",
-        "slug": "junkdajunk",
-        "description": "An even faster way to junk cards with python.",
-        "category": "cards"
-    },
-    {
-        "name": "Gold Retriever",
-        "slug": "goldretriever",
-        "description": "Check puppet trading cards', total bank, deck value, and more.",
-        "category": "cards"
-    },
-    {
-        "name": "Containerise Rules",
-        "slug": "containerise",
-        "description": "Generate container rules for use with Containerise.",
-        "category": "cards"
-    },
-    {
-        "name": "Login Sheet",
-        "slug": "login",
-        "description": "Check puppet trading cards', total bank, deck value, and more",
-        "category": "cards"
-    },
-    {
-        "name": "Pinger",
-        "slug": "ping",
-        "description": "Ping all your nations, delaying their impending doom.",
-        "category": "cards"
-    },
-    {
-        "name": "Wheres My WA",
-        "slug": "whereswa",
-        "description": "Ping all your nations, delaying their impending doom.",
-        "category": "cards"
-    },
-    {
-        "name": "Rate of Change",
-        "slug": "roc",
-        "description": "Ping all your nations, delaying their impending doom.",
-        "category": "cards"
-    }
-]
+	{
+		name: 'gotIssues',
+		slug: 'gotissues',
+		description: 'An even faster way to answer issues with JavaScript.'
+		// "category": "cards"
+	},
+	{
+		name: 'junkDaJunk',
+		slug: 'junkdajunk',
+		description: 'An even faster way to junk cards with JavaScript, with configurable rules.'
+		// "category": "cards"
+	},
+	{
+		name: 'Gold Retriever',
+		slug: 'goldretriever',
+		description: 'Check the card count, bank, deck value, and junk value of all your puppets.'
+		// "category": "cards"
+	},
+	{
+		name: 'Containerise Rules',
+		slug: 'containerise',
+		description: 'Generate container rules for use with Containerise.'
+		// "category": "cards"
+	},
+	{
+		name: 'Login Sheet',
+		slug: 'login',
+		description: 'Generate a login sheet for quickly logging into expired containers.'
+		// "category": "cards"
+	},
+	{
+		name: 'Pinger',
+		slug: 'ping',
+		description: 'Ping all your nations, delaying their impending doom.'
+		// "category": "cards"
+	},
+	{
+		name: 'Wheres My WA',
+		slug: 'whereswa',
+		description: 'Locate which of your puppets is your current WA member.'
+		// "category": "cards"
+	},
+	{
+		name: 'Rate of Change',
+		slug: 'roc',
+		description: 'Calculate the rate of change for an amount of nations over an amount of days.'
+		// "category": "cards"
+	}
+];

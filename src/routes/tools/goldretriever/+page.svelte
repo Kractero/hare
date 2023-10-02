@@ -6,6 +6,7 @@
 	import { parser, sleep } from '../../../globals';
 	import { sort } from '$lib/sortFunctionString';
 	import { style } from '$lib/sortFunctionString';
+	import Terminal from '../../../component/Terminal.svelte';
 	const abortController = new AbortController();
 	let progress: Array<string> = [];
 	let main = '';
@@ -113,12 +114,5 @@
 			</button>
 		</div>
 	</form>
-	<pre
-		class="flex-1 p-2 whitespace-pre-wrap bg-black dark:bg-gray-50 text-white dark:text-black font-medium font-mono inline-block">
-        {#if progress && progress[0]}
-			{#each progress as update}
-				<p>{update}</p>
-			{/each}
-		{/if}
-    </pre>
+	<Terminal bind:progress={progress} />
 </div>

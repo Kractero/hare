@@ -4,6 +4,7 @@
 	import { nsIterator } from '$lib/txtIterator';
 	import { onMount } from 'svelte';
 	import InputCredentials from '../../../component/InputCredentials.svelte';
+	import Terminal from '../../../component/Terminal.svelte';
 	let progress: Array<string> = [];
 	let puppets = '';
 	let main = '';
@@ -34,10 +35,5 @@
 			</button>
 		</div>
 	</form>
-	<pre
-		class="flex-1 p-2 whitespace-pre-wrap bg-black dark:bg-gray-50 text-white dark:text-black font-medium font-mono inline-block">
-        {#if content && content[0]}
-			<p>{content}</p>
-		{/if}
-    </pre>
+	<Terminal bind:progress={progress} />
 </div>
