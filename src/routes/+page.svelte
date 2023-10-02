@@ -1,8 +1,11 @@
 <script>
 	import { tools } from '$lib/tools';
 	import Tool from '$lib/component/Tool.svelte';
+	import Head from '$lib/component/Head.svelte';
 	let searchTerm = '';
 </script>
+
+<Head title={"Hare"} description={"Humble Automated Runner for Executing nationstates scripts. A central location to run NationStates scripts."} />
 
 <div class="lg:w-[1024px] md:max-w-5xl mb-12">
 	<h1 class="text-textprimary font-bold tracking-wide text-4xl mb-4">Hare (ハレ)</h1>

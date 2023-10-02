@@ -20,6 +20,7 @@
 		'ultra-rare': 1,
 		epic: 1
 	};
+    let limit = 0;
 
 	onMount(() => {
 		puppets = localStorage.getItem('stationPuppets') || '';
@@ -38,6 +39,7 @@
 		rarities.rare = Number(localStorage.getItem('stationJDJRare')) || 1;
 		rarities['ultra-rare'] = Number(localStorage.getItem('stationJDJUltraRare')) || 1;
         rarities.epic = Number(localStorage.getItem('stationJDJEpic')) || 1;
+        limit = Number(localStorage.getItem('stationEndotartLimit')) || 0;
 	});
 
 	async function setConfig() {
@@ -57,6 +59,7 @@
 		localStorage.setItem('stationJDJRare', String(rarities.rare));
         localStorage.setItem('stationJDJUltraRare', String(rarities['ultra-rare']));
 		localStorage.setItem('stationJDJEpic', String(rarities.epic));
+        localStorage.setItem('stationEndotartLimit', String(limit));
 	}
 </script>
 
@@ -118,6 +121,14 @@
             <input
                 id="Endotarting"
                 bind:value={endotart}
+                class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none"
+            />
+        </div>
+        <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
+            <label class="w-24" for="limit">Endorsement Limit</label>
+            <input
+                id="limit"
+                bind:value={limit}
                 class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none"
             />
         </div>

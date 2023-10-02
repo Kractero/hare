@@ -4,7 +4,9 @@
 	import Head from '$lib/component/Head.svelte';
 	let progress: string[] = [];
 	let main = '';
+	let limit = 0;
     onMount(() => {
+		limit = Number(localStorage.getItem('stationEndotartLimit')) || 0;
 		main = localStorage.getItem('stationEndotartNation') || '';
 	});
 	async function findWA(main: string) {
@@ -35,7 +37,7 @@
             const text = await response.text();
             const xml = parser.parse(text)
             const endorsers = xml.NATION.ENDORSEMENTS.split(',');
-            if (!endorsers.includes(main.toLowerCase().replaceAll(' ', '_')) && regionalWA[i] !== main.toLowerCase().replaceAll(' ', '_')) {
+            if (endorsers.length < limit && !endorsers.includes(main.toLowerCase().replaceAll(' ', '_')) && regionalWA[i] !== main.toLowerCase().replaceAll(' ', '_')) {
                 progress = [...progress, regionalWA[i]]
             }
             await sleep(700);
@@ -58,7 +60,16 @@
 				required
 				id="main"
 				bind:value={main}
-				class="text-black p-1 max-w-xs rounded-md border border-black dark:border-none"
+				class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none"
+			/>
+		</div>
+		<div class="flex gap-4 justify-between max-w-lg">
+			<label class="w-24" for="limit">Endorse Limit</label>
+			<input
+				required
+				id="limit"
+				bind:value={limit}
+				class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none"
 			/>
 		</div>
 		<div class="max-w-lg flex justify-center">
