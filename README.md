@@ -12,6 +12,8 @@ If this tool helped, star the repo or [gift me a leg](https://www.nationstates.n
 
 This thing definitely needs some kind of dynamic route as besides the typescript logic and some changes to input the pages are largely the same...
 
+All icons were taken from [Icons8](https://icons8.com/icons).
+
 ## NOTE
 
 ### Preqrequisites
