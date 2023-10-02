@@ -1,17 +1,16 @@
 <script>
 	import ViewTransition from './navigation.svelte';
-    import { base } from "$app/paths";
-    import "../app.css";
+	import '../app.css';
 	import Header from '../component/Header.svelte';
 </script>
 
 <svelte:head>
-  <title>Cards Resources</title>
-  <meta name="description" content="List of resources and guides for NationStates trading cards" />
+	<title>Hare</title>
+	<meta name="description" content="A central location to run NationStates scripts." />
 </svelte:head>
 
-<div class="max-w-5xl flex flex-col">
+<div class="max-w-xs sm:max-w-5xl flex flex-col p-4 relative">
 	<ViewTransition />
-    <Header />
+	<Header />
 	<slot />
 </div>

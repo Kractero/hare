@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import InputCredentials from '../../../component/InputCredentials.svelte';
 	import { sleep } from '../../../globals';
+	const abortController = new AbortController();
 	let puppets = '';
 	let main = '';
 	let password = '';
@@ -11,16 +12,20 @@
 		main = localStorage.getItem('stationMain') || '';
 		password = localStorage.getItem('stationPassword') || '';
 	});
+	onDestroy(() => abortController.abort());
 	async function ping(main: string, puppets: string, password: string) {
 		let puppetsList = puppets.split('\n');
 		for (let i = 0; i < puppetsList.length; i++) {
 			await sleep(700);
 			let nation = puppetsList[i];
+			if (abortController.signal.aborted) {
+				break;
+			}
 			const response = await fetch(
 				`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=ping`,
 				{
 					headers: {
-						'X-Password': password.replace(' ', '_'),
+						'X-Password': password.replaceAll(' ', '_'),
 						'User-Agent': main
 					}
 				}
@@ -37,6 +42,7 @@
 </script>
 
 <h1 class="text-4xl mb-2">Nation Pinger</h1>
+<p class="text-xs mb-1">Kractero</p>
 <p class="mb-16">Ping all your inputed nations to keep them from ceasing to exist.</p>
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
@@ -48,7 +54,7 @@
 		<div class="max-w-lg flex justify-center">
 			<button
 				type="submit"
-				class="bg-green-300 rounded-md px-4 py-2 transition duration-300 hover:bg-green-500"
+				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300"
 			>
 				Start
 			</button>

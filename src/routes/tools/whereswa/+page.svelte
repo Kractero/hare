@@ -29,7 +29,10 @@
 </script>
 
 <h1 class="text-4xl mb-2">Where's My WA</h1>
-<p class="text-xs mb-4">Original by 9003, rewritten in JS for browser use by Kractero</p>
+<p class="text-xs mb-4">
+	<a class="underline" href="https://github.com/jmikk/WheresMyWA" target="_blank" rel="noreferrer noopener">
+		Original by 9003
+	</a>, rewritten in JS for browser use by Kractero</p>
 <p class="mb-16">Specify your puppets and this script will find which one is in the WA.</p>
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
@@ -38,7 +41,7 @@
 		<div class="max-w-lg flex justify-center">
 			<button
 				type="submit"
-				class="bg-green-300 rounded-md px-4 py-2 transition duration-300 hover:bg-green-500"
+				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300"
 			>
 				Start
 			</button>
