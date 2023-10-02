@@ -23,7 +23,7 @@ sortableColumns.forEach(col => {
         col.setAttribute('data-order', newOrder);
     });
 });
-`
+`;
 export let style = `
 body {
     font-size: 14px;
@@ -71,4 +71,4 @@ a {
 a:hover {
     text-decoration: underline;
 }
-`
+`;

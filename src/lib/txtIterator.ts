@@ -1,8 +1,8 @@
 export async function nsIterator(puppets: string, mode: string, main?: string) {
 	let puppetsList = puppets.split('\n');
 	let buildString = '';
-    let containerise_nation = '';
-    let containerise_container = '';
+	let containerise_nation = '';
+	let containerise_container = '';
 	for (let i = 0; i < puppetsList.length; i++) {
 		let nation = puppetsList[i];
 		if (nation.includes(',')) {
@@ -19,5 +19,5 @@ export async function nsIterator(puppets: string, mode: string, main?: string) {
 			}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/nation=${nation_formatted}/page=upload_flag/test=1/User_agent=${main}">Link to Nation</a></p></td></tr>`;
 		}
 	}
-    return mode === 'Container Rules' ? [containerise_nation, containerise_container]: buildString;
+	return mode === 'Container Rules' ? [containerise_nation, containerise_container] : buildString;
 }

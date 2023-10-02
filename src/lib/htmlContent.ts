@@ -3,8 +3,10 @@ export const htmlContent = (content: string, style?: string, sortFunction?: stri
     <html>
     <head>
     <style>
-    ${style ? style : 
-    `
+    ${
+			style
+				? style
+				: `
     td.createcol p {
       padding-left: 10em;
     }
@@ -36,14 +38,17 @@ export const htmlContent = (content: string, style?: string, sortFunction?: stri
     tr:hover {
       background-color: lightgrey;
     }
-    `}
+    `
+		}
     </style>
     </head>
     <body>
     <table>
     ${content}
-    ${sortFunction ? "" : 
-  `
+    ${
+			sortFunction
+				? ''
+				: `
     <tr>
     <td>
       <p>
@@ -56,7 +61,8 @@ export const htmlContent = (content: string, style?: string, sortFunction?: stri
       </p>
     </td>
   </tr>
-    `}
+    `
+		}
     </table>
     <script>
     document.querySelectorAll("td").forEach(function(el) {
@@ -66,7 +72,7 @@ export const htmlContent = (content: string, style?: string, sortFunction?: stri
         row.parentNode.removeChild(row);
       });
     });
-    ${sortFunction || ""}
+    ${sortFunction || ''}
     </script>
     </body>
     </html>

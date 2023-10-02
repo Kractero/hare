@@ -1,7 +1,7 @@
-import { XMLParser } from "fast-xml-parser";
+import { XMLParser } from 'fast-xml-parser';
 
-export const parser = new XMLParser({ignoreAttributes : false});
+export const parser = new XMLParser({ ignoreAttributes: false });
 
 export function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
