@@ -61,7 +61,7 @@
 
 <h1 class="text-4xl text-center mb-16">Configure Default Inputs</h1>
 
-<div class="w-max flex flex-col justify-center lg:flex-row gap-8">
+<div class="lg:w-[1024px] lg:max-w-5xl w-max flex flex-col justify-center lg:flex-row gap-8">
     <form
         on:submit|preventDefault={() => setConfig()}
         class="flex flex-col gap-8"
