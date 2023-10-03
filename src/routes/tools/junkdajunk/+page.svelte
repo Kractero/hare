@@ -6,17 +6,20 @@
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Head from '$lib/component/Head.svelte';
+	import Rarities from '$lib/component/Rarities.svelte';
 	const abortController = new AbortController();
 	let progress: Array<string> = [];
 	let main = '';
+	let giftee = '';
 	let puppets = '';
 	let regions = '';
 	let mode = 'Gift';
+	let password = '';
 	let openNewLinkArr: Array<string> = [];
 	let counter = 0;
 	let junkHtml = '';
 	let downloadable = false;
-	const rarities: { [key: string]: number } = {
+	let rarities: { [key: string]: number } = {
 		common: 0.5,
 		uncommon: 1,
 		rare: 1,
@@ -26,6 +29,8 @@
 	onMount(() => {
 		puppets = localStorage.getItem('stationPuppets') || '';
 		main = localStorage.getItem('stationMain') || '';
+		password = localStorage.getItem('stationPassword') || '';
+		giftee = localStorage.getItem('stationGiftee') || '';
 		regions = localStorage.getItem('stationRegionalWhitelist') || '';
 		mode = localStorage.getItem('stationJDJDefault') || 'Gift';
 		rarities.common = Number(localStorage.getItem('stationJDJCommon')) || 0.5;
@@ -49,6 +54,7 @@
 			progress = [...progress, `${rarityArr[i][0]} junk threshold at ${rarityArr[i][1]}`];
 		}
 		for (let i = 0; i < puppetsList.length; i++) {
+			let currentNationXPin = ""
 			let nation = puppetsList[i].toLowerCase().replaceAll(' ', '_');
 			if (abortController.signal.aborted) {
 				break;
@@ -135,23 +141,52 @@
 							cards.length
 						}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
 					} else {
-						progress = [
-							...progress,
-							`${i + 1}/${cards.length} -> ${
-								mode === 'Gift' ? 'Gifting' : 'Selling'
-							} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}`
-						];
-						openNewLinkArr = [
-							...openNewLinkArr,
-							`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/${
-								mode === 'Gift' ? 'gift=1/' : ''
-							}User_agent=${main}Script=JunkDaJunk/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1`
-						];
-						junkHtml += `<tr><td><p>${i + 1} of ${
-							cards.length
-						}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/${
-							mode === 'Gift' ? 'gift=1/' : ''
-						}User_agent=${main}Script=JunkDaJunk/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
+						if (mode === "Gift") {
+							let token = ""
+							const prepare = await fetch(
+								`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
+								{
+									headers: {
+										'User-Agent': main,
+										'X-Password': currentNationXPin ? currentNationXPin : password
+									}
+								}
+							);
+							if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || "";
+							const text = await prepare.text()
+							const xml = parser.parse(text)
+							token = xml.NATION.SUCCESS
+							
+							const gift = await fetch(
+								`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
+								{
+									headers: {
+										'User-Agent': main,
+										'X-Pin': currentNationXPin
+									}
+								}
+							);
+							if (gift.status === 200) {
+								progress = [
+									...progress, `${i + 1}/${cards.length} -> Gifted
+									${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}`
+								];
+							}
+							return;
+						} else {
+							progress = [
+								...progress,
+								`${i + 1}/${cards.length} -> ${ 'Selling'
+								} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}`
+							];
+							openNewLinkArr = [
+								...openNewLinkArr,
+								`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1`
+							];
+							junkHtml += `<tr><td><p>${i + 1} of ${
+								cards.length
+							}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
+						}
 					}
 				}
 			} catch (err) {
@@ -176,7 +211,16 @@
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => junkDaJunk(main, puppets)} class="flex flex-col gap-8">
-		<InputCredentials bind:main bind:puppets authenticated={false} />
+		<InputCredentials bind:main bind:puppets authenticated={mode === "Gift" ? true : false} />
+		<div class="flex gap-4 justify-between max-w-lg">
+			<label class="w-24" for="giftee">Gift to</label>
+			<input
+				required
+				id="giftee"
+				bind:value={giftee}
+				class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none"
+			/>
+		</div>
 		<div class="flex gap-4 justify-between max-w-lg">
 			<label class="w-24" for="regions">Regional Whitelist</label>
 			<textarea
@@ -188,59 +232,8 @@
 			/>
 		</div>
 		<div class="flex gap-4 justify-between max-w-lg">
-			<label class="w-24" for="pup">Rarity Threshold</label>
-			<div class="flex flex-col gap-4">
-				<div class="flex items-center gap-4 justify-between max-w-lg">
-					<label class="w-24" for="common">Common</label>
-					<input
-						name="common"
-						required
-						id="common"
-						bind:value={rarities.common}
-						class="text-black p-1 w-20 rounded-md border border-black dark:border-none"
-					/>
-				</div>
-				<div class="flex items-center gap-4 justify-between max-w-lg">
-					<label class="w-24" for="uncommon">Uncommon</label>
-					<input
-						name="uncommon"
-						required
-						id="uncommon"
-						bind:value={rarities.uncommon}
-						class="text-black p-1 w-20 rounded-md border border-black dark:border-none"
-					/>
-				</div>
-				<div class="flex items-center gap-4 justify-between max-w-lg">
-					<label class="w-24" for="rare">Rare</label>
-					<input
-						name="rare"
-						required
-						id="rare"
-						bind:value={rarities.rare}
-						class="text-black p-1 w-20 rounded-md border border-black dark:border-none"
-					/>
-				</div>
-				<div class="flex items-center gap-4 justify-between max-w-lg">
-					<label class="w-24" for="ultra-rare">Ultra-Rare</label>
-					<input
-						name="ultra-rare"
-						required
-						id="ultra-rare"
-						bind:value={rarities['ultra-rare']}
-						class="text-black p-1 w-20 rounded-md border border-black dark:border-none"
-					/>
-				</div>
-				<div class="flex items-center gap-4 justify-between max-w-lg">
-					<label class="w-24" for="epic">Epic</label>
-					<input
-						name="epic"
-						required
-						id="epic"
-						bind:value={rarities.epic}
-						class="text-black p-1 w-20 rounded-md border border-black dark:border-none"
-					/>
-				</div>
-			</div>
+			<p class="w-24">Rarity Threshold</p>
+			<Rarities bind:rarities={rarities} />
 		</div>
 		<div class="flex gap-4 justify-between max-w-lg">
 			<label class="w-24" for="mode">Mode</label>
