@@ -6,18 +6,18 @@
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Head from '$lib/component/Head.svelte';
-	let progress: Array<string> = [];
+	import { loadLocalStorage } from '$lib/loadLocalStorage';
+	import Buttons from '$lib/component/Buttons.svelte';
+	let progress = "";
 	let puppets = '';
 	let main = '';
 	let content: string;
 	let downloadable = false;
-	onMount(() => {
-		puppets = localStorage.getItem('stationPuppets') || '';
-		main = localStorage.getItem('stationMain') || '';
-	});
+	onMount(() => ({puppets, main} = loadLocalStorage(["stationPuppets", "stationMain"])));
 	async function login(puppets: string) {
+		downloadable = false;
 		content = (await nsIterator(puppets, 'Creator', main)) as string;
-		progress = [...progress, `Finished processing`];
+		progress = "<p>Finished processing</p>"
 		downloadable = true;
 	}
 </script>
@@ -41,18 +41,12 @@
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => login(puppets)} class="flex flex-col gap-8">
 		<InputCredentials bind:main bind:puppets authenticated={false} />
-		<div class="max-w-lg flex justify-center gap-2">
-			<button
-				type="submit"
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300"
-			>
-				Start
-			</button>
+		<Buttons>
 			<button disabled={!downloadable} on:click={() => handleDownload('html', htmlContent(content), 'Creator')}
 				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
 				Download
 			</button>
-		</div>
+		</Buttons>
 	</form>
 	<Terminal bind:progress={progress} />
 </div>

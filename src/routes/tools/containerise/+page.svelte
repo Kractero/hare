@@ -3,18 +3,23 @@
 	import { nsIterator } from '$lib/txtIterator';
 	import { onMount } from 'svelte';
 	import Head from '$lib/component/Head.svelte';
-	let progress: Array<string> = [];
+	import { loadLocalStorage } from '$lib/loadLocalStorage';
+	import Terminal from '$lib/component/Terminal.svelte';
+	import Buttons from '$lib/component/Buttons.svelte';
+	let progress = "";
 	let puppets = '';
 	let content: Array<string>;
 	let downloadable = false;
-
-	onMount(() => {
-		puppets = localStorage.getItem('stationPuppets') || '';
-	});
+	onMount(() => ({puppets} = loadLocalStorage(["stationPuppets"])));
 
 	async function containerise(puppets: string) {
+		downloadable = false;
 		content = (await nsIterator(puppets, 'Container Rules')) as Array<string>;
-		progress = [...progress, `Finished processing`];
+		progress = `<p>Finished processing</p>`;
+		progress += `<p>NATION RULES</p>`
+		progress += content[0]
+		progress += `<p>CONTAINER RULES</p>`
+		progress += content[1]
 		downloadable = true;
 	}
 </script>
@@ -48,26 +53,12 @@
 				class="text-black p-1 w-96 rounded-md border border-black dark:border-none"
 			/>
 		</div>
-		<div class="max-w-lg flex justify-center gap-2">
-			<button
-				type="submit"
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300"
-			>
-				Start
-			</button>
+		<Buttons>
 			<button disabled={!downloadable} on:click={() => handleDownload('txt', content, '')}
 				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
 				Download
 			</button>
-		</div>
+		</Buttons>
 	</form>
-	<pre
-		class="flex-1 p-2 whitespace-pre-wrap bg-black dark:bg-gray-50 text-white dark:text-black font-medium font-mono inline-block">
-        {#if content && content[0]}
-			<p>NATION RULES</p>
-            <p>{content[0]}</p>
-            <p>CONTAINER RULES</p>
-            <p>{content[1]}</p>
-		{/if}
-    </pre>
+	<Terminal bind:progress={progress} />
 </div>
