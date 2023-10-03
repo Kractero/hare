@@ -2,17 +2,20 @@
 	import { onMount } from 'svelte';
 	import Head from '$lib/component/Head.svelte';
 	import Rarities from '$lib/component/Rarities.svelte';
+	import { loadLocalStorage } from '$lib/loadLocalStorage';
+	import { text } from '@sveltejs/kit';
+	import Input from '$lib/component/Input.svelte';
 
 	let puppets = '';
 	let main = '';
 	let top = '100';
 	let days = '30';
 	let password = '';
-	let endotart = '';
+	let endotartnation = '';
     let giftee = '';
-	let nen = '';
-	let find = '';
-	let regions = '';
+	let nennation = '';
+	let finderlist = '';
+	let regionalwhitelist = '';
     let jdjMode = 'Gift'
     let finderMode = 'Gift'
 	let rarities: { [key: string]: number } = {
@@ -24,26 +27,10 @@
 	};
     let limit = 0;
 
-	onMount(() => {
-		puppets = localStorage.getItem('stationPuppets') || '';
-		main = localStorage.getItem('stationMain') || '';
-        giftee = localStorage.getItem('stationGiftee') || '';
-		top = localStorage.getItem('stationTop') || '100';
-		days = localStorage.getItem('stationDays') || '30';
-		password = localStorage.getItem('stationPassword') || '';
-        endotart = localStorage.getItem('stationEndotartNation') || '';
-		nen = localStorage.getItem('stationNENNation') || '';
-		find = localStorage.getItem('stationFinderList') || '';
-		regions = localStorage.getItem('stationRegionalWhitelist') || '';
-		jdjMode = localStorage.getItem('stationJDJDefault') || 'Gift';
-        finderMode = localStorage.getItem('stationFinderDefault') || 'Gift';
-        rarities.common = Number(localStorage.getItem('stationJDJCommon')) || 0.5;
-		rarities.uncommon = Number(localStorage.getItem('stationJDJUncommon')) || 1;
-		rarities.rare = Number(localStorage.getItem('stationJDJRare')) || 1;
-		rarities['ultra-rare'] = Number(localStorage.getItem('stationJDJUltraRare')) || 1;
-        rarities.epic = Number(localStorage.getItem('stationJDJEpic')) || 1;
-        limit = Number(localStorage.getItem('stationEndotartLimit')) || 0;
-	});
+    onMount(() => ({puppets, main, giftee, top, days, password, endotartnation, nennation, finderlist, regionalwhitelist, jdjMode, finderMode, rarities, limit} = 
+        loadLocalStorage(["stationPuppets", "stationMain", "stationGiftee", "stationROCTop", "stationROCDays", "stationPassword",
+            "stationEndotartNation", "stationNENNation", "stationFinderList", "stationRegionalWhitelist", "stationJDJDefault", "stationFinderDefault", "stationJDJ", "stationEndotartLimit"]))
+    );
 
 	async function setConfig() {
 		localStorage.setItem('stationMain', main);
@@ -51,10 +38,11 @@
 		localStorage.setItem('stationPassword', password);
 		localStorage.setItem('stationROCTop', String(top));
 		localStorage.setItem('stationROCDays', String(days));
-		localStorage.setItem('stationEndotartNation', endotart);
-		localStorage.setItem('stationNENNation', nen);
-		localStorage.setItem('stationFinderList', find);
-		localStorage.setItem('stationRegionalWhitelist', regions);
+		localStorage.setItem('stationEndotartNation', endotartnation);
+		localStorage.setItem('stationNENNation', nennation);
+		localStorage.setItem('stationFinderList', finderlist);
+        localStorage.setItem('stationGiftee', giftee);
+		localStorage.setItem('stationRegionalWhitelist', regionalwhitelist);
         localStorage.setItem('stationJDJDefault', jdjMode);
 		localStorage.setItem('stationFinderDefault', finderMode);
         localStorage.setItem('stationJDJCommon', String(rarities.common));
@@ -75,14 +63,7 @@
         on:submit|preventDefault={() => setConfig()}
         class="flex flex-col gap-8"
     >
-        <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
-            <label class="w-24" for="main">User Agent</label>
-            <input
-                id="main"
-                bind:value={main}
-                class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none"
-            />
-        </div>
+        <Input text="User Agent" bind:bindValue={main} forValue="main" />
         <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
             <label class="w-24" for="pup">Puppets</label>
             <textarea
@@ -103,52 +84,17 @@
                 class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none disabled:opacity-25"
             />
         </div>
-        <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
-            <label class="w-24" for="top">Top {top}</label>
-            <input
-                id="top"
-                bind:value={top}
-                class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none"
-            />
-        </div>
-        <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
-            <label class="w-24" for="days">Over {days} Days</label>
-            <input
-                id="days"
-                bind:value={days}
-                class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none"
-            />
-        </div>
-        <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
-            <label class="w-24" for="Endotarting">Endotarting Default</label>
-            <input
-                id="Endotarting"
-                bind:value={endotart}
-                class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none"
-            />
-        </div>
-        <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
-            <label class="w-24" for="limit">Endorsement Limit</label>
-            <input
-                id="limit"
-                bind:value={limit}
-                class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none"
-            />
-        </div>
-        <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
-            <label class="w-24" for="Not">Not Endorsing Default</label>
-            <input
-                id="Not"
-                bind:value={nen}
-                class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none"
-            />
-        </div>
+        <Input text="Top {top}" bind:bindValue={top} forValue="top" />
+        <Input text="Over {days} Days" bind:bindValue={days} forValue="days" />
+        <Input text="Endotarting Default" bind:bindValue={endotartnation} forValue="Endotarting" />
+        <Input text="Endorse Limit" bind:bindValue={limit} forValue="limit" />
+        <Input text="Not Endorsing Default" bind:bindValue={nennation} forValue="nen" />
         <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
             <label class="w-24" for="Regional">Regional Whitelist</label>
             <textarea
                 id="Regional"
                 rows="10"
-                bind:value={regions}
+                bind:value={regionalwhitelist}
                 class="text-right text-black p-1 w-72 rounded-md border border-black dark:border-none"
             />
         </div>
@@ -164,14 +110,7 @@
 				<option value="Sell">Sell</option>
 			</select>
         </div>
-        <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
-            <label class="w-24" for="giftee">Gift to</label>
-            <input
-                id="giftee"
-                bind:value={giftee}
-                class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none"
-            />
-        </div>
+        <Input text="Gift To" bind:bindValue={giftee} forValue="giftee" />
         <Rarities bind:rarities={rarities} />
         <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
             <label class="w-24" for="finder">Finder Default Behavior</label>
@@ -190,7 +129,7 @@
             <textarea
                 id="Find"
                 rows="10"
-                bind:value={find}
+                bind:value={finderlist}
                 class="text-right text-black p-1 w-72 rounded-md border border-black dark:border-none"
             />
         </div>
