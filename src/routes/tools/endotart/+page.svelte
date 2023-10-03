@@ -5,6 +5,8 @@
 	let progress: string[] = [];
 	let main = '';
 	let limit = 0;
+        let totalProgress = 0; // To keep track of the total progress
+        let currentProgress = 0; // To keep track of the current progress
     onMount(() => {
 		limit = Number(localStorage.getItem('stationEndotartLimit')) || 0;
 		main = localStorage.getItem('stationEndotartNation') || '';
@@ -28,12 +30,14 @@
 		const xml2 = parser.parse(text2);
         const regionalWA = xml2.REGION.UNNATIONS.split(',')
         for (let i = 0; i < regionalWA.length; i++) {
+            currentProgress = i + 1;
             await sleep(700);
             const response = await fetch(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${regionalWA[i]}&q=endorsements+name`, {
                 headers: {
                     'User-Agent': main
                 }
             });
+            totalProgress = regionalWA.length;
             const text = await response.text();
             const xml = parser.parse(text)
             const endorsers = xml.NATION.ENDORSEMENTS.split(',');
@@ -91,6 +95,13 @@
                     <p><a class="underline" href={`https://nationstates.net/nation=${member}`}>{member}</a> is not being endorsed by {main}.</p>
                 {/if}
             {/each}
+		{/if}
+                <!-- Display progress and "DONE!" message -->
+		{#if currentProgress > 0 && currentProgress <= totalProgress}
+		  <p>{currentProgress}/{totalProgress}</p>
+		{/if}
+		{#if currentProgress === totalProgress}
+		  <p>DONE!</p>
 		{/if}
     </pre>
 </div>
