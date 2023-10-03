@@ -7,17 +7,22 @@
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Head from '$lib/component/Head.svelte';
 	import Rarities from '$lib/component/Rarities.svelte';
+	import { loadLocalStorage } from '$lib/loadLocalStorage';
+	import Input from '$lib/component/Input.svelte';
+	import Buttons from '$lib/component/Buttons.svelte';
 	const abortController = new AbortController();
-	let progress: Array<string> = [];
+	let progress: "";
 	let main = '';
 	let giftee = '';
 	let puppets = '';
-	let regions = '';
+	let regionalwhitelist = '';
 	let mode = 'Gift';
 	let password = '';
 	let openNewLinkArr: Array<string> = [];
 	let counter = 0;
 	let junkHtml = '';
+	let stoppable = false;
+	let stopped = false;
 	let downloadable = false;
 	let rarities: { [key: string]: number } = {
 		common: 0.5,
@@ -26,43 +31,44 @@
 		'ultra-rare': 1,
 		epic: 1
 	};
-	onMount(() => {
-		puppets = localStorage.getItem('stationPuppets') || '';
-		main = localStorage.getItem('stationMain') || '';
-		password = localStorage.getItem('stationPassword') || '';
-		giftee = localStorage.getItem('stationGiftee') || '';
-		regions = localStorage.getItem('stationRegionalWhitelist') || '';
-		mode = localStorage.getItem('stationJDJDefault') || 'Gift';
-		rarities.common = Number(localStorage.getItem('stationJDJCommon')) || 0.5;
-		rarities.uncommon = Number(localStorage.getItem('stationJDJUncommon')) || 1;
-		rarities.rare = Number(localStorage.getItem('stationJDJRare')) || 1;
-		rarities['ultra-rare'] = Number(localStorage.getItem('stationJDJUltraRare')) || 1;
-        rarities.epic = Number(localStorage.getItem('stationJDJEpic')) || 1;
-	});
+	onMount(() => (
+		{puppets, main, password, giftee, regionalwhitelist, mode, rarities} = 
+			loadLocalStorage(
+				["stationPuppets", 
+					"stationMain", 
+					"stationPassword", 
+					"stationGiftee", 
+					"stationRegionalWhitelist", 
+					"stationJDJDefault",
+					"stationJDJ"
+				]))
+	)
 	onDestroy(() => abortController.abort());
 
 	async function junkDaJunk(main: string, puppets: string) {
+		downloadable = false;
+		stoppable = true;
+		stopped = false;
+		progress = '';
 		let puppetsList = puppets.split('\n');
-		progress = [...progress, `Initiating JunkDaJunk...`];
-		const whiteList = regions.split('\n');
-		progress = [
-			...progress,
-			`Whitelisting regions: ${whiteList.map((region) => region.trim()).join(', ')}`
-		];
+		const whiteList = regionalwhitelist ? regionalwhitelist.split('\n') : [];
+		if (whiteList.length > 0) {
+			progress += `<p>Whitelisting regions: ${whiteList.map((region) => region.trim()).join(', ')}</p>`;
+		}
 		const rarityArr = Object.entries(rarities);
 		for (let i = 0; i < rarityArr.length; i++) {
-			progress = [...progress, `${rarityArr[i][0]} junk threshold at ${rarityArr[i][1]}`];
+			progress += `<p>${rarityArr[i][0]} junk threshold at ${rarityArr[i][1]}</p>`;
 		}
+		progress += `<p class="font-bold">Initiating JunkDaJunk...</p>`;
 		for (let i = 0; i < puppetsList.length; i++) {
 			let currentNationXPin = ""
 			let nation = puppetsList[i].toLowerCase().replaceAll(' ', '_');
-			if (abortController.signal.aborted) {
+			if (abortController.signal.aborted || stopped) {
 				break;
 			}
 			try {
 				await sleep(700);
-				progress = [...progress, `---------------------------`];
-				progress = [...progress, `Processing ${nation} ${i + 1}/${puppetsList.length} puppets`];
+				progress += `<p class="font-semibold">Processing ${nation} ${i + 1}/${puppetsList.length} puppets</p>`;
 				const response = await fetch(
 					`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`,
 					{
@@ -77,6 +83,9 @@
 				for (let i = 0; i < cards.length; i++) {
 					const id = cards[i].CARDID;
 					const season = cards[i].SEASON;
+					if (abortController.signal.aborted || stopped) {
+						break;
+					}
 					await sleep(700);
 					const response = await fetch(
 						`https://www.nationstates.net/cgi-bin/api.cgi/?cardid=${id}&season=${season}&q=card+markets+info`,
@@ -119,7 +128,6 @@
 						junk = true;
 					}
 					if (parseFloat(marketValue) >= 10) junk = false;
-
 					if (region) {
 						if (whiteList.includes(region)) {
 							junk = false;
@@ -127,12 +135,9 @@
 					}
 
 					if (junk) {
-						progress = [
-							...progress,
-							`${i + 1}/${
+						progress += `<p>${i + 1}/${
 								cards.length
-							} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}`
-						];
+							} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}</p>`;
 						openNewLinkArr = [
 							...openNewLinkArr,
 							`https://www.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1`
@@ -167,18 +172,13 @@
 								}
 							);
 							if (gift.status === 200) {
-								progress = [
-									...progress, `${i + 1}/${cards.length} -> Gifted
-									${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}`
-								];
+								progress += `<p class="text-green-400">${i + 1}/${cards.length} -> Gifted
+									${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}</p>`;
 							}
 							return;
 						} else {
-							progress = [
-								...progress,
-								`${i + 1}/${cards.length} -> ${ 'Selling'
-								} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}`
-							];
+							progress += `<p class="text-green-400">${i + 1}/${cards.length} -> ${ 'Selling'
+								} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}</p>`;
 							openNewLinkArr = [
 								...openNewLinkArr,
 								`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1`
@@ -190,11 +190,12 @@
 					}
 				}
 			} catch (err) {
-				progress = [...progress, `Error processing ${nation} with ${err}`];
+				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
 			}
 		}
-		progress = [...progress, `Finished processing`];
+		progress += `<p>Finished processing</p>`;
 		downloadable = true;
+		stoppable = false;
 	}
 </script>
 
@@ -212,22 +213,16 @@
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => junkDaJunk(main, puppets)} class="flex flex-col gap-8">
 		<InputCredentials bind:main bind:puppets authenticated={mode === "Gift" ? true : false} />
-		<div class="flex gap-4 justify-between max-w-lg">
-			<label class="w-24" for="giftee">Gift to</label>
-			<input
-				required
-				id="giftee"
-				bind:value={giftee}
-				class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none"
-			/>
-		</div>
+		{#if mode === "Gift"}
+			<Input text={`Gift To`} bind:bindValue={giftee} forValue="giftee" required={true} />
+		{/if}
 		<div class="flex gap-4 justify-between max-w-lg">
 			<label class="w-24" for="regions">Regional Whitelist</label>
 			<textarea
 				name="regions"
 				id="regions"
 				rows="10"
-				bind:value={regions}
+				bind:value={regionalwhitelist}
 				class="text-right text-black p-2 max-w-xs rounded-md border border-black dark:border-none"
 			/>
 		</div>
@@ -247,15 +242,20 @@
 				<option value="Sell">Sell</option>
 			</select>
 		</div>
-		<div class="max-w-lg flex justify-center gap-2">
+		<Buttons>
 			<button
-				type="submit"
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300"
+				type="button"
+				disabled={!stoppable}
+				on:click={() => { {
+					stoppable = false;
+					stopped = true;
+				} }}
+				class="bg-red-500 rounded-md px-4 py-2 transition duration-300 hover:bg-red-300 disabled:opacity-20 disabled:hover:bg-red-500"
 			>
-				Start
+				Stop
 			</button>
 			<button
-				disabled={progress.length === 0}
+				disabled={!progress}
 				type="button"
 				on:click={() => {
 					if (counter > openNewLinkArr.length - 1) {
@@ -272,7 +272,7 @@
 				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
 				Download
 			</button>
-		</div>
+		</Buttons>
 	</form>
 	<Terminal bind:progress={progress} />
 </div>

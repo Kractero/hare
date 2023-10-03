@@ -8,38 +8,47 @@
 	import { style } from '$lib/sortFunctionString';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Head from '$lib/component/Head.svelte';
+	import Buttons from '$lib/component/Buttons.svelte';
+	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	const abortController = new AbortController();
-	let progress: Array<string> = [];
+	let progress = "";
 	let main = '';
 	let puppets = '';
 	let password = '';
 	let downloadable = false;
 	let content = `<tr><th>Nation</th><th class='sort' data-order='none'>Bank</th><th class='sort' data-order='none'>Deck Value</th><th class='sort' data-order='none'>Junk Value</th><th class='sort' data-order='none'>Card Count</th></tr>\n`;
+	let stoppable = false;
+	let stopped = false;
 
-	onMount(() => {
-		puppets = localStorage.getItem('stationPuppets') || '';
-		main = localStorage.getItem('stationMain') || '';
-		// password = localStorage.getItem("stationPassword") || ""
-	});
+	onMount(() => ({puppets, main} = loadLocalStorage(["stationPuppets", "stationMain"])));
 
 	onDestroy(() => abortController.abort());
 
 	async function goldRetriever(main: string, puppets: string, password?: string) {
+		downloadable = false;
+		stoppable = true;
+		stopped = false;
 		let userAgent = `${main} Gotissues Written by 9003, Email NSWA9002@gmail.com,discord: 9003, NSNation 9003`;
 		let puppetList = puppets.split('\n');
+		let totals = {
+			bank: 0,
+			deckValue: 0,
+			junkValue: 0,
+			cardCount: 0
+		}
 		for (let i = 0; i < puppetList.length; i++) {
 			let nation = puppetList[i];
 			if (!password) {
 				nation = puppetList[i].split(',')[0];
 				password = puppetList[i].split(',')[1];
 			}
-			if (abortController.signal.aborted) {
+			if (abortController.signal.aborted || stopped) {
 				break;
 			}
 			const nation_formatted = nation.toLowerCase().replaceAll(' ', '_');
 			try {
 				await sleep(700);
-				progress = [...progress, `Processing ${nation} ${i + 1}/${puppetList.length}`];
+				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`;
 				const response = await fetch(
 					'https://www.nationstates.net/cgi-bin/api.cgi/?nationname=' +
 						nation +
@@ -74,23 +83,28 @@
 						}
 					}
 					deck.junkValue =
-						(categoryCounts.legendary || 0) * 1 +
+						Number(((categoryCounts.legendary || 0) * 1 +
 						(categoryCounts.epic || 0) * 0.5 +
 						(categoryCounts.common || 0) * 0.01 +
 						(categoryCounts.uncommon || 0) * 0.05 +
-						(categoryCounts['ultra-rare'] || 0) * 0.2;
+						(categoryCounts['ultra-rare'] || 0) * 0.2).toFixed(2));
 
 					deck.bank = xmlObj.CARDS.INFO.BANK;
 					deck.deckValue = xmlObj.CARDS.INFO.DECK_VALUE;
 					deck.cardCount = xmlObj.CARDS.INFO.NUM_CARDS;
 				}
+				totals.bank += totals.bank + deck.bank
+				totals.deckValue += totals.deckValue + deck.deckValue
+				totals.junkValue += totals.junkValue + deck.junkValue
+				totals.cardCount += totals.cardCount + deck.cardCount
 				content += `<tr><td><a target='_blank' href='https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}'>${deck.nation}</a></td><td><a target='_blank' href='https://www.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1'>${deck.bank}</a></td><td><a target='_blank' href='https://www.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1'>${deck.deckValue}</a></td><td><a target='_blank' href='https://www.nationstates.net/page=deck/container=${nation_formatted}/nation={container_url}'>${deck.junkValue}</a></td><td><a target='_blank' href='https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}'>${deck.cardCount}</a></td></tr>\n`;
 			} catch (err) {
-				progress = [...progress, `Error processing ${nation} with ${err}`];
+				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
 			}
 		}
-		progress = [...progress, `Finished processing`];
+		progress += `<p>Finished processing! You have a cumulative ${totals.bank.toFixed(2)} bank, ${totals.deckValue.toFixed(2)} deckValue, ${totals.junkValue.toFixed(2)} junk value, and ${totals.cardCount} cards.</p>`;
 		downloadable = true;
+		stoppable = false;
 	}
 </script>
 
@@ -114,18 +128,23 @@
 		class="flex flex-col gap-8"
 	>
 		<InputCredentials bind:main bind:puppets bind:password authenticated={false} />
-		<div class="max-w-lg flex justify-center gap-2">
+		<Buttons>
 			<button
-				type="submit"
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300"
+				type="button"
+				disabled={!stoppable}
+				on:click={() => { {
+					stoppable = false;
+					stopped = true;
+				} }}
+				class="bg-red-500 rounded-md px-4 py-2 transition duration-300 hover:bg-red-300 disabled:opacity-20 disabled:hover:bg-red-500"
 			>
-				Start
+				Stop
 			</button>
-			<button disabled={!downloadable} on:click={() => handleDownload('html', htmlContent(content, style, sort), 'Gold Retriever')}
+			<button disabled={!downloadable} type="button" on:click={() => handleDownload('html', htmlContent(content, style, sort), 'Gold Retriever')}
 				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
 				Download
 			</button>
-		</div>
+		</Buttons>
 	</form>
 	<Terminal bind:progress={progress} />
 </div>

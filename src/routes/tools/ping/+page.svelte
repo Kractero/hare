@@ -3,23 +3,29 @@
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import { sleep } from '$lib/globals';
 	import Head from '$lib/component/Head.svelte';
+	import Buttons from '$lib/component/Buttons.svelte';
+	import { loadLocalStorage } from '$lib/loadLocalStorage';
+	import Terminal from '$lib/component/Terminal.svelte';
 	const abortController = new AbortController();
 	let puppets = '';
 	let main = '';
 	let password = '';
-	let progress: Array<string> = [];
-	onMount(() => {
-		puppets = localStorage.getItem('stationPuppets') || '';
-		main = localStorage.getItem('stationMain') || '';
-		password = localStorage.getItem('stationPassword') || '';
-	});
+	let progress = "";
+	let stoppable = false;
+	let stopped = false;
+
+	onMount(() => ({puppets, main, password} = loadLocalStorage(["stationPuppets", "stationMain", "stationPassword"])));
 	onDestroy(() => abortController.abort());
+
 	async function ping(main: string, puppets: string, password: string) {
+		stoppable = true;
+		stopped = false;
+		progress = '';
 		let puppetsList = puppets.split('\n');
 		for (let i = 0; i < puppetsList.length; i++) {
 			await sleep(700);
 			let nation = puppetsList[i];
-			if (abortController.signal.aborted) {
+			if (abortController.signal.aborted || stopped) {
 				break;
 			}
 			const response = await fetch(
@@ -33,12 +39,14 @@
 			);
 			const success = response.status;
 			if (success === 404) {
-				progress = [...progress, `Failed to log into ${nation}`];
+				progress += `<p class="text-red-400">Failed to log into ${nation}</p>`;
 			}
 			if (success === 200 || success === 409) {
-				progress = [...progress, `Successfully logged into ${nation}`];
+				progress += `<p>Successfully logged into ${nation}</p>`;
 			}
+			
 		}
+		stoppable = false;
 	}
 </script>
 
@@ -54,21 +62,19 @@
 		class="flex flex-col gap-8"
 	>
 		<InputCredentials bind:main bind:puppets bind:password authenticated={true} />
-		<div class="max-w-lg flex justify-center">
+		<Buttons>
 			<button
-				type="submit"
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300"
+				type="button"
+				disabled={!stoppable}
+				on:click={() => { 
+					stoppable = false
+					stopped = true
+				 }}
+				class="bg-red-500 rounded-md px-4 py-2 transition duration-300 hover:bg-red-300 disabled:opacity-20 disabled:hover:bg-red-500"
 			>
-				Start
+				Stop
 			</button>
-		</div>
+		</Buttons>
 	</form>
-	<pre
-		class="flex-1 p-2 whitespace-pre-wrap bg-black dark:bg-gray-50 text-white dark:text-black font-medium font-mono inline-block">
-        {#if progress && progress[0]}
-			{#each progress as update}
-				<p>{update}</p>
-			{/each}
-		{/if}
-    </pre>
+	<Terminal bind:progress={progress} />
 </div>

@@ -6,8 +6,10 @@
 	import { parser, sleep } from '$lib/globals';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Head from '$lib/component/Head.svelte';
+	import { loadLocalStorage } from '$lib/loadLocalStorage';
+	import Buttons from '$lib/component/Buttons.svelte';
 	const abortController = new AbortController();
-	let progress: Array<string> = [];
+	let progress = "";
 	let main = '';
 	let puppets = '';
 	let password = '';
@@ -15,16 +17,17 @@
 	let counter = 0;
 	let downloadable = false;
 	let issuesContent = '';
+	let stoppable = false;
+	let stopped = false;
 
-	onMount(() => {
-		puppets = localStorage.getItem('stationPuppets') || '';
-		main = localStorage.getItem('stationMain') || '';
-		password = localStorage.getItem('stationPassword') || '';
-	});
+	onMount(() => ({puppets, main, password} = loadLocalStorage(["stationPuppets", "stationMain", "stationPassword"])));
 	onDestroy(() => abortController.abort());
 
 	async function gotIssues(main: string, puppets: string, password?: string) {
-		let userAgent = `${main} Gotissues Written by 9003, Email NSWA9002@gmail.com,discord: 9003, NSNation 9003`;
+		downloadable = false;
+		stoppable = true;
+		stopped = false;
+		progress = "";
 		let puppetList = puppets.split('\n');
 		let issuesCount = 0;
 		let packsCount = 0;
@@ -36,19 +39,19 @@
 				nation = puppetList[i].split(',')[0];
 				password = puppetList[i].split(',')[1];
 			}
-			if (abortController.signal.aborted) {
+			if (abortController.signal.aborted || stopped) {
 				break;
 			}
 			const nation_formatted = nation.toLowerCase().replaceAll(' ', '_');
 			try {
 				await sleep(700);
-				progress = [...progress, `Processing ${nation} ${i + 1}/${puppetList.length}`];
+				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`;
 				const response = await fetch(
 					'https://www.nationstates.net/cgi-bin/api.cgi/?nation=' + nation + '&q=issues+packs',
 					{
 						method: 'GET',
 						headers: {
-							'User-Agent': userAgent,
+							'User-Agent': main,
 							'X-Password': password.replaceAll(' ', '_')
 						}
 					}
@@ -62,32 +65,33 @@
 				issueIds.forEach((issue) => {
 					openNewLinkArr = [
 						...openNewLinkArr,
-						`https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${userAgent}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/`
+						`https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${main}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/`
 					];
 					issuesContent += `<tr><td><p>${
 						issuesCount + 1
-					}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${userAgent}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/">Link to Issue</a></p></td></tr>\n`;
+					}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${main}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/">Link to Issue</a></p></td></tr>\n`;
 					issuesCount++;
 				});
 				if (packs) {
 					for (let i = 0; i < parseInt(packs); i++) {
 						interimPacks.push(
-							`https://www.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${userAgent}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1`
+							`https://www.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1`
 						);
 						packContent += `<tr><td><p>${
 							packsCount + 1
-						}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${userAgent}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1">Link to Pack</a></p></td></tr>\n`;
+						}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1">Link to Pack</a></p></td></tr>\n`;
 						packsCount++;
 					}
 				}
 			} catch (err) {
-				progress = [...progress, `Error processing ${nation} with ${err}`];
+				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
 			}
 		}
 		openNewLinkArr = [...openNewLinkArr, ...interimPacks];
 		issuesContent = issuesContent += packContent;
-		progress = [...progress, `Finished processing ${puppetList.length} nations, equaling ${issuesCount} issues and ${packsCount} packs!`];
+		progress += `<p>Finished processing ${puppetList.length} nations, equaling ${issuesCount} issues and ${packsCount} packs!</p>`;
 		downloadable = true;
+		stoppable = false;
 	}
 </script>
 
@@ -120,14 +124,19 @@
 		class="flex flex-col gap-8"
 	>
 		<InputCredentials bind:main bind:puppets bind:password authenticated={true} />
-		<div class="max-w-lg flex justify-center gap-2">
+		<Buttons>
 			<button
-				type="submit"
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300"
+				type="button"
+				disabled={!stoppable}
+				on:click={() => { {
+					stoppable = false;
+					stopped = true;
+				} }}
+				class="bg-red-500 rounded-md px-4 py-2 transition duration-300 hover:bg-red-300 disabled:opacity-20 disabled:hover:bg-red-500"
 			>
-				Start
+				Stop
 			</button>
-			<button
+				<button
 				disabled={progress.length === 0}
 				type="button"
 				on:click={() => {
@@ -145,7 +154,7 @@
 				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
 				Download
 			</button>
-		</div>
+		</Buttons>
 	</form>
 	<Terminal bind:progress={progress} />
 </div>
