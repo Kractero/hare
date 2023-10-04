@@ -51,17 +51,17 @@
             const endorsers = String(xml.NATION.ENDORSEMENTS).includes(',') ? xml.NATION.ENDORSEMENTS.split(',') : [xml.NATION.ENDORSEMENTS];
 			if (limit) {
 				if (endorsers.length < limit && !endorsers.includes(endotartnation.toLowerCase().replaceAll(' ', '_')) && regionalWA[i] !== endotartnation.toLowerCase().replaceAll(' ', '_')) {
-					progress += `<p>${i}/${regionalWA.length} <a class="underline" href={"https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is not being endorsed by ${endotartnation}.</p>`
+					progress += `<p>${i}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is not being endorsed by ${endotartnation}.</p>`
 				} else if (endorsers.length > limit) {
-					progress += `<p>${i}/${regionalWA.length} <a class="underline" href={"https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> has more than ${limit} endorsements.</p>`
+					progress += `<p>${i}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> has more than ${limit} endorsements.</p>`
 				} else {
-					progress += `<p>${i}/${regionalWA.length} <a class="underline" href={"https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is already endorsed by ${endotartnation}.</p>`
+					progress += `<p>${i}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is already endorsed by ${endotartnation}.</p>`
 				}
 			} else {
 				if (!endorsers.includes(endotartnation.toLowerCase().replaceAll(' ', '_')) && regionalWA[i] !== endotartnation.toLowerCase().replaceAll(' ', '_')) {
-					progress += `<p>${i}/${regionalWA.length} <a class="underline" href={"https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is not being endorsed by ${endotartnation}.</p>`
+					progress += `<p>${i}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is not being endorsed by ${endotartnation}.</p>`
 				} else {
-					progress += `<p>${i}/${regionalWA.length} <a class="underline" href={"https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is already endorsed by ${endotartnation}.</p>`
+					progress += `<p>${i}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is already endorsed by ${endotartnation}.</p>`
 				}
 			}
             await sleep(700);

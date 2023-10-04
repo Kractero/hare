@@ -32,7 +32,7 @@
 		const xml2 = parser.parse(text2);
         const mainEndorsers = xml.NATION.ENDORSEMENTS.split(',');
     	xml2.REGION.UNNATIONS.split(',').filter((member: string) => !mainEndorsers.includes(member) && member !== nennation.toLowerCase().replace(' ', '_')).forEach((member: string) => {
-			progress += `<p><a class="underline" href={"https://nationstates.net/nation=${member}"}>${member}</a> is not endorsing ${nennation}.</p>`
+			progress += `<p><a class="underline" href="https://nationstates.net/nation=${member}">${member}</a> is not endorsing ${nennation}.</p>`
 		});
 		progress += `<p>Finished processing</p>`
 	}

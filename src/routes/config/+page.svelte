@@ -26,10 +26,11 @@
 		epic: 1
 	};
     let limit = 0;
+    let ownercount = "";
 
-    onMount(() => ({puppets, main, giftee, top, days, password, endotartnation, nennation, finderlist, regionalwhitelist, jdjMode, finderMode, rarities, limit} = 
+    onMount(() => ({puppets, main, giftee, top, days, password, endotartnation, nennation, finderlist, regionalwhitelist, jdjMode, finderMode, rarities, limit, ownercount} = 
         loadLocalStorage(["stationPuppets", "stationMain", "stationGiftee", "stationROCTop", "stationROCDays", "stationPassword",
-            "stationEndotartNation", "stationNENNation", "stationFinderList", "stationRegionalWhitelist", "stationJDJDefault", "stationFinderDefault", "stationJDJ", "stationEndotartLimit"]))
+            "stationEndotartNation", "stationNENNation", "stationFinderList", "stationRegionalWhitelist", "stationJDJDefault", "stationFinderDefault", "stationJDJ", "stationEndotartLimit", "stationOwnerCount"]))
     );
 
 	async function setConfig() {
@@ -51,6 +52,7 @@
         localStorage.setItem('stationJDJUltraRare', String(rarities['ultra-rare']));
 		localStorage.setItem('stationJDJEpic', String(rarities.epic));
         localStorage.setItem('stationEndotartLimit', String(limit));
+        localStorage.setItem('stationOwnerCount', String(ownercount));
 	}
 </script>
 
@@ -110,6 +112,7 @@
 				<option value="Sell">Sell</option>
 			</select>
         </div>
+        <Input text="Owner Threshold" bind:bindValue={ownercount} forValue="owner" />
         <Input text="Gift To" bind:bindValue={giftee} forValue="giftee" />
         <Rarities bind:rarities={rarities} />
         <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">

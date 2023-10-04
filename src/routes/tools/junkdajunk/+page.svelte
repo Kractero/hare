@@ -18,6 +18,7 @@
 	let regionalwhitelist = '';
 	let mode = 'Gift';
 	let password = '';
+	let ownercount = '';
 	let openNewLinkArr: Array<string> = [];
 	let counter = 0;
 	let junkHtml = '';
@@ -32,15 +33,10 @@
 		epic: 1
 	};
 	onMount(() => (
-		{puppets, main, password, giftee, regionalwhitelist, mode, rarities} = 
+		{puppets, main, password, giftee, regionalwhitelist, mode, rarities, ownercount} = 
 			loadLocalStorage(
-				["stationPuppets", 
-					"stationMain", 
-					"stationPassword", 
-					"stationGiftee", 
-					"stationRegionalWhitelist", 
-					"stationJDJDefault",
-					"stationJDJ"
+				["stationPuppets", "stationMain", "stationPassword",  "stationGiftee", 
+					"stationRegionalWhitelist", "stationJDJDefault", "stationJDJ", "stationOwnerCount"
 				]))
 	)
 	onDestroy(() => abortController.abort());
@@ -88,7 +84,7 @@
 					}
 					await sleep(700);
 					const response = await fetch(
-						`https://www.nationstates.net/cgi-bin/api.cgi/?cardid=${id}&season=${season}&q=card+markets+info`,
+						`https://www.nationstates.net/cgi-bin/api.cgi/?cardid=${id}&season=${season}&q=card+markets+info+owners`,
 						{
 							headers: {
 								'User-Agent': main
@@ -97,6 +93,7 @@
 					);
 					const xml = await response.text();
 					const xmlDocument = parser.parse(xml);
+					const owners = new Set(xmlDocument.CARD.OWNERS.OWNER)
 					const category = xmlDocument.CARD.CATEGORY;
 					const marketValue = xmlDocument.CARD.MARKET_VALUE;
 					const region = xmlDocument.CARD.REGION;
@@ -122,16 +119,28 @@
 						}
 					}
 
-					let junk = false;
+					let junk = true;
+					let reason = ""
 
-					if (rarities.hasOwnProperty(category) && highestBid < rarities[category]) {
-						junk = true;
+					if (Number(ownercount) < owners.size) {
+						junk = false;
+						reason = `, has less owners than ${ownercount}`
 					}
-					if (parseFloat(marketValue) >= 10) junk = false;
-					if (region) {
-						if (whiteList.includes(region)) {
-							junk = false;
-						}
+
+					console.log(owners.size)
+
+					if (rarities.hasOwnProperty(category) && highestBid > rarities[category]) {
+						junk = false;
+						reason = `, has high bid.`
+					}
+					if (parseFloat(marketValue) > 10) {
+						junk = false;
+						reason = `, MV over 10.`
+					};
+
+					if (region && whiteList.includes(region)) {
+						junk = false;
+						reason = `, is in whitelisted ${region}.`
 					}
 
 					if (junk) {
@@ -172,13 +181,13 @@
 								}
 							);
 							if (gift.status === 200) {
-								progress += `<p class="text-green-400">${i + 1}/${cards.length} -> Gifted
-									${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}</p>`;
+								progress += `<p class="text-green-400">${i + 1}/${cards.length} -> Gifted S${season}
+									${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}${reason}</p>`;
 							}
 							return;
 						} else {
-							progress += `<p class="text-green-400">${i + 1}/${cards.length} -> ${ 'Selling'
-								} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}</p>`;
+							progress += `<p class="text-green-400">${i + 1}/${cards.length} -> Selling S${season}
+								${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}${reason}</p>`;
 							openNewLinkArr = [
 								...openNewLinkArr,
 								`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1`
@@ -226,6 +235,7 @@
 				class="text-right text-black p-2 max-w-xs rounded-md border border-black dark:border-none"
 			/>
 		</div>
+		<Input text={`Owner Threshold`} bind:bindValue={ownercount} forValue="owner" />
 		<div class="flex gap-4 justify-between max-w-lg">
 			<p class="w-24">Rarity Threshold</p>
 			<Rarities bind:rarities={rarities} />
