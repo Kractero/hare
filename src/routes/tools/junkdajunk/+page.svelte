@@ -122,12 +122,10 @@
 					let junk = true;
 					let reason = ""
 
-					if (Number(ownercount) < owners.size) {
+					if (ownercount && Number(ownercount) < owners.size) {
 						junk = false;
 						reason = `, has less owners than ${ownercount}`
 					}
-
-					console.log(owners.size)
 
 					if (rarities.hasOwnProperty(category) && highestBid > rarities[category]) {
 						junk = false;
@@ -181,13 +179,11 @@
 								}
 							);
 							if (gift.status === 200) {
-								progress += `<p class="text-green-400">${i + 1}/${cards.length} -> Gifted S${season}
-									${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}${reason}</p>`;
+								progress += `<p class="text-green-400">${i + 1}/${cards.length} -> Gifted S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}${reason}</p>`;
 							}
 							return;
 						} else {
-							progress += `<p class="text-green-400">${i + 1}/${cards.length} -> Selling S${season}
-								${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}${reason}</p>`;
+							progress += `<p class="text-green-400">${i + 1}/${cards.length} -> Selling S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}${reason}</p>`;
 							openNewLinkArr = [
 								...openNewLinkArr,
 								`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1`
