@@ -59,18 +59,6 @@ export const tools: Array<Tool> = [
 		// "category": "cards"
 	},
 	{
-		name: 'Creator Assistant',
-		slug: 'creation',
-		description: 'Generate a sheet that has links for nation creation that works with the provided userscripts.'
-		// "category": "cards"
-	},
-	{
-		name: 'Wiz',
-		slug: 'wiz',
-		description: 'Output the last login date of the provided puppet list.'
-		// "category": "cards"
-	},
-	{
 		name: 'Endotart',
 		slug: 'endotart',
 		description: 'Specify a nation and get all the regionmates they are not endorsing.'
@@ -83,9 +71,27 @@ export const tools: Array<Tool> = [
 		// "category": "cards"
 	},
 	{
+		name: 'Approvals List',
+		slug: 'approval',
+		description: 'Specify a proposal and get all delegates that are not approving it.'
+		// "category": "cards"
+	},
+	{
 		name: 'Finder',
 		slug: 'finder',
 		description: 'Find which of the specified nations have which of the specified cards.'
 		// "category": "cards"
-	}
+	},
+	{
+		name: 'Creator Assistant',
+		slug: 'creation',
+		description: 'Generate a sheet that has links for nation creation that works with the provided userscripts.'
+		// "category": "cards"
+	},
+	{
+		name: 'Wiz',
+		slug: 'wiz',
+		description: 'Output the last login date of the provided puppet list.'
+		// "category": "cards"
+	},
 ];

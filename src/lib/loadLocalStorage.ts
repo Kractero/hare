@@ -26,6 +26,9 @@ export function loadLocalStorage(keysToLoad: string[]) {
             case 'stationFinderDefault':
                 loadedValues.finderMode = localStorage.getItem(`${key}`) || "Gift";
                 break;
+			case 'stationCouncil':
+				loadedValues.council = localStorage.getItem(`${key}`) || "General Assembly";
+				break;
 			default:
 				loadedValues[key.replace('station', '').toLowerCase()] = localStorage.getItem(key) || '';
 				break;

@@ -27,10 +27,12 @@
 	};
     let limit = 0;
     let ownercount = "";
+    let council = "General Assembly";
+    let proposalid = "";
 
     onMount(() => ({puppets, main, giftee, top, days, password, endotartnation, nennation, finderlist, regionalwhitelist, jdjMode, finderMode, rarities, limit, ownercount} = 
         loadLocalStorage(["stationPuppets", "stationMain", "stationGiftee", "stationROCTop", "stationROCDays", "stationPassword",
-            "stationEndotartNation", "stationNENNation", "stationFinderList", "stationRegionalWhitelist", "stationJDJDefault", "stationFinderDefault", "stationJDJ", "stationEndotartLimit", "stationOwnerCount"]))
+            "stationEndotartNation", "stationNENNation", "stationFinderList", "stationRegionalWhitelist", "stationJDJDefault", "stationFinderDefault", "stationJDJ", "stationEndotartLimit", "stationOwnerCount", "stationCount", "stationProposalID"]))
     );
 
 	async function setConfig() {
@@ -53,6 +55,8 @@
 		localStorage.setItem('stationJDJEpic', String(rarities.epic));
         localStorage.setItem('stationEndotartLimit', String(limit));
         localStorage.setItem('stationOwnerCount', String(ownercount));
+        localStorage.setItem('stationCouncil', String(council));
+        localStorage.setItem('stationProposalID', String(proposalid));
 	}
 </script>
 
@@ -136,6 +140,19 @@
                 class="text-right text-black p-1 w-72 rounded-md border border-black dark:border-none"
             />
         </div>
+		<div class="flex gap-4 justify-between max-w-lg">
+			<label class="w-24" for="mode">Council</label>
+			<select
+				name="mode"
+				id="mode"
+				bind:value={council}
+				class="text-black p-1 w-max rounded-md border border-black dark:border-none"
+			>
+				<option value="General Assembly" selected>General Assembly</option>
+				<option value="Security Council">Security Council</option>
+			</select>
+		</div>
+        <Input text="Proposal ID" bind:bindValue={proposalid} forValue="proposalID" required={false} />
         <div class="max-w-lg flex justify-center">
             <button
                 type="submit"
