@@ -181,7 +181,6 @@
 							if (gift.status === 200) {
 								progress += `<p class="text-green-400">${i + 1}/${cards.length} -> Gifted S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}${reason}</p>`;
 							}
-							return;
 						} else {
 							progress += `<p class="text-green-400">${i + 1}/${cards.length} -> Selling S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}${reason}</p>`;
 							openNewLinkArr = [
