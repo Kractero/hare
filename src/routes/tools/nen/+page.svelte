@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { parser, sleep } from '$lib/globals';
+	import { parseXML, sleep } from '$lib/globals';
 	import Head from '$lib/component/Head.svelte';
 	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Buttons from '$lib/component/Buttons.svelte';
@@ -14,24 +14,16 @@
 
 	async function findWA() {
 		progress = '';
-		const response = await fetch(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nennation}&q=endorsements+region+wa`, {
-			headers: {
-				'User-Agent': main
-			}
-		});
-        const text = await response.text();
-        const xml = parser.parse(text)
+        const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nennation}&q=endorsements+region+wa`, main);
         if (xml.NATION.UNSTATUS === "Non-member") {
             progress += `<p class="text-red-400">${nennation} is not in the WA.</p>`
 			return;
         }
 		await sleep(700);
 		progress += `<p">Searching for the nations in ${xml.NATION.REGION} not endorsing ${nennation}</p>`
-        const wamems = await fetch(`https://www.nationstates.net/cgi-bin/api.cgi?region=${xml.NATION.REGION}&q=wanations`)
-		const text2 = await wamems.text();
-		const xml2 = parser.parse(text2);
+        const wamems = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?region=${xml.NATION.REGION}&q=wanations`, main)
         const mainEndorsers = xml.NATION.ENDORSEMENTS.split(',');
-    	xml2.REGION.UNNATIONS.split(',').filter((member: string) => !mainEndorsers.includes(member) && member !== nennation.toLowerCase().replace(' ', '_')).forEach((member: string) => {
+    	wamems.REGION.UNNATIONS.split(',').filter((member: string) => !mainEndorsers.includes(member) && member !== nennation.toLowerCase().replace(' ', '_')).forEach((member: string) => {
 			progress += `<p><a class="underline" href="https://nationstates.net/nation=${member}">${member}</a> is not endorsing ${nennation}.</p>`
 		});
 		progress += `<p>Finished processing</p>`

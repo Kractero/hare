@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import { parser, sleep } from '$lib/globals';
+	import { parseXML, sleep } from '$lib/globals';
 	import Head from '$lib/component/Head.svelte';
 	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Terminal from '$lib/component/Terminal.svelte';
@@ -19,35 +19,21 @@
 		progress = "";
 		stoppable = true;
 		stopped = false;
-        const regionresponse = await fetch(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${endotartnation}&q=endorsements+region+wa`, {
-			headers: {
-				'User-Agent': main
-			}
-		});
-        const regiontext = await regionresponse.text();
-        const regionalXML = parser.parse(regiontext)
+        const regionalXML = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${endotartnation}&q=endorsements+region+wa`, main)
         if (regionalXML.NATION.UNSTATUS === "Non-member") {
             progress += `<p class="text-red-400">${endotartnation} is not in the WA.</p>`
 			return;
         }
         await sleep(700)
         progress += `<p>Searching for the nations in ${regionalXML.NATION.REGION} not being endorsed by ${endotartnation}</p>`
-        const wamems = await fetch(`https://www.nationstates.net/cgi-bin/api.cgi?region=${regionalXML.NATION.REGION}&q=wanations`)
-		const text2 = await wamems.text();
-		const xml2 = parser.parse(text2);
-        const regionalWA = xml2.REGION.UNNATIONS.split(',')
+        const wamems = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?region=${regionalXML.NATION.REGION}&q=wanations`, main)
+        const regionalWA = wamems.REGION.UNNATIONS.split(',')
         for (let i = 0; i < regionalWA.length; i++) {
 			if (abortController.signal.aborted || stopped) {
 				break;
 			}
             await sleep(700);
-            const response = await fetch(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${regionalWA[i]}&q=endorsements+name`, {
-                headers: {
-                    'User-Agent': main
-                }
-            });
-            const text = await response.text();
-            const xml = parser.parse(text)
+            const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${regionalWA[i]}&q=endorsements+name`, main)
             const endorsers = String(xml.NATION.ENDORSEMENTS).includes(',') ? xml.NATION.ENDORSEMENTS.split(',') : [xml.NATION.ENDORSEMENTS];
 			if (limit) {
 				if (endorsers.length < limit && !endorsers.includes(endotartnation.toLowerCase().replaceAll(' ', '_')) && regionalWA[i] !== endotartnation.toLowerCase().replaceAll(' ', '_')) {
