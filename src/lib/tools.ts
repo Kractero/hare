@@ -77,6 +77,12 @@ export const tools: Array<Tool> = [
 		// "category": "cards"
 	},
 	{
+		name: 'Glasses',
+		slug: 'spyglass',
+		description: 'Generate a spreadsheet containing regional information.'
+		// "category": "cards"
+	},
+	{
 		name: 'Finder',
 		slug: 'finder',
 		description: 'Find which of the specified nations have which of the specified cards.'
