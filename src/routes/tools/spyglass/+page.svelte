@@ -26,6 +26,7 @@
 	}
 
 	async function glass() {
+		downloadable = false
 		progress += `<p>Gathering founderless regions.</p>`
 		const governorless = await parseXML(
 			'https://www.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=governorless',
@@ -219,6 +220,7 @@
 		worksheet.getCell('M10').value = '1.0';
 		worksheet.getCell('M11').value = new Date().toISOString();
 		progress += `<p class="text-green-400">Glasses finished processing!</p>`
+		downloadable = true;
 	}
 </script>
 
