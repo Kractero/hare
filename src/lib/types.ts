@@ -18,6 +18,7 @@ export interface NSRegion {
     LASTUPDATE:      number;
     LASTMAJORUPDATE: number;
     LASTMINORUPDATE: number;
+    UNNATIONS:       string;
 }
 
 export interface Embassies {
@@ -40,4 +41,17 @@ export interface Officer {
     TIME:      number;
     BY:        string;
     ORDER:     number;
+}
+
+/*
+    gotIssues
+    Omitting unused k/vs from the json response, only the ID is needed
+*/
+
+export interface IssuesList {
+    ISSUE: Issue[] | Issue;
+}
+
+export interface Issue {
+    "@_id":  string;
 }
