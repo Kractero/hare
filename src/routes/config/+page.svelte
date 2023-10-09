@@ -79,7 +79,7 @@
         class="flex flex-col gap-8"
     >
         <Input text="User Agent" bind:bindValue={main} forValue="main" />
-        <Textarea text="Puppets" bind:bindValue={puppets} forValue="pup" required />
+        <Textarea text="Puppets" bind:bindValue={puppets} forValue="pup" />
         <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
             <label class="w-24" for="pass">Password</label>
             <input
