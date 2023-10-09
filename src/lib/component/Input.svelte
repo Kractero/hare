@@ -2,7 +2,8 @@
     export let text: string;
     export let bindValue: string | number | undefined;
     export let forValue: string;
-    export let required: boolean = false;;
+    export let required: boolean = false;
+    export let disabled: boolean = false;
 </script>
 
 <div class="flex gap-4 justify-between max-w-lg">
@@ -11,6 +12,7 @@
         required={required}
         id={forValue}
         bind:value={bindValue}
+        disabled={disabled}
         class="text-right text-black p-2 max-w-xs rounded-md border border-black dark:border-none"
     />
 </div>
