@@ -10,6 +10,7 @@
 	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import { loadLocalStorage } from '$lib/loadLocalStorage';
+	import type { Card } from '$lib/types';
 	const abortController = new AbortController();
 	let progress = "";
 	let main = '';
@@ -28,7 +29,6 @@
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
-		let userAgent = `${main} Gotissues Written by 9003, Email NSWA9002@gmail.com,discord: 9003, NSNation 9003`;
 		let puppetList = puppets.split('\n');
 		let totals = {
 			bank: 0,
@@ -56,7 +56,7 @@
 					{
 						method: 'GET',
 						headers: {
-							'User-Agent': userAgent
+							'User-Agent': main
 							// "X-Password": password ? password.replace(" ", "_") : "",
 						}
 					}
@@ -73,7 +73,7 @@
 
 				const categoryCounts: { [key: string]: number } = {};
 				if (xmlObj.CARDS.DECK.CARD) {
-					const deckObj = xmlObj.CARDS.DECK.CARD;
+					const deckObj: Array<Card> = xmlObj.CARDS.DECK.CARD;
 					for (let i = 0; i < deckObj.length; i++) {
 						const category = deckObj[i].CATEGORY;
 						if (categoryCounts[category]) {
@@ -93,10 +93,10 @@
 					deck.deckValue = xmlObj.CARDS.INFO.DECK_VALUE;
 					deck.cardCount = xmlObj.CARDS.INFO.NUM_CARDS;
 				}
-				totals.bank += totals.bank + deck.bank
-				totals.deckValue += totals.deckValue + deck.deckValue
-				totals.junkValue += totals.junkValue + deck.junkValue
-				totals.cardCount += totals.cardCount + deck.cardCount
+				totals.bank = totals.bank + deck.bank
+				totals.deckValue = totals.deckValue + deck.deckValue
+				totals.junkValue = totals.junkValue + deck.junkValue
+				totals.cardCount = totals.cardCount + deck.cardCount
 				content += `<tr><td><a target='_blank' href='https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}'>${deck.nation}</a></td><td><a target='_blank' href='https://www.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1'>${deck.bank}</a></td><td><a target='_blank' href='https://www.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1'>${deck.deckValue}</a></td><td><a target='_blank' href='https://www.nationstates.net/page=deck/container=${nation_formatted}/nation={container_url}'>${deck.junkValue}</a></td><td><a target='_blank' href='https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}'>${deck.cardCount}</a></td></tr>\n`;
 			} catch (err) {
 				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
