@@ -29,10 +29,11 @@
     let ownercount = "";
     let council = "General Assembly";
     let proposalid = "";
+    let cardcount = "";
 
-    onMount(() => ({puppets, main, giftee, top, days, password, endotartnation, nennation, finderlist, regionalwhitelist, jdjMode, finderMode, rarities, limit, ownercount, council, proposalid} = 
+    onMount(() => ({puppets, main, giftee, top, days, password, endotartnation, nennation, finderlist, regionalwhitelist, jdjMode, finderMode, rarities, limit, ownercount, council, proposalid, cardcount} = 
         loadLocalStorage(["stationPuppets", "stationMain", "stationGiftee", "stationROCTop", "stationROCDays", "stationPassword",
-            "stationEndotartNation", "stationNENNation", "stationFinderList", "stationRegionalWhitelist", "stationJDJDefault", "stationFinderDefault", "stationJDJ", "stationEndotartLimit", "stationOwnerCount", "stationCouncil", "stationProposalID"]))
+            "stationEndotartNation", "stationNENNation", "stationFinderList", "stationRegionalWhitelist", "stationJDJDefault", "stationFinderDefault", "stationJDJ", "stationEndotartLimit", "stationOwnerCount", "stationCouncil", "stationProposalID", "stationCardCount"]))
     );
 
 	async function setConfig() {
@@ -57,6 +58,7 @@
         localStorage.setItem('stationOwnerCount', String(ownercount));
         localStorage.setItem('stationCouncil', String(council));
         localStorage.setItem('stationProposalID', String(proposalid));
+        localStorage.setItem('stationCardCount', String(cardcount));
 	}
 </script>
 
@@ -116,6 +118,7 @@
 				<option value="Sell">Sell</option>
 			</select>
         </div>
+        <Input text="Card Count Threshold" bind:bindValue={cardcount} forValue="card" />
         <Input text="Owner Threshold" bind:bindValue={ownercount} forValue="owner" />
         <Input text="Gift To" bind:bindValue={giftee} forValue="giftee" />
         <Rarities bind:rarities={rarities} />

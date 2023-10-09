@@ -55,3 +55,51 @@ export interface IssuesList {
 export interface Issue {
     "@_id":  string;
 }
+
+/*
+    junkdajunk
+*/
+
+export interface Card {
+    CARDID:       string;
+    CATEGORY:     Category;
+    FLAG:         string;
+    GOVT:         string;
+    MARKET_VALUE: string;
+    NAME:         string;
+    OWNERS:       Owners;
+    REGION:       string;
+    SEASON:       string;
+    SLOGAN:       string;
+    TYPE:         string;
+    MARKETS:      Markets;
+}
+
+export enum Category {
+    Common = "common",
+    Rare = "rare",
+    UltraRare = "ultra-rare",
+    Uncommon = "uncommon",
+    Epic = "epic",
+    Legendary = "legendary"
+}
+
+export interface Owners {
+    OWNER: string[];
+}
+
+export interface Markets {
+    MARKET: Market[] | Market;
+}
+
+export interface Market {
+    NATION:    string;
+    PRICE:     string;
+    TIMESTAMP: string;
+    TYPE:      Type;
+}
+
+export enum Type {
+    Ask = "ask",
+    Bid = "bid",
+}
