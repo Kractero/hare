@@ -12,6 +12,8 @@
 	import Buttons from '$lib/component/Buttons.svelte';
 	const abortController = new AbortController();
 	import type { Card } from '$lib/types';
+	import Select from '$lib/component/Select.svelte';
+	import Textarea from '$lib/component/Textarea.svelte';
 	let progress: "";
 	let main = '';
 	let giftee = '';
@@ -68,8 +70,8 @@
 				await sleep(700);
 				progress += `<p class="font-semibold">Processing ${nation} ${i + 1}/${puppetsList.length} puppets</p>`;
 				const xmlDocument = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
-				const cards: Array<Card> = xmlDocument.CARDS.DECK.CARD;
-				if (cards.length > Number(cardcount)) {
+				const cards: Array<Card> = xmlDocument.CARDS.DECK.CARDS;
+				if (cards && cards.length > Number(cardcount)) {
 					for (let i = 0; i < cards.length; i++) {
 						const id = cards[i].CARDID;
 						const season = cards[i].SEASON;
@@ -179,7 +181,8 @@
 						}
 					}
 				} else {
-						progress += `<p class="text-blue-400">${nation} has less cards than ${cardcount}, skipping!`
+					if (cardcount) progress += `<p class="text-blue-400">${nation} has less cards than ${cardcount}, skipping!`
+					else progress += `<p class="text-blue-400">It is likely ${nation} has 0 cards, skipping!`
 				}
 			} catch (err) {
 				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
@@ -213,34 +216,17 @@
 		{#if jdjMode === "Gift"}
 			<Input text={`Gift To`} bind:bindValue={giftee} forValue="giftee" required={true} />
 		{/if}
-		<div class="flex gap-4 justify-between max-w-lg">
-			<label class="w-24" for="regions">Regional Whitelist</label>
-			<textarea
-				name="regions"
-				id="regions"
-				rows="10"
-				bind:value={regionalwhitelist}
-				class="text-right text-black p-2 max-w-xs rounded-md border border-black dark:border-none"
-			/>
-		</div>
+		<Textarea text="Regional Whitelist" bind:bindValue={regionalwhitelist} forValue="regions" />
 		<Input text={`Card Count Threshold`} bind:bindValue={cardcount} forValue="card" />
 		<Input text={`Owner Count Threshold`} bind:bindValue={ownercount} forValue="owner" />
 		<div class="flex gap-4 justify-between max-w-lg">
 			<p class="w-24">Rarity Threshold</p>
 			<Rarities bind:rarities={rarities} />
 		</div>
-		<div class="flex gap-4 justify-between max-w-lg">
-			<label class="w-24" for="mode">Mode</label>
-			<select
-				name="mode"
-				id="mode"
-				bind:value={jdjMode}
-				class="text-black p-1 w-16 rounded-md border border-black dark:border-none"
-			>
-				<option value="Gift" selected>Gift</option>
-				<option value="Sell">Sell</option>
-			</select>
-		</div>
+        <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
+            <label class="w-24" for="jdj">JDJ Default Behavior</label>
+			<Select bind:mode={jdjMode} options={['Gift', 'Sell']} />
+        </div>
 		<Buttons>
 			<button
 				type="button"

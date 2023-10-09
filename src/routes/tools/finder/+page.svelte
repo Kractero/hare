@@ -8,12 +8,15 @@
 	import Head from '$lib/component/Head.svelte';
 	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Input from '$lib/component/Input.svelte';
+	import Select from '$lib/component/Select.svelte';
+	import Textarea from '$lib/component/Textarea.svelte';
+	import type { Card } from '$lib/types';
 	const abortController = new AbortController();
 	let progress = "";
 	let main = '';
 	let puppets = '';
 	let finderlist = '';
-	let mode = 'Gift';
+	let finderMode = 'Gift';
 	let openNewLinkArr: Array<string> = [];
 	let counter = 0;
 	let junkHtml = '';
@@ -22,7 +25,7 @@
 	let stopped = false;
 	let password = "";
 	let giftee = "";
-	onMount(() => ({puppets, main, finderlist, mode, password, giftee} = loadLocalStorage(["stationPuppets", "stationMain", "stationFinderList", "stationFinderDefault", "stationPassword", "stationGiftee"])));
+	onMount(() => ({puppets, main, finderlist, finderMode, password, giftee} = loadLocalStorage(["stationPuppets", "stationMain", "stationFinderList", "stationFinderDefault", "stationPassword", "stationGiftee"])));
 	onDestroy(() => abortController.abort());
 
 	async function finder(main: string, puppets: string) {
@@ -52,55 +55,58 @@
 				);
 				const xml = await response.text();
 				const xmlDocument = parser.parse(xml);
-				const cards = xmlDocument.CARDS.DECK.CARD;
+				const cards: Array<Card> = xmlDocument.CARDS.DECK.CARD;
                 const matches = finderlist.split('\n')
-				for (let j = 0; j < cards.length; j++) {
-					const id = cards[j].CARDID;
-                    const season = cards[j].SEASON
-                    if (matches.includes(String(id))) {
-						progress += `<p class="text-green-400">Found S${season} ${id} on ${puppetsList[i]}</p>`;
-						if (mode === "Gift") {
-							let token = ""
-							const prepare = await fetch(
-								`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
-								{
-									headers: {
-										'User-Agent': main,
-										'X-Password': currentNationXPin ? currentNationXPin : password
+				if (cards) {
+					for (let j = 0; j < cards.length; j++) {
+						const id = cards[j].CARDID;
+						const season = cards[j].SEASON
+						if (matches.includes(String(id))) {
+							progress += `<p class="text-green-400">Found S${season} ${id} on ${puppetsList[i]}</p>`;
+							if (finderMode === "Gift") {
+								let token = ""
+								const prepare = await fetch(
+									`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
+									{
+										headers: {
+											'User-Agent': main,
+											'X-Password': currentNationXPin ? currentNationXPin : password
+										}
 									}
-								}
-							);
-							if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || "";
-							const text = await prepare.text()
-							const xml = parser.parse(text)
-							token = xml.NATION.SUCCESS
-							
-							const gift = await fetch(
-								`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
-								{
-									headers: {
-										'User-Agent': main,
-										'X-Pin': currentNationXPin
+								);
+								if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || "";
+								const text = await prepare.text()
+								const xml = parser.parse(text)
+								token = xml.NATION.SUCCESS
+								
+								const gift = await fetch(
+									`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
+									{
+										headers: {
+											'User-Agent': main,
+											'X-Pin': currentNationXPin
+										}
 									}
+								);
+								if (gift.status === 200) {
+									progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftee}`;
+								} else {
+									progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}`;
 								}
-							);
-							if (gift.status === 200) {
-								progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftee}`;
 							} else {
-								progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}`;
+								progress += `<p class="text-green-400">${nation} owns ${id}!`;
+								openNewLinkArr = [
+									...openNewLinkArr,
+									`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1`
+								];
+								junkHtml += `<tr><td><p>${i + 1} of ${
+									cards.length
+								}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
 							}
-							return;
-						} else {
-							progress += `<p class="text-green-400">${nation} owns ${id}!`;
-							openNewLinkArr = [
-								...openNewLinkArr,
-								`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1`
-							];
-							junkHtml += `<tr><td><p>${i + 1} of ${
-								cards.length
-							}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
 						}
-                    }
+					}
+				} else {
+					progress += `<p class="text-blue-400">It is likely ${nation} has 0 cards, skipping!`
 				}
 			} catch (err) {
 				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
@@ -125,32 +131,15 @@
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => finder(main, puppets)} class="flex flex-col gap-8">
-		<InputCredentials bind:main bind:puppets authenticated={mode === "Gift" ? true : false} />
-		{#if mode === "Gift"}
+		<InputCredentials bind:main bind:puppets authenticated={finderMode === "Gift" ? true : false} />
+		{#if finderMode === "Gift"}
 			<Input text={`Gift To`} bind:bindValue={giftee} forValue="giftee" required={true} />
 		{/if}
-		<div class="flex gap-4 justify-between max-w-lg">
-			<label class="w-24" for="regions">Card IDs to Find</label>
-			<textarea
-				name="regions"
-				id="regions"
-				rows="10"
-				bind:value={finderlist}
-				class="text-right text-black p-2 max-w-xs rounded-md border border-black dark:border-none"
-			/>
-		</div>
-		<div class="flex gap-4 justify-between max-w-lg">
-			<label class="w-24" for="mode">Mode</label>
-			<select
-				name="mode"
-				id="mode"
-				bind:value={mode}
-				class="text-black p-1 w-16 rounded-md border border-black dark:border-none"
-			>
-				<option value="Gift" selected>Gift</option>
-				<option value="View">View</option>
-			</select>
-		</div>
+		<Textarea text="Card IDs to Find" bind:bindValue={finderlist} forValue="find" required />
+        <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
+            <label class="w-24" for="jdj">Finder Default Behavior</label>
+			<Select bind:mode={finderMode} options={['Gift', 'Sell']} />
+        </div>
 		<div class="max-w-lg flex justify-center gap-2">
 			<button
 				type="submit"
