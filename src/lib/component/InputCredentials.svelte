@@ -1,29 +1,14 @@
 <script lang="ts">
+	import Input from "./Input.svelte";
+	import Textarea from "./Textarea.svelte";
 	export let main: string;
 	export let puppets: string;
 	export let authenticated: boolean;
 	export let password: string = '';
 </script>
 
-<div class="flex gap-4 justify-between max-w-lg">
-	<label class="w-24" for="main">User Agent</label>
-	<input
-		required
-		id="main"
-		bind:value={main}
-		class="text-right text-black p-2 max-w-xs rounded-md border border-black dark:border-none"
-	/>
-</div>
-<div class="flex gap-4 justify-between max-w-lg">
-	<label class="w-24" for="pup">Puppets</label>
-	<textarea
-		required
-		id="pup"
-		rows="10"
-		bind:value={puppets}
-		class="text-right text-black p-2 w-96 rounded-md border border-black dark:border-none"
-	/>
-</div>
+<Input text={`User Agent`} bind:bindValue={main} forValue="main" required />
+<Textarea text="Puppets" bind:bindValue={puppets} forValue="pup" required />
 {#if authenticated}
 	<div class="flex gap-4 justify-between max-w-lg">
 		<label class="w-24" for="main">Password</label>

@@ -8,6 +8,7 @@
 	import Input from '$lib/component/Input.svelte';
 	import { htmlContent } from '$lib/htmlContent';
 	import { handleDownload } from '$lib/download';
+	import Select from '$lib/component/Select.svelte';
 	const abortController = new AbortController();
 	let progress = "";
 	let main = "";
@@ -81,15 +82,7 @@
 		<Input text="User Agent" bind:bindValue={main} forValue="main" required={true} />
 		<div class="flex gap-4 justify-between max-w-lg">
 			<label class="w-24" for="mode">Council</label>
-			<select
-				name="mode"
-				id="mode"
-				bind:value={council}
-				class="text-black p-1 w-max rounded-md border border-black dark:border-none"
-			>
-				<option value="General Assembly" selected>General Assembly</option>
-				<option value="Security Council">Security Council</option>
-			</select>
+			<Select bind:mode={council} options={['General Assembly', 'Security Council']} />
 		</div>
 		<Input text="Proposal ID" bind:bindValue={proposalid} forValue="proposalID" required={false} />
 		<Buttons>

@@ -6,6 +6,7 @@
 	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
+	import Textarea from '$lib/component/Textarea.svelte';
 	let progress = "";
 	let puppets = '';
 	let content: Array<string>;
@@ -43,16 +44,7 @@
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => containerise(puppets)} class="flex flex-col gap-8">
-		<div class="flex gap-4 justify-between max-w-lg">
-			<label class="w-24" for="pup">Puppets</label>
-			<textarea
-				required
-				id="pup"
-				rows="10"
-				bind:value={puppets}
-				class="text-black p-1 w-96 rounded-md border border-black dark:border-none"
-			/>
-		</div>
+		<Textarea text="Puppets" bind:bindValue={puppets} forValue="pup" required />
 		<Buttons>
 			<button disabled={!downloadable} on:click={() => handleDownload('txt', content, '')}
 				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
