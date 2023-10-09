@@ -31,6 +31,7 @@
 			id="pass"
 			disabled={puppets.includes(',')}
 			bind:value={password}
+			required={true}
 			title={puppets.includes(',')
 				? 'A comma is detected in the puppet list, assuming that format.'
 				: ''}
