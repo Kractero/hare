@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { onDestroy, onMount } from 'svelte';
 	import { parseXML, sleep } from '$lib/globals';
 	import Head from '$lib/component/Head.svelte';
@@ -15,18 +14,9 @@
 	let endotartnation = '';
 	let stopped = false;
 	let stoppable = false;
-	let immune = $page.url.searchParams.get('immune')?.replaceAll(',', '\n') || "";
-	let limit: number | undefined = Number($page.url.searchParams.get('limit')) || undefined;
-	onMount(() => {
-		if (limit) {
-			({ main, endotartnation } = loadLocalStorage(["stationMain", "stationEndotartNation"]))
-		} else {
-			({ main, endotartnation, limit } = loadLocalStorage(["stationMain", "stationEndotartNation", "stationEndotartLimit"]))
-		}
-		if (!immune) {
-			({ immune } = loadLocalStorage(["stationImmune"]));
-		}
-	});
+	let immune = "";
+	let limit: number | undefined = undefined;
+	onMount(() => ({ main, endotartnation, limit } = loadLocalStorage(["stationMain", "stationEndotartNation", "stationEndotartLimit"])));
 	onDestroy(() => abortController.abort() );
 	async function findWA() {
 		progress = "";
