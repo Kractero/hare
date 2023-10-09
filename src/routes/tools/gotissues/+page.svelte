@@ -9,6 +9,7 @@
 	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import type { Issue } from '$lib/types';
+	import Select from '$lib/component/Select.svelte';
 	const abortController = new AbortController();
 	let progress = "";
 	let main = '';
@@ -20,8 +21,9 @@
 	let issuesContent = '';
 	let stoppable = false;
 	let stopped = false;
+	let issuesmode =  "";
 
-	onMount(() => ({puppets, main, password} = loadLocalStorage(["stationPuppets", "stationMain", "stationPassword"])));
+	onMount(() => ({puppets, main, password, issuesmode} = loadLocalStorage(["stationPuppets", "stationMain", "stationPassword", "stationIssuesMode"])));
 	onDestroy(() => abortController.abort());
 
 	async function gotIssues(main: string, puppets: string, password?: string) {
@@ -48,32 +50,44 @@
 			const nation_formatted = nation.toLowerCase().replaceAll(' ', '_');
 			try {
 				await sleep(700);
+				progress += `<p class="font-bold">Initiating gotIssues...mode set to ${issuesmode}</p>`;
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`;
 				const xmlObj = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`, main, password?.replaceAll(' ', '_'));
-				const issues: Issue = xmlObj.NATION.ISSUES.ISSUE || []
-				let issueIds: Array<string> = []
-				if (!Array.isArray(issues)) issueIds.push(issues['@_id'])
-				else issueIds = issues.map((issue) => issue['@_id'])
-				issueIds.forEach((issue) => {
-					openNewLinkArr = [
-						...openNewLinkArr,
-						`https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${main}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/`
-					];
-					issuesContent += `<tr><td><p>${
-						issuesCount + 1
-					}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${main}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/">Link to Issue</a></p></td></tr>\n`;
-					issuesCount++;
-				});
-				const packs = xmlObj.NATION.PACKS;
-				if (packs) {
-					for (let i = 0; i < packs; i++) {
-						interimPacks.push(
-							`https://www.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1`
-						);
-						packContent += `<tr><td><p>${
-							packsCount + 1
-						}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1">Link to Pack</a></p></td></tr>\n`;
-						packsCount++;
+				if (issuesmode === "Both" || issuesmode === "Issues") {
+					const issues: Issue = xmlObj.NATION.ISSUES.ISSUE || []
+					let issueIds: Array<string> = []
+					if (!Array.isArray(issues)) issueIds.push(issues['@_id'])
+					else issueIds = issues.map((issue) => issue['@_id'])
+					issueIds.forEach((issue) => {
+						openNewLinkArr = [
+							...openNewLinkArr,
+							`https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${main}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/`
+						];
+						issuesContent += `<tr><td><p>${
+							issuesCount + 1
+						}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${main}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/">Link to Issue</a></p></td></tr>\n`;
+						issuesCount++;
+					});
+				}
+				if (issuesmode === "Both" || issuesmode === "Packs") {
+					const packs = xmlObj.NATION.PACKS;
+					if (packs) {
+						for (let i = 0; i < packs; i++) {
+							if (issuesmode === "Packs") {
+								openNewLinkArr = [
+									...openNewLinkArr,
+									`https://www.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1`
+								];
+							} else {
+								interimPacks.push(
+									`https://www.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1`
+								);
+							}
+							packContent += `<tr><td><p>${
+								packsCount + 1
+							}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_Email=NSWA9002@gmail.com/Author_discord=9003/Author_main_nation=9003/autoclose=1">Link to Pack</a></p></td></tr>\n`;
+							packsCount++;
+						}
 					}
 				}
 			} catch (err) {
@@ -117,6 +131,10 @@
 		class="flex flex-col gap-8"
 	>
 		<InputCredentials bind:main bind:puppets bind:password authenticated={true} />
+        <div class="flex gap-4 justify-between max-w-lg">
+			<label class="w-24" for="mode">Council</label>
+            <Select bind:mode={issuesmode} options={["Both", "Issues", "Packs"]} />
+		</div>
 		<Buttons>
 			<button
 				type="button"

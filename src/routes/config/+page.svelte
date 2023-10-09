@@ -3,8 +3,9 @@
 	import Head from '$lib/component/Head.svelte';
 	import Rarities from '$lib/component/Rarities.svelte';
 	import { loadLocalStorage } from '$lib/loadLocalStorage';
-	import { text } from '@sveltejs/kit';
 	import Input from '$lib/component/Input.svelte';
+	import Textarea from '$lib/component/Textarea.svelte';
+	import Select from '$lib/component/Select.svelte';
 
 	let puppets = '';
 	let main = '';
@@ -30,10 +31,13 @@
     let council = "General Assembly";
     let proposalid = "";
     let cardcount = "";
+    let issuesmode = "";
+    let specific = "";
+    let immune = "";
 
-    onMount(() => ({puppets, main, giftee, top, days, password, endotartnation, nennation, finderlist, regionalwhitelist, jdjMode, finderMode, rarities, limit, ownercount, council, proposalid, cardcount} = 
+    onMount(() => ({puppets, main, giftee, top, days, password, endotartnation, nennation, finderlist, regionalwhitelist, jdjMode, finderMode, rarities, limit, ownercount, council, proposalid, cardcount, issuesmode, specific, immune} = 
         loadLocalStorage(["stationPuppets", "stationMain", "stationGiftee", "stationROCTop", "stationROCDays", "stationPassword",
-            "stationEndotartNation", "stationNENNation", "stationFinderList", "stationRegionalWhitelist", "stationJDJDefault", "stationFinderDefault", "stationJDJ", "stationEndotartLimit", "stationOwnerCount", "stationCouncil", "stationProposalID", "stationCardCount"]))
+            "stationEndotartNation", "stationNENNation", "stationFinderList", "stationRegionalWhitelist", "stationJDJDefault", "stationFinderDefault", "stationJDJ", "stationEndotartLimit", "stationOwnerCount", "stationCouncil", "stationProposalID", "stationCardCount", "stationIssuesMode", "stationSpecific", "stationImmune"]))
     );
 
 	async function setConfig() {
@@ -59,6 +63,9 @@
         localStorage.setItem('stationCouncil', String(council));
         localStorage.setItem('stationProposalID', String(proposalid));
         localStorage.setItem('stationCardCount', String(cardcount));
+        localStorage.setItem('stationIssuesMode', String(issuesmode));
+        localStorage.setItem('stationSpecific', String(specific));
+        localStorage.setItem('stationImmune', String(immune));
 	}
 </script>
 
@@ -72,15 +79,7 @@
         class="flex flex-col gap-8"
     >
         <Input text="User Agent" bind:bindValue={main} forValue="main" />
-        <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
-            <label class="w-24" for="pup">Puppets</label>
-            <textarea
-                id="pup"
-                rows="10"
-                bind:value={puppets}
-                class="text-right text-black p-1 w-72 rounded-md border border-black dark:border-none"
-            />
-        </div>
+        <Textarea text="Puppets" bind:bindValue={puppets} forValue="pup" required />
         <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
             <label class="w-24" for="pass">Password</label>
             <input
@@ -92,31 +91,21 @@
                 class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none disabled:opacity-25"
             />
         </div>
+        <div class="flex gap-4 justify-between max-w-lg">
+			<label class="w-24" for="mode">Issues Mode</label>
+            <Select bind:mode={issuesmode} options={["Both", "Issues", "Packs"]} />
+		</div>
         <Input text="Top {top}" bind:bindValue={top} forValue="top" />
         <Input text="Over {days} Days" bind:bindValue={days} forValue="days" />
+        <Input text={`Specific ROC`} bind:bindValue={specific} forValue="specific" />
         <Input text="Endotarting Default" bind:bindValue={endotartnation} forValue="Endotarting" />
         <Input text="Endorse Limit" bind:bindValue={limit} forValue="limit" />
+        <Textarea text="Immune Nations" bind:bindValue={immune} forValue="immune" />
         <Input text="Not Endorsing Default" bind:bindValue={nennation} forValue="nen" />
-        <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
-            <label class="w-24" for="Regional">Regional Whitelist</label>
-            <textarea
-                id="Regional"
-                rows="10"
-                bind:value={regionalwhitelist}
-                class="text-right text-black p-1 w-72 rounded-md border border-black dark:border-none"
-            />
-        </div>
+        <Textarea text="Regional Whitelist" bind:bindValue={regionalwhitelist} forValue="regions" />
         <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
             <label class="w-24" for="jdj">JDJ Default Behavior</label>
-			<select
-				name="jdj"
-				id="jdj"
-				bind:value={jdjMode}
-				class="text-black p-1 w-16 rounded-md border border-black dark:border-none"
-			>
-				<option value="Gift" selected>Gift</option>
-				<option value="Sell">Sell</option>
-			</select>
+			<Select bind:mode={jdjMode} options={['Gift', 'Sell']} />
         </div>
         <Input text="Card Count Threshold" bind:bindValue={cardcount} forValue="card" />
         <Input text="Owner Threshold" bind:bindValue={ownercount} forValue="owner" />
@@ -124,36 +113,12 @@
         <Rarities bind:rarities={rarities} />
         <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
             <label class="w-24" for="finder">Finder Default Behavior</label>
-			<select
-				name="finder"
-				id="finder"
-				bind:value={finderMode}
-				class="text-black p-1 w-16 rounded-md border border-black dark:border-none"
-			>
-				<option value="Gift" selected>Gift</option>
-				<option value="View">View</option>
-			</select>
+			<Select bind:mode={finderMode} options={['Gift', 'Sell']} />
         </div>
-        <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
-            <label class="w-24" for="Find">Find List</label>
-            <textarea
-                id="Find"
-                rows="10"
-                bind:value={finderlist}
-                class="text-right text-black p-1 w-72 rounded-md border border-black dark:border-none"
-            />
-        </div>
+        <Textarea text="Card IDs to Find" bind:bindValue={finderlist} forValue="find" />
 		<div class="flex gap-4 justify-between max-w-lg">
 			<label class="w-24" for="mode">Council</label>
-			<select
-				name="mode"
-				id="mode"
-				bind:value={council}
-				class="text-black p-1 w-max rounded-md border border-black dark:border-none"
-			>
-				<option value="General Assembly" selected>General Assembly</option>
-				<option value="Security Council">Security Council</option>
-			</select>
+            <Select bind:mode={council} options={['General Assembly', 'Security Council']} />
 		</div>
         <Input text="Proposal ID" bind:bindValue={proposalid} forValue="proposalID" required={false} />
         <div class="max-w-lg flex justify-center">
