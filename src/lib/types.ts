@@ -4,6 +4,7 @@ export interface Region { REGION: NSRegion }
 // ----------------------------------------------
 
 export interface NSNation {
+	NAME: string | number;
 	UNSTATUS: string;
 	ENDORSEMENTS: string;
 	REGION: string;

@@ -32,6 +32,9 @@ export function loadLocalStorage(keysToLoad: string[]) {
 			case 'stationCouncil':
 				loadedValues.council = localStorage.getItem(`${key}`) || "General Assembly";
 				break;
+			case 'stationEndotartSource':
+				loadedValues.endotartsource = localStorage.getItem(`${key}`) || "XML";
+				break;
 			default:
 				loadedValues[key.replace('station', '').toLowerCase()] = localStorage.getItem(key) || '';
 				break;

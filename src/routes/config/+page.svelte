@@ -34,10 +34,11 @@
     let issuesmode = "";
     let specific = "";
     let immune = "";
+    let endotartsource = "XML";
 
-    onMount(() => ({puppets, main, giftee, top, days, password, endotartnation, nennation, finderlist, regionalwhitelist, jdjMode, finderMode, rarities, limit, ownercount, council, proposalid, cardcount, issuesmode, specific, immune} = 
+    onMount(() => ({puppets, main, giftee, top, days, password, endotartnation, nennation, finderlist, regionalwhitelist, jdjMode, finderMode, rarities, limit, ownercount, council, proposalid, cardcount, issuesmode, specific, immune, endotartsource} = 
         loadLocalStorage(["stationPuppets", "stationMain", "stationGiftee", "stationROCTop", "stationROCDays", "stationPassword",
-            "stationEndotartNation", "stationNENNation", "stationFinderList", "stationRegionalWhitelist", "stationJDJDefault", "stationFinderDefault", "stationJDJ", "stationEndotartLimit", "stationOwnerCount", "stationCouncil", "stationProposalID", "stationCardCount", "stationIssuesMode", "stationSpecific", "stationImmune"]))
+            "stationEndotartNation", "stationNENNation", "stationFinderList", "stationRegionalWhitelist", "stationJDJDefault", "stationFinderDefault", "stationJDJ", "stationEndotartLimit", "stationOwnerCount", "stationCouncil", "stationProposalID", "stationCardCount", "stationIssuesMode", "stationSpecific", "stationImmune", "stationEndotartSource"]))
     );
 
 	async function setConfig() {
@@ -66,6 +67,7 @@
         localStorage.setItem('stationIssuesMode', String(issuesmode));
         localStorage.setItem('stationSpecific', String(specific));
         localStorage.setItem('stationImmune', String(immune));
+        localStorage.setItem('stationEndotartSource', String(endotartsource));
 	}
 </script>
 
@@ -101,6 +103,10 @@
         <Input text="Endotarting Default" bind:bindValue={endotartnation} forValue="Endotarting" />
         <Input text="Endorse Limit" bind:bindValue={limit} forValue="limit" />
         <Textarea text="Immune Nations" bind:bindValue={immune} forValue="immune" />
+        <div class="flex gap-4 justify-between max-w-lg">
+			<label class="w-24" for="mode">Council</label>
+            <Select bind:mode={endotartsource} options={["XML", "API"]} />
+		</div>
         <Input text="Not Endorsing Default" bind:bindValue={nennation} forValue="nen" />
         <Textarea text="Regional Whitelist" bind:bindValue={regionalwhitelist} forValue="regions" />
         <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
