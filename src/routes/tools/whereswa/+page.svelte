@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
-	import { parser } from '$lib/globals';
+	import { parseXML } from '$lib/globals';
 	import Head from '$lib/component/Head.svelte';
 	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Buttons from '$lib/component/Buttons.svelte';
@@ -13,13 +13,7 @@
 	async function findWA(main: string, puppets: string) {
 		progress = '';
 		const puppetsList = puppets.split('\n');
-		const response = await fetch(`https://www.nationstates.net/cgi-bin/api.cgi?wa=1&q=members`, {
-			headers: {
-				'User-Agent': main
-			}
-		});
-		const text = await response.text();
-		const xml = parser.parse(text);
+		const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?wa=1&q=members`, main);
 		const members = xml.WA.MEMBERS.split(',');
 		puppetsList.forEach(puppet => {
 			if (members.includes(puppet.toLowerCase().replace(' ', '_'))) {

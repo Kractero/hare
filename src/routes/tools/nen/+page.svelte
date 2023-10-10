@@ -6,6 +6,7 @@
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
+	import type { Nation } from '$lib/types';
 	let progress = "";
 	let main = '';
 	let nennation = '';
@@ -14,7 +15,7 @@
 
 	async function findWA() {
 		progress = '';
-        const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nennation}&q=endorsements+region+wa`, main);
+        const xml: Nation = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nennation}&q=endorsements+region+wa`, main);
         if (xml.NATION.UNSTATUS === "Non-member") {
             progress += `<p class="text-red-400">${nennation} is not in the WA.</p>`
 			return;

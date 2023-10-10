@@ -8,8 +8,6 @@
 	import type { NSRegion } from '$lib/types';
 
 	let main = '';
-	let stoppable = false;
-	let stopped = false;
 	let progress = '';
 	let workbook: any;
 	let downloadable = false;
@@ -28,17 +26,11 @@
 	async function glass() {
 		downloadable = false
 		progress += `<p>Gathering founderless regions.</p>`
-		const governorless = await parseXML(
-			'https://www.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=governorless',
-			main
-		);
+		const governorless = await parseXML('https://www.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=governorless', main);
 		const governorlessArr = governorless.WORLD.REGIONS.split(',');
 
 		progress += `<p>Gathering passwordless regions.</p>`
-		const passwordless = await parseXML(
-			'https://www.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=-password',
-			main
-		);
+		const passwordless = await parseXML('https://www.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=-password', main);
 		const passwordlessArr = passwordless.WORLD.REGIONS.split(',');
 
 		const currentDate = new Date();

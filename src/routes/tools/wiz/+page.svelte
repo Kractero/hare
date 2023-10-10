@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
-	import { parser, sleep } from '$lib/globals';
+	import { parseXML, sleep } from '$lib/globals';
 	import Head from '$lib/component/Head.svelte';
 	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Buttons from '$lib/component/Buttons.svelte';
@@ -29,17 +29,8 @@
 			let nation = puppetsList[i];
             
             try {
-                const response = await fetch(
-				`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=lastactivity`,
-                    {
-                        headers: {
-                            'User-Agent': main
-                        }
-                    }
-                )
-                const text = await response.text();
-                const xml = parser.parse(text);
-		        const lastActive = xml.NATION.LASTACTIVITY;
+                const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=lastactivity`, main);
+		        const lastActive: string = xml.NATION.LASTACTIVITY;
                 progress += `<p>${nation} with last seen ${lastActive}.</p>`;
             } catch (err) {
 				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
