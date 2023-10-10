@@ -7,6 +7,7 @@
 	import Input from '$lib/component/Input.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import type { Census, Nation } from '$lib/types';
+	import Textarea from '$lib/component/Textarea.svelte';
 	const abortController = new AbortController();
 	let progress = '';
 	let stoppable = false;
@@ -38,8 +39,9 @@
 			}
 			names = names.slice(0, top);
 		} else {
-			names = [specific]
+			names = specific.split('\n')
 		}
+		console.log(names)
 		const currentTimestamp = Math.floor(Date.now() / 1000);
 		const fromTimestamp = currentTimestamp - days * 24 * 60 * 60;
 		for (let j = 0; j < names.length; j++) {
@@ -65,16 +67,18 @@
 		const fallers = ratesOfChange.slice().sort((a, b) => a[1] - b[1]);
 		const risers = ratesOfChange.slice().sort((a, b) => b[1] - a[1]);
 		progress = ""
-		progress += `<p class="font-bold">${specific ? specific : `TOP ${names.length}`} over ${days} days</p>`;
+		progress += `<p class="font-bold">${specific ? "Specific nations" : `TOP ${names.length}`} over ${days} days</p>`;
 		for (let i = 0; i < ratesOfChange.length; i++) {
 			progress += `<p>${i + 1}/${ratesOfChange.length} ${ratesOfChange[i][0]} | Rate of Change: ${ratesOfChange[i][1]}</p>`;
 		}
-		if (!specific) {
-			progress += `<p class="font-bold">Fastest growing of the ${specific ? specific : `top ${names.length}`}</p>\n`;
+		progress += "\n"
+		if (names.length > 1) {
+			progress += `<p class="font-bold">Fastest growing of the ${specific ? "specified nations" : `top ${names.length}`}</p>`;
 			for (let i = 0; i < risers.length; i++) {
 				progress += `<p>${i + 1}/${risers.length} ${risers[i][0]} | Rate of Change: ${risers[i][1]}</p>`;
 			}
-			progress += `<p class="font-bold">Slowest growing of the ${specific ? specific : `top ${names.length}`}</p>\n`;
+			progress += "\n"
+			progress += `<p class="font-bold">Slowest growing of the ${specific ? "specified nations" : `top ${names.length}`}</p>`;
 			for (let i = 0; i < fallers.length; i++) {
 				progress += `<p>${i + 1}/${fallers.length} ${fallers[i][0]} | Rate of Change: ${fallers[i][1]}</p>`;
 			}
@@ -99,7 +103,7 @@
 		<Input text={`User Agent`} bind:bindValue={main} forValue="main" required={true} />
 		<Input text={`Top ${top}`} bind:bindValue={top} forValue="top" required={true} disabled={specific !== ""} />
 		<Input text={`Over ${days} days`} bind:bindValue={days} forValue="days" required={true} disabled={specific !== ""} />
-		<Input text={`Specific`} bind:bindValue={specific} forValue="specific" />
+		<Textarea text="Specific" bind:bindValue={specific} forValue="specific" required />
 		<Buttons>
 			<button
 				type="button"

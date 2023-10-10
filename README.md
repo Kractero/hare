@@ -16,8 +16,8 @@ All icons were taken from [Icons8](https://icons8.com/icons).
 
 ## NOTE
 
-### Preqrequisites
-A lot of these userscripts generate an html sheet that almost necessitate the use of an autocloser. There are a lot of varieties but I'd recommend:
+### Prerequisites
+A lot of the scripts generate an html sheet that almost necessitate the use of an autocloser userscript. There are a lot of varieties but I'd recommend:
 ```js
 // ==UserScript==
 // @name         autoclose=1
@@ -59,10 +59,32 @@ This requests conducted via this project are done entirely client-side. This mea
 
 Unfortunately this means that tools that require scraping NationStates sites are not accessible due to CORS. It's always CORS.
 
+
+### Attributions
+"Reverse-engineering" these scripts into JavaScript and plopping them inside a website is a lot easier than making them originally. 
+
+Credit for the original source implementations below:
+
+1. [9003](https://github.com/jmikk) for the python version of [gotIssues](https://github.com/jmikk/gotIssues), [junkdajunk](https://github.com/jmikk/Card-Proccessor), [Approval List](https://github.com/jmikk/Approval-List), [Where's My Wa](https://github.com/jmikk/WheresMyWA).
+
+2. [upc](https://github.com/nsupc) for the initial inspiration from the [Endotart and NEN cogs](https://github.com/nsupc/UPC-3PO/blob/main/cogs/nsinfo.py).
+
+3. [Spyglass](https://github.com/Derpseh/Spyglass) for the python version of Spyglass.
+
+4. [ValentineZ's Gold Retriever](https://forum.nationstates.net/viewtopic.php?f=42&t=476326) and [Racoda](https://github.com/dithpri)'s [gold retriever](https://github.com/dithpri/goldretriever-web)
+
+5. [Rootabeta](https://github.com/rootabeta) for [DeathWatch](https://github.com/rootabeta/DeathWatch), while I didn't utilize the source code to make Wiz, its existence gave me the idea to make my own version.
+
 <hr>
+
+### Stack
 
 ![Svelte](https://img.shields.io/badge/svelte-%23f1413d.svg?style=for-the-badge&logo=svelte&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
+
+<hr>
+
+If you read this far, you have been greeted by the engineering wunderkind of Veritas, the hackers of the Millenium Science School.
 
 ![Hare](https://static.miraheze.org/bluearchivewiki/4/47/Hare.png?20210217174626)
