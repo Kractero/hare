@@ -1,4 +1,4 @@
-import { posts } from '../../../lib/server/posts';
+import { posts } from '$lib/server/posts';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
