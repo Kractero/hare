@@ -31,6 +31,7 @@
 		stoppable = true;
 		stopped = false;
 		progress = "";
+		progress += `<p class="font-bold">Initiating gotIssues...mode set to ${issuesmode}</p>`;
 		openNewLinkArr = [];
 		issuesContent = "";
 		let puppetList = puppets.split('\n');
@@ -50,7 +51,6 @@
 			const nation_formatted = nation.toLowerCase().replaceAll(' ', '_');
 			try {
 				await sleep(700);
-				progress += `<p class="font-bold">Initiating gotIssues...mode set to ${issuesmode}</p>`;
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`;
 				const xmlObj = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`, main, password?.replaceAll(' ', '_'));
 				if (issuesmode === "Both" || issuesmode === "Issues") {
@@ -132,7 +132,7 @@
 	>
 		<InputCredentials bind:main bind:puppets bind:password authenticated={true} />
         <div class="flex gap-4 justify-between max-w-lg">
-			<label class="w-24" for="mode">Council</label>
+			<label class="w-24" for="mode">Mode</label>
             <Select bind:mode={issuesmode} options={["Both", "Issues", "Packs"]} />
 		</div>
 		<Buttons>
