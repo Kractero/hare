@@ -20,5 +20,9 @@ export default {
 				notosans: ['Noto Sans', 'sans-serif']
 			}
 		}
-	}
+	},
+	plugins: [
+		require('@tailwindcss/typography'),
+		'prettier-plugin-tailwindcss'
+	]
 };
