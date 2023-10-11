@@ -20,7 +20,7 @@
 				<p class="text-label text-sm">{author}</p>
 			</button>
 			<a href={url} rel="noopener noreferrer" target="_blank">
-				<img height="24" width="24" src=src={`${base}/innewtab.png`} alt="open in new tab" />
+				<img height="24" width="24" src={`${base}/innewtab.png`} alt="open in new tab" />
 			</a>
 		</div>
 		<div class="flex flex-wrap justify-center gap-2 my-2">
