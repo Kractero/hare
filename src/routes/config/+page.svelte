@@ -2,72 +2,97 @@
 	import { onMount } from 'svelte';
 	import Head from '$lib/component/Head.svelte';
 	import Rarities from '$lib/component/Rarities.svelte';
-	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Input from '$lib/component/Input.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
 	import Select from '$lib/component/Select.svelte';
+	import { loadStorage } from '$lib/loadStorage';
+	import { loadLocalStorage } from '$lib/loadLocalStorage';
 
-	let puppets = '';
-	let main = '';
-	let top = '100';
-	let days = '30';
-	let password = '';
-	let endotartnation = '';
-    let giftee = '';
-	let nennation = '';
-	let finderlist = '';
-	let regionalwhitelist = '';
-    let jdjMode = 'Gift'
-    let finderMode = 'Gift'
-	let rarities: { [key: string]: number } = {
-		common: 0.5,
-		uncommon: 1,
-		rare: 1,
-		'ultra-rare': 1,
-		epic: 1
-	};
-    let limit = 0;
-    let ownercount = "";
-    let council = "General Assembly";
-    let proposalid = "";
-    let cardcount = "";
-    let issuesmode = "";
-    let specific = "";
-    let immune = "";
-    let endotartsource = "XML";
+    const localStorageObject: {[key: string]: any } = {
+    // const localStorageObject: {[key: string]: string | {[key: string]: number}} = {
+        puppets: '',
+        main: '',
+        password: '',
+        issuesmode: '',
+        top: '100',
+        days: '30',
+        specific: '',
+        endotartnation: '',
+        limit: "0",
+        immune: '',
+        endotartsource: 'XML',
+        nennation: '',
+        finderlist: '',
+        regionalwhitelist: '',
+        jdjMode: 'Gift',
+        finderMode: 'Gift',
+        rarities: {
+            common: 0.5,
+            uncommon: 1,
+            rare: 1,
+            'ultra-rare': 1,
+            epic: 1,
+        },
+        giftee: '',
+        ownercount: '',
+        cardcount: '',
+        council: 'General Assembly',
+        proposalid: '',
+    };
 
-    onMount(() => ({puppets, main, giftee, top, days, password, endotartnation, nennation, finderlist, regionalwhitelist, jdjMode, finderMode, rarities, limit, ownercount, council, proposalid, cardcount, issuesmode, specific, immune, endotartsource} = 
-        loadLocalStorage(["stationPuppets", "stationMain", "stationGiftee", "stationROCTop", "stationROCDays", "stationPassword",
-            "stationEndotartNation", "stationNENNation", "stationFinderList", "stationRegionalWhitelist", "stationJDJDefault", "stationFinderDefault", "stationJDJ", "stationEndotartLimit", "stationOwnerCount", "stationCouncil", "stationProposalID", "stationCardCount", "stationIssuesMode", "stationSpecific", "stationImmune", "stationEndotartSource"]))
-    );
+	// let puppets = '';
+	// let main = '';
+    // let password = '';
+
+    // let issuesmode = "";
+
+	// let top = '100';
+	// let days = '30';
+    // let specific = "";
+
+	// let endotartnation = '';
+    // let limit = 0;
+    // let immune = "";
+    // let endotartsource = "XML";
+	// let nennation = '';
+
+	// let finderlist = '';
+	// let regionalwhitelist = '';
+    // let jdjMode = 'Gift'
+    // let finderMode = 'Gift'
+	// let rarities: { [key: string]: number } = {
+	// 	common: 0.5,
+	// 	uncommon: 1,
+	// 	rare: 1,
+	// 	'ultra-rare': 1,
+	// 	epic: 1
+	// };
+    // let giftee = '';
+    // let ownercount = "";
+    // let cardcount = "";
+
+    // let council = "General Assembly";
+    // let proposalid = "";
+
+    onMount(() => {
+        Object.keys(localStorageObject).forEach((key) => {
+            console.log(key)
+            console.log(loadStorage(key))
+            localStorageObject[key] = loadStorage(key) || localStorageObject[key];
+        });
+        console.log(localStorageObject)
+    });
 
 	async function setConfig() {
-		localStorage.setItem('stationMain', main);
-		localStorage.setItem('stationPuppets', puppets);
-		localStorage.setItem('stationPassword', password);
-		localStorage.setItem('stationROCTop', String(top));
-		localStorage.setItem('stationROCDays', String(days));
-		localStorage.setItem('stationEndotartNation', endotartnation);
-		localStorage.setItem('stationNENNation', nennation);
-		localStorage.setItem('stationFinderList', finderlist);
-        localStorage.setItem('stationGiftee', giftee);
-		localStorage.setItem('stationRegionalWhitelist', regionalwhitelist);
-        localStorage.setItem('stationJDJDefault', jdjMode);
-		localStorage.setItem('stationFinderDefault', finderMode);
-        localStorage.setItem('stationJDJCommon', String(rarities.common));
-		localStorage.setItem('stationJDJUncommon', String(rarities.uncommon));
-		localStorage.setItem('stationJDJRare', String(rarities.rare));
-        localStorage.setItem('stationJDJUltraRare', String(rarities['ultra-rare']));
-		localStorage.setItem('stationJDJEpic', String(rarities.epic));
-        localStorage.setItem('stationEndotartLimit', String(limit));
-        localStorage.setItem('stationOwnerCount', String(ownercount));
-        localStorage.setItem('stationCouncil', String(council));
-        localStorage.setItem('stationProposalID', String(proposalid));
-        localStorage.setItem('stationCardCount', String(cardcount));
-        localStorage.setItem('stationIssuesMode', String(issuesmode));
-        localStorage.setItem('stationSpecific', String(specific));
-        localStorage.setItem('stationImmune', String(immune));
-        localStorage.setItem('stationEndotartSource', String(endotartsource));
+        for (const key in localStorageObject) {
+            if (key === "rarities") {
+                for (const key in localStorageObject.rarities) {
+                    localStorage.setItem(key, localStorageObject.rarities[key]);
+                }
+            } else {
+                localStorage.setItem(key, localStorageObject[key]);
+            }
+        }
 	}
 </script>
 
@@ -80,53 +105,62 @@
         on:submit|preventDefault={() => setConfig()}
         class="flex flex-col gap-8"
     >
-        <Input text="User Agent" bind:bindValue={main} forValue="main" />
-        <Textarea text="Puppets" bind:bindValue={puppets} forValue="pup" />
+        <h2 class="text-2xl text-center font-bold tracking-tight">General Config</h2>
+        <Input text="User Agent" bind:bindValue={localStorageObject.main} forValue="main" />
+        <Textarea text="General Puppets" bind:bindValue={localStorageObject.puppets} forValue="pup" />
         <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
             <label class="w-24" for="pass">Password</label>
             <input
                 id="pass"
-                bind:value={password}
-                title={puppets.includes(',')
+                bind:value={localStorageObject.password}
+                title={localStorageObject.puppets.includes(',')
                     ? 'A comma is detected in the puppet list, assuming that format.'
                     : ''}
                 class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none disabled:opacity-25"
             />
         </div>
+        <h2 class="text-2xl text-center font-bold tracking-tight">gotIssues</h2>
         <div class="flex gap-4 justify-between max-w-lg">
 			<label class="w-24" for="mode">Issues Mode</label>
-            <Select bind:mode={issuesmode} options={["Both", "Issues", "Packs"]} />
+            <Select bind:mode={localStorageObject.issuesmode} options={["Both", "Issues", "Packs"]} />
 		</div>
-        <Input text="Top {top}" bind:bindValue={top} forValue="top" />
-        <Input text="Over {days} Days" bind:bindValue={days} forValue="days" />
-        <Input text={`Specific ROC`} bind:bindValue={specific} forValue="specific" />
-        <Input text="Endotarting Default" bind:bindValue={endotartnation} forValue="Endotarting" />
-        <Input text="Endorse Limit" bind:bindValue={limit} forValue="limit" />
-        <Textarea text="Immune Nations" bind:bindValue={immune} forValue="immune" />
+        <h2 class="text-2xl text-center font-bold tracking-tight">Rate of Change</h2>
+        <Input text="Top {localStorageObject.top}" bind:bindValue={localStorageObject.top} forValue="top" />
+        <Input text="Over {localStorageObject.days} Days" bind:bindValue={localStorageObject.days} forValue="days" />
+        <Input text={`Specific ROC`} bind:bindValue={localStorageObject.specific} forValue="specific" />
+        <h2 class="text-2xl text-center font-bold tracking-tight">Endotarting</h2>
+        <Input text="Endotarting Default" bind:bindValue={localStorageObject.endotartnation} forValue="Endotarting" />
+        <Input text="Endorse Limit" bind:bindValue={localStorageObject.limit} forValue="limit" />
+        <Textarea text="Immune Nations" bind:bindValue={localStorageObject.immune} forValue="immune" />
         <div class="flex gap-4 justify-between max-w-lg">
 			<label class="w-24" for="mode">Council</label>
-            <Select bind:mode={endotartsource} options={["XML", "API"]} />
+            <Select bind:mode={localStorageObject.endotartsource} options={["XML", "API"]} />
 		</div>
-        <Input text="Not Endorsing Default" bind:bindValue={nennation} forValue="nen" />
-        <Textarea text="Regional Whitelist" bind:bindValue={regionalwhitelist} forValue="regions" />
+        <h2 class="text-2xl text-center font-bold tracking-tight">Not Endorsing</h2>
+        <Input text="Not Endorsing Default" bind:bindValue={localStorageObject.nennation} forValue="nen" />
+        <h2 class="text-2xl text-center font-bold tracking-tight">JunkDaJunk Finder Shared</h2>
+        <h2 class="text-2xl text-center font-bold tracking-tight">JunkDaJunk</h2>
+        <Textarea text="Regional Whitelist" bind:bindValue={localStorageObject.regionalwhitelist} forValue="regions" />
         <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
             <label class="w-24" for="jdj">JDJ Default Behavior</label>
-			<Select bind:mode={jdjMode} options={['Gift', 'Sell']} />
+			<Select bind:mode={localStorageObject.jdjMode} options={['Gift', 'Sell']} />
         </div>
-        <Input text="Card Count Threshold" bind:bindValue={cardcount} forValue="card" />
-        <Input text="Owner Threshold" bind:bindValue={ownercount} forValue="owner" />
-        <Input text="Gift To" bind:bindValue={giftee} forValue="giftee" />
-        <Rarities bind:rarities={rarities} />
+        <Input text="Card Count Threshold" bind:bindValue={localStorageObject.cardcount} forValue="card" />
+        <Input text="Owner Threshold" bind:bindValue={localStorageObject.ownercount} forValue="owner" />
+        <Input text="Gift To" bind:bindValue={localStorageObject.giftee} forValue="giftee" />
+        <Rarities bind:rarities={localStorageObject.rarities} />
+        <h2 class="text-2xl text-center font-bold tracking-tight">Finder</h2>
         <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
             <label class="w-24" for="finder">Finder Default Behavior</label>
-			<Select bind:mode={finderMode} options={['Gift', 'Sell']} />
+			<Select bind:mode={localStorageObject.finderMode} options={['Gift', 'Sell']} />
         </div>
-        <Textarea text="Card IDs to Find" bind:bindValue={finderlist} forValue="find" />
+        <Textarea text="Card IDs to Find" bind:bindValue={localStorageObject.finderlist} forValue="find" />
+        <h2 class="text-2xl text-center font-bold tracking-tight">Approval</h2>
 		<div class="flex gap-4 justify-between max-w-lg">
 			<label class="w-24" for="mode">Council</label>
-            <Select bind:mode={council} options={['General Assembly', 'Security Council']} />
+            <Select bind:mode={localStorageObject.council} options={['General Assembly', 'Security Council']} />
 		</div>
-        <Input text="Proposal ID" bind:bindValue={proposalid} forValue="proposalID" required={false} />
+        <Input text="Proposal ID" bind:bindValue={localStorageObject.proposalid} forValue="proposalID" required={false} />
         <div class="max-w-lg flex justify-center">
             <button
                 type="submit"
