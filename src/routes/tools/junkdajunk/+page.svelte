@@ -7,45 +7,53 @@
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Head from '$lib/component/Head.svelte';
 	import Rarities from '$lib/component/Rarities.svelte';
-	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Input from '$lib/component/Input.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	const abortController = new AbortController();
 	import type { Card } from '$lib/types';
 	import Select from '$lib/component/Select.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
+	import type { PageData } from './$types';
+	import { loadStorage } from '$lib/loadStorage';
+	import { pushHistory } from '$lib/helpers/utils';
+	export let data: PageData;
 	let progress: "";
-	let main = '';
-	let giftee = '';
-	let puppets = '';
-	let regionalwhitelist = '';
-	let jdjMode = 'Gift';
-	let password = '';
-	let ownercount = '';
 	let openNewLinkArr: Array<string> = [];
 	let counter = 0;
 	let junkHtml = '';
 	let stoppable = false;
 	let stopped = false;
 	let downloadable = false;
+	let main = '';
+	let giftee = '';
+	let puppets = '';
+	let regionalwhitelist = '';
+	let mode = 'Gift';
+	let password = '';
+	let owners = '';
 	let cardcount = '';
-	let rarities: { [key: string]: number } = {
-		common: 0.5,
-		uncommon: 1,
-		rare: 1,
-		'ultra-rare': 1,
-		epic: 1
-	};
-	onMount(() => (
-		{puppets, main, password, giftee, regionalwhitelist, jdjMode, rarities, ownercount, cardcount} = 
-			loadLocalStorage(
-				["stationPuppets", "stationMain", "stationPassword",  "stationGiftee", 
-					"stationRegionalWhitelist", "stationJDJDefault", "stationJDJ", "stationOwnerCount", "stationCardCount"
-				]))
-	)
+	let rarities: {[key: string]: number};
+	onMount(() => {
+		main = data.parameters.main || loadStorage("useragent") as string || "";
+		puppets = loadStorage("gotissuesPuppets") as string || "";
+		password = loadStorage("gotissuesPuppets") as string || "";
+		mode = data.parameters.mode || loadStorage("junkdajunkMode") as string || "Gift";
+		regionalwhitelist = data.parameters.regions || loadStorage("junkdajunkRegionalWhitelist") as string || "";
+		giftee = data.parameters.giftee || loadStorage("finderGiftee") as string || "";
+		rarities = loadStorage("junkdajunkRarities") as {} || {
+			common: 0.5,
+			uncommon: 1,
+			rare: 1,
+			'ultra-rare': 1,
+			epic: 1
+		}
+		owners = data.parameters.owners || loadStorage("finderOwnerCount") as string || "";
+		cardcount = data.parameters.cardcount || loadStorage("finderCardCount") as string || "";
+	});
 	onDestroy(() => abortController.abort());
 
 	async function junkDaJunk(main: string, puppets: string) {
+		pushHistory(`?main=${main}&mode=${mode}${owners ? `owners=${owners}` : ""}${cardcount ? `cardcount=${cardcount}` : ""}${regionalwhitelist ? `regions=${regionalwhitelist}` : ""}`)
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
@@ -109,11 +117,10 @@
 						let junk = true;
 						let reason = ""
 
-						if (ownercount && Number(ownercount) < owners.size) {
+						if (owners && Number(owners) < owners.size) {
 							junk = false;
-							reason = `, has less owners than ${ownercount}`
+							reason = `, has less owners than ${owners}`
 						}
-
 						if (rarities.hasOwnProperty(category) && highestBid > rarities[category]) {
 							junk = false;
 							reason = `, has high bid.`
@@ -122,7 +129,6 @@
 							junk = false;
 							reason = `, MV over 10.`
 						};
-
 						if (region && whiteList.includes(region)) {
 							junk = false;
 							reason = `, is in whitelisted ${region}.`
@@ -140,7 +146,7 @@
 								cards.length
 							}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
 						} else {
-							if (jdjMode === "Gift") {
+							if (mode === "Gift") {
 								let token = ""
 								const prepare = await fetch(
 									`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
@@ -181,7 +187,7 @@
 						}
 					}
 				} else {
-					if (cardcount) progress += `<p class="text-blue-400">${nation} has less cards than ${cardcount}, skipping!`
+					if (cards) progress += `<p class="text-blue-400">${nation} has less cards than ${cards}, skipping!`
 					else progress += `<p class="text-blue-400">It is likely ${nation} has 0 cards, skipping!`
 				}
 			} catch (err) {
@@ -204,7 +210,7 @@
 <p class="mb-4">
 	An even faster way to junk and gift/sell cards with <span class="line-through">python</span> JavaScript.
 </p>
-<p class="text-xs mb-16">
+<p class="text-xs mb-16 max-w-sm">
 	The regional whitelist indicates regions to skip when deciding to junk cards. The card count threshold only runs Junking
 	analyzing on specified nations that have over a certain amount of cards. The owner count threshold will indicate cards to skip
 	that have less than the specified amount. The rarity threshold dictates when to skip based on the card's rarity and market value.
@@ -212,20 +218,20 @@
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => junkDaJunk(main, puppets)} class="flex flex-col gap-8">
-		<InputCredentials bind:main bind:puppets authenticated={jdjMode === "Gift" ? true : false} />
-		{#if jdjMode === "Gift"}
+		<InputCredentials bind:main bind:puppets authenticated={mode === "Gift" ? true : false} />
+		{#if mode === "Gift"}
 			<Input text={`Gift To`} bind:bindValue={giftee} forValue="giftee" required={true} />
 		{/if}
 		<Textarea text="Regional Whitelist" bind:bindValue={regionalwhitelist} forValue="regions" />
 		<Input text={`Card Count Threshold`} bind:bindValue={cardcount} forValue="card" />
-		<Input text={`Owner Count Threshold`} bind:bindValue={ownercount} forValue="owner" />
+		<Input text={`Owner Count Threshold`} bind:bindValue={owners} forValue="owner" />
 		<div class="flex gap-4 justify-between max-w-lg">
 			<p class="w-24">Rarity Threshold</p>
 			<Rarities bind:rarities={rarities} />
 		</div>
         <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
             <label class="w-24" for="jdj">JDJ Default Behavior</label>
-			<Select bind:mode={jdjMode} options={['Gift', 'Sell']} />
+			<Select bind:mode={mode} options={['Gift', 'Sell']} />
         </div>
 		<Buttons>
 			<button

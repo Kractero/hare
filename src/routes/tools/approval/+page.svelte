@@ -2,7 +2,6 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { parser, sleep } from '$lib/globals';
 	import Head from '$lib/component/Head.svelte';
-	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
@@ -10,15 +9,25 @@
 	import { handleDownload } from '$lib/download';
 	import Select from '$lib/component/Select.svelte';
 	const abortController = new AbortController();
+	import type { PageData } from './$types';
+	import { loadStorage } from '$lib/loadStorage';
+	import { pushHistory } from '$lib/helpers/utils';
+	export let data: PageData;
 	let progress = "";
-	let main = "";
     let content = "";
 	let downloadable = false;
-    let council = "General Assembly";
-	let proposalid = "";
-	onMount(() => ({main, council, proposalid} = loadLocalStorage(["stationMain", "stationCouncil", "stationProposalID"])));
+
+	let main: string;
+    let council: string;
+	let proposalid: string;
+	onMount(() => {
+		main = data.parameters.main || loadStorage("useragent") as string || "";
+		council = data.parameters.council || loadStorage("approvalCouncil") as string || "General Assembly";
+		proposalid = data.parameters.proposal || loadStorage("approvalProposal") as string || "";
+	});
 	onDestroy(() => abortController.abort() );
 	async function approvals() {
+		pushHistory(`?main=${main}&council=${council}&proposal=${proposalid}`)
         downloadable = false;
         let councilID = 1;
         if (council === "Security Council") {
@@ -84,7 +93,7 @@
 			<label class="w-24" for="mode">Council</label>
 			<Select bind:mode={council} options={['General Assembly', 'Security Council']} />
 		</div>
-		<Input text="Proposal ID" bind:bindValue={proposalid} forValue="proposalID" required={false} />
+		<Input text="Proposal ID" bind:bindValue={proposalid} forValue="proposalID" required={true} />
 		<Buttons>
 			<button disabled={!downloadable} type="button" on:click={() => handleDownload('html', htmlContent(content), 'Approvals')}
 				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">

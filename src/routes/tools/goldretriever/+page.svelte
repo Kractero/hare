@@ -3,29 +3,40 @@
 	import { htmlContent } from '$lib/htmlContent';
 	import { onDestroy, onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
-	import { parser, sleep } from '$lib/globals';
+	import { parseXML, sleep } from '$lib/globals';
 	import { sort } from '$lib/sortFunctionString';
 	import { style } from '$lib/sortFunctionString';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
-	import { loadLocalStorage } from '$lib/loadLocalStorage';
-	import type { Card } from '$lib/types';
+	import type { PageData } from './$types';
+	import { loadStorage } from '$lib/loadStorage';
+	import { pushHistory } from '$lib/helpers/utils';
+	export let data: PageData;
+	import type { Card, Issue } from '$lib/types';
+	import Select from '$lib/component/Select.svelte';
 	const abortController = new AbortController();
 	let progress = "";
-	let main = '';
-	let puppets = '';
-	let password = '';
 	let downloadable = false;
 	let content = `<tr><th>Nation</th><th class='sort' data-order='none'>Bank</th><th class='sort' data-order='none'>Deck Value</th><th class='sort' data-order='none'>Junk Value</th><th class='sort' data-order='none'>Card Count</th></tr>\n`;
 	let stoppable = false;
 	let stopped = false;
-
-	onMount(() => ({puppets, main} = loadLocalStorage(["stationPuppets", "stationMain"])));
+	let main = '';
+	let puppets = '';
+	let password = '';
+	let mode: string;
+	
+	onMount(() => {
+		main = data.parameters.main || loadStorage("useragent") as string || "";
+		puppets = loadStorage("puppets") as string || "";
+		password = loadStorage("password") as string || "";
+		mode = data.parameters.mode || loadStorage("goldretrieverMode") as string || "Include";
+	});
 
 	onDestroy(() => abortController.abort());
 
-	async function goldRetriever(main: string, puppets: string, password?: string) {
+	async function goldRetriever() {
+		pushHistory(`?main=${main}&mode=${mode}`)
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
@@ -34,11 +45,13 @@
 			bank: 0,
 			deckValue: 0,
 			junkValue: 0,
-			cardCount: 0
+			cardCount: 0,
+			issues: 0,
+			packs: 0
 		}
 		for (let i = 0; i < puppetList.length; i++) {
 			let nation = puppetList[i];
-			if (!password) {
+			if (mode === "Include" && !password) {
 				nation = puppetList[i].split(',')[0];
 				password = puppetList[i].split(',')[1];
 			}
@@ -49,31 +62,20 @@
 			try {
 				await sleep(700);
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`;
-				const response = await fetch(
-					'https://www.nationstates.net/cgi-bin/api.cgi/?nationname=' +
-						nation +
-						'&q=cards+deck+info',
-					{
-						method: 'GET',
-						headers: {
-							'User-Agent': main
-							// "X-Password": password ? password.replace(" ", "_") : "",
-						}
-					}
-				);
-				const xml = await response.text();
-				const xmlObj = parser.parse(xml);
+				const deckInfo = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck+info`, main)
 				const deck = {
 					nation: nation,
 					bank: 0,
 					deckValue: 0,
 					junkValue: 0,
-					cardCount: 0
+					cardCount: 0,
+					issues: 0,
+					packs: 0
 				};
 
 				const categoryCounts: { [key: string]: number } = {};
-				if (xmlObj.CARDS.DECK.CARD) {
-					const deckObj: Array<Card> = xmlObj.CARDS.DECK.CARD;
+				if (deckInfo.CARDS.DECK.CARD) {
+					const deckObj: Array<Card> = deckInfo.CARDS.DECK.CARD;
 					for (let i = 0; i < deckObj.length; i++) {
 						const category = deckObj[i].CATEGORY;
 						if (categoryCounts[category]) {
@@ -89,20 +91,38 @@
 						(categoryCounts.uncommon || 0) * 0.05 +
 						(categoryCounts['ultra-rare'] || 0) * 0.2).toFixed(2));
 
-					deck.bank = xmlObj.CARDS.INFO.BANK;
-					deck.deckValue = xmlObj.CARDS.INFO.DECK_VALUE;
-					deck.cardCount = xmlObj.CARDS.INFO.NUM_CARDS;
+					deck.bank = deckInfo.CARDS.INFO.BANK;
+					deck.deckValue = deckInfo.CARDS.INFO.DECK_VALUE;
+					deck.cardCount = deckInfo.CARDS.INFO.NUM_CARDS;
 				}
+				console.log(mode)
+				if (mode === "Include") {
+					await sleep(700);
+					const issuesAndPacks = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`, main, password.replaceAll(' ', '_'));
+					const packs = issuesAndPacks.NATION.PACKS;
+					const issues: Issue = issuesAndPacks.NATION.ISSUES.ISSUE || []
+					if (issues && !Array.isArray(issues)) {
+						deck.issues = 1;
+					} else {
+						deck.issues = issues.length
+					}
+					deck.packs = packs;
+				}
+
+				console.log(deck)
+
 				totals.bank = totals.bank + deck.bank
 				totals.deckValue = totals.deckValue + deck.deckValue
 				totals.junkValue = totals.junkValue + deck.junkValue
 				totals.cardCount = totals.cardCount + deck.cardCount
+				totals.issues = totals.issues + deck.issues;
+				totals.packs = totals.packs + deck.packs;
 				content += `<tr><td><a target='_blank' href='https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}'>${deck.nation}</a></td><td><a target='_blank' href='https://www.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1'>${deck.bank}</a></td><td><a target='_blank' href='https://www.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1'>${deck.deckValue}</a></td><td><a target='_blank' href='https://www.nationstates.net/page=deck/container=${nation_formatted}/nation={container_url}'>${deck.junkValue}</a></td><td><a target='_blank' href='https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}'>${deck.cardCount}</a></td></tr>\n`;
 			} catch (err) {
 				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
 			}
 		}
-		progress += `<p>Finished processing! You have a cumulative ${totals.bank.toFixed(2)} bank, ${totals.deckValue.toFixed(2)} deckValue, ${totals.junkValue.toFixed(2)} junk value, and ${totals.cardCount} cards.</p>`;
+		progress += `<p>Finished processing! You have a cumulative ${totals.bank.toFixed(2)} bank, ${totals.deckValue.toFixed(2)} deckValue, ${totals.junkValue.toFixed(2)} junk value, and ${totals.cardCount} cards. ${mode === "Include" ? `${totals.issues} issues await you, and you have ${totals.packs} packs to open.` : ""}</p>`;
 		downloadable = true;
 		stoppable = false;
 	}
@@ -124,10 +144,14 @@
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form
-		on:submit|preventDefault={() => goldRetriever(main, puppets, password)}
+		on:submit|preventDefault={() => goldRetriever()}
 		class="flex flex-col gap-8"
 	>
-		<InputCredentials bind:main bind:puppets bind:password authenticated={false} />
+		<InputCredentials bind:main bind:puppets bind:password authenticated={mode === "Include" ? true : false}/>
+		<div class="flex gap-4 justify-between max-w-lg">
+            <label class="w-24" for="jdj">Issues and Packs?</label>
+			<Select bind:mode={mode} options={['Include', 'Skip']} />
+        </div>
 		<Buttons>
 			<button
 				type="button"

@@ -6,15 +6,19 @@
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Head from '$lib/component/Head.svelte';
-	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Buttons from '$lib/component/Buttons.svelte';
+	import type { PageData } from './$types';
+	import { loadStorage } from '$lib/loadStorage';
+	import { pushHistory } from '$lib/helpers/utils';
+	export let data: PageData;
 	let progress = '';
 	let puppets = '';
 	let main = '';
 	let content: string;
 	let downloadable = false;
-	onMount(() => ({puppets, main} = loadLocalStorage(["stationPuppets", "stationMain"])));
+	onMount(() => { main = data.parameters.main || loadStorage("useragent") as string || ""; });
 	async function login(puppets: string) {
+		pushHistory(`?main=${main}`)
 		downloadable = false;
 		content = (await nsIterator(puppets, 'Login Sheet', main)) as string;
 		progress = `<p>Finished processing!</p>`;

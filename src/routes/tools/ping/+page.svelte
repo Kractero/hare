@@ -4,20 +4,28 @@
 	import { sleep } from '$lib/globals';
 	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
-	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Terminal from '$lib/component/Terminal.svelte';
+	import type { PageData } from './$types';
+	import { loadStorage } from '$lib/loadStorage';
+	import { pushHistory } from '$lib/helpers/utils';
+	export let data: PageData;
 	const abortController = new AbortController();
-	let puppets = '';
-	let main = '';
-	let password = '';
 	let progress = "";
 	let stoppable = false;
 	let stopped = false;
+	let puppets = '';
+	let main = '';
+	let password = '';
 
-	onMount(() => ({puppets, main, password} = loadLocalStorage(["stationPuppets", "stationMain", "stationPassword"])));
+	onMount(() => {
+		main = data.parameters.main || loadStorage("useragent") as string || "";
+		puppets = loadStorage("puppets") as string || "";
+		password = loadStorage("password") as string || "";
+	});
 	onDestroy(() => abortController.abort());
 
 	async function ping(main: string, puppets: string, password: string) {
+		pushHistory(`?main=${main}`)
 		stoppable = true;
 		stopped = false;
 		progress = '';

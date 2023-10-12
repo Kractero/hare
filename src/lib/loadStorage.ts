@@ -1,6 +1,6 @@
 export function loadStorage(key: string) {
     switch (key) {
-        case 'stationJDJ':
+        case 'junkdajunkRarities':
             return {
                 common: Number(localStorage.getItem(`${key}Common`)) || 0.5,
                 uncommon: Number(localStorage.getItem(`${key}Uncommon`)) || 1,
