@@ -1,9 +1,7 @@
-import adapter from '@sveltejs/adapter-static';
+import adapter from '@sveltejs/adapter-auto';
 import { mdsvex } from 'mdsvex';
 import { vitePreprocess } from '@sveltejs/kit/vite';
 import mdsvexConfig from './mdsvex.config.js'
-
-const dev = process.argv.includes('dev');
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -21,16 +19,6 @@ const config = {
 		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
 
 		adapter: adapter(),
-		paths: {
-			base: dev ? '' : '/hare',
-		},
-		prerender: {
-			handleHttpError: ({ path, referrer, message }) => {
-				if (path === '/not-found') {
-					return;
-				}
-			}
-		}
 	}
 };
 
