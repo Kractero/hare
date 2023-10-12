@@ -3,11 +3,10 @@
 	import Input from '$lib/component/Input.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import { parseXML, parser } from '$lib/globals';
+	import { parseXML, parser } from '$lib/helpers/utils';
 	import * as ExcelJS from 'exceljs';
 	import type { NSRegion } from '$lib/types';
 	import type { PageData } from './$types';
-	import { loadStorage } from '$lib/loadStorage';
 	import { pushHistory } from '$lib/helpers/utils';
 	import { onMount } from 'svelte';
 	export let data: PageData;
@@ -15,7 +14,7 @@
 	let progress = '';
 	let workbook: any;
 	let downloadable = false;
-	onMount(() => { main = data.parameters.main || loadStorage("useragent") as string || ""; });
+	onMount(() => { main = data.parameters.main || localStorage.getItem("main") as string || ""; });
 	function sanitize(string: string) {
 		try {
 			if (['=', '+', '-', '@'].includes(string.charAt(0))) {

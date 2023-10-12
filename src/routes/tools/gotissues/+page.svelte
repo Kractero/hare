@@ -1,16 +1,15 @@
 <script lang="ts">
-	import { handleDownload } from '$lib/download';
-	import { htmlContent } from '$lib/htmlContent';
+	import { handleDownload } from '$lib/helpers/download';
+	import { htmlContent } from '$lib/helpers/htmlContent';
 	import { onDestroy, onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
-	import { parseXML, sleep } from '$lib/globals';
+	import { parseXML, sleep } from '$lib/helpers/utils';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import type { Issue } from '$lib/types';
 	import Select from '$lib/component/Select.svelte';
 	import type { PageData } from './$types';
-	import { loadStorage } from '$lib/loadStorage';
 	import { pushHistory } from '$lib/helpers/utils';
 	export let data: PageData;
 	const abortController = new AbortController();
@@ -27,10 +26,10 @@
 	let password = '';
 	let mode =  '';
 	onMount(() => {
-		main = data.parameters.main || loadStorage("useragent") as string || "";
-		puppets = loadStorage("gotissuesPuppets") as string || "";
-		password = loadStorage("password") as string || "";
-		mode = data.parameters.mode || loadStorage("gotissuesMode") as string || "";
+		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		puppets = localStorage.getItem("gotissuesPuppets") as string || "";
+		password = localStorage.getItem("password") as string || "";
+		mode = data.parameters.mode || localStorage.getItem("gotissuesMode") as string || "";
 	});
 	onDestroy(() => abortController.abort());
 

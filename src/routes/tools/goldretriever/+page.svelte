@@ -1,16 +1,14 @@
 <script lang="ts">
-	import { handleDownload } from '$lib/download';
-	import { htmlContent } from '$lib/htmlContent';
+	import { handleDownload } from '$lib/helpers/download';
+	import { htmlContent } from '$lib/helpers/htmlContent';
 	import { onDestroy, onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
-	import { parseXML, sleep } from '$lib/globals';
-	import { sort } from '$lib/sortFunctionString';
-	import { style } from '$lib/sortFunctionString';
+	import { parseXML, sleep } from '$lib/helpers/utils';
+	import { sort, style } from '$lib/helpers/sortFunctionString';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import type { PageData } from './$types';
-	import { loadStorage } from '$lib/loadStorage';
 	import { pushHistory } from '$lib/helpers/utils';
 	export let data: PageData;
 	import type { Card, Issue } from '$lib/types';
@@ -27,10 +25,10 @@
 	let mode: string;
 	
 	onMount(() => {
-		main = data.parameters.main || loadStorage("useragent") as string || "";
-		puppets = loadStorage("puppets") as string || "";
-		password = loadStorage("password") as string || "";
-		mode = data.parameters.mode || loadStorage("goldretrieverMode") as string || "Include";
+		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		puppets = localStorage.getItem("puppets") as string || "";
+		password = localStorage.getItem("password") as string || "";
+		mode = data.parameters.mode || localStorage.getItem("goldretrieverMode") as string || "Include";
 	});
 
 	onDestroy(() => abortController.abort());
@@ -95,7 +93,6 @@
 					deck.deckValue = deckInfo.CARDS.INFO.DECK_VALUE;
 					deck.cardCount = deckInfo.CARDS.INFO.NUM_CARDS;
 				}
-				console.log(mode)
 				if (mode === "Include") {
 					await sleep(700);
 					const issuesAndPacks = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`, main, password.replaceAll(' ', '_'));
@@ -108,8 +105,6 @@
 					}
 					deck.packs = packs;
 				}
-
-				console.log(deck)
 
 				totals.bank = totals.bank + deck.bank
 				totals.deckValue = totals.deckValue + deck.deckValue

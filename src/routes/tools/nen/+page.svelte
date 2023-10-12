@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { parseXML, sleep } from '$lib/globals';
+	import { parseXML, sleep } from '$lib/helpers/utils';
 	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import type { Nation } from '$lib/types';
 	import type { PageData } from './$types';
-	import { loadStorage } from '$lib/loadStorage';
 	import { pushHistory } from '$lib/helpers/utils';
 	export let data: PageData;
 	let progress = "";
@@ -15,8 +14,8 @@
 	let nennation = '';
 
 	onMount(() => {
-		main = data.parameters.main || loadStorage("useragent") as string || "";
-		nennation = data.parameters.nennation || loadStorage("nenNation") as string || "";
+		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		nennation = data.parameters.nennation || localStorage.getItem("nenNation") as string || "";
 	});
 
 	async function nen() {

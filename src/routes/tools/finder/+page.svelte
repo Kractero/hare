@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import { parser, sleep } from '$lib/globals';
-	import { handleDownload } from '$lib/download';
-	import { htmlContent } from '$lib/htmlContent';
+	import { parser, sleep } from '$lib/helpers/utils';
+	import { handleDownload } from '$lib/helpers/download';
+	import { htmlContent } from '$lib/helpers/htmlContent';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Head from '$lib/component/Head.svelte';
@@ -11,7 +11,6 @@
 	import Textarea from '$lib/component/Textarea.svelte';
 	import type { Card } from '$lib/types';
 	import type { PageData } from './$types';
-	import { loadStorage } from '$lib/loadStorage';
 	import { pushHistory } from '$lib/helpers/utils';
 	export let data: PageData;
 	const abortController = new AbortController();
@@ -30,11 +29,12 @@
 	let password = "";
 	let giftee = "";
 	onMount(() => {
-		main = data.parameters.main || loadStorage("useragent") as string || "";
-		puppets = loadStorage("puppets") as string || "";
-		finderlist = loadStorage("finderList") as string || "";
-		mode = data.parameters.mode || loadStorage("finderMode") as string || "Gift";
-		giftee = data.parameters.giftee || loadStorage("finderGiftee") as string || "";
+		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		puppets = localStorage.getItem("puppets") as string || "";
+		finderlist = localStorage.getItem("finderList") as string || "";
+		password = localStorage.getItem("password") as string || "";
+		mode = data.parameters.mode || localStorage.getItem("finderMode") as string || "Gift";
+		giftee = data.parameters.giftee || localStorage.getItem("finderGiftee") as string || "";
 	});
 	onDestroy(() => abortController.abort());
 
@@ -156,7 +156,7 @@
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => finder(main, puppets)} class="flex flex-col gap-8">
-		<InputCredentials bind:main bind:puppets authenticated={mode === "Gift" ? true : false} />
+		<InputCredentials bind:main bind:puppets bind:password authenticated={mode === "Gift" ? true : false} />
 		{#if mode === "Gift"}
 			<Input text={`Gift To`} bind:bindValue={giftee} forValue="giftee" required={true} />
 		{/if}

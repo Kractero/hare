@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import { parseXML, parser, sleep } from '$lib/globals';
+	import { parseXML, parser, sleep } from '$lib/helpers/utils';
 	import Head from '$lib/component/Head.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
@@ -10,7 +10,6 @@
 	import Select from '$lib/component/Select.svelte';
 	const abortController = new AbortController();
 	import type { PageData } from './$types';
-	import { loadStorage } from '$lib/loadStorage';
 	import { pushHistory } from '$lib/helpers/utils';
 	export let data: PageData;
 	let progress = "";
@@ -23,11 +22,11 @@
 	let immune: string;
 	let limit: string;
 	onMount(() => {
-		main = data.parameters.main || loadStorage("useragent") as string || "";
-		endotarter = data.parameters.endotarter || loadStorage("endotartEndotarter") as string || "";
-		immune = data.parameters.immune ? data.parameters.immune.replaceAll(',', '\n') : loadStorage("endotartImmune") as string || "";
-		limit = data.parameters.limit || loadStorage("endotartLimit") as string || "";
- 		source = data.parameters.source || loadStorage("endotartSource") as string || "XML";
+		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		endotarter = data.parameters.endotarter || localStorage.getItem("endotartEndotarter") as string || "";
+		immune = data.parameters.immune ? data.parameters.immune.replaceAll(',', '\n') : localStorage.getItem("endotartImmune") as string || "";
+		limit = data.parameters.limit || localStorage.getItem("endotartLimit") as string || "";
+ 		source = data.parameters.source || localStorage.getItem("endotartSource") as string || "XML";
 	});
 	onDestroy(() => abortController.abort() );
 	async function endotart() {

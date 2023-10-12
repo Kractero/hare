@@ -1,16 +1,15 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import { parseXML, sleep } from '$lib/globals';
+	import { parseXML, sleep } from '$lib/helpers/utils';
 	import Head from '$lib/component/Head.svelte';
-	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import type { Census, Nation } from '$lib/types';
 	import Textarea from '$lib/component/Textarea.svelte';
 	import type { PageData } from './$types';
-	import { loadStorage } from '$lib/loadStorage';
 	import { pushHistory } from '$lib/helpers/utils';
+	import Select from '$lib/component/Select.svelte';
 	export let data: PageData;
 	const abortController = new AbortController();
 	let progress = '';
@@ -20,12 +19,15 @@
 	let top = "100";
 	let days = "30";
 	let specific = '';
+	let mode = "Top"
 	onMount(() => {
-		main = data.parameters.main || loadStorage("useragent") as string || "";
-		top = data.parameters.top || loadStorage("rocTop") as string || "100";
-		days = data.parameters.days || loadStorage("rocDays") as string || "30";
-		specific = loadStorage("rocSpecific") as string || "";
+		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		top = data.parameters.top || localStorage.getItem("rocTop") as string || "100";
+		days = data.parameters.days || localStorage.getItem("rocDays") as string || "30";
+		mode = data.parameters.mode || localStorage.getItem("rocMode") as string || "Top";
+		specific = localStorage.getItem("rocSpecific") as string || "";
 	});
+	onDestroy(() => abortController.abort());
 
 	async function rateOfChange(main: string) {
 		pushHistory(`?main=${main}&top=${top}&days=${days}`)
@@ -111,9 +113,16 @@
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => rateOfChange(main)} class="flex flex-col gap-8">
 		<Input text={`User Agent`} bind:bindValue={main} forValue="main" required={true} />
-		<Input text={`Top ${top}`} bind:bindValue={top} forValue="top" required={true} disabled={specific !== ""} />
-		<Textarea text="Specific" bind:bindValue={specific} forValue="specific" required disabled={top !== ""} />
+		{#if mode === "Top"}
+			<Input text={`Top ${top}`} bind:bindValue={top} forValue="top" required={true} />
+		{:else}
+			<Textarea text="Specific" bind:bindValue={specific} forValue="specific" required />
+		{/if}
 		<Input text={`Over ${days} days`} bind:bindValue={days} forValue="days" required={true} />
+		<div class="flex gap-4 justify-between max-w-lg">
+			<label class="w-24" for="mode">RoC Mode</label>
+            <Select bind:mode={mode} options={["Top", "Specific"]} />
+		</div>
 		<Buttons>
 			<button
 				type="button"

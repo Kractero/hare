@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { handleDownload } from '$lib/download';
-	import { nsIterator } from '$lib/txtIterator';
+	import { handleDownload } from '$lib/helpers/download';
+	import { nsIterator } from '$lib/helpers/txtIterator';
 	import Head from '$lib/component/Head.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';

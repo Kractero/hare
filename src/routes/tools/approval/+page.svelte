@@ -1,16 +1,15 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import { parser, sleep } from '$lib/globals';
+	import { parser, sleep } from '$lib/helpers/utils';
 	import Head from '$lib/component/Head.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
-	import { htmlContent } from '$lib/htmlContent';
-	import { handleDownload } from '$lib/download';
+	import { htmlContent } from '$lib/helpers/htmlContent';
+	import { handleDownload } from '$lib/helpers/download';
 	import Select from '$lib/component/Select.svelte';
 	const abortController = new AbortController();
 	import type { PageData } from './$types';
-	import { loadStorage } from '$lib/loadStorage';
 	import { pushHistory } from '$lib/helpers/utils';
 	export let data: PageData;
 	let progress = "";
@@ -21,9 +20,9 @@
     let council: string;
 	let proposalid: string;
 	onMount(() => {
-		main = data.parameters.main || loadStorage("useragent") as string || "";
-		council = data.parameters.council || loadStorage("approvalCouncil") as string || "General Assembly";
-		proposalid = data.parameters.proposal || loadStorage("approvalProposal") as string || "";
+		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		council = data.parameters.council || localStorage.getItem("approvalCouncil") as string || "General Assembly";
+		proposalid = data.parameters.proposal || localStorage.getItem("approvalProposal") as string || "";
 	});
 	onDestroy(() => abortController.abort() );
 	async function approvals() {

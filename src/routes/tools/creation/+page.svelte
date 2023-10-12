@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { handleDownload } from '$lib/download';
-	import { htmlContent } from '$lib/htmlContent';
-	import { nsIterator } from '$lib/txtIterator';
+	import { handleDownload } from '$lib/helpers/download';
+	import { htmlContent } from '$lib/helpers/htmlContent';
+	import { nsIterator } from '$lib/helpers/txtIterator';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';

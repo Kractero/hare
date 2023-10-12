@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
-	import { parseXML, sleep } from '$lib/globals';
+	import { parseXML, sleep } from '$lib/helpers/utils';
 	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import type { PageData } from './$types';
-	import { loadStorage } from '$lib/loadStorage';
 	import { pushHistory } from '$lib/helpers/utils';
 	export let data: PageData;
     const abortController = new AbortController();
@@ -17,8 +16,8 @@
 	let stopped = true;
 
 	onMount(() => {
-		main = data.parameters.main || loadStorage("useragent") as string || "";
-		puppets = loadStorage("puppets") as string || "";
+		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		puppets = localStorage.getItem("puppets") as string || "";
 	});
     onDestroy(() => abortController.abort());
 

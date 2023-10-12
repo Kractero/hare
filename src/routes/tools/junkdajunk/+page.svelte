@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import { parseXML, parser, sleep } from '$lib/globals';
-	import { handleDownload } from '$lib/download';
-	import { htmlContent } from '$lib/htmlContent';
+	import { parseXML, parser, sleep } from '$lib/helpers/utils';
+	import { handleDownload } from '$lib/helpers/download';
+	import { htmlContent } from '$lib/helpers/htmlContent';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Head from '$lib/component/Head.svelte';
@@ -14,7 +14,6 @@
 	import Select from '$lib/component/Select.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
 	import type { PageData } from './$types';
-	import { loadStorage } from '$lib/loadStorage';
 	import { pushHistory } from '$lib/helpers/utils';
 	export let data: PageData;
 	let progress: "";
@@ -34,21 +33,21 @@
 	let cardcount = '';
 	let rarities: {[key: string]: number};
 	onMount(() => {
-		main = data.parameters.main || loadStorage("useragent") as string || "";
-		puppets = loadStorage("gotissuesPuppets") as string || "";
-		password = loadStorage("gotissuesPuppets") as string || "";
-		mode = data.parameters.mode || loadStorage("junkdajunkMode") as string || "Gift";
-		regionalwhitelist = data.parameters.regions || loadStorage("junkdajunkRegionalWhitelist") as string || "";
-		giftee = data.parameters.giftee || loadStorage("finderGiftee") as string || "";
-		rarities = loadStorage("junkdajunkRarities") as {} || {
-			common: 0.5,
-			uncommon: 1,
-			rare: 1,
-			'ultra-rare': 1,
-			epic: 1
-		}
-		owners = data.parameters.owners || loadStorage("finderOwnerCount") as string || "";
-		cardcount = data.parameters.cardcount || loadStorage("finderCardCount") as string || "";
+		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		puppets = localStorage.getItem("gotissuesPuppets") as string || "";
+		password = localStorage.getItem("password") as string || "";
+		mode = data.parameters.mode || localStorage.getItem("finderMode") as string || "Gift";
+		regionalwhitelist = data.parameters.regions || localStorage.getItem("junkdajunkRegionalWhitelist") as string || "";
+		giftee = data.parameters.giftee || localStorage.getItem("finderGiftee") as string || "";
+		rarities = localStorage.getItem("junkdajunkRarities") ? JSON.parse(localStorage.getItem("junkdajunkRarities") as string) : {
+            common: 0.5,
+            uncommon: 1,
+            rare: 1,
+            'ultra-rare': 1,
+            epic: 1,
+        }
+		owners = data.parameters.owners || localStorage.getItem("junkdajunkOwnerCount") as string || "";
+		cardcount = data.parameters.cardcount || localStorage.getItem("junkdajunkCardCount") as string || "";
 	});
 	onDestroy(() => abortController.abort());
 
@@ -225,10 +224,12 @@
 		<Textarea text="Regional Whitelist" bind:bindValue={regionalwhitelist} forValue="regions" />
 		<Input text={`Card Count Threshold`} bind:bindValue={cardcount} forValue="card" />
 		<Input text={`Owner Count Threshold`} bind:bindValue={owners} forValue="owner" />
-		<div class="flex gap-4 justify-between max-w-lg">
-			<p class="w-24">Rarity Threshold</p>
-			<Rarities bind:rarities={rarities} />
-		</div>
+		{#if rarities}
+			<div class="flex gap-4 justify-between max-w-lg">
+				<p class="w-24">Rarity Threshold</p>
+				<Rarities bind:rarities={rarities} />
+			</div>
+		{/if}
         <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
             <label class="w-24" for="jdj">JDJ Default Behavior</label>
 			<Select bind:mode={mode} options={['Gift', 'Sell']} />
