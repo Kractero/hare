@@ -70,7 +70,7 @@
 				await sleep(700);
 				progress += `<p class="font-semibold">Processing ${nation} ${i + 1}/${puppetsList.length} puppets</p>`;
 				const xmlDocument = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
-				const cards: Array<Card> = xmlDocument.CARDS.DECK.CARDS;
+				const cards: Array<Card> = xmlDocument.CARDS.DECK.CARD;
 				if (cards && cards.length > Number(cardcount)) {
 					for (let i = 0; i < cards.length; i++) {
 						const id = cards[i].CARDID;
