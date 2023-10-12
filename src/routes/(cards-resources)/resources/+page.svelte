@@ -1,8 +1,8 @@
 <script lang="ts">
     import Card  from "$lib/component/Card.svelte"
     import Filterer from "$lib/component/Filterer.svelte"
-	import { filter, searchAuthor } from '$lib/store';
-	import { projects } from '$lib/data/projects';
+	import { filter, searchAuthor } from '$lib/cards-resources/store';
+	import { projects } from '$lib/cards-resources/projects';
 	import { onMount } from 'svelte';
 	import Head from "$lib/component/Head.svelte";
 	let searchTerm = '';

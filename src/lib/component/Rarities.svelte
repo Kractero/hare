@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let rarities: {[key: string]: number} = {};
+    export let rarities: any;
 </script>
 
 <div class="flex flex-col gap-4">
