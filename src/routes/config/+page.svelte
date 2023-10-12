@@ -44,7 +44,9 @@
         Object.keys(localStorageObject).forEach((key) => {
             localStorageObject[key] = localStorage.getItem(key) || localStorageObject[key];
         });
-        localStorageObject.junkdajunkRarities = JSON.parse(localStorageObject.junkdajunkRarities)
+        if (typeof localStorageObject.junkdajunkRarities === "string") {
+            localStorageObject.junkdajunkRarities = JSON.parse(localStorageObject.junkdajunkRarities) 
+        }
     });
 
 	async function setConfig() {

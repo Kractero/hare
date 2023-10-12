@@ -25,7 +25,7 @@ const config = {
 					return;
 				}
 			},
-			entries: ["/", "/config", "/disclaimer", "/guides", "/resources"]
+			entries: ["/", "/config", "/disclaimer", "/resources"]
 		}
 	}
 };
