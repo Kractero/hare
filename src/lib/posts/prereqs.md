@@ -3,6 +3,7 @@ title: Prerequisites
 description: Common prerequisites for card tools
 url: prereqs
 author: Kractero
+order: 1
 ---
 To install most of these tools, you will be expected to have some knowledge of the browser. A lot of trading card tools involve automation, through scripting or hotkeys.
 While it may seem daunting at the start, with some work everything should click and work properly. Follow this to get all the prerequisites installed.

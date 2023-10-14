@@ -10,6 +10,7 @@ export interface Post {
     description: string;
     url: string;
     author: string;
+    order: number;
 }
 
 export const posts = Object.entries(
@@ -26,4 +27,7 @@ export const posts = Object.entries(
         ...post,
         next: allPosts[index - 1] || 0,
         previous: allPosts[index + 1] || 0,
-}));
+
+    }))
+    .sort((a, b) => a.order - b.order
+);

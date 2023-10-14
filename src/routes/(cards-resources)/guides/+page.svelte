@@ -1,6 +1,6 @@
 <script lang="ts">
+	import Head from '$lib/component/Head.svelte';
 	import type { PageData } from './$types';
-
 	export let data: PageData;
 	let non_md = [
 		{
@@ -33,6 +33,8 @@
 		}
 	]
 </script>
+
+<Head title={"Hare - Guides"} description={"Various guides/posts for setting up tools and prerequisites."} />
 
 <h2 class="text-textprimary text-3xl font-bold mb-1 text-center">Guides</h2>
 
