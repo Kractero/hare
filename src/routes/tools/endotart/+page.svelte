@@ -71,27 +71,33 @@
 				ENDORSEMENTS = String(xml.NATION.ENDORSEMENTS).includes(',') ? xml.NATION.ENDORSEMENTS.split(',') : [xml.NATION.ENDORSEMENTS];
 				await sleep(700);
 			} else {
-				const nations = (xml.NATIONS.NATION as Array<NSNation>).filter(nation => String(nation.NAME).toLowerCase().replace(/ /g, '_') === (regionalWA[i].toLowerCase()))[0];
-				({ NAME, ENDORSEMENTS } = nations)
+				const nations = (xml.NATIONS.NATION as Array<NSNation>).filter(nation => String(nation.NAME).toLowerCase().replace(/ /g, '_') === (regionalWA[i].toLowerCase()));
+				if (nations.length > 0) {
+					({ NAME, ENDORSEMENTS } = nations[0])
+				} else {
+					progress += `<p class="text-yellow-400">${i+1}/${regionalWA.length} ${regionalWA[i]} not found, likely not in the dump yet`
+				}
 			}
 
-			if (endotartnation.toLowerCase().replaceAll(' ', '_') === String(NAME).toLowerCase().replaceAll(' ', '_')) {
-				progress += `<p class="text-yellow-400 font-extralight">${i+1}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is the endotart nation.</p>`
-			} else if (limit) {
-				if (whiteList.includes(regionalWA[i])) {
-					progress += `<p class="text-yellow-400 font-extralight">${i+1}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is in your immune nations.</p>`
-				} else if (ENDORSEMENTS.length < limit && !ENDORSEMENTS.includes(endotartnation.toLowerCase().replaceAll(' ', '_')) && regionalWA[i] !== endotartnation.toLowerCase().replaceAll(' ', '_')) {
-					progress += `<p class="text-green-400">${i+1}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is not being endorsed by ${endotartnation}.</p>`
-				} else if (ENDORSEMENTS.length > limit) {
-					progress += `<p class="text-red-400 font-extralight">${i+1}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> has more than ${limit} endorsements.</p>`
+			if (NAME && ENDORSEMENTS) {
+				if (endotartnation.toLowerCase().replaceAll(' ', '_') === String(NAME).toLowerCase().replaceAll(' ', '_')) {
+					progress += `<p class="text-yellow-400 font-extralight">${i+1}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is the endotart nation.</p>`
+				} else if (limit) {
+					if (whiteList.includes(regionalWA[i])) {
+						progress += `<p class="text-yellow-400 font-extralight">${i+1}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is in your immune nations.</p>`
+					} else if (ENDORSEMENTS.length < limit && !ENDORSEMENTS.includes(endotartnation.toLowerCase().replaceAll(' ', '_')) && regionalWA[i] !== endotartnation.toLowerCase().replaceAll(' ', '_')) {
+						progress += `<p class="text-green-400">${i+1}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is not being endorsed by ${endotartnation}.</p>`
+					} else if (ENDORSEMENTS.length > limit) {
+						progress += `<p class="text-red-400 font-extralight">${i+1}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> has more than ${limit} endorsements.</p>`
+					} else {
+						progress += `<p class="text-red-400 font-extralight">${i+1}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is already endorsed by ${endotartnation}.</p>`
+					}
 				} else {
-					progress += `<p class="text-red-400 font-extralight">${i+1}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is already endorsed by ${endotartnation}.</p>`
-				}
-			} else {
-				if (!ENDORSEMENTS.includes(endotartnation.toLowerCase().replaceAll(' ', '_')) && regionalWA[i] !== endotartnation.toLowerCase().replaceAll(' ', '_')) {
-					progress += `<p class="text-green-400">${i+1}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is not being endorsed by ${endotartnation}.</p>`
-				} else {
-					progress += `<p class="text-red-400 font-extralight">${i+1}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is already endorsed by ${endotartnation}.</p>`
+					if (!ENDORSEMENTS.includes(endotartnation.toLowerCase().replaceAll(' ', '_')) && regionalWA[i] !== endotartnation.toLowerCase().replaceAll(' ', '_')) {
+						progress += `<p class="text-green-400">${i+1}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is not being endorsed by ${endotartnation}.</p>`
+					} else {
+						progress += `<p class="text-red-400 font-extralight">${i+1}/${regionalWA.length} <a class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is already endorsed by ${endotartnation}.</p>`
+					}
 				}
 			}
         }
