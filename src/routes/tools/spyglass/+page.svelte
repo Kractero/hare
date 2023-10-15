@@ -40,12 +40,13 @@
 
 		const currentDate = new Date();
 		const utcMinus7Date = new Date(currentDate.getTime() - 7 * 60 * 60 * 1000);
-		utcMinus7Date.setDate(utcMinus7Date.getDate() - 1);
+		utcMinus7Date.setDate(utcMinus7Date.getDate()-1);
 		const date = utcMinus7Date.toISOString().slice(0, 10);
 		progress += `<p>Requesting ${date} regional dump.</p>`
-		const regionRes = await fetch(`https://raw.githubusercontent.com/Kractero/region-xml-dump/main/data/${date}-Regions.xml`, {
+		let regionRes = await fetch(`https://raw.githubusercontent.com/Kractero/region-xml-dump/main/data/${date}-Regions.xml`, {
 			method: "GET"
 		});
+		if (regionRes.status === 404) progress += `<p class="text-red-400">The ${date} dump has not been generated! This means that when the script ran at its designated time 1 hour and 30 minutes after major, NationStates did not yet generate the equivalent regional dump for ${date}! There is no recovery mechanism for this, Kractero must manually initiate the action,so TG.`
 		const regionText = await regionRes.text()
 		const regionXML = parser.parse(regionText)
 		const regionList: Array<NSRegion> = regionXML.REGIONS.REGION;
