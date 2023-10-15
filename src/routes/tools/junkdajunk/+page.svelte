@@ -52,7 +52,7 @@
 	onDestroy(() => abortController.abort());
 
 	async function junkDaJunk(main: string, puppets: string) {
-		pushHistory(`?main=${main}&mode=${mode}${owners ? `owners=${owners}` : ""}${cardcount ? `cardcount=${cardcount}` : ""}${regionalwhitelist ? `regions=${regionalwhitelist}` : ""}`)
+		pushHistory(`?main=${main}&mode=${mode}${owners ? `owners=${owners}` : ""}${cardcount ? `cardcount=${cardcount}` : ""}${regionalwhitelist ? `regions=${regionalwhitelist.replaceAll('\n', ',')}` : ""}`)
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
