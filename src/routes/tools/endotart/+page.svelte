@@ -30,7 +30,7 @@
 	});
 	onDestroy(() => abortController.abort() );
 	async function endotart() {
-		pushHistory(`?main=${main}${limit ? `&limit=${limit}` : ""}&nation=${endotarter}&source=${source}${immune ? `&immune=${immune}` : ""}`);
+		pushHistory(`?main=${main}${limit ? `&limit=${limit}` : ""}&nation=${endotarter}&source=${source}${immune ? `&immune=${immune.replaceAll('\n', ',')}` : ""}`);
 		progress = "";
 		stoppable = true;
 		stopped = false;

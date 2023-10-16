@@ -43,7 +43,7 @@
 	<form on:submit|preventDefault={() => containerise()} class="flex flex-col gap-8">
 		<Textarea text="Puppets" bind:bindValue={puppets} forValue="pup" required />
 		<Buttons>
-			<button disabled={!downloadable} on:click={() => handleDownload('txt', content, '')}
+			<button disabled={!downloadable} type="button" on:click={() => handleDownload('txt', content, '')}
 				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
 				Download
 			</button>
