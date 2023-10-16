@@ -5,6 +5,7 @@
 	import Input from '$lib/component/Input.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
 	import Select from '$lib/component/Select.svelte';
+	import Checkbox from '$lib/component/Checkbox.svelte';
 
     const localStorageObject: {[key: string]: any } = {
     // const localStorageObject: {[key: string]: string | {[key: string]: number}} = {
@@ -37,12 +38,18 @@
         junkdajunkCardCount: '',
         approvalCouncil: 'General Assembly',
         approvalProposal: '',
-        goldretrieverMode: "Include"
+        goldretrieverMode: "Include",
+        junkdajunkOmittedSeasons: "",
+        junkdajunkExnation: false
     };
 
     onMount(() => {
         Object.keys(localStorageObject).forEach((key) => {
-            localStorageObject[key] = localStorage.getItem(key) || localStorageObject[key];
+            if (key === "junkdajunkExnation") {
+                localStorageObject.junkdajunkExnation = localStorage.getItem(key) === "true" || false;
+            } else {
+                localStorageObject[key] = localStorage.getItem(key) || localStorageObject[key];
+            }
         });
         if (typeof localStorageObject.junkdajunkRarities === "string") {
             localStorageObject.junkdajunkRarities = JSON.parse(localStorageObject.junkdajunkRarities) 
@@ -125,6 +132,11 @@
         <Input text="Card Count Threshold" bind:bindValue={localStorageObject.junkdajunkCardCount} forValue="card" />
         <Input text="Owner Threshold" bind:bindValue={localStorageObject.junkdajunkOwnerCount} forValue="owner" />
         <Rarities bind:rarities={localStorageObject.junkdajunkRarities} />
+        <Checkbox bind:omittedSeasons={localStorageObject.junkdajunkOmittedSeasons} />
+		<div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
+            <p class="w-24">Skip S1 Exnation</p>
+			<input on:change={() => localStorageObject.junkdajunkExnation = !localStorageObject.junkdajunkExnation} checked={localStorageObject.junkdajunkExnation} class="m-1" type="checkbox" />
+		</div>
         <h2 class="text-2xl text-center font-bold tracking-tight">Finder</h2>
         <Textarea text="Card IDs to Find" bind:bindValue={localStorageObject.finderList} forValue="find" />
         <h2 class="text-2xl text-center font-bold tracking-tight">Approval</h2>

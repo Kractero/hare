@@ -15,6 +15,7 @@
 	import Textarea from '$lib/component/Textarea.svelte';
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
+	import Checkbox from '$lib/component/Checkbox.svelte';
 	export let data: PageData;
 	let progress: "";
 	let openNewLinkArr: Array<string> = [];
@@ -32,6 +33,14 @@
 	let owners = '';
 	let cardcount = '';
 	let rarities: {[key: string]: number};
+	let skipseason = '';
+	let skipexnation = false;
+
+	function cbChange(e: Event & { currentTarget: EventTarget & HTMLInputElement; }) {
+		if (e.currentTarget.checked) skipseason += e.currentTarget.id
+		else skipseason = skipseason.replace(e.currentTarget.id, '')
+	}
+	
 	onMount(() => {
 		main = data.parameters.main || localStorage.getItem("main") as string || "";
 		puppets = localStorage.getItem("gotissuesPuppets") as string || "";
@@ -48,11 +57,13 @@
         }
 		owners = data.parameters.owners || localStorage.getItem("junkdajunkOwnerCount") as string || "";
 		cardcount = data.parameters.cardcount || localStorage.getItem("junkdajunkCardCount") as string || "";
+		skipseason = data.parameters.skipseason || localStorage.getItem("junkdajunkOmittedSeasons") as string || "";
+		skipexnation = (data.parameters.skipexnation === 'true') || (localStorage.getItem("junkdajunkExnation") === 'true') || false;
 	});
 	onDestroy(() => abortController.abort());
 
 	async function junkDaJunk(main: string, puppets: string) {
-		pushHistory(`?main=${main}&mode=${mode}${owners ? `owners=${owners}` : ""}${cardcount ? `cardcount=${cardcount}` : ""}${regionalwhitelist ? `regions=${regionalwhitelist.replaceAll('\n', ',')}` : ""}`)
+		pushHistory(`?main=${main}&mode=${mode}${owners ? `&owners=${owners}` : ""}${cardcount ? `&cardcount=${cardcount}` : ""}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ""}${skipseason ? `&skipseason=${skipseason}` : ""}${skipexnation ? `&skipexnation=${skipexnation}` : ""}`)
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
@@ -61,6 +72,15 @@
 		const whiteList = regionalwhitelist ? regionalwhitelist.split('\n') : [];
 		if (whiteList.length > 0) {
 			progress += `<p>Whitelisting regions: ${whiteList.map((region) => region.trim()).join(', ')}</p>`;
+		}
+		if (skipseason.length > 0) {
+			progress += `<p>Skipping seasons:`
+			for (let i = 0; i < skipseason.length; i++) {
+				progress += `${i + 1} `
+			}
+		}
+		if (skipexnation === true) {
+			progress += `<p>Skipping s1 exnations</p>`
 		}
 		const rarityArr = Object.entries(rarities);
 		for (let i = 0; i < rarityArr.length; i++) {
@@ -115,22 +135,29 @@
 
 						let junk = true;
 						let reason = ""
-
+						if (skipseason.includes(String(season))) {
+							junk = false;
+							reason = `, <span class="text-blue-400">is ignored season ${season}</span>`
+						}
 						if (owners && Number(owners) < owners.size) {
 							junk = false;
-							reason = `, has less owners than ${owners}`
+							reason = `, <span class="text-blue-400">has less owners than ${owners}</span>`
 						}
 						if (rarities.hasOwnProperty(category) && highestBid > rarities[category]) {
 							junk = false;
-							reason = `, has high bid.`
+							reason = `, <span class="text-blue-400">has high bid</span>`
 						}
 						if (parseFloat(marketValue) > 10) {
 							junk = false;
-							reason = `, MV over 10.`
+							reason = `, <span class="text-blue-400">MV over 10</span>`
 						};
+						if (!region && skipexnation) {
+							junk = false;
+							reason = `, <span class="text-blue-400">S1 exnation</span>`
+						}
 						if (region && whiteList.includes(region)) {
 							junk = false;
-							reason = `, is in whitelisted ${region}.`
+							reason = `, <span class="text-blue-400">is in whitelisted ${region}</span>`
 						}
 
 						if (junk) {
@@ -186,7 +213,7 @@
 						}
 					}
 				} else {
-					if (cards) progress += `<p class="text-blue-400">${nation} has less cards than ${cards}, skipping!`
+					if (cards && cardcount) progress += `<p class="text-blue-400">${nation} has less cards than ${cardcount}, skipping!`
 					else progress += `<p class="text-blue-400">It is likely ${nation} has 0 cards, skipping!`
 				}
 			} catch (err) {
@@ -230,8 +257,13 @@
 				<Rarities bind:rarities={rarities} />
 			</div>
 		{/if}
+		<Checkbox bind:omittedSeasons={skipseason} />
+		<div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
+            <p class="w-24">Skip S1 Exnation</p>
+			<input on:change={() => skipexnation = !skipexnation} checked={skipexnation} class="m-1" type="checkbox" />
+		</div>
         <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
-            <label class="w-24" for="jdj">JDJ Default Behavior</label>
+            <label class="w-24" for="jdj">JDJ Gift or Sell</label>
 			<Select bind:mode={mode} options={['Gift', 'Sell']} />
         </div>
 		<Buttons>
@@ -260,7 +292,7 @@
 			>
 				Open Available Link
 			</button>
-			<button disabled={!downloadable} on:click={() => handleDownload('html', htmlContent(junkHtml), 'junkDaJunk')}
+			<button type="button" disabled={!downloadable} on:click={() => handleDownload('html', htmlContent(junkHtml), 'junkDaJunk')}
 				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
 				Download
 			</button>
