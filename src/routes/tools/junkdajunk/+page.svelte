@@ -35,18 +35,14 @@
 	let rarities: {[key: string]: number};
 	let skipseason = '';
 	let skipexnation = false;
-
-	function cbChange(e: Event & { currentTarget: EventTarget & HTMLInputElement; }) {
-		if (e.currentTarget.checked) skipseason += e.currentTarget.id
-		else skipseason = skipseason.replace(e.currentTarget.id, '')
-	}
+	let sellContent = '';
 	
 	onMount(() => {
 		main = data.parameters.main || localStorage.getItem("main") as string || "";
 		puppets = localStorage.getItem("gotissuesPuppets") as string || "";
 		password = localStorage.getItem("password") as string || "";
 		mode = data.parameters.mode || localStorage.getItem("finderMode") as string || "Gift";
-		regionalwhitelist = data.parameters.regions || localStorage.getItem("junkdajunkRegionalWhitelist") as string || "";
+		regionalwhitelist = data.parameters.regions?.replaceAll(',', '\n') || localStorage.getItem("junkdajunkRegionalWhitelist") as string || "";
 		giftee = data.parameters.giftee || localStorage.getItem("finderGiftee") as string || "";
 		rarities = localStorage.getItem("junkdajunkRarities") ? JSON.parse(localStorage.getItem("junkdajunkRarities") as string) : {
             common: 0.5,
@@ -68,6 +64,9 @@
 		stoppable = true;
 		stopped = false;
 		progress = '';
+		junkHtml = '';
+		sellContent = '';
+		const interimSells = [];
 		let puppetsList = puppets.split('\n');
 		const whiteList = regionalwhitelist ? regionalwhitelist.split('\n') : [];
 		if (whiteList.length > 0) {
@@ -202,11 +201,10 @@
 								}
 							} else {
 								progress += `<p class="text-green-400">${i + 1}/${cards.length} -> Selling S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}${reason}</p>`;
-								openNewLinkArr = [
-									...openNewLinkArr,
+								interimSells.push(
 									`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
-								];
-								junkHtml += `<tr><td><p>${i + 1} of ${
+								);
+								sellContent += `<tr><td><p>${i + 1} of ${
 									cards.length
 								}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
 							}
@@ -220,6 +218,7 @@
 				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
 			}
 		}
+		junkHtml = junkHtml + sellContent;
 		progress += `<p>Finished processing</p>`;
 		downloadable = true;
 		stoppable = false;
