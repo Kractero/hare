@@ -21,7 +21,6 @@
     let downloadable = false;
 	let stoppable = false;
 	let stopped = false;
-
 	let main = '';
 	let puppets = '';
 	let finderlist = '';
@@ -75,6 +74,8 @@
 						const matchingIndex = matches.findIndex(match => match[0] === String(id));
 						if (matchingIndex !== -1) {
 							const matchSeason = matches[matchingIndex][1];
+							const matchGiftee = matches[matchingIndex][2];
+							giftee = matchGiftee || giftee;
 							if (matchSeason && matchSeason !== String(season)) {
 								progress += `<p>Found ${id} but not right season.`
 							} else {
@@ -146,7 +147,8 @@
 	Find which of the specified nations have which of the specified cards.
 </p>
 <p class={`text-xs ${mode === "Gift" ? "mb-1" : "mb-16"}`}>
-	You can additionally specify season by entering into the find list CARDID,SEASON instead of just CARDID on each line.
+	You can specify season and nation to gift with CARDID,SEASON,GIFTTO instead of just CARDID on each line. 
+	GIFTTO will overrule the Gift To nation if provided.
 </p>
 {#if mode === "Gift"}
 	<p class="text-xs mb-16">
