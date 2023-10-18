@@ -96,8 +96,9 @@
 				await sleep(700);
 				progress += `<p class="font-semibold">Processing ${nation} ${i + 1}/${puppetsList.length} puppets</p>`;
 				const xmlDocument = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
-				const cards: Array<Card> = xmlDocument.CARDS.DECK.CARD;
-				if (cards && cards.length > Number(cardcount)) {
+				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD;
+					cards = cards ? Array.isArray(cards) ? cards : [cards] : []
+				if (cards && cards.length > 0 && cards.length > Number(cardcount)) {
 					for (let i = 0; i < cards.length; i++) {
 						const id = cards[i].CARDID;
 						const season = cards[i].SEASON;
@@ -211,7 +212,7 @@
 						}
 					}
 				} else {
-					if (cards && cardcount) progress += `<p class="text-blue-400">${nation} has less cards than ${cardcount}, skipping!`
+					if (cards && cards.length > 0 && cardcount) progress += `<p class="text-blue-400">${nation} has less cards than ${cardcount}, skipping!`
 					else progress += `<p class="text-blue-400">It is likely ${nation} has 0 cards, skipping!`
 				}
 			} catch (err) {

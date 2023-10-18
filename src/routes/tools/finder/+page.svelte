@@ -65,9 +65,10 @@
 				);
 				const xml = await response.text();
 				const xmlDocument = parser.parse(xml);
-				const cards: Array<Card> = xmlDocument.CARDS.DECK.CARD;
+				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD;
+				cards = cards ? Array.isArray(cards) ? cards : [cards] : []
                 const matches = finderlist.split('\n').map(matcher => matcher.split(','))
-				if (cards) {
+				if (cards && cards.length > 0) {
 					for (let j = 0; j < cards.length; j++) {
 						const id = cards[j].CARDID;
 						const season = cards[j].SEASON
