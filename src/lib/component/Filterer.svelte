@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { keywords } from '$lib/data/projects';
-	import { filter } from '$lib/store';
+	import { keywords } from '$lib/cards-resources/projects';
+	import { filter } from '$lib/cards-resources/store';
 </script>
 
 <div class="max-w-lg lg:max-w-5xl p-4 flex flex-wrap gap-4 mb-8">

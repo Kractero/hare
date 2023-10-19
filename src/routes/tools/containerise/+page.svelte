@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { handleDownload } from '$lib/download';
-	import { nsIterator } from '$lib/txtIterator';
-	import { onMount } from 'svelte';
+	import { handleDownload } from '$lib/helpers/download';
+	import { nsIterator } from '$lib/helpers/txtIterator';
 	import Head from '$lib/component/Head.svelte';
-	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
@@ -11,9 +9,8 @@
 	let puppets = '';
 	let content: Array<string>;
 	let downloadable = false;
-	onMount(() => ({puppets} = loadLocalStorage(["stationPuppets"])));
 
-	async function containerise(puppets: string) {
+	async function containerise() {
 		downloadable = false;
 		content = (await nsIterator(puppets, 'Container Rules')) as Array<string>;
 		progress = `<p>Finished processing</p>`;
@@ -43,10 +40,10 @@
 </p>
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
-	<form on:submit|preventDefault={() => containerise(puppets)} class="flex flex-col gap-8">
+	<form on:submit|preventDefault={() => containerise()} class="flex flex-col gap-8">
 		<Textarea text="Puppets" bind:bindValue={puppets} forValue="pup" required />
 		<Buttons>
-			<button disabled={!downloadable} on:click={() => handleDownload('txt', content, '')}
+			<button disabled={!downloadable} type="button" on:click={() => handleDownload('txt', content, '')}
 				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
 				Download
 			</button>

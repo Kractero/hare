@@ -1,27 +1,24 @@
-<script>
-	import { base } from "$app/paths";
-</script>
 <div class="flex-1 flex items-center flex-wrap gap-2 mt-8">
     <a
-        href={`${base}/`}
+        href={`/`}
         class="px-4 py-2 bg-herobuttons hover:bg-herobuttonshover text-buttons font-extralight rounded-xl"
     >
         Home
     </a>
     <a
-        href={`${base}/resources`}
+        href={`/resources`}
         class="px-4 py-2 bg-herobuttons hover:bg-herobuttonshover text-buttons font-extralight rounded-xl"
     >
         Resources
     </a>
     <a
-        href={`${base}/guides`}
+        href={`/guides`}
         class="px-4 py-2 bg-herobuttons hover:bg-herobuttonshover text-buttons font-extralight rounded-xl"
     >
         Guides
     </a>
     <a
-        href={`${base}/disclaimer`}
+        href={`/disclaimer`}
         class="px-4 py-2 bg-herobuttons hover:bg-herobuttonshover text-buttons font-extralight rounded-xl"
     >
         Disclaimer

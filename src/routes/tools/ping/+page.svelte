@@ -1,23 +1,30 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
-	import { sleep } from '$lib/globals';
+	import { sleep } from '$lib/helpers/utils';
 	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
-	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Terminal from '$lib/component/Terminal.svelte';
+	import type { PageData } from './$types';
+	import { pushHistory } from '$lib/helpers/utils';
+	export let data: PageData;
 	const abortController = new AbortController();
-	let puppets = '';
-	let main = '';
-	let password = '';
 	let progress = "";
 	let stoppable = false;
 	let stopped = false;
+	let puppets = '';
+	let main = '';
+	let password = '';
 
-	onMount(() => ({puppets, main, password} = loadLocalStorage(["stationPuppets", "stationMain", "stationPassword"])));
+	onMount(() => {
+		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		puppets = localStorage.getItem("puppets") as string || "";
+		password = localStorage.getItem("password") as string || "";
+	});
 	onDestroy(() => abortController.abort());
 
 	async function ping(main: string, puppets: string, password: string) {
+		pushHistory(`?main=${main}`)
 		stoppable = true;
 		stopped = false;
 		progress = '';

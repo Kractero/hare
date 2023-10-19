@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { filter, searchAuthor } from '$lib/store';
+	import { filter, searchAuthor } from '$lib/cards-resources/store';
 	export let name: string;
 	export let author: string;
 	export let url: string;
 	export let description: string;
 	export let keywords: Array<string>;
-	import { base } from "$app/paths";
 </script>
 
 <div
@@ -20,7 +19,7 @@
 				<p class="text-label text-sm">{author}</p>
 			</button>
 			<a href={url} rel="noopener noreferrer" target="_blank">
-				<img height="24" width="24" src={`${base}/innewtab.png`} alt="open in new tab" />
+				<img height="24" width="24" src={`/innewtab.png`} alt="open in new tab" />
 			</a>
 		</div>
 		<div class="flex flex-wrap justify-center gap-2 my-2">

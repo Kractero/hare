@@ -1,7 +1,7 @@
 <script>
 	import Head from '$lib/component/Head.svelte';
 	import Linkbar from '$lib/component/Linkbar.svelte';
-	import { tools } from '$lib/tools';
+	import { tools } from '$lib/data/tools';
 	import Tool from '$lib/component/Tool.svelte';
 	let searchTerm = '';
 </script>

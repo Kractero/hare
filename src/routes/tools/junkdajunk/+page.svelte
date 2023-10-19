@@ -1,59 +1,87 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import { parseXML, parser, sleep } from '$lib/globals';
-	import { handleDownload } from '$lib/download';
-	import { htmlContent } from '$lib/htmlContent';
+	import { parseXML, parser, sleep } from '$lib/helpers/utils';
+	import { handleDownload } from '$lib/helpers/download';
+	import { htmlContent } from '$lib/helpers/htmlContent';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Head from '$lib/component/Head.svelte';
 	import Rarities from '$lib/component/Rarities.svelte';
-	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Input from '$lib/component/Input.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	const abortController = new AbortController();
 	import type { Card } from '$lib/types';
 	import Select from '$lib/component/Select.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
+	import type { PageData } from './$types';
+	import { pushHistory } from '$lib/helpers/utils';
+	import Checkbox from '$lib/component/Checkbox.svelte';
+	export let data: PageData;
 	let progress: "";
-	let main = '';
-	let giftee = '';
-	let puppets = '';
-	let regionalwhitelist = '';
-	let jdjMode = 'Gift';
-	let password = '';
-	let ownercount = '';
 	let openNewLinkArr: Array<string> = [];
 	let counter = 0;
 	let junkHtml = '';
 	let stoppable = false;
 	let stopped = false;
 	let downloadable = false;
+	let main = '';
+	let giftee = '';
+	let puppets = '';
+	let regionalwhitelist = '';
+	let mode = 'Gift';
+	let password = '';
+	let owners = '';
 	let cardcount = '';
-	let rarities: { [key: string]: number } = {
-		common: 0.5,
-		uncommon: 1,
-		rare: 1,
-		'ultra-rare': 1,
-		epic: 1
-	};
-	onMount(() => (
-		{puppets, main, password, giftee, regionalwhitelist, jdjMode, rarities, ownercount, cardcount} = 
-			loadLocalStorage(
-				["stationPuppets", "stationMain", "stationPassword",  "stationGiftee", 
-					"stationRegionalWhitelist", "stationJDJDefault", "stationJDJ", "stationOwnerCount", "stationCardCount"
-				]))
-	)
+	let rarities: {[key: string]: number};
+	let skipseason = '';
+	let skipexnation = false;
+	let sellContent = '';
+	
+	onMount(() => {
+		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		puppets = localStorage.getItem("gotissuesPuppets") as string || "";
+		password = localStorage.getItem("password") as string || "";
+		mode = data.parameters.mode || localStorage.getItem("finderMode") as string || "Gift";
+		regionalwhitelist = data.parameters.regions?.replaceAll(',', '\n') || localStorage.getItem("junkdajunkRegionalWhitelist") as string || "";
+		giftee = data.parameters.giftee || localStorage.getItem("finderGiftee") as string || "";
+		rarities = localStorage.getItem("junkdajunkRarities") ? JSON.parse(localStorage.getItem("junkdajunkRarities") as string) : {
+            common: 0.5,
+            uncommon: 1,
+            rare: 1,
+            'ultra-rare': 1,
+            epic: 1,
+        }
+		owners = data.parameters.owners || localStorage.getItem("junkdajunkOwnerCount") as string || "";
+		cardcount = data.parameters.cardcount || localStorage.getItem("junkdajunkCardCount") as string || "";
+		skipseason = data.parameters.skipseason || localStorage.getItem("junkdajunkOmittedSeasons") as string || "";
+		skipexnation = (data.parameters.skipexnation === 'true') || (localStorage.getItem("junkdajunkExnation") === 'true') || false;
+	});
 	onDestroy(() => abortController.abort());
 
 	async function junkDaJunk(main: string, puppets: string) {
+		pushHistory(`?main=${main}&mode=${mode}${owners ? `&owners=${owners}` : ""}${cardcount ? `&cardcount=${cardcount}` : ""}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ""}${skipseason ? `&skipseason=${skipseason}` : ""}${skipexnation ? `&skipexnation=${skipexnation}` : ""}`)
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
 		progress = '';
+		junkHtml = '';
+		sellContent = '';
+		const interimSells = [];
+		let junkTotal = 0;
+		let nonJunkTotal = 0;
 		let puppetsList = puppets.split('\n');
 		const whiteList = regionalwhitelist ? regionalwhitelist.split('\n') : [];
 		if (whiteList.length > 0) {
 			progress += `<p>Whitelisting regions: ${whiteList.map((region) => region.trim()).join(', ')}</p>`;
+		}
+		if (skipseason.length > 0) {
+			progress += `<p>Skipping seasons:`
+			for (let i = 0; i < skipseason.length; i++) {
+				progress += `${i + 1} `
+			}
+		}
+		if (skipexnation === true) {
+			progress += `<p>Skipping s1 exnations</p>`
 		}
 		const rarityArr = Object.entries(rarities);
 		for (let i = 0; i < rarityArr.length; i++) {
@@ -70,8 +98,9 @@
 				await sleep(700);
 				progress += `<p class="font-semibold">Processing ${nation} ${i + 1}/${puppetsList.length} puppets</p>`;
 				const xmlDocument = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
-				const cards: Array<Card> = xmlDocument.CARDS.DECK.CARD;
-				if (cards && cards.length > Number(cardcount)) {
+				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD;
+					cards = cards ? Array.isArray(cards) ? cards : [cards] : []
+				if (cards && cards.length > 0 && cards.length > Number(cardcount)) {
 					for (let i = 0; i < cards.length; i++) {
 						const id = cards[i].CARDID;
 						const season = cards[i].SEASON;
@@ -108,40 +137,43 @@
 
 						let junk = true;
 						let reason = ""
-
-						if (ownercount && Number(ownercount) < owners.size) {
+						if (skipseason.includes(String(season))) {
 							junk = false;
-							reason = `, has less owners than ${ownercount}`
+							reason = `, <span class="text-blue-400">is ignored season ${season}</span>`
 						}
-
+						if (owners && Number(owners) < owners.size) {
+							junk = false;
+							reason = `, <span class="text-blue-400">has less owners than ${owners}</span>`
+						}
 						if (rarities.hasOwnProperty(category) && highestBid > rarities[category]) {
 							junk = false;
-							reason = `, has high bid.`
+							reason = `, <span class="text-blue-400">has high bid</span>`
 						}
 						if (parseFloat(marketValue) > 10) {
 							junk = false;
-							reason = `, MV over 10.`
+							reason = `, <span class="text-blue-400">MV over 10</span>`
 						};
-
+						if (!region && skipexnation) {
+							junk = false;
+							reason = `, <span class="text-blue-400">S1 exnation</span>`
+						}
 						if (region && whiteList.includes(region)) {
 							junk = false;
-							reason = `, is in whitelisted ${region}.`
+							reason = `, <span class="text-blue-400">is in whitelisted ${region}</span>`
 						}
 
 						if (junk) {
-							progress += `<p>${i + 1}/${
-									cards.length
-								} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}</p>`;
+							junkTotal = junkTotal + 1;
+							progress += `<p>${i + 1}/${cards.length} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}</p>`;
 							openNewLinkArr = [
 								...openNewLinkArr,
 								`https://www.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
 							];
-							junkHtml += `<tr><td><p>${i + 1} of ${
-								cards.length
-							}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
+							junkHtml += `<tr><td><p>${junkTotal}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
 						} else {
-							if (jdjMode === "Gift") {
+							if (mode === "Gift") {
 								let token = ""
+								await sleep(700);
 								const prepare = await fetch(
 									`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
 									{
@@ -155,7 +187,7 @@
 								const text = await prepare.text()
 								const xml = parser.parse(text)
 								token = xml.NATION.SUCCESS
-								
+								await sleep(700);
 								const gift = await fetch(
 									`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
 									{
@@ -169,19 +201,17 @@
 									progress += `<p class="text-green-400">${i + 1}/${cards.length} -> Gifted S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}${reason}</p>`;
 								}
 							} else {
+								nonJunkTotal = nonJunkTotal + 1;
 								progress += `<p class="text-green-400">${i + 1}/${cards.length} -> Selling S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}${reason}</p>`;
-								openNewLinkArr = [
-									...openNewLinkArr,
+								interimSells.push(
 									`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
-								];
-								junkHtml += `<tr><td><p>${i + 1} of ${
-									cards.length
-								}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
+								);
+								sellContent += `<tr><td><p>${nonJunkTotal}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
 							}
 						}
 					}
 				} else {
-					if (cardcount) progress += `<p class="text-blue-400">${nation} has less cards than ${cardcount}, skipping!`
+					if (cards && cards.length > 0 && cardcount) progress += `<p class="text-blue-400">${nation} has less cards than ${cardcount}, skipping!`
 					else progress += `<p class="text-blue-400">It is likely ${nation} has 0 cards, skipping!`
 				}
 			} catch (err) {
@@ -204,7 +234,7 @@
 <p class="mb-4">
 	An even faster way to junk and gift/sell cards with <span class="line-through">python</span> JavaScript.
 </p>
-<p class="text-xs mb-16">
+<p class="text-xs mb-16 max-w-sm">
 	The regional whitelist indicates regions to skip when deciding to junk cards. The card count threshold only runs Junking
 	analyzing on specified nations that have over a certain amount of cards. The owner count threshold will indicate cards to skip
 	that have less than the specified amount. The rarity threshold dictates when to skip based on the card's rarity and market value.
@@ -212,20 +242,27 @@
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => junkDaJunk(main, puppets)} class="flex flex-col gap-8">
-		<InputCredentials bind:main bind:puppets authenticated={jdjMode === "Gift" ? true : false} />
-		{#if jdjMode === "Gift"}
+		<InputCredentials bind:main bind:puppets authenticated={mode === "Gift" ? true : false} />
+		{#if mode === "Gift"}
 			<Input text={`Gift To`} bind:bindValue={giftee} forValue="giftee" required={true} />
 		{/if}
 		<Textarea text="Regional Whitelist" bind:bindValue={regionalwhitelist} forValue="regions" />
 		<Input text={`Card Count Threshold`} bind:bindValue={cardcount} forValue="card" />
-		<Input text={`Owner Count Threshold`} bind:bindValue={ownercount} forValue="owner" />
-		<div class="flex gap-4 justify-between max-w-lg">
-			<p class="w-24">Rarity Threshold</p>
-			<Rarities bind:rarities={rarities} />
+		<Input text={`Owner Count Threshold`} bind:bindValue={owners} forValue="owner" />
+		{#if rarities}
+			<div class="flex gap-4 justify-between max-w-lg">
+				<p class="w-24">Rarity Threshold</p>
+				<Rarities bind:rarities={rarities} />
+			</div>
+		{/if}
+		<Checkbox bind:omittedSeasons={skipseason} />
+		<div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
+            <p class="w-24">Skip S1 Exnation</p>
+			<input on:change={() => skipexnation = !skipexnation} checked={skipexnation} class="m-1" type="checkbox" />
 		</div>
         <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
-            <label class="w-24" for="jdj">JDJ Default Behavior</label>
-			<Select bind:mode={jdjMode} options={['Gift', 'Sell']} />
+            <label class="w-24" for="jdj">JDJ Gift or Sell</label>
+			<Select bind:mode={mode} options={['Gift', 'Sell']} />
         </div>
 		<Buttons>
 			<button
@@ -253,7 +290,10 @@
 			>
 				Open Available Link
 			</button>
-			<button disabled={!downloadable} on:click={() => handleDownload('html', htmlContent(junkHtml), 'junkDaJunk')}
+			<button type="button" disabled={!downloadable} on:click={() => {
+				handleDownload('html', htmlContent(junkHtml), 'junkDaJunk')
+				handleDownload('html', htmlContent(sellContent), 'junkDaJunkSells')
+			}}
 				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
 				Download
 			</button>

@@ -3,6 +3,7 @@ title: Got Issues with gotIssues?
 description: Resolution for gotIssues issues
 url: gotissues
 author: Kractero
+order: 5
 ---
 gotIssues is a powerful command line tool written in Python by 9003 to generate an html sheet that allows you to mow down issues on all your puppets by just spamming enter. Once setup, it can take your card farming to the moon. The problem is that it is very difficult to setup for someone who is not familiar with coding.
 

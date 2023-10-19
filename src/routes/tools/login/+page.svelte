@@ -1,20 +1,23 @@
 <script lang="ts">
-	import { handleDownload } from '$lib/download';
-	import { htmlContent } from '$lib/htmlContent';
-	import { nsIterator } from '$lib/txtIterator';
+	import { handleDownload } from '$lib/helpers/download';
+	import { htmlContent } from '$lib/helpers/htmlContent';
+	import { nsIterator } from '$lib/helpers/txtIterator';
 	import { onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Head from '$lib/component/Head.svelte';
-	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Buttons from '$lib/component/Buttons.svelte';
+	import type { PageData } from './$types';
+	import { pushHistory } from '$lib/helpers/utils';
+	export let data: PageData;
 	let progress = '';
 	let puppets = '';
 	let main = '';
 	let content: string;
 	let downloadable = false;
-	onMount(() => ({puppets, main} = loadLocalStorage(["stationPuppets", "stationMain"])));
+	onMount(() => { main = data.parameters.main || localStorage.getItem("main") as string || ""; });
 	async function login(puppets: string) {
+		pushHistory(`?main=${main}`)
 		downloadable = false;
 		content = (await nsIterator(puppets, 'Login Sheet', main)) as string;
 		progress = `<p>Finished processing!</p>`;

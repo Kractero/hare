@@ -3,14 +3,18 @@
 	import Input from '$lib/component/Input.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import { parseXML, parser } from '$lib/globals';
+	import { parseXML, parser } from '$lib/helpers/utils';
 	import * as ExcelJS from 'exceljs';
 	import type { NSRegion } from '$lib/types';
-
+	import type { PageData } from './$types';
+	import { pushHistory } from '$lib/helpers/utils';
+	import { onMount } from 'svelte';
+	export let data: PageData;
 	let main = '';
 	let progress = '';
 	let workbook: any;
 	let downloadable = false;
+	onMount(() => { main = data.parameters.main || localStorage.getItem("main") as string || ""; });
 	function sanitize(string: string) {
 		try {
 			if (['=', '+', '-', '@'].includes(string.charAt(0))) {
@@ -24,6 +28,7 @@
 	}
 
 	async function glass() {
+		pushHistory(`?main=${main}`)
 		downloadable = false
 		progress += `<p>Gathering founderless regions.</p>`
 		const governorless = await parseXML('https://www.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=governorless', main);
@@ -35,12 +40,13 @@
 
 		const currentDate = new Date();
 		const utcMinus7Date = new Date(currentDate.getTime() - 7 * 60 * 60 * 1000);
-		utcMinus7Date.setDate(utcMinus7Date.getDate() - 1);
+		utcMinus7Date.setDate(utcMinus7Date.getDate()-1);
 		const date = utcMinus7Date.toISOString().slice(0, 10);
 		progress += `<p>Requesting ${date} regional dump.</p>`
-		const regionRes = await fetch(`https://raw.githubusercontent.com/Kractero/region-xml-dump/main/data/${date}-Regions.xml`, {
+		let regionRes = await fetch(`https://raw.githubusercontent.com/Kractero/region-xml-dump/main/data/${date}-Regions.xml`, {
 			method: "GET"
 		});
+		if (regionRes.status === 404) progress += `<p class="text-red-400">The ${date} dump has not been generated yet! The dump generation happens at midnight UTC-7, 1 hour 30 min after major. If by 1 am UTC-7 the dump is still not generated, it needs to be done manually, so TG Kractero.`
 		const regionText = await regionRes.text()
 		const regionXML = parser.parse(regionText)
 		const regionList: Array<NSRegion> = regionXML.REGIONS.REGION;

@@ -1,16 +1,22 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
-	import { parseXML } from '$lib/globals';
+	import { parseXML } from '$lib/helpers/utils';
 	import Head from '$lib/component/Head.svelte';
-	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
+	import type { PageData } from './$types';
+	import { pushHistory } from '$lib/helpers/utils';
+	export let data: PageData;
 	let progress = "";
 	let puppets = '';
 	let main = '';
-	onMount(() => ({puppets, main} = loadLocalStorage(["stationPuppets", "stationMain"])));
+	onMount(() => {
+		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		puppets = localStorage.getItem("puppets") as string || "";
+	});
 	async function findWA(main: string, puppets: string) {
+		pushHistory(`?main=${main}`)
 		progress = '';
 		const puppetsList = puppets.split('\n');
 		const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?wa=1&q=members`, main);

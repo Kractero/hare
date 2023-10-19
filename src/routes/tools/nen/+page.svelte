@@ -1,19 +1,25 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { parseXML, sleep } from '$lib/globals';
+	import { parseXML, sleep } from '$lib/helpers/utils';
 	import Head from '$lib/component/Head.svelte';
-	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import type { Nation } from '$lib/types';
+	import type { PageData } from './$types';
+	import { pushHistory } from '$lib/helpers/utils';
+	export let data: PageData;
 	let progress = "";
 	let main = '';
 	let nennation = '';
 
-	onMount(() => ({main, nennation} = loadLocalStorage(["stationMain", "stationNENNation"])));
+	onMount(() => {
+		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		nennation = data.parameters.nennation || localStorage.getItem("nenNation") as string || "";
+	});
 
-	async function findWA() {
+	async function nen() {
+		pushHistory(`?main=${main}&nennation=${nennation}`)
 		progress = '';
         const xml: Nation = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nennation}&q=endorsements+region+wa`, main);
         if (xml.NATION.UNSTATUS === "Non-member") {
@@ -39,7 +45,7 @@
 <p class="mb-16">Specify a nation and get all the regionmates not endorsing them.</p>
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
-	<form on:submit|preventDefault={() => findWA()} class="flex flex-col gap-8">
+	<form on:submit|preventDefault={() => nen()} class="flex flex-col gap-8">
 		<Input text={`User Agent`} bind:bindValue={main} forValue="main" required={true} />
 		<Input text={`Nation to Check`} bind:bindValue={nennation} forValue="nennation" required={true} />
 		<Buttons />

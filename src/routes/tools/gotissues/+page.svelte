@@ -1,37 +1,45 @@
 <script lang="ts">
-	import { handleDownload } from '$lib/download';
-	import { htmlContent } from '$lib/htmlContent';
+	import { handleDownload } from '$lib/helpers/download';
+	import { htmlContent } from '$lib/helpers/htmlContent';
 	import { onDestroy, onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
-	import { parseXML, sleep } from '$lib/globals';
+	import { parseXML, sleep } from '$lib/helpers/utils';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Head from '$lib/component/Head.svelte';
-	import { loadLocalStorage } from '$lib/loadLocalStorage';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import type { Issue } from '$lib/types';
 	import Select from '$lib/component/Select.svelte';
+	import type { PageData } from './$types';
+	import { pushHistory } from '$lib/helpers/utils';
+	export let data: PageData;
 	const abortController = new AbortController();
 	let progress = "";
-	let main = '';
-	let puppets = '';
-	let password = '';
 	let openNewLinkArr: Array<string> = [];
 	let counter = 0;
 	let downloadable = false;
 	let issuesContent = '';
 	let stoppable = false;
 	let stopped = false;
-	let issuesmode =  "";
 
-	onMount(() => ({puppets, main, password, issuesmode} = loadLocalStorage(["stationPuppets", "stationMain", "stationPassword", "stationIssuesMode"])));
+	let main = '';
+	let puppets = '';
+	let password = '';
+	let mode =  '';
+	onMount(() => {
+		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		puppets = localStorage.getItem("gotissuesPuppets") as string || "";
+		password = localStorage.getItem("password") as string || "";
+		mode = data.parameters.mode || localStorage.getItem("gotissuesMode") as string || "";
+	});
 	onDestroy(() => abortController.abort());
 
-	async function gotIssues(main: string, puppets: string, password?: string) {
+	async function gotIssues() {
+		pushHistory(`?main=${main}&mode=${mode}`)
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
 		progress = "";
-		progress += `<p class="font-bold">Initiating gotIssues...mode set to ${issuesmode}</p>`;
+		progress += `<p class="font-bold">Initiating gotIssues...mode set to ${mode}</p>`;
 		openNewLinkArr = [];
 		issuesContent = "";
 		let puppetList = puppets.split('\n');
@@ -53,7 +61,7 @@
 				await sleep(700);
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`;
 				const xmlObj = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`, main, password?.replaceAll(' ', '_'));
-				if (issuesmode === "Both" || issuesmode === "Issues") {
+				if (mode === "Both" || mode === "Issues") {
 					const issues: Issue = xmlObj.NATION.ISSUES.ISSUE || []
 					let issueIds: Array<string> = []
 					if (!Array.isArray(issues)) issueIds.push(issues['@_id'])
@@ -69,11 +77,11 @@
 						issuesCount++;
 					});
 				}
-				if (issuesmode === "Both" || issuesmode === "Packs") {
+				if (mode === "Both" || mode === "Packs") {
 					const packs = xmlObj.NATION.PACKS;
 					if (packs) {
 						for (let i = 0; i < packs; i++) {
-							if (issuesmode === "Packs") {
+							if (mode === "Packs") {
 								openNewLinkArr = [
 									...openNewLinkArr,
 									`https://www.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
@@ -127,13 +135,13 @@
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form
-		on:submit|preventDefault={() => gotIssues(main, puppets, password)}
+		on:submit|preventDefault={() => gotIssues()}
 		class="flex flex-col gap-8"
 	>
 		<InputCredentials bind:main bind:puppets bind:password authenticated={true} />
         <div class="flex gap-4 justify-between max-w-lg">
 			<label class="w-24" for="mode">Mode</label>
-            <Select bind:mode={issuesmode} options={["Both", "Issues", "Packs"]} />
+            <Select bind:mode={mode} options={["Both", "Issues", "Packs"]} />
 		</div>
 		<Buttons>
 			<button
