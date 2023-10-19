@@ -46,7 +46,7 @@
 		let regionRes = await fetch(`https://raw.githubusercontent.com/Kractero/region-xml-dump/main/data/${date}-Regions.xml`, {
 			method: "GET"
 		});
-		if (regionRes.status === 404) progress += `<p class="text-red-400">The ${date} dump has not been generated! This means that when the script ran at its designated time 1 hour and 30 minutes after major, NationStates did not yet generate the equivalent regional dump for ${date}! There is no recovery mechanism for this, Kractero must manually initiate the action,so TG.`
+		if (regionRes.status === 404) progress += `<p class="text-red-400">The ${date} dump has not been generated yet! The dump generation happens at midnight UTC-7, 1 hour 30 min after major. If by 1 am UTC-7 the dump is still not generated, it needs to be done manually, so TG Kractero.`
 		const regionText = await regionRes.text()
 		const regionXML = parser.parse(regionText)
 		const regionList: Array<NSRegion> = regionXML.REGIONS.REGION;
