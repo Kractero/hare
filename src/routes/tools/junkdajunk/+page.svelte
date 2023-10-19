@@ -67,6 +67,8 @@
 		junkHtml = '';
 		sellContent = '';
 		const interimSells = [];
+		let junkTotal = 0;
+		let nonJunkTotal = 0;
 		let puppetsList = puppets.split('\n');
 		const whiteList = regionalwhitelist ? regionalwhitelist.split('\n') : [];
 		if (whiteList.length > 0) {
@@ -161,19 +163,17 @@
 						}
 
 						if (junk) {
-							progress += `<p>${i + 1}/${
-									cards.length
-								} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}</p>`;
+							junkTotal = junkTotal + 1;
+							progress += `<p>${i + 1}/${cards.length} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}</p>`;
 							openNewLinkArr = [
 								...openNewLinkArr,
 								`https://www.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
 							];
-							junkHtml += `<tr><td><p>${i + 1} of ${
-								cards.length
-							}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
+							junkHtml += `<tr><td><p>${junkTotal}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
 						} else {
 							if (mode === "Gift") {
 								let token = ""
+								await sleep(700);
 								const prepare = await fetch(
 									`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
 									{
@@ -187,7 +187,7 @@
 								const text = await prepare.text()
 								const xml = parser.parse(text)
 								token = xml.NATION.SUCCESS
-								
+								await sleep(700);
 								const gift = await fetch(
 									`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
 									{
@@ -201,13 +201,12 @@
 									progress += `<p class="text-green-400">${i + 1}/${cards.length} -> Gifted S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}${reason}</p>`;
 								}
 							} else {
+								nonJunkTotal = nonJunkTotal + 1;
 								progress += `<p class="text-green-400">${i + 1}/${cards.length} -> Selling S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}${reason}</p>`;
 								interimSells.push(
 									`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
 								);
-								sellContent += `<tr><td><p>${i + 1} of ${
-									cards.length
-								}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
+								sellContent += `<tr><td><p>${nonJunkTotal}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
 							}
 						}
 					}
@@ -219,7 +218,6 @@
 				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
 			}
 		}
-		junkHtml = junkHtml + sellContent;
 		progress += `<p>Finished processing</p>`;
 		downloadable = true;
 		stoppable = false;
@@ -292,7 +290,10 @@
 			>
 				Open Available Link
 			</button>
-			<button type="button" disabled={!downloadable} on:click={() => handleDownload('html', htmlContent(junkHtml), 'junkDaJunk')}
+			<button type="button" disabled={!downloadable} on:click={() => {
+				handleDownload('html', htmlContent(junkHtml), 'junkDaJunk')
+				handleDownload('html', htmlContent(sellContent), 'junkDaJunkSells')
+			}}
 				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
 				Download
 			</button>
