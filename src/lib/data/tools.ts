@@ -101,3 +101,12 @@ export const tools: Array<Tool> = [
 		// "category": "cards"
 	},
 ];
+
+export const otherHareTools: Array<Tool> = [
+	{
+		name: 'Legendary Tracker',
+		slug: 'legends',
+		description: 'View legendaries and whether they are CTE or not.'
+		// "category": "cards"
+	},
+]
