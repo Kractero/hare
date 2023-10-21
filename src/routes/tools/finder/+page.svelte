@@ -83,20 +83,20 @@
 								progress += `<p class="text-green-400">Found S${season} ${id} on ${puppetsList[i]}</p>`;
 								if (mode === "Gift") {
 									let token = ""
+									await sleep(700);
+									const headers: {[key: string]: string} = {
+										'User-Agent': main,
+									}
+									if (currentNationXPin) headers['X-Pin'] = currentNationXPin
+									else headers['X-Password'] = password
 									const prepare = await fetch(
-										`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
-										{
-											headers: {
-												'User-Agent': main,
-												'X-Password': currentNationXPin ? currentNationXPin : password
-											}
-										}
+										`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`, {headers: headers}
 									);
 									if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || "";
 									const text = await prepare.text()
 									const xml = parser.parse(text)
 									token = xml.NATION.SUCCESS
-									
+									await sleep(700);
 									const gift = await fetch(
 										`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
 										{
