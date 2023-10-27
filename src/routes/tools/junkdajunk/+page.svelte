@@ -59,7 +59,7 @@
 	onDestroy(() => abortController.abort());
 
 	async function junkDaJunk(main: string, puppets: string) {
-		pushHistory(`?main=${main}&mode=${mode}${owners ? `&owners=${owners}` : ""}${cardcount ? `&cardcount=${cardcount}` : ""}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ""}${skipseason ? `&skipseason=${skipseason}` : ""}${skipexnation ? `&skipexnation=${skipexnation}` : ""}`)
+		pushHistory(`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ""}${owners ? `&owners=${owners}` : ""}${cardcount ? `&cardcount=${cardcount}` : ""}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ""}${skipseason ? `&skipseason=${skipseason}` : ""}${skipexnation ? `&skipexnation=${skipexnation}` : ""}`)
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
@@ -160,7 +160,6 @@
 							reason = `<span class="text-blue-400">is in whitelisted ${region}</span>`
 						}
 						if (junk) {
-							console.log(junk)
 							progress += `<p>${i + 1}/${
 									cards.length
 								} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}</p>`;
@@ -198,12 +197,18 @@
 									}
 								);
 								if (gift.status === 200) {
-									progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftee}`;
+									progress += `<p>${i + 1}/${
+										cards.length
+									} -> <span class="text-green-400">Gifted ${id} to ${giftee}</span>`;
 								} else {
-									progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}`;
+									progress += `<p>${i + 1}/${
+										cards.length
+									} -> <span class="text-red-400">Failed to gift ${id} to ${giftee}</span>`;
 								}
 							} else {
-								progress += `<p>Skipping ${id} - ${reason}!`;
+								progress += `<p>${i + 1}/${
+									cards.length
+								} -> Skipping ${id} - ${reason}!`;
 								interimSells.push(
 									`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
 								);
@@ -246,7 +251,7 @@
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => junkDaJunk(main, puppets)} class="flex flex-col gap-8">
-		<InputCredentials bind:main bind:puppets authenticated={mode === "Gift" ? true : false} />
+		<InputCredentials bind:main bind:puppets bind:password authenticated={mode === "Gift" ? true : false} />
 		{#if mode === "Gift"}
 			<Input text={`Gift To`} bind:bindValue={giftee} forValue="giftee" required={true} />
 		{/if}
