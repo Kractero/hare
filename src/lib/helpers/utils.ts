@@ -26,6 +26,14 @@ export async function parseXML(url: string, userAgent: string, password?: string
 		headers
 	});
 
+	if (response.status === 404) {
+		return {"status": `failed with error code 404`}
+	}
+
+	if (response.status === 409) {
+		return {"status": `failed with error code 409`}
+	}
+
 	const xml = await response.text();
 	const xmlObj = parser.parse(xml);
 	return xmlObj;
