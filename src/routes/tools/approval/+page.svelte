@@ -15,6 +15,8 @@
 	let progress = "";
     let content = "";
 	let downloadable = false;
+	let stopped = false;
+	let stoppable = false;
 
 	let main: string;
     let council: string;
@@ -28,6 +30,8 @@
 	async function approvals() {
 		pushHistory(`?main=${main}&council=${council}&proposal=${proposalid}`)
         downloadable = false;
+		stoppable = true;
+		stopped = false;
         let councilID = 1;
         if (council === "Security Council") {
             councilID = 2;
@@ -73,6 +77,7 @@
             progress += `<p class="text-green-400"><a class="underline" href="https://nationstates.net/nation=${delegate}">${delegate}</a> is approving!</p>`
         })
         downloadable = true;
+		stoppable = false;
 	}
 </script>
 
@@ -93,7 +98,18 @@
 			<Select bind:mode={council} options={['General Assembly', 'Security Council']} />
 		</div>
 		<Input text="Proposal ID" bind:bindValue={proposalid} forValue="proposalID" required={true} />
-		<Buttons>
+		<Buttons bind:stoppable={stoppable}>
+			<button
+				type="button"
+				disabled={!stoppable}
+				on:click={() => { {
+					stoppable = false;
+					stopped = true;
+				} }}
+				class="bg-red-500 rounded-md px-4 py-2 transition duration-300 hover:bg-red-300 disabled:opacity-20 disabled:hover:bg-red-500"
+			>
+				Stop
+			</button>
 			<button disabled={!downloadable} type="button" on:click={() => handleDownload('html', htmlContent(content), 'Approvals')}
 				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
 				Download

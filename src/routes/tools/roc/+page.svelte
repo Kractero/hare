@@ -123,7 +123,7 @@
 			<label class="w-24" for="mode">RoC Mode</label>
             <Select bind:mode={mode} options={["Top", "Specific"]} />
 		</div>
-		<Buttons>
+		<Buttons bind:stoppable={stoppable} >
 			<button
 				type="button"
 				disabled={!stoppable}

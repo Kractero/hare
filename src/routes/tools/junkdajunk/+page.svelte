@@ -12,6 +12,7 @@
 	import type { Card } from '$lib/types';
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
+	import Buttons from '$lib/component/Buttons.svelte';
 	export let data: PageData;
 	const abortController = new AbortController();
 	let progress = "";
@@ -169,30 +170,37 @@
 			<Select bind:mode={mode} options={['Gift', 'Sell']} />
         </div>
 		<div class="max-w-lg flex justify-center gap-2">
-			<button
-				type="submit"
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300"
-			>
-				Start
-			</button>
-			<button
-				disabled={progress.length === 0}
-				type="button"
-				on:click={() => {
-					if (counter > openNewLinkArr.length - 1) {
-						return;
-					}
-					window.open(openNewLinkArr[counter], '_blank');
-					counter++;
-				}}
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500"
-			>
-				Open Available Link
-			</button>
-			<button disabled={!downloadable} type="button" on:click={() => handleDownload('html', htmlContent(junkHtml), 'finder')}
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
-				Download
-			</button>
+			<Buttons bind:stoppable={stoppable}>
+				<button
+					type="button"
+					disabled={!stoppable}
+					on:click={() => { {
+						stoppable = false;
+						stopped = true;
+					} }}
+					class="bg-red-500 rounded-md px-4 py-2 transition duration-300 hover:bg-red-300 disabled:opacity-20 disabled:hover:bg-red-500"
+				>
+					Stop
+				</button>
+				<button
+					disabled={progress.length === 0}
+					type="button"
+					on:click={() => {
+						if (counter > openNewLinkArr.length - 1) {
+							return;
+						}
+						window.open(openNewLinkArr[counter], '_blank');
+						counter++;
+					}}
+					class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500"
+				>
+					Open Available Link
+				</button>
+				<button disabled={!downloadable} type="button" on:click={() => handleDownload('html', htmlContent(junkHtml), 'finder')}
+					class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
+					Download
+				</button>
+			</Buttons>
 		</div>
 	</form>
 	<Terminal bind:progress={progress} />

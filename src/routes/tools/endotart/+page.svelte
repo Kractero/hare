@@ -138,7 +138,7 @@
             <Select bind:mode={source} options={["XML", "API"]} />
 		</div>
 		<Textarea text="Immune Nations" bind:bindValue={immune} forValue="immune" />
-		<Buttons>
+		<Buttons bind:stoppable={stoppable} >
 			<button
 				type="button"
 				disabled={!stoppable}

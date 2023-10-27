@@ -69,7 +69,7 @@
 		class="flex flex-col gap-8"
 	>
 		<InputCredentials bind:main bind:puppets bind:password authenticated={true} />
-		<Buttons>
+		<Buttons bind:stoppable={stoppable} >
 			<button
 				type="button"
 				disabled={!stoppable}

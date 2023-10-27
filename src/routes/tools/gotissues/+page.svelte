@@ -143,7 +143,7 @@
 			<label class="w-24" for="mode">Mode</label>
             <Select bind:mode={mode} options={["Both", "Issues", "Packs"]} />
 		</div>
-		<Buttons>
+		<Buttons bind:stoppable={stoppable}>
 			<button
 				type="button"
 				disabled={!stoppable}
