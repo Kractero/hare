@@ -137,30 +137,30 @@
 						let reason = ""
 						if (skipseason.includes(String(season))) {
 							junk = false;
-							reason = `, <span class="text-blue-400">is ignored season ${season}</span>`
+							reason = `<span class="text-blue-400">is ignored season ${season}</span>`
 						}
 						if (owners && Number(owners) < owners.size) {
 							junk = false;
-							reason = `, <span class="text-blue-400">has less owners than ${owners}</span>`
+							reason = `<span class="text-blue-400">has less owners than ${owners}</span>`
 						}
 						if (rarities.hasOwnProperty(category) && highestBid > rarities[category]) {
 							junk = false;
-							reason = `, <span class="text-blue-400">has high bid</span>`
+							reason = `<span class="text-blue-400">has high bid</span>`
 						}
 						if (parseFloat(marketValue) > 10) {
 							junk = false;
-							reason = `, <span class="text-blue-400">MV over 10</span>`
+							reason = `<span class="text-blue-400">MV over 10</span>`
 						};
 						if (!region && skipexnation) {
 							junk = false;
-							reason = `, <span class="text-blue-400">S1 exnation</span>`
+							reason = `<span class="text-blue-400">S1 exnation</span>`
 						}
 						if (region && whiteList.includes(region)) {
 							junk = false;
-							reason = `, <span class="text-blue-400">is in whitelisted ${region}</span>`
+							reason = `<span class="text-blue-400">is in whitelisted ${region}</span>`
 						}
-
 						if (junk) {
+							console.log(junk)
 							progress += `<p>${i + 1}/${
 									cards.length
 								} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}</p>`;
@@ -203,7 +203,7 @@
 									progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}`;
 								}
 							} else {
-								progress += `<p class="text-green-400">${nation} owns ${id}!`;
+								progress += `<p>Skipping ${id} - ${reason}!`;
 								interimSells.push(
 									`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
 								);
