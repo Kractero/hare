@@ -40,7 +40,8 @@
         approvalProposal: '',
         goldretrieverMode: "Include",
         junkdajunkOmittedSeasons: "",
-        junkdajunkExnation: false
+        junkdajunkExnation: false,
+        flagmanagerFlags: ''
     };
 
     onMount(() => {
@@ -145,6 +146,8 @@
             <Select bind:mode={localStorageObject.approvalCouncil} options={['General Assembly', 'Security Council']} />
 		</div>
         <Input text="Proposal ID" bind:bindValue={localStorageObject.approvalProposal} forValue="proposalID" required={false} />
+        <h2 class="text-2xl text-center font-bold tracking-tight">Flags</h2>
+        <Textarea text="Search Flags" bind:bindValue={localStorageObject.flagmanagerFlags} forValue="flags" />
         <div class="max-w-lg flex justify-center">
             <button
                 type="submit"
