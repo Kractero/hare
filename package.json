@@ -37,6 +37,7 @@
 	"type": "module",
 	"dependencies": {
 		"exceljs": "^4.3.0",
-		"fast-xml-parser": "^4.3.1"
+		"fast-xml-parser": "^4.3.1",
+		"svelte-french-toast": "^1.2.0"
 	}
 }

@@ -6,6 +6,7 @@
 	import Textarea from '$lib/component/Textarea.svelte';
 	import Select from '$lib/component/Select.svelte';
 	import Checkbox from '$lib/component/Checkbox.svelte';
+    import toast, {Toaster} from 'svelte-french-toast'
 
     const localStorageObject: {[key: string]: any } = {
         puppets: '',
@@ -57,16 +58,31 @@
     });
 
 	async function setConfig() {
+        const changes = []
         for (const key in localStorageObject) {
             if (key === "junkdajunkRarities") {
+                const curr = JSON.parse(localStorage.getItem(key)!)
+                const conf = localStorageObject.junkdajunkRarities
+                Object.keys(curr).forEach(rarity => {
+                    if (curr[rarity] !== conf[rarity]) changes.push(key)
+                })
                 localStorage.setItem(key, JSON.stringify(localStorageObject.junkdajunkRarities))
             } else {
+                if (localStorage.getItem(key) !== String(localStorageObject[key])) {
+                    changes.push(key)
+                }
                 localStorage.setItem(key, localStorageObject[key]);
             }
+        }
+        if (changes.length > 0) {
+            toast.success(`Set ${changes.map((change) => change.trim()).join(', ')}`)
+        } else {
+            toast("Nothing was changed... ¯\_(ツ)_/¯");
         }
 	}
 </script>
 
+<Toaster />
 <Head title={"Hare - Config"} description={"Configure your default inputs for each script."} />
 
 <h1 class="text-4xl text-center mb-16">Configure Default Inputs</h1>
