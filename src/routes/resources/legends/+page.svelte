@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Head from '$lib/component/Head.svelte';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	let json: Array<{[key: string]: boolean}> = [];
 	let changelog: any[] = [];
 	const currentDate = new Date();
@@ -41,12 +41,8 @@
 	};
 </script>
 
-<Head title={'Hare - Legendary Tracker'} description={'Track the existence of legendaries per season.'}/>
+<ToolContent toolTitle="Legendary Tracker" caption="Track the existence of legendaries per season" additional={`<p class="mb-16">As of {date} (11:30 PM/23:30 UTC-7)</p>`} />
 
-<h1 class="text-4xl mb-2">Legendary Tracker</h1>
-<p class="mb-1">Track the existence of legendaries per season.</p>
-
-<p class="mb-16">As of {date} (11:30 PM/23:30 UTC-7)</p>
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row justify-between gap-8 break-normal mb-4">
 	<div>
         <h2 class="font-semibold text-lg mb-2">Per-Season</h2>

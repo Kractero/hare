@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import { parseXML, sleep } from '$lib/helpers/utils';
-	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import type { PageData } from '../trigonometry/$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import Textarea from '$lib/component/Textarea.svelte';
 	import Input from '$lib/component/Input.svelte';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	export let data: PageData;
 	let progress = "";
 	let regions = '';
@@ -80,14 +80,7 @@
 	}
 </script>
 
-<Head title={"Hare - Where's My WA"} description={"Specify your regions and this script will find which one is in the WA."} />
-
-<h1 class="text-4xl mb-2">Where's My WA</h1>
-<p class="text-xs mb-4">
-	<a class="underline" href="https://github.com/jmikk/WheresMyWA" target="_blank" rel="noreferrer noopener">
-		Original by 9003
-	</a>, rewritten in JS for browser use by Kractero</p>
-<p class="mb-16">Specify your regions and this script will find which one is in the WA.</p>
+<ToolContent toolTitle="Trigonometry" caption="A testing trigger tool." />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => trigonometry(main, regions)} class="flex flex-col gap-8">

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import { parseXML, sleep } from '$lib/helpers/utils';
-	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
@@ -10,6 +9,7 @@
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import Select from '$lib/component/Select.svelte';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	export let data: PageData;
 	const abortController = new AbortController();
 	let progress = '';
@@ -96,19 +96,9 @@
 	}
 </script>
 
-<Head title={"Hare - Rate of Change"} description={"Calculate the rate of change in deck value for the top X NS players, over X days."} />
-
-<h1 class="text-4xl mb-2">Rate of Change</h1>
-<p class="text-xs mb-2">
-	<a class="underline" href="https://github.com/Thorn1000/NS-RoC" target="_blank" rel="noreferrer noopener">
-		Original by Thorn1000
-	</a>, rewritten in JS for browser use by Kractero</p>
-<p class="mb-1">
-	Calculate the rate of change in deck value for the top X NS players, over X days.
-</p>
-<p class="text-xs mb-16">
+<ToolContent toolTitle="Rate of Change" caption="Get the rate of change in deck value for the top X NS players, over X Days." author="Thorn1000" originalBlurb="rewritten in JS for browser use by Kractero" link="https://github.com/Thorn1000/NS-RoC" additional={`<p class="text-xs mb-16">
 	Specific indicates to search for specific nation's RoC, and is enabled only when top is empty.
-</p>
+</p>`} />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => rateOfChange(main)} class="flex flex-col gap-8">

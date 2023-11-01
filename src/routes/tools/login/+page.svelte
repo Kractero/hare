@@ -5,10 +5,10 @@
 	import { onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	export let data: PageData;
 	let progress = '';
 	let puppets = '';
@@ -25,15 +25,7 @@
 	}
 </script>
 
-<Head title={"Hare - Login Sheet"} description={"Generate links to help you quickly log back into containers."} />
-
-<h1 class="text-4xl mb-2">Login Sheet</h1>
-<p class="text-xs mb-1">
-	<a class="underline" href="https://github.com/Kractero/cards-utilities/tree/main/log_into_containers" target="_blank" rel="noreferrer noopener">
-		Original by Kractero
-	</a>
-</p>
-<p class="text-xs mb-4">
+<ToolContent toolTitle="Login Sheet" caption="Generate links to help you quickly log back into containers." author="Kractero" link="https://github.com/Kractero/cards-utilities/tree/main/log_into_containers" additional={`<p class="text-xs mb-16">
 	For optimal use, this script is intended to be used with
 	<a class="underline" href="https://github.com/Kractero/cards-utilities/raw/main/log_into_containers/autologautoclose.user.js" target="_blank" rel="noreferrer noopener">
 		autocloser
@@ -41,8 +33,7 @@
 	<a class="underline" href="https://github.com/Kractero/cards-utilities/blob/main/log_into_containers/autolog.user.js" target="_blank" rel="noreferrer noopener">
 		autolog
 	</a> which does require configuration which you can read about in the repository.
-</p>
-<p class="mb-16">Generate links to help you quickly log back into containers.</p>
+</p>`} />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => login(puppets)} class="flex flex-col gap-8">

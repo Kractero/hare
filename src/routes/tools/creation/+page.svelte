@@ -3,9 +3,9 @@
 	import { htmlContent } from '$lib/helpers/htmlContent';
 	import { nsIterator } from '$lib/helpers/txtIterator';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	let progress = "";
 	let content: string;
 	let downloadable = false;
@@ -19,21 +19,12 @@
 	}
 </script>
 
-<Head title={"Hare - Creator Assistant"} description={"Generate a sheet that has links for nation creation that works with the provided userscripts."} />
-
-<h1 class="text-4xl mb-2">Creator Assistant</h1>
-<p class="text-xs mb-1">
-	<a class="underline" href="https://github.com/Kractero/cards-utilities/tree/main/creation_assistant" target="_blank" rel="noreferrer noopener">
-		Original by Kractero
-	</a>
-</p>
-<p class="text-xs mb-4">
+<ToolContent toolTitle="Creator Assistant" author="Kractero" link="https://github.com/Kractero/cards-utilities/tree/main/creation_assistant" caption="Generate a sheet that has links for nation creation that works with the provided userscripts." additional={`<p class="text-xs mb-16">
 	For optimal use, this script is intended to be used with
 	<a class="underline" href="https://github.com/Kractero/cards-utilities/blob/main/creation_assistant/creator.user.js" target="_blank" rel="noreferrer noopener">
 		creator
 	</a> which does require configuration which you can read about in the repository.
-</p>
-<p class="mb-16">Generate a sheet that has links for nation creation that works with the provided userscripts.</p>
+</p>`}/>
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => login(puppets)} class="flex flex-col gap-8">

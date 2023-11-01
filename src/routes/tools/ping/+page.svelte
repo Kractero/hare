@@ -2,11 +2,11 @@
 	import { onDestroy, onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import { sleep } from '$lib/helpers/utils';
-	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	export let data: PageData;
 	const abortController = new AbortController();
 	let progress = "";
@@ -57,11 +57,7 @@
 	}
 </script>
 
-<Head title={"Hare - Pinger"} description={"Ping all your inputed nations to keep them from ceasing to exist."} />
-
-<h1 class="text-4xl mb-2">Nation Pinger</h1>
-<p class="text-xs mb-1">Kractero</p>
-<p class="mb-16">Ping all your inputed nations to keep them from ceasing to exist.</p>
+<ToolContent toolTitle="Pinger" caption="Ping all your inputted nations to keep them from ceasing to exist." />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form

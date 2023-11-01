@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { handleDownload } from '$lib/helpers/download';
 	import { nsIterator } from '$lib/helpers/txtIterator';
-	import Head from '$lib/component/Head.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	let progress = "";
 	let puppets = '';
 	let content: Array<string>;
@@ -22,11 +22,7 @@
 	}
 </script>
 
-<Head title={"Hare - Container Rules"} description={"Generate containerise rules."} />
-
-<h1 class="text-4xl mb-2">Containerise Rules</h1>
-<p class="mb-2">Generate containerise rules.</p>
-<p class="mb-16 text-xs">
+<ToolContent toolTitle="Container Rules" caption="Generate container rules" additional={`<p class="mb-16 text-xs">
 	SHILL: This is unnecessary if you use my
 	<a
 		class="underline"
@@ -37,7 +33,7 @@
 		Cardtainers
 	</a>
 	add-on, which will automatically create rules that match nations, whether you prefer container or nation.
-</p>
+</p>`} />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => containerise()} class="flex flex-col gap-8">

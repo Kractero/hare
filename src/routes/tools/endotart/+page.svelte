@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import { parseXML, parser, sleep } from '$lib/helpers/utils';
-	import Head from '$lib/component/Head.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
@@ -11,6 +10,7 @@
 	const abortController = new AbortController();
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	export let data: PageData;
 	let progress = "";
 	let stopped = false;
@@ -121,12 +121,7 @@
 	}
 </script>
 
-<Head title={"Hare - Endotarting"} description={"Specify a nation and get all the regionmates they are not endorsing."} />
-
-<h1 class="text-4xl mb-2">Endotarting</h1>
-<p class="text-xs mb-4">
-	A <a href="https://github.com/nsupc/UPC-3PO" target="_blank" rel="noreferrer noopener">UPC-3PO</a> command rewritten in JavaScript by Kractero
-<p class="mb-16">Specify a nation and get all the regionmates they are not endorsing.</p>
+<ToolContent toolTitle="Endotarting" caption="Specify a nation and get all the regionmates they are not endorsing."/>
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={endotart} class="flex flex-col gap-8">

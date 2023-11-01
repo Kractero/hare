@@ -5,12 +5,12 @@
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import { parseXML, sleep } from '$lib/helpers/utils';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import type { Issue } from '$lib/types';
 	import Select from '$lib/component/Select.svelte';
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	export let data: PageData;
 	const abortController = new AbortController();
 	let progress = "";
@@ -110,14 +110,7 @@
 	}
 </script>
 
-<Head title={"Hare - gotIssues"} description={"An even faster way to answer issues with JavaScript."} />
-
-<h1 class="text-4xl mb-4">gotIssues</h1>
-<p class="text-xs mb-1">
-	<a class="underline" href="https://github.com/jmikk/gotIssues" target="_blank" rel="noreferrer noopener">
-		Original by 9003
-	</a>, rewritten in JS for browser use by Kractero</p>
-<p class="text-xs mb-4">
+<ToolContent toolTitle="gotIssues" caption="An even faster way to answer issues with JavaScript." author="9003" originalBlurb="rewritten in JS for browser use by Kractero" link="https://github.com/jmikk/gotIssues" additional={`<p class="text-xs mb-16">
 	For optimal use, this script is intended to be used with
 	<a class="underline" href="https://raw.githubusercontent.com/jmikk/gotIssues/master/autoclose%3D1.user.js" target="_blank" rel="noreferrer noopener">
 		autoclose
@@ -126,12 +119,9 @@
 		NSIssueCompactorRand
 	</a>
 </p>
-<p class="mb-1">
-	An even faster way to answer issues with <span class="line-through">python</span> JavaScript.
-</p>
 <p class="text-xs mb-16">
 	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
-</p>
+</p>`}/>
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form

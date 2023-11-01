@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import { parser, sleep } from '$lib/helpers/utils';
-	import Head from '$lib/component/Head.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
@@ -11,6 +10,7 @@
 	const abortController = new AbortController();
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	export let data: PageData;
 	let progress = "";
     let content = "";
@@ -81,14 +81,7 @@
 	}
 </script>
 
-<Head title={"Hare - Approvals List"} description={"Specify a nation and get all the regionmates they are not endorsing."} />
-
-<h1 class="text-4xl mb-2">Approvals List</h1>
-<p class="text-xs mb-1">
-	<a class="underline" href="https://github.com/jmikk/gotIssues" target="_blank" rel="noreferrer noopener">
-		Original by 9003
-	</a>, rewritten in JS for browser use by Kractero</p>
-<p class="mb-16">Specify a proposal and get all delegates that are not approving it.</p>
+<ToolContent toolTitle="Approvals List" originalBlurb="rewritten in JS for browser use by Kractero" author="9003" link="https://github.com/jmikk/Approval-List" caption="Specify a proposal and get all delegates that are not approving it." />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => approvals()} class="flex flex-col gap-8">

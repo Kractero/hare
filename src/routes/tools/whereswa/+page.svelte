@@ -2,11 +2,11 @@
 	import { onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import { parseXML } from '$lib/helpers/utils';
-	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	export let data: PageData;
 	let progress = "";
 	let puppets = '';
@@ -29,14 +29,7 @@
 	}
 </script>
 
-<Head title={"Hare - Where's My WA"} description={"Specify your puppets and this script will find which one is in the WA."} />
-
-<h1 class="text-4xl mb-2">Where's My WA</h1>
-<p class="text-xs mb-4">
-	<a class="underline" href="https://github.com/jmikk/WheresMyWA" target="_blank" rel="noreferrer noopener">
-		Original by 9003
-	</a>, rewritten in JS for browser use by Kractero</p>
-<p class="mb-16">Specify your puppets and this script will find which one is in the WA.</p>
+<ToolContent toolTitle="Where's My WA" caption="Specify your puppets and this script will find which one is in the WA." author="9003" link="https://github.com/jmikk/WheresMyWA" originalBlurb="rewritten in JS for browser use by Kractero" />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => findWA(main, puppets)} class="flex flex-col gap-8">

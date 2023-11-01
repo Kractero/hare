@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Head from '$lib/component/Head.svelte';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import type { NSNation, Region } from '$lib/types';
 	import { parseXML, parser } from '$lib/helpers/utils';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 
 	export let data: PageData;
     let source: string;
@@ -61,10 +61,7 @@
     let regionName = data.region.split('_').map(word => word[0].toUpperCase() + word.slice(1)).join(' ')
 </script>
 
-<Head title={`Hare - ${regionName}`} description={`Regional page for ${regionName}`} />
-
-<h1 class="text-4xl mb-2">{regionName}</h1>
-<p class="mb-16">Endorsement Board</p>
+<ToolContent toolTitle={regionName} caption={`${regionName} Endorsement Board`} />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<table class="w-full border-collapse table-auto caption-bottom text-left whitespace-normal">

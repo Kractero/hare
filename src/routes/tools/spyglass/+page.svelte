@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Head from '$lib/component/Head.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
@@ -9,6 +8,7 @@
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import { onMount } from 'svelte';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	export let data: PageData;
 	let main = '';
 	let progress = '';
@@ -222,17 +222,7 @@
 	}
 </script>
 
-<Head
-	title={'Hare - Glasses'}
-	description={'Specify a nation and get all the regionmates they are not endorsing.'}
-/>
-
-<h1 class="text-4xl mb-2">Glasses</h1>
-<p class="text-xs mb-4">
-	Original tool by <a href="https://github.com/Derpseh/Spyglass" target="_blank" rel="noreferrer noopener">the Spyglass Team</a>
-	rewritten in JavaScript by Kractero
-</p>
-<p class="mb-16">Generate a spreadsheet that includes information on NationStates regions.</p>
+<ToolContent toolTitle="Glasses" caption="Generate a spreadsheet that includes information on NationStates regions." author="the Spyglass Team" link="https://github.com/Derpseh/Spyglass" originalBlurb="rewritten in JS for browser use by Kractero"/>
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => glass()} class="flex flex-col gap-8">

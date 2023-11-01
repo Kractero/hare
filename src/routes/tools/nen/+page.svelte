@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { parseXML, sleep } from '$lib/helpers/utils';
-	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import type { Nation } from '$lib/types';
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	export let data: PageData;
 	let progress = "";
 	let main = '';
@@ -37,12 +37,7 @@
 	}
 </script>
 
-<Head title={"Hare - Not Endorsing Nations"} description={"Specify a nation and get all the regionmates not endorsing them."} />
-
-<h1 class="text-4xl mb-2">Not Endorsing Nation</h1>
-<p class="text-xs mb-4">
-	A UPC-3PO command rewritten in JavaScript by Kractero
-<p class="mb-16">Specify a nation and get all the regionmates not endorsing them.</p>
+<ToolContent toolTitle="Not Endorsing" caption={"Specify a nation and get all the regionmates not endorsing them."} />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => nen()} class="flex flex-col gap-8">

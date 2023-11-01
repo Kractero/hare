@@ -2,12 +2,12 @@
 	import { onDestroy, onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import { parseXML, sleep } from '$lib/helpers/utils';
-	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import Textarea from '$lib/component/Textarea.svelte';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	export let data: PageData;
 	const abortController = new AbortController();
 	let progress = "";
@@ -49,11 +49,7 @@
 	}
 </script>
 
-<Head title={"Hare - Flags"} description={"Find which puppets have a specific flag."} />
-
-<h1 class="text-4xl mb-2">Flag Manager</h1>
-<p class="text-xs mb-1">Kractero</p>
-<p class="mb-16">Find which nations have a specific flag, useful for unique puppet management.</p>
+<ToolContent toolTitle="Flag Manager" caption="Find which puppets have a specific flag." author="Kractero" link="https://nationstates.net/Kractero"/>
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form

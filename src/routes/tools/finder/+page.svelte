@@ -5,7 +5,6 @@
 	import { htmlContent } from '$lib/helpers/htmlContent';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import Head from '$lib/component/Head.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import Select from '$lib/component/Select.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
@@ -13,6 +12,7 @@
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import Buttons from '$lib/component/Buttons.svelte';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	export let data: PageData;
 	const abortController = new AbortController();
 	let progress = "";
@@ -138,25 +138,13 @@
 	}
 </script>
 
-<Head title={"Hare - Finder"} description={"Find which of the specified nations have which of the specified cards."} />
-
-<h1 class="text-4xl mb-2">Finder</h1>
-<p class="text-xs mb-4">
-	<a class="underline" href="https://github.com/Kractero/cards-utilities/blob/main/finder.py" target="_blank" rel="noreferrer noopener">
-		Kractero
-	</a>
-<p class="mb-1">
-	Find which of the specified nations have which of the specified cards.
-</p>
-<p class={`text-xs ${mode === "Gift" ? "mb-1" : "mb-16"}`}>
+<ToolContent toolTitle="Finder" caption="Find which of the specified nations have which of the specified cards." author="Kractero" link="https://github.com/Kractero/cards-utilities/blob/main/finder.py" additional={`<p class="mb-2">
 	You can specify season and nation to gift with CARDID,SEASON,GIFTTO instead of just CARDID on each line. 
 	GIFTTO will overrule the Gift To nation if provided.
 </p>
-{#if mode === "Gift"}
-	<p class="text-xs mb-16">
-		Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
-	</p>
-{/if}
+<p class="text-xs mb-16">
+	Password input for gifting is optional and will be disabled if the puppet list includes a comma for nation,password.
+</p>`} />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => finder(main, puppets)} class="flex flex-col gap-8">

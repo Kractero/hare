@@ -1,7 +1,5 @@
 <script>
-
 	import Head from "$lib/component/Head.svelte";
-
 </script>
 
 <Head title={`Hare - Disclaimer`} description="Important disclaimer." />

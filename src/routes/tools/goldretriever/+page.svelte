@@ -6,13 +6,13 @@
 	import { parseXML, sleep } from '$lib/helpers/utils';
 	import { sort, style } from '$lib/helpers/sortFunctionString';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import Head from '$lib/component/Head.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	export let data: PageData;
 	import type { Card, Issue } from '$lib/types';
 	import Select from '$lib/component/Select.svelte';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	const abortController = new AbortController();
 	let progress = "";
 	let downloadable = false;
@@ -123,19 +123,7 @@
 	}
 </script>
 
-<Head title={"Hare - Gold Retriever"} description={"Get deck value, junk value, and more of all your puppets."} />
-
-<h1 class="text-4xl mb-2">Gold Retriever</h1>
-<p class="text-xs mb-4">
-	<a class="underline" href="https://colab.research.google.com/drive/1Rrd20eBdX-MvLkUHJGHhIdJP3SrjPbtE" target="_blank" rel="noreferrer noopener">
-		Original by ValentineZ
-	</a> (python in Google Colab), 
-	<a href="https://dithpri.github.io/goldretriever-web/" target="_blank" rel="noreferrer noopener">
-		rewritten by Racoda in TypeScript
-	</a>, rewritten also
-	in JavaScript by Kractero
-</p>
-<p class="mb-16">Get deck value, junk value, and more of all your puppets.</p>
+<ToolContent toolTitle="Gold Retriever" originalBlurb="rewritten in JS for browser use by Kractero" caption="Get deck value, junk value, and more of all your puppets." author="ValentineZ" link="https://forum.nationstates.net/viewtopic.php?f=42&t=476326"/>
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form

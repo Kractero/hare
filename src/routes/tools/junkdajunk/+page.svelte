@@ -5,7 +5,6 @@
 	import { htmlContent } from '$lib/helpers/htmlContent';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import Head from '$lib/component/Head.svelte';
 	import Rarities from '$lib/component/Rarities.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
@@ -16,6 +15,7 @@
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import Checkbox from '$lib/component/Checkbox.svelte';
+	import ToolContent from '$lib/component/ToolContent.svelte';
 	export let data: PageData;
 	let progress: "";
 	let openNewLinkArr: Array<string> = [];
@@ -233,21 +233,11 @@
 	}
 </script>
 
-<Head title={"Hare - JunkDaJunk"} description={"An even faster way to junk cards with JavaScript."} />
-
-<h1 class="text-4xl mb-2">JunkDaJunk</h1>
-<p class="text-xs mb-4">
-	<a class="underline" href="https://github.com/jmikk/Card-Proccessor" target="_blank" rel="noreferrer noopener">
-		Original by 9003
-	</a>, rewritten in JS for browser use by Kractero</p>
-<p class="mb-4">
-	An even faster way to junk and gift/sell cards with <span class="line-through">python</span> JavaScript.
-</p>
-<p class="text-xs mb-16 max-w-sm">
+<ToolContent toolTitle="JunkDaJunk" caption={"An even faster way to junk cards with JavaScript."} author="9003" originalBlurb="rewritten in JS for browser use by Kractero" link="https://github.com/jmikk/Card-Proccessor" additional={`<p class="text-xs mb-16 max-w-sm">
 	The regional whitelist indicates regions to skip when deciding to junk cards. The card count threshold only runs Junking
 	analyzing on specified nations that have over a certain amount of cards. The owner count threshold will indicate cards to skip
 	that have less than the specified amount. The rarity threshold dictates when to skip based on the card's rarity and market value.
-</p>
+</p>`}/>
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => junkDaJunk(main, puppets)} class="flex flex-col gap-8">

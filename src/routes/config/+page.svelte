@@ -8,7 +8,6 @@
 	import Checkbox from '$lib/component/Checkbox.svelte';
 
     const localStorageObject: {[key: string]: any } = {
-    // const localStorageObject: {[key: string]: string | {[key: string]: number}} = {
         puppets: '',
         main: '',
         password: '',
