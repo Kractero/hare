@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { handleDownload } from '$lib/helpers/download';
 	import { nsIterator } from '$lib/helpers/txtIterator';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
@@ -38,12 +37,7 @@
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => containerise()} class="flex flex-col gap-8">
 		<Textarea text="Puppets" bind:bindValue={puppets} forValue="pup" required />
-		<Buttons>
-			<button disabled={!downloadable} type="button" on:click={() => handleDownload('txt', content, '')}
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
-				Download
-			</button>
-		</Buttons>
+		<Buttons downloadButton={true} bind:downloadable={downloadable} bind:content={content} type="txt" />
 	</form>
 	<Terminal bind:progress={progress} />
 </div>

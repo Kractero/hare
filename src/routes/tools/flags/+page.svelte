@@ -28,7 +28,7 @@
 		pushHistory(`?main=${main}`)
 		stoppable = true;
 		stopped = false;
-		progress = '';
+		progress = '<p>Initiating Flag Manager...</p>';
         let flagsList = flags.split('\n');
 		let puppetsList = puppets.split('\n');
 		for (let i = 0; i < puppetsList.length; i++) {
@@ -36,7 +36,7 @@
 			if (abortController.signal.aborted || stopped) {
 				break;
 			}
-            progress += `<p>Computing ${nation}</p>`
+            progress += `<p>Computing ${nation}'s flag</p>`
 			const response = await parseXML(
 				`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=flag`, main
 			)
@@ -45,6 +45,7 @@
             }
             await sleep(700);
 		}
+		progress += `Flag manager finished searching!`
 		stoppable = false;
 	}
 </script>
@@ -58,19 +59,7 @@
 	>
 		<InputCredentials bind:main bind:puppets authenticated={false} />
         <Textarea text="Search Flags" bind:bindValue={flags} forValue="flags" required />
-		<Buttons bind:stoppable={stoppable} >
-			<button
-				type="button"
-				disabled={!stoppable}
-				on:click={() => { 
-					stoppable = false
-					stopped = true
-				 }}
-				class="bg-red-500 rounded-md px-4 py-2 transition duration-300 hover:bg-red-300 disabled:opacity-20 disabled:hover:bg-red-500"
-			>
-				Stop
-			</button>
-		</Buttons>
+		<Buttons stopButton={true} bind:stopped={stopped} bind:stoppable={stoppable} />
 	</form>
 	<Terminal bind:progress={progress} />
 </div>

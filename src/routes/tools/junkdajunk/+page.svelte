@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import { parseXML, parser, sleep } from '$lib/helpers/utils';
-	import { handleDownload } from '$lib/helpers/download';
-	import { htmlContent } from '$lib/helpers/htmlContent';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Rarities from '$lib/component/Rarities.svelte';
@@ -16,6 +14,7 @@
 	import { pushHistory } from '$lib/helpers/utils';
 	import Checkbox from '$lib/component/Checkbox.svelte';
 	import ToolContent from '$lib/component/ToolContent.svelte';
+	import OpenButton from '$lib/component/OpenButton.svelte';
 	export let data: PageData;
 	let progress: "";
 	let openNewLinkArr: Array<string> = [];
@@ -259,40 +258,9 @@
             <p class="w-24">Skip S1 Exnation</p>
 			<input on:change={() => skipexnation = !skipexnation} checked={skipexnation} class="m-1" type="checkbox" />
 		</div>
-        <div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
-            <label class="w-24" for="jdj">JDJ Gift or Sell</label>
-			<Select bind:mode={mode} options={['Gift', 'Sell']} />
-        </div>
-		<Buttons bind:stoppable={stoppable} >
-			<button
-				type="button"
-				disabled={!stoppable}
-				on:click={() => { {
-					stoppable = false;
-					stopped = true;
-				} }}
-				class="bg-red-500 rounded-md px-4 py-2 transition duration-300 hover:bg-red-300 disabled:opacity-20 disabled:hover:bg-red-500"
-			>
-				Stop
-			</button>
-			<button
-				disabled={!progress}
-				type="button"
-				on:click={() => {
-					if (counter > openNewLinkArr.length - 1) {
-						return;
-					}
-					window.open(openNewLinkArr[counter], '_blank');
-					counter++;
-				}}
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500"
-			>
-				Open Available Link
-			</button>
-			<button type="button" disabled={!downloadable} on:click={() => handleDownload('html', htmlContent(junkHtml), 'junkDaJunk')}
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
-				Download
-			</button>
+        <Select name="Behavior" bind:mode={mode} options={['Gift', 'Sell']} />
+		<Buttons stopButton={true} bind:stopped={stopped} bind:stoppable={stoppable} downloadButton={true} bind:downloadable={downloadable} bind:content={junkHtml} name="junkDaJunk" >
+			<OpenButton bind:counter={counter} bind:progress={progress} bind:openNewLinkArr={openNewLinkArr} />
 		</Buttons>
 	</form>
 	<Terminal bind:progress={progress} />

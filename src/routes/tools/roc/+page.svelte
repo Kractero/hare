@@ -97,7 +97,7 @@
 </script>
 
 <ToolContent toolTitle="Rate of Change" caption="Get the rate of change in deck value for the top X NS players, over X Days." author="Thorn1000" originalBlurb="rewritten in JS for browser use by Kractero" link="https://github.com/Thorn1000/NS-RoC" additional={`<p class="text-xs mb-16">
-	Specific indicates to search for specific nation's RoC, and is enabled only when top is empty.
+	Behavior Specific indicates to search for specific nation's RoC, and is enabled only when top is empty.
 </p>`} />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
@@ -109,23 +109,8 @@
 			<Textarea text="Specific" bind:bindValue={specific} forValue="specific" required />
 		{/if}
 		<Input text={`Over ${days} days`} bind:bindValue={days} forValue="days" required={true} />
-		<div class="flex gap-4 justify-between max-w-lg">
-			<label class="w-24" for="mode">RoC Mode</label>
-            <Select bind:mode={mode} options={["Top", "Specific"]} />
-		</div>
-		<Buttons bind:stoppable={stoppable} >
-			<button
-				type="button"
-				disabled={!stoppable}
-				on:click={() => { 
-					stopped = true;
-					stoppable = false; 
-				}}
-				class="bg-red-500 rounded-md px-4 py-2 transition duration-300 hover:bg-red-300 disabled:opacity-20 disabled:hover:bg-red-500"
-			>
-				Stop
-			</button>
-		</Buttons>
+		<Select name="Behavior" bind:mode={mode} options={["Top", "Specific"]} />
+		<Buttons stopButton={true} bind:stopped={stopped} bind:stoppable={stoppable} />
 	</form>
 	<Terminal bind:progress={progress} />
 </div>

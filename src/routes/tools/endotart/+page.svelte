@@ -31,7 +31,7 @@
 	onDestroy(() => abortController.abort() );
 	async function endotart() {
 		pushHistory(`?main=${main}${limit ? `&limit=${limit}` : ""}&nation=${endotarter}&source=${source}${immune ? `&immune=${immune.replaceAll('\n', ',')}` : ""}`);
-		progress = "";
+		progress = "<p>Initiating Endotart...</p>";
 		stoppable = true;
 		stopped = false;
 		const whiteList = immune ? immune.split('\n').map(nation => nation.toLowerCase().replace(' ', '_')) : [];
@@ -128,24 +128,9 @@
 		<Input text="User main" bind:bindValue={main} forValue="main" required={true} />
 		<Input text="Endotart Nation" bind:bindValue={endotarter} forValue="endotarter" required={true} />
 		<Input text="Endorse Limit" bind:bindValue={limit} forValue="limit" required={false} />
-		<div class="flex gap-4 justify-between max-w-lg">
-			<label class="w-24" for="mode">Source</label>
-            <Select bind:mode={source} options={["XML", "API"]} />
-		</div>
+		<Select name="Source" bind:mode={source} options={["XML", "API"]} />
 		<Textarea text="Immune Nations" bind:bindValue={immune} forValue="immune" />
-		<Buttons bind:stoppable={stoppable} >
-			<button
-				type="button"
-				disabled={!stoppable}
-				on:click={() => { {
-					stoppable = false;
-					stopped = true;
-				} }}
-				class="bg-red-500 rounded-md px-4 py-2 transition duration-300 hover:bg-red-300 disabled:opacity-20 disabled:hover:bg-red-500"
-			>
-				Stop
-			</button>
-		</Buttons>
+		<Buttons stopButton={true} bind:stopped={stopped} bind:stoppable={stoppable} />
 	</form>
 	<Terminal bind:progress={progress} />
 </div>

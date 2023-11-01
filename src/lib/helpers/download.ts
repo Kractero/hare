@@ -1,6 +1,7 @@
 export function handleDownload(filetype: string, files: Array<string> | string, name?: string) {
 	let blob;
 	if (Array.isArray(files)) {
+		console.log(`text/${filetype}`)
 		blob = new Blob([files[0]], { type: `text/${filetype}` });
 		urlObject(blob, 'Containerise (Container)');
 		blob = new Blob([files[1]], { type: `text/${filetype}` });
@@ -16,7 +17,7 @@ export function urlObject(blob: Blob | MediaSource, mode: string | undefined) {
 	const link = document.createElement('a');
 	link.href = url;
 	link.download = `${mode}.${
-		mode ? 'html' : 'txt'
+		mode?.includes('Containerise') ? 'txt' : 'html'
 	}`;
 	link.click();
 	window.URL.revokeObjectURL(url);

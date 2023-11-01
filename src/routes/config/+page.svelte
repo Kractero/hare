@@ -110,38 +110,23 @@
         <h2 class="text-2xl text-center font-bold tracking-tight">gotIssues and junkDaJunk</h2>
         <Textarea text="Puppets" bind:bindValue={localStorageObject.gotissuesPuppets} forValue="gipup" />
         <h2 class="text-2xl text-center font-bold tracking-tight">gotIssues</h2>
-        <div class="flex gap-4 justify-between max-w-lg">
-			<label class="w-24" for="mode">Issues Mode</label>
-            <Select bind:mode={localStorageObject.gotissuesMode} options={["Both", "Issues", "Packs"]} />
-		</div>
+        <Select name="Behavior" bind:mode={localStorageObject.gotissuesMode} options={["Both", "Issues", "Packs"]} />
         <h2 class="text-2xl text-center font-bold tracking-tight">Rate of Change</h2>
         <Input text="Top {localStorageObject.rocTop}" bind:bindValue={localStorageObject.rocTop} forValue="top" />
         <Input text="Over {localStorageObject.rocDays} Days" bind:bindValue={localStorageObject.rocDays} forValue="days" />
         <Input text={`Specific ROC`} bind:bindValue={localStorageObject.rocSpecific} forValue="specific" />
-        <div class="flex gap-4 justify-between max-w-lg">
-			<label class="w-24" for="mode">RoC Mode</label>
-            <Select bind:mode={localStorageObject.rocMode} options={["Top", "Specific"]} />
-		</div>
+        <Select name="Behavior" bind:mode={localStorageObject.rocMode} options={["Top", "Specific"]} />
         <h2 class="text-2xl text-center font-bold tracking-tight">Endotarting</h2>
         <Input text="Endotarting Default" bind:bindValue={localStorageObject.endotartEndotarter} forValue="Endotarting" />
         <Input text="Endorse Limit" bind:bindValue={localStorageObject.endotartLimit} forValue="limit" />
         <Textarea text="Immune Nations" bind:bindValue={localStorageObject.endotartImmune} forValue="immune" />
-        <div class="flex gap-4 justify-between max-w-lg">
-			<label class="w-24" for="mode">Source</label>
-            <Select bind:mode={localStorageObject.endotartSource} options={["XML", "API"]} />
-		</div>
+        <Select name="Behavior" bind:mode={localStorageObject.endotartSource} options={["XML", "API"]} />
         <h2 class="text-2xl text-center font-bold tracking-tight">Not Endorsing</h2>
         <Input text="Not Endorsing Default" bind:bindValue={localStorageObject.nenNation} forValue="nen" />
         <h2 class="text-2xl text-center font-bold tracking-tight">Gold Retriever</h2>
-        <div class="flex gap-4 justify-between max-w-lg">
-            <label class="w-24" for="jdj">Issues and Packs?</label>
-			<Select bind:mode={localStorageObject.goldretrieverMode} options={['Include', 'Skip']} />
-        </div>
+        <Select name="Behavior" bind:mode={localStorageObject.goldretrieverMode} options={['Include', 'Skip']} />
         <h2 class="text-2xl text-center font-bold tracking-tight">JunkDaJunk Finder Shared</h2>
-        <div class="flex gap-4 justify-between max-w-lg">
-            <label class="w-24" for="jdj">Default Behavior</label>
-			<Select bind:mode={localStorageObject.finderMode} options={['Gift', 'Sell']} />
-        </div>
+        <Select name="Behavior" bind:mode={localStorageObject.finderMode} options={['Gift', 'Sell']} />
         <Input text="Gift To" bind:bindValue={localStorageObject.finderGiftee} forValue="giftee" />
         <h2 class="text-2xl text-center font-bold tracking-tight">JunkDaJunk</h2>
         <Textarea text="Regional Whitelist" bind:bindValue={localStorageObject.junkdajunkRegionalWhitelist} forValue="regions" />
@@ -156,10 +141,7 @@
         <h2 class="text-2xl text-center font-bold tracking-tight">Finder</h2>
         <Textarea text="Card IDs to Find" bind:bindValue={localStorageObject.finderList} forValue="find" />
         <h2 class="text-2xl text-center font-bold tracking-tight">Approval</h2>
-		<div class="flex gap-4 justify-between max-w-lg">
-			<label class="w-24" for="mode">Council</label>
-            <Select bind:mode={localStorageObject.approvalCouncil} options={['General Assembly', 'Security Council']} />
-		</div>
+		<Select name="Council" bind:mode={localStorageObject.approvalCouncil} options={['General Assembly', 'Security Council']} />
         <Input text="Proposal ID" bind:bindValue={localStorageObject.approvalProposal} forValue="proposalID" required={false} />
         <h2 class="text-2xl text-center font-bold tracking-tight">Flags</h2>
         <Textarea text="Search Flags" bind:bindValue={localStorageObject.flagmanagerFlags} forValue="flags" />

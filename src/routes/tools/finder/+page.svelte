@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import { parser, sleep } from '$lib/helpers/utils';
-	import { handleDownload } from '$lib/helpers/download';
-	import { htmlContent } from '$lib/helpers/htmlContent';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Input from '$lib/component/Input.svelte';
@@ -13,6 +11,7 @@
 	import { pushHistory } from '$lib/helpers/utils';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import ToolContent from '$lib/component/ToolContent.svelte';
+	import OpenButton from '$lib/component/OpenButton.svelte';
 	export let data: PageData;
 	const abortController = new AbortController();
 	let progress = "";
@@ -43,8 +42,9 @@
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
+		openNewLinkArr = [];
 		let puppetsList = puppets.split('\n');
-		progress += "<p>Initiating Finder...</p>";
+		progress = "<p>Initiating Finder...</p>";
 		const toFind = finderlist.split('\n');
 		progress += `<p>Finding -> ${toFind.map((card) => card.trim()).join(', ')}</p>`;
 		for (let i = 0; i < puppetsList.length; i++) {
@@ -153,41 +153,10 @@
 			<Input text={`Gift To`} bind:bindValue={giftee} forValue="giftee" required={true} />
 		{/if}
 		<Textarea text="Card IDs to Find" bind:bindValue={finderlist} forValue="find" required />
-        <div class="flex gap-4 justify-between max-w-lg">
-            <label class="w-24" for="jdj">Finder Default Behavior</label>
-			<Select bind:mode={mode} options={['Gift', 'Sell']} />
-        </div>
+        <Select name="Behavior" bind:mode={mode} options={['Gift', 'Sell']} />
 		<div class="max-w-lg flex justify-center gap-2">
-			<Buttons bind:stoppable={stoppable}>
-				<button
-					type="button"
-					disabled={!stoppable}
-					on:click={() => { {
-						stoppable = false;
-						stopped = true;
-					} }}
-					class="bg-red-500 rounded-md px-4 py-2 transition duration-300 hover:bg-red-300 disabled:opacity-20 disabled:hover:bg-red-500"
-				>
-					Stop
-				</button>
-				<button
-					disabled={progress.length === 0}
-					type="button"
-					on:click={() => {
-						if (counter > openNewLinkArr.length - 1) {
-							return;
-						}
-						window.open(openNewLinkArr[counter], '_blank');
-						counter++;
-					}}
-					class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500"
-				>
-					Open Available Link
-				</button>
-				<button disabled={!downloadable} type="button" on:click={() => handleDownload('html', htmlContent(junkHtml), 'finder')}
-					class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
-					Download
-				</button>
+			<Buttons stopButton={true} bind:stopped={stopped} bind:stoppable={stoppable} downloadButton={true} bind:downloadable={downloadable} bind:content={junkHtml} type="html" name="Finder" >
+				<OpenButton bind:counter={counter} bind:progress={progress} bind:openNewLinkArr={openNewLinkArr} />
 			</Buttons>
 		</div>
 	</form>

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { handleDownload } from '$lib/helpers/download';
-	import { htmlContent } from '$lib/helpers/htmlContent';
 	import { onDestroy, onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import { parseXML, sleep } from '$lib/helpers/utils';
@@ -11,6 +9,7 @@
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import ToolContent from '$lib/component/ToolContent.svelte';
+	import OpenButton from '$lib/component/OpenButton.svelte';
 	export let data: PageData;
 	const abortController = new AbortController();
 	let progress = "";
@@ -38,8 +37,7 @@
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
-		progress = "";
-		progress += `<p class="font-bold">Initiating gotIssues...mode set to ${mode}</p>`;
+		progress = `<p class="font-bold">Initiating gotIssues...mode set to ${mode}</p>`;
 		openNewLinkArr = [];
 		issuesContent = "";
 		let puppetList = puppets.split('\n');
@@ -129,40 +127,9 @@
 		class="flex flex-col gap-8"
 	>
 		<InputCredentials bind:main bind:puppets bind:password authenticated={true} />
-        <div class="flex gap-4 justify-between max-w-lg">
-			<label class="w-24" for="mode">Mode</label>
-            <Select bind:mode={mode} options={["Both", "Issues", "Packs"]} />
-		</div>
-		<Buttons bind:stoppable={stoppable}>
-			<button
-				type="button"
-				disabled={!stoppable}
-				on:click={() => { {
-					stoppable = false;
-					stopped = true;
-				} }}
-				class="bg-red-500 rounded-md px-4 py-2 transition duration-300 hover:bg-red-300 disabled:opacity-20 disabled:hover:bg-red-500"
-			>
-				Stop
-			</button>
-				<button
-				disabled={progress.length === 0}
-				type="button"
-				on:click={() => {
-					if (counter > openNewLinkArr.length - 1) {
-						return;
-					}
-					window.open(openNewLinkArr[counter], '_blank');
-					counter++;
-				}}
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500"
-			>
-				Open Available Link
-			</button>
-			<button disabled={!downloadable} type="button" on:click={() => handleDownload('html', htmlContent(issuesContent), 'gotIssues')}
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
-				Download
-			</button>
+		<Select name="Issues and Packs" bind:mode={mode} options={["Both", "Issues", "Packs"]} />
+		<Buttons stopButton={true} bind:stopped={stopped} bind:stoppable={stoppable} downloadButton={true} bind:downloadable={downloadable} bind:content={issuesContent} name="gotIssues" >
+			<OpenButton bind:counter={counter} bind:progress={progress} bind:openNewLinkArr={openNewLinkArr} />
 		</Buttons>
 	</form>
 	<Terminal bind:progress={progress} />

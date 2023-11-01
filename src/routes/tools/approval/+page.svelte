@@ -4,8 +4,6 @@
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
-	import { htmlContent } from '$lib/helpers/htmlContent';
-	import { handleDownload } from '$lib/helpers/download';
 	import Select from '$lib/component/Select.svelte';
 	const abortController = new AbortController();
 	import type { PageData } from './$types';
@@ -36,8 +34,7 @@
         if (council === "Security Council") {
             councilID = 2;
         }
-		progress = "";
-        progress += `<p>Retrieving list of esteemed delegates...</p>`
+		progress = `<p>Retrieving list of esteemed delegates...</p>`
         await sleep(700);
         const delegatesres = await fetch(`https://www.nationstates.net/cgi-bin/api.cgi?wa=1&q=delegates`, {
 			headers: {
@@ -54,6 +51,7 @@
         const proposal = proposalXML.WA.PROPOSALS.PROPOSAL.filter((proposal: { [x: string]: string; }) => proposal["@_id"] === proposalid)[0]
         if (!proposal) {
             progress += `<p class="text-red-400">No proposal found matching ${proposalid} in the ${council}.</p>`
+			stoppable = false;
             return;
         }
         const approvalsOnRequestedProposal = proposal.APPROVALS.split(':')
@@ -86,28 +84,9 @@
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => approvals()} class="flex flex-col gap-8">
 		<Input text="User Agent" bind:bindValue={main} forValue="main" required={true} />
-		<div class="flex gap-4 justify-between max-w-lg">
-			<label class="w-24" for="mode">Council</label>
-			<Select bind:mode={council} options={['General Assembly', 'Security Council']} />
-		</div>
+		<Select name="Council" mode={council} options={['General Assembly', 'Security Council']} />
 		<Input text="Proposal ID" bind:bindValue={proposalid} forValue="proposalID" required={true} />
-		<Buttons bind:stoppable={stoppable}>
-			<button
-				type="button"
-				disabled={!stoppable}
-				on:click={() => { {
-					stoppable = false;
-					stopped = true;
-				} }}
-				class="bg-red-500 rounded-md px-4 py-2 transition duration-300 hover:bg-red-300 disabled:opacity-20 disabled:hover:bg-red-500"
-			>
-				Stop
-			</button>
-			<button disabled={!downloadable} type="button" on:click={() => handleDownload('html', htmlContent(content), 'Approvals')}
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
-				Download
-			</button>
-		</Buttons>
+		<Buttons downloadButton={true} bind:downloadable={downloadable} bind:content={content} type="html" name="Approvals" />
 	</form>
 	<Terminal bind:progress={progress} />
 </div>

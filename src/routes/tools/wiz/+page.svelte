@@ -55,19 +55,7 @@
 		class="flex flex-col gap-8"
 	>
 		<InputCredentials bind:main bind:puppets authenticated={false} />
-		<Buttons>
-			<button
-				type="button"
-				disabled={!stoppable}
-				on:click={() => { 
-					stopped = true;
-					stoppable = false; 
-				}}
-				class="bg-red-500 rounded-md px-4 py-2 transition duration-300 hover:bg-red-300 disabled:opacity-20 disabled:hover:bg-red-500"
-			>
-				Stop
-			</button>
-		</Buttons>
+		<Buttons stopButton={true} bind:stopped={stopped} bind:stoppable={stoppable} />
 	</form>
 	<Terminal bind:progress={progress} />
 </div>

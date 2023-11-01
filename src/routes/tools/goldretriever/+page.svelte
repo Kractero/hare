@@ -1,10 +1,7 @@
 <script lang="ts">
-	import { handleDownload } from '$lib/helpers/download';
-	import { htmlContent } from '$lib/helpers/htmlContent';
 	import { onDestroy, onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import { parseXML, sleep } from '$lib/helpers/utils';
-	import { sort, style } from '$lib/helpers/sortFunctionString';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import type { PageData } from './$types';
@@ -38,6 +35,7 @@
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
+		progress = "<p>Initiating Gold Retriever...</p>"
 		let puppetList = puppets.split('\n');
 		let totals = {
 			bank: 0,
@@ -131,27 +129,8 @@
 		class="flex flex-col gap-8"
 	>
 		<InputCredentials bind:main bind:puppets bind:password authenticated={mode === "Include" ? true : false}/>
-		<div class="flex gap-4 justify-between max-w-lg">
-            <label class="w-24" for="jdj">Issues and Packs?</label>
-			<Select bind:mode={mode} options={['Include', 'Skip']} />
-        </div>
-		<Buttons>
-			<button
-				type="button"
-				disabled={!stoppable}
-				on:click={() => { {
-					stoppable = false;
-					stopped = true;
-				} }}
-				class="bg-red-500 rounded-md px-4 py-2 transition duration-300 hover:bg-red-300 disabled:opacity-20 disabled:hover:bg-red-500"
-			>
-				Stop
-			</button>
-			<button disabled={!downloadable} type="button" on:click={() => handleDownload('html', htmlContent(content, style, sort), 'Gold Retriever')}
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
-				Download
-			</button>
-		</Buttons>
+		<Select name="Issues and Packs" bind:mode={mode} options={['Include', 'Skip']} />
+		<Buttons downloadButton={true} bind:downloadable={downloadable} bind:content={content} type="html" name="Gold Retriever" stopButton={true} bind:stoppable={stoppable} bind:stopped={stopped} />
 	</form>
 	<Terminal bind:progress={progress} />
 </div>

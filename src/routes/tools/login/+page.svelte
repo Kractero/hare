@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { handleDownload } from '$lib/helpers/download';
-	import { htmlContent } from '$lib/helpers/htmlContent';
 	import { nsIterator } from '$lib/helpers/txtIterator';
 	import { onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
@@ -38,12 +36,7 @@
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => login(puppets)} class="flex flex-col gap-8">
 		<InputCredentials bind:main bind:puppets authenticated={false} />
-		<Buttons>
-			<button disabled={!downloadable} type="button" on:click={() => handleDownload('html', htmlContent(content), 'Login Sheet')}
-				class="bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
-				Download
-			</button>
-		</Buttons>
+		<Buttons downloadButton={true} bind:downloadable={downloadable} bind:content={content} name="Login Sheet" />
 	</form>
 	<Terminal bind:progress={progress} />
 </div>
