@@ -1,7 +1,6 @@
 export function handleDownload(filetype: string, files: Array<string> | string, name?: string) {
 	let blob;
 	if (Array.isArray(files)) {
-		console.log(`text/${filetype}`)
 		blob = new Blob([files[0]], { type: `text/${filetype}` });
 		urlObject(blob, 'Containerise (Container)');
 		blob = new Blob([files[1]], { type: `text/${filetype}` });
