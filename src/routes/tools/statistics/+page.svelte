@@ -77,7 +77,7 @@
 	}
 </script>
 
-<ToolContent toolTitle="Where's My WA" caption="Specify your puppets and this script will find which one is in the WA." author="9003" link="https://github.com/jmikk/WheresMyWA" originalBlurb="rewritten in JS for browser use by Kractero" />
+<ToolContent toolTitle="Statistics" caption="Provided WA scales and puppets, get the mean, median, and mode for each scale." author="9003" originalBlurb="rewritten in JS for browser use by Kractero" />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => findWA(main, puppets)} class="flex flex-col gap-8">

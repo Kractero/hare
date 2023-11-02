@@ -71,6 +71,16 @@ export const tools: Array<Tool> = [
 		description: 'Find which of the specified nations have which of the specified cards.'
 	},
 	{
+		name: 'Signal',
+		slug: 'flags',
+		description: 'Given card ids, provide decks, collections, or check asks and bids for what is missing. Sideroca compatible.'
+	},
+	{
+		name: 'Statistics',
+		slug: 'statistics',
+		description: 'Provided WA scales and puppets, get the mean, median, and mode for each scale. (WIP)'
+	},
+	{
 		name: 'Creator Assistant',
 		slug: 'creation',
 		description: 'Generate a sheet that has links for nation creation that works with the provided userscripts.'
