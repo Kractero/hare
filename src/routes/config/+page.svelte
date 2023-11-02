@@ -41,7 +41,12 @@
         goldretrieverMode: "Include",
         junkdajunkOmittedSeasons: "",
         junkdajunkExnation: false,
-        flagmanagerFlags: ''
+        flagmanagerFlags: '',
+        signalCardIds: '',
+        signalCollectionsOrDecks: '',
+        signalAsksBidsNation: '',
+        signalMode: 'Collection',
+        statisticsScales: ''
     };
 
     onMount(() => {
@@ -61,7 +66,8 @@
         const changes = []
         for (const key in localStorageObject) {
             if (key === "junkdajunkRarities") {
-                const curr = JSON.parse(localStorage.getItem(key)!)
+                const rarities = localStorage.getItem(key);
+                const curr = rarities ? JSON.parse(rarities) : {};
                 const conf = localStorageObject.junkdajunkRarities
                 Object.keys(curr).forEach(rarity => {
                     if (curr[rarity] !== conf[rarity]) changes.push(key)
@@ -83,6 +89,7 @@
 </script>
 
 <Toaster />
+
 <Head title={"Hare - Config"} description={"Configure your default inputs for each script."} />
 
 <h1 class="text-4xl text-center mb-16">Configure Default Inputs</h1>
@@ -145,6 +152,13 @@
         <Input text="Proposal ID" bind:bindValue={localStorageObject.approvalProposal} forValue="proposalID" required={false} />
         <h2 class="text-2xl text-center font-bold tracking-tight">Flags</h2>
         <Textarea text="Search Flags" bind:bindValue={localStorageObject.flagmanagerFlags} forValue="flags" />
+        <h2 class="text-2xl text-center font-bold tracking-tight">Signal</h2>
+		<Textarea text="Card IDs" bind:bindValue={localStorageObject.signalCardIds} forValue="cardIds" required />
+		<Select name="Behavior" bind:mode={localStorageObject.signalMode} options={["Collection", "Deck", "Asks", "Bids", "Asks and Bids"]} />
+        <Input text={`Nation`} bind:bindValue={localStorageObject.signalAsksBidsNation} forValue="nation" required={true} />
+        <Textarea text={"Coll/Decks"} bind:bindValue={localStorageObject.signalCollectionsOrDecks} forValue="mode" required />
+        <h2 class="text-2xl text-center font-bold tracking-tight">Statistics</h2>
+        <Textarea text="Scale" bind:bindValue={localStorageObject.statisticsScales} forValue="scale" required={true} />
         <div class="max-w-lg flex justify-center">
             <button
                 type="submit"

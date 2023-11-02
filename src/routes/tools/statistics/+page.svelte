@@ -19,6 +19,7 @@
 	onMount(() => {
 		main = data.parameters.main || localStorage.getItem("main") as string || "";
 		puppets = localStorage.getItem("puppets") as string || "";
+        scales = data.parameters.scale || localStorage.getItem("statisticsScales") as string || "";
 	});
 	async function findWA(main: string, puppets: string) {
 		pushHistory(`?main=${main}&scale=${scales.replace('\n', ',')}`)
