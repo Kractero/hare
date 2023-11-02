@@ -6,7 +6,7 @@
         if (window.location.href.includes('config')) alert("Older version of the site detected. Config page exempt from redirect.")
         else {
             alert("Older version of site detected!!! PLEASE VISIT https://hare.vercel.app in the future!!! Redirecting...(visit /config to copy configuration over.)")
-            if (window.location.hostname === "kractero.github.io") window.location.href = "https://hare.vercel.app" + window.location.pathname
+            if (window.location.hostname === "kractero.github.io") window.location.href = "https://hare.vercel.app" + window.location.pathname.replace('/hare', '')
         }
 	})
 </script>
