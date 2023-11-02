@@ -72,7 +72,7 @@ export const tools: Array<Tool> = [
 	},
 	{
 		name: 'Signal',
-		slug: 'flags',
+		slug: 'signal',
 		description: 'Given card ids, provide decks, collections, or check asks and bids for what is missing. Sideroca compatible.'
 	},
 	{
