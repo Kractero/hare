@@ -22,7 +22,19 @@
 		password = localStorage.getItem("password") as string || "";
 	});
 	onDestroy(() => abortController.abort());
-
+	async function checkForExistence(userAgent: string, username: string, password: string) {
+		const res = await fetch(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${username}&q=ping`,
+			{
+				headers: {
+					'X-Password': password,
+					'User-Agent': userAgent
+				}
+			})
+		const existence = res.status
+		if (existence === 404) return false
+		if (existence === 200 || existence === 409) return true
+		return false
+	}
 	async function ping(main: string, puppets: string, password: string) {
 		pushHistory(`?main=${main}`)
 		stoppable = true;
@@ -35,29 +47,47 @@
 			if (abortController.signal.aborted || stopped) {
 				break;
 			}
-			const response = await fetch(
-				`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=ping`,
-				{
-					headers: {
-						'X-Password': password.replaceAll(' ', '_'),
-						'User-Agent': main
+			const existence = await checkForExistence(main, nation, password);
+			if (existence === false) {
+				progress += `<p class="text-red-400">Failed to log into ${nation}, attemping to restore...</p>`;
+				await sleep (6000)
+				const iframe = document.getElementById("iframe")! as HTMLIFrameElement;
+				const loadHandler = new Promise<void>((resolve) => {
+					async function loadHandler(this: any) {
+						iframe.removeEventListener("load", loadHandler);
+						const iframeContents = iframe.contentWindow?.document! as any;
+						if (iframeContents) {
+							iframeContents.getElementById("restoreUserAgent").value = main;
+							iframeContents.getElementById("restoreLoggingIn").value = "1";
+							iframeContents.getElementById("restoreNation").value = nation;
+							iframeContents.getElementById("restoreRestoreNation").value = `Restore ${nation}`;
+							iframeContents.getElementById("restoreRestorePassword").value = password;
+							iframeContents.getElementById("restoreSubmit").click();
+						}
+						resolve();
 					}
+					iframe.addEventListener("load", loadHandler);
+				});
+				iframe.src = "/iframe.html";
+				await loadHandler;
+				await sleep(700)
+				const existence = await checkForExistence(main, nation, password);
+				if (existence === false) {
+					progress += `<p class="text-red-400">Are you sure ${nation} is a nation or you provided the right credentials? Skipping...</p>`
 				}
-			);
-			const success = response.status;
-			if (success === 404) {
-				progress += `<p class="text-red-400">Failed to log into ${nation}</p>`;
+				if (existence === true) {
+					progress += `<p>Successfully restored ${nation}</p>`;
+				}
 			}
-			if (success === 200 || success === 409) {
+			if (existence === true) {
 				progress += `<p>Successfully logged into ${nation}</p>`;
 			}
-			
 		}
 		stoppable = false;
 	}
 </script>
 
-<ToolContent toolTitle="Pinger" caption="Ping all your inputted nations to keep them from ceasing to exist." />
+<ToolContent toolTitle="Pinger" caption="Ping your puppets to prevent ctes, or bring them back from the dead." />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form
@@ -69,3 +99,10 @@
 	</form>
 	<Terminal bind:progress={progress} />
 </div>
+
+<iframe
+	id="iframe"
+	style="position: absolute; left: -5000px;"
+	src="/iframe.html"
+	title="iFrame for logging/restoring nations"
+/>
