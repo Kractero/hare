@@ -1,6 +1,14 @@
 <script lang="ts">
     export let title: string;
     export let description: string;
+    import { onMount } from "svelte";
+	onMount(() => {
+        if (window.location.href.includes('config')) alert("Older version of the site detected. Config page exempt from redirect.")
+        else {
+            alert("Older version of site detected, redirecting...(visit /config to copy configuration over.)")
+            if (window.location.hostname === "localhost") window.location.href = "https://hare.vercel.app" + window.location.pathname
+        }
+	})
 </script>
 
 <svelte:head>
