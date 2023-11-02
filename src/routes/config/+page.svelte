@@ -149,16 +149,16 @@
         <Textarea text="Card IDs to Find" bind:bindValue={localStorageObject.finderList} forValue="find" />
         <h2 class="text-2xl text-center font-bold tracking-tight">Approval</h2>
 		<Select name="Council" bind:mode={localStorageObject.approvalCouncil} options={['General Assembly', 'Security Council']} />
-        <Input text="Proposal ID" bind:bindValue={localStorageObject.approvalProposal} forValue="proposalID" required={false} />
+        <Input text="Proposal ID" bind:bindValue={localStorageObject.approvalProposal} forValue="proposalID" />
         <h2 class="text-2xl text-center font-bold tracking-tight">Flags</h2>
         <Textarea text="Search Flags" bind:bindValue={localStorageObject.flagmanagerFlags} forValue="flags" />
         <h2 class="text-2xl text-center font-bold tracking-tight">Signal</h2>
-		<Textarea text="Card IDs" bind:bindValue={localStorageObject.signalCardIds} forValue="cardIds" required />
+		<Textarea text="Card IDs" bind:bindValue={localStorageObject.signalCardIds} forValue="cardIds"  />
 		<Select name="Behavior" bind:mode={localStorageObject.signalMode} options={["Collection", "Deck", "Asks", "Bids", "Asks and Bids"]} />
-        <Input text={`Nation`} bind:bindValue={localStorageObject.signalAsksBidsNation} forValue="nation" required={true} />
-        <Textarea text={"Coll/Decks"} bind:bindValue={localStorageObject.signalCollectionsOrDecks} forValue="mode" required />
+        <Input text={`Nation`} bind:bindValue={localStorageObject.signalAsksBidsNation} forValue="nation" />
+        <Textarea text={"Coll/Decks"} bind:bindValue={localStorageObject.signalCollectionsOrDecks} forValue="mode"  />
         <h2 class="text-2xl text-center font-bold tracking-tight">Statistics</h2>
-        <Textarea text="Scale" bind:bindValue={localStorageObject.statisticsScales} forValue="scale" required={true} />
+        <Textarea text="Scale" bind:bindValue={localStorageObject.statisticsScales} forValue="scale" />
         <div class="max-w-lg flex justify-center">
             <button
                 type="submit"
