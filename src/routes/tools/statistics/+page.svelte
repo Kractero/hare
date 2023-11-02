@@ -8,6 +8,7 @@
 	import { pushHistory } from '$lib/helpers/utils';
 	import ToolContent from '$lib/component/ToolContent.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
+	import { scoreCodes } from '$lib/helpers/scores';
     const abortController = new AbortController();
 	export let data: PageData;
 	let progress = "";
@@ -59,13 +60,15 @@
             scoresRanks.forEach(score => {
                 ranksMean = ranksMean + score
             })
+            let total = ranksMean;
             ranksMean = ranksMean/scoresRanks.length
             const rankSorted = scoresRanks.sort((a, b) => a - b)
             const rankMidpoint = Math.floor(rankSorted.length/2)
             const ranksMedian = rankSorted.length % 2 === 1 ? rankSorted[rankMidpoint] : (rankSorted[rankMidpoint-1] + rankSorted[rankMidpoint]) / 2
             const ranksMode = Math.min(...scoresRanks)
-
-            progress += `<p>Category ${scaleList[i]}</p>`
+            console.log(scoreCodes)
+            progress += `<p>Category ${scoreCodes[scaleList[i]]}</p>`
+            progress += `<p>Total: ${total}</p>`
             progress += `<p>Mean Score: ${scoresMean}</p>`
             progress += `<p>Median Score: ${scoresMedian}</p>`
             progress += `<p>Mode Score: ${scoresMode}</p>`
