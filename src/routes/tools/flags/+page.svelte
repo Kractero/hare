@@ -33,17 +33,21 @@
 		let puppetsList = puppets.split('\n');
 		for (let i = 0; i < puppetsList.length; i++) {
 			let nation = puppetsList[i];
-			if (abortController.signal.aborted || stopped) {
-				break;
+			try {
+				if (abortController.signal.aborted || stopped) {
+					break;
+				}
+				progress += `<p>Computing ${nation}'s flag</p>`
+				const response = await parseXML(
+					`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=flag`, main
+				)
+				for (const flag of flagsList) {
+					if (response.NATION.FLAG.includes(flag)) progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="https://nationstates.net/nation=${nation}" class="underline">${nation}</a> has flag containing ${flag}!</p>`
+				}
+				await sleep(700);
+			} catch (err) {
+				progress += `<p class="text-red-400">Error occured on ${nation}: ${err}`
 			}
-            progress += `<p>Computing ${nation}'s flag</p>`
-			const response = await parseXML(
-				`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=flag`, main
-			)
-            for (const flag of flagsList) {
-                if (response.NATION.FLAG.includes(flag)) progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="https://nationstates.net/nation=${nation}" class="underline">${nation}</a> has flag containing ${flag}!</p>`
-            }
-            await sleep(700);
 		}
 		progress += `Flag manager finished searching!`
 		stoppable = false;

@@ -1,4 +1,4 @@
-export const scoreCodes = {
+export const scoreCodes: {[key: string]: string} = {
 	'0': 'Civil Rights',
 	'1': 'Economy',
 	'2': 'Political Freedoms',

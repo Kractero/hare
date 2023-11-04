@@ -66,7 +66,6 @@
             const rankMidpoint = Math.floor(rankSorted.length/2)
             const ranksMedian = rankSorted.length % 2 === 1 ? rankSorted[rankMidpoint] : (rankSorted[rankMidpoint-1] + rankSorted[rankMidpoint]) / 2
             const ranksMode = Math.min(...scoresRanks)
-            console.log(scoreCodes)
             progress += `<p>Category ${scoreCodes[scaleList[i]]}</p>`
             progress += `<p>Total: ${total}</p>`
             progress += `<p>Mean Score: ${scoresMean}</p>`
