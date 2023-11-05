@@ -121,7 +121,9 @@
 	}
 </script>
 
-<ToolContent toolTitle="Gold Retriever" originalBlurb="rewritten in JS for browser use by Kractero" caption="Get deck value, junk value, and more of all your puppets." author="ValentineZ" link="https://forum.nationstates.net/viewtopic.php?f=42&t=476326"/>
+<ToolContent toolTitle="Gold Retriever" originalBlurb="rewritten in JS for browser use by Kractero" caption="Get deck value, junk value, and more of all your puppets." author="ValentineZ" link="https://forum.nationstates.net/viewtopic.php?f=42&t=476326" additional={`<p class="text-xs mb-16">
+	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
+</p>`}/>
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form

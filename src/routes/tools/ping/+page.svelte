@@ -44,6 +44,10 @@
 		for (let i = 0; i < puppetsList.length; i++) {
 			await sleep(700);
 			let nation = puppetsList[i];
+			if (!password) {
+				nation = puppetsList[i].split(',')[0];
+				password = puppetsList[i].split(',')[1];
+			}
 			if (abortController.signal.aborted || stopped) {
 				break;
 			}
@@ -87,7 +91,9 @@
 	}
 </script>
 
-<ToolContent toolTitle="Pinger" caption="Ping your puppets to prevent ctes, or bring them back from the dead." />
+<ToolContent toolTitle="Pinger" caption="Ping your puppets to prevent ctes, or bring them back from the dead." additional={`<p class="text-xs mb-16">
+	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
+</p>`} />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form

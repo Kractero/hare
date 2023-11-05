@@ -49,10 +49,15 @@
 		progress += `<p>Finding -> ${toFind.map((card) => card.trim()).join(', ')}</p>`;
 		for (let i = 0; i < puppetsList.length; i++) {
 			let currentNationXPin = ""
-			let nation = puppetsList[i].toLowerCase().replaceAll(' ', '_');
+			let nation = puppetsList[i];
+			if (mode === "Include" && !password) {
+				nation = puppetsList[i].split(',')[0];
+				password = puppetsList[i].split(',')[1];
+			}
 			if (abortController.signal.aborted || stopped) {
 				break;
 			}
+			nation = nation.toLowerCase().replaceAll(' ', '_');
 			try {
 				await sleep(700);
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetsList.length} puppets</p>`;

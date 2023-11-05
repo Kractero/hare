@@ -87,10 +87,15 @@
 		progress += `<p class="font-bold">Initiating JunkDaJunk...</p>`;
 		for (let i = 0; i < puppetsList.length; i++) {
 			let currentNationXPin = ""
-			let nation = puppetsList[i].toLowerCase().replaceAll(' ', '_');
+			let nation = puppetsList[i];
+			if (!password) {
+				nation = puppetsList[i].split(',')[0];
+				password = puppetsList[i].split(',')[1];
+			}
 			if (abortController.signal.aborted || stopped) {
 				break;
 			}
+			nation = nation.toLowerCase().replaceAll(' ', '_');
 			try {
 				await sleep(700);
 				progress += `<p class="font-semibold">Processing ${nation} ${i + 1}/${puppetsList.length} puppets</p>`;
@@ -232,10 +237,13 @@
 	}
 </script>
 
-<ToolContent toolTitle="JunkDaJunk" caption={"An even faster way to junk cards with JavaScript."} author="9003" originalBlurb="rewritten in JS for browser use by Kractero" link="https://github.com/jmikk/Card-Proccessor" additional={`<p class="text-xs mb-16 max-w-sm">
+<ToolContent toolTitle="JunkDaJunk" caption={"An even faster way to junk cards with JavaScript."} author="9003" originalBlurb="rewritten in JS for browser use by Kractero" link="https://github.com/jmikk/Card-Proccessor" additional={`<p class="text-xs mb-4 max-w-sm">
 	The regional whitelist indicates regions to skip when deciding to junk cards. The card count threshold only runs Junking
 	analyzing on specified nations that have over a certain amount of cards. The owner count threshold will indicate cards to skip
 	that have less than the specified amount. The rarity threshold dictates when to skip based on the card's rarity and market value.
+</p>
+<p class="text-xs mb-16">
+	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
 </p>`}/>
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
