@@ -41,7 +41,7 @@
 	};
 </script>
 
-<ToolContent toolTitle="Legendary Tracker" caption="Track the existence of legendaries per season" additional={`<p class="mb-16">As of {date} (11:30 PM/23:30 UTC-7)</p>`} />
+<ToolContent toolTitle="Legendary Tracker" caption="Track the existence of legendaries per season" additional={`<p class="mb-16">As of ${date} (11:30 PM/23:30 UTC-7)</p>`} />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row justify-between gap-8 break-normal mb-4">
 	<div>
