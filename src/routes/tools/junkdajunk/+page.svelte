@@ -115,7 +115,7 @@
 						const owners = new Set(card.OWNERS.OWNER)
 						const category = card.CATEGORY;
 						const marketValue = card.MARKET_VALUE;
-						const region = card.REGION;
+						const region = String(card.REGION);
 
 						let highestBid = 0;
 						const markets = card.MARKETS ? card.MARKETS.MARKET : [];
