@@ -133,7 +133,7 @@
         <h2 class="text-2xl text-center font-bold tracking-tight">Gold Retriever</h2>
         <Select name="Behavior" bind:mode={localStorageObject.goldretrieverMode} options={['Include', 'Skip']} />
         <h2 class="text-2xl text-center font-bold tracking-tight">JunkDaJunk Finder Shared</h2>
-        <Select name="Behavior" bind:mode={localStorageObject.finderMode} options={['Gift', 'Sell']} />
+        <Select name="Behavior" bind:mode={localStorageObject.finderMode} options={['Gift', 'Sell', 'Exclude']} />
         <Input text="Gift To" bind:bindValue={localStorageObject.finderGiftee} forValue="giftee" />
         <h2 class="text-2xl text-center font-bold tracking-tight">JunkDaJunk</h2>
         <Textarea text="Regional Whitelist" bind:bindValue={localStorageObject.junkdajunkRegionalWhitelist} forValue="regions" />

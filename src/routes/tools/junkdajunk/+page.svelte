@@ -213,12 +213,14 @@
 								progress += `<p>${i + 1}/${
 									cards.length
 								} -> Skipping ${id} - ${reason}!`;
-								interimSells.push(
-									`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
-								);
-								sellContent += `<tr><td><p>${i + 1} of ${
-									cards.length
-								}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
+								if (mode === 'Sell') {
+									interimSells.push(
+										`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
+									);
+									sellContent += `<tr><td><p>${i + 1} of ${
+										cards.length
+									}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
+								}
 							}
 						}
 					}
@@ -266,7 +268,7 @@
             <p class="w-24">Skip S1 Exnation</p>
 			<input on:change={() => skipexnation = !skipexnation} checked={skipexnation} class="m-1" type="checkbox" />
 		</div>
-        <Select name="Behavior" bind:mode={mode} options={['Gift', 'Sell']} />
+        <Select name="Behavior" bind:mode={mode} options={['Gift', 'Sell', 'Exclude']} />
 		<Buttons stopButton={true} bind:stopped={stopped} bind:stoppable={stoppable} downloadButton={true} bind:downloadable={downloadable} bind:content={junkHtml} name="junkDaJunk" >
 			<OpenButton bind:counter={counter} bind:progress={progress} bind:openNewLinkArr={openNewLinkArr} />
 		</Buttons>

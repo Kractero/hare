@@ -2,6 +2,12 @@ export const changelog = [
     {
         "date": "2023-11-06",
         "changes": {
+            "features": [
+                [
+                    "JunkDaJunk",
+                    "Add option to exclude any cards that meet the whitelist from the resulting sheet, instead of appending them to the bottom."
+                ]
+            ],
             "fixes": [
                 [   
                     "JunkDaJunk",

@@ -14,7 +14,9 @@
                 {#each day.changes.features as feature}
                     <p class="mb-1">{feature[0]}</p>
                     <ul class="list-disc ml-4 mb-4 text-sm">
-                        <li>{feature[1]}</li>
+                        {#each feature.slice(1) as changes}
+                            <li>{changes}</li>
+                        {/each}
                     </ul>
                 {/each}
             {/if}
@@ -24,7 +26,9 @@
                 {#each day.changes.fixes as fix}
                     <p class="mb-1">{fix[0]}</p>
                     <ul class="list-disc ml-4 mb-4 text-sm">
-                        <li>{fix[1]}</li>
+                        {#each fix.slice(1) as changes}
+                            <li>{changes}</li>
+                        {/each}
                     </ul>
                 {/each}
             {/if}
