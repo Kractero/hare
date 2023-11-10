@@ -16,7 +16,7 @@ export function urlObject(blob: Blob | MediaSource, mode: string | undefined) {
 	const link = document.createElement('a');
 	link.href = url;
 	link.download = `${mode}.${
-		mode?.includes('Containerise') ? 'txt' : 'html'
+		(mode === "Deck" || mode?.includes('Containerise')) ? 'txt' : 'html'
 	}`;
 	link.click();
 	window.URL.revokeObjectURL(url);

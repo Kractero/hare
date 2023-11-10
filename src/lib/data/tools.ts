@@ -76,6 +76,11 @@ export const tools: Array<Tool> = [
 		description: 'Given card ids, provide decks, collections, or check asks and bids for what is missing. Sideroca compatible.'
 	},
 	{
+		name: 'Deck to IDs',
+		slug: 'deck',
+		description: 'Turn a deck into a text file of card ids.',
+	},
+	{
 		name: 'Statistics',
 		slug: 'statistics',
 		description: 'Provided WA scales and puppets, get the mean, median, and mode for each scale. (WIP)'
