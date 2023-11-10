@@ -25,6 +25,7 @@
         nenNation: '',
         finderList: '',
         junkdajunkRegionalWhitelist: '',
+        junkdajunkFlagWhitelist: '',
         finderMode: 'Gift',
         junkdajunkRarities: {
             common: 0.5,
@@ -137,6 +138,7 @@
         <Input text="Gift To" bind:bindValue={localStorageObject.finderGiftee} forValue="giftee" />
         <h2 class="text-2xl text-center font-bold tracking-tight">JunkDaJunk</h2>
         <Textarea text="Regional Whitelist" bind:bindValue={localStorageObject.junkdajunkRegionalWhitelist} forValue="regions" />
+        <Textarea text="Flag Whitelist" bind:bindValue={localStorageObject.junkdajunkFlagWhitelist} forValue="flags" />
         <Input text="Card Count Threshold" bind:bindValue={localStorageObject.junkdajunkCardCount} forValue="card" />
         <Input text="Owner Threshold" bind:bindValue={localStorageObject.junkdajunkOwnerCount} forValue="owner" />
         <Rarities bind:rarities={localStorageObject.junkdajunkRarities} />

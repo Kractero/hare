@@ -27,6 +27,7 @@
 	let giftee = '';
 	let puppets = '';
 	let regionalwhitelist = '';
+	let flagwhitelist = '';
 	let mode = 'Gift';
 	let password = '';
 	let owners = '';
@@ -42,6 +43,7 @@
 		password = localStorage.getItem("password") as string || "";
 		mode = data.parameters.mode || localStorage.getItem("finderMode") as string || "Gift";
 		regionalwhitelist = data.parameters.regions?.replaceAll(',', '\n') || localStorage.getItem("junkdajunkRegionalWhitelist") as string || "";
+		flagwhitelist = data.parameters.flags?.replaceAll(',', '\n') || localStorage.getItem("junkdajunkFlagWhitelist") as string || "";
 		giftee = data.parameters.giftee || localStorage.getItem("finderGiftee") as string || "";
 		rarities = localStorage.getItem("junkdajunkRarities") ? JSON.parse(localStorage.getItem("junkdajunkRarities") as string) : {
             common: 0.5,
@@ -58,7 +60,7 @@
 	onDestroy(() => abortController.abort());
 
 	async function junkDaJunk(main: string, puppets: string) {
-		pushHistory(`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ""}${owners ? `&owners=${owners}` : ""}${cardcount ? `&cardcount=${cardcount}` : ""}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ""}${skipseason ? `&skipseason=${skipseason}` : ""}${skipexnation ? `&skipexnation=${skipexnation}` : ""}`)
+		pushHistory(`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ""}${owners ? `&owners=${owners}` : ""}${cardcount ? `&cardcount=${cardcount}` : ""}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ""}${flagwhitelist ? `&flags=${flagwhitelist.replaceAll('\n', ',')}` : ""}${skipseason ? `&skipseason=${skipseason}` : ""}${skipexnation ? `&skipexnation=${skipexnation}` : ""}`)
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
@@ -70,6 +72,10 @@
 		const whiteList = regionalwhitelist ? regionalwhitelist.split('\n') : [];
 		if (whiteList.length > 0) {
 			progress += `<p>Whitelisting regions: ${whiteList.map((region) => region.trim()).join(', ')}</p>`;
+		}
+		const fwhiteList = flagwhitelist ? flagwhitelist.split('\n') : [];
+		if (fwhiteList.length > 0) {
+			progress += `<p>Whitelisting regions: ${fwhiteList.map((flag) => flag.trim()).join(', ')}</p>`;
 		}
 		if (skipseason.length > 0) {
 			progress += `<p>Skipping seasons:`
@@ -116,7 +122,8 @@
 						const category = card.CATEGORY;
 						const marketValue = card.MARKET_VALUE;
 						const region = String(card.REGION);
-
+						const flag = String(card.FLAG)
+						console.log(flag)
 						let highestBid = 0;
 						const markets = card.MARKETS ? card.MARKETS.MARKET : [];
 						if (Array.isArray(markets)) {
@@ -139,6 +146,12 @@
 
 						let junk = true;
 						let reason = ""
+						fwhiteList.forEach(whitelistedFlag => {
+							if (flag.includes(whitelistedFlag)) {
+								junk = false;
+								reason = `<span class="text-blue-400">Flag is whitelisted ${flag}</span>`
+							}
+						})
 						if (skipseason.includes(String(season))) {
 							junk = false;
 							reason = `<span class="text-blue-400">is ignored season ${season}</span>`
@@ -255,6 +268,7 @@
 			<Input text={`Gift To`} bind:bindValue={giftee} forValue="giftee" required={true} />
 		{/if}
 		<Textarea text="Regional Whitelist" bind:bindValue={regionalwhitelist} forValue="regions" />
+		<Textarea text="Flag Whitelist" bind:bindValue={flagwhitelist} forValue="flags" />
 		<Input text={`Card Count Threshold`} bind:bindValue={cardcount} forValue="card" />
 		<Input text={`Owner Count Threshold`} bind:bindValue={owners} forValue="owner" />
 		{#if rarities}

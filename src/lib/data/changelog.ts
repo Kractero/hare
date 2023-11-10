@@ -1,5 +1,20 @@
 export const changelog = [
     {
+        "date": "2023-11-09",
+        "changes": {
+            "features": [
+                [
+                    "Deck to IDs",
+                    "NEW - Given a deck, get a downloadable text file of ids."
+                ],
+                [
+                    "JunkDaJunk",
+                    "Add option to whitelist flags."
+                ]
+            ]
+        }
+    },
+    {
         "date": "2023-11-06",
         "changes": {
             "features": [

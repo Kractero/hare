@@ -24,14 +24,13 @@
 		pushHistory(`?main=${main}&nation=${nennation}`)
 		progress = '';
         const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+deck;nationname=${nennation}`, main);
-        dl = xml.CARDS.DECK.CARD.map((card: { CARDID: string; }) => card.CARDID).join('\n')
-        console.log(dl)
+        dl = Array.from(new Set(xml.CARDS.DECK.CARD.map((card: { CARDID: string; }) => card.CARDID))).join('\n')
         downloadable = true;
         progress += `<p>Finished processing</p>`
 	}
 </script>
 
-<ToolContent toolTitle="Deck to IDs" caption={"Turn a deck into a text file of card ids."} />
+<ToolContent toolTitle="Deck to IDs" caption={"Turn a deck into a text file of card ids, duplicates ignored."} />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => nen()} class="flex flex-col gap-8">
