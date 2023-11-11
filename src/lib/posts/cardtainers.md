@@ -16,10 +16,8 @@ Use [Cardtainers](https://addons.mozilla.org/en-US/firefox/addon/cardtainers/) i
 
 Generation of container rules is no longer necessary, you just need to paste in a list of your puppets into the text area under the extension toolbar button like
     
-    ```
-    kazakhstan
-    norway
-    puppet farmer 1
-    ```
-
-This helps a lot for people who found puppets often, as container rule generation can be a nuisance.
+```
+kazakhstan
+norway
+puppet farmer 1
+```
