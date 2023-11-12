@@ -40,7 +40,7 @@
 	<form on:submit|preventDefault={() => nen()} class="flex flex-col gap-8">
 		<Input text={`User Agent`} bind:bindValue={main} forValue="main" required={true} />
 		<Input text={`Nation`} bind:bindValue={nennation} forValue="nennation" required={true} />
-		<Select name="Issues and Packs" bind:mode={mode} options={["Signal", "IDs"]} />
+		<Select name="Output Format" bind:mode={mode} options={["Signal", "IDs"]} />
         <Buttons downloadButton={true} bind:downloadable={downloadable} bind:content={dl} name="Deck" type="txt" />
 	</form>
 	<Terminal bind:progress={progress} />
