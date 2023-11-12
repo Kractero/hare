@@ -12,7 +12,7 @@ export function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function parseXML(url: string, userAgent: string, password?: string) {
+export async function parseXML(url: string, userAgent: string, password?: string): Promise<{[key: string]: any}> {
 	const headers: Record<string, string> = {
 		'User-Agent': userAgent
 	};
@@ -32,6 +32,11 @@ export async function parseXML(url: string, userAgent: string, password?: string
 
 	if (response.status === 409) {
 		return {"status": `failed with error code 409`}
+	}
+
+	if (response.status === 429) {
+		await sleep(Number(response.headers.get('retry-after')) * 1000 + 2000)
+		return await parseXML(url, userAgent, password ? password : "")
 	}
 
 	const xml = await response.text();

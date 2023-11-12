@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import { parser, sleep } from '$lib/helpers/utils';
+	import { parseXML, sleep } from '$lib/helpers/utils';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
@@ -36,18 +36,10 @@
         }
 		progress = `<p>Retrieving list of esteemed delegates...</p>`
         await sleep(700);
-        const delegatesres = await fetch(`https://www.nationstates.net/cgi-bin/api.cgi?wa=1&q=delegates`, {
-			headers: {
-				'User-Agent': main
-			}
-		});
-        const delegatestext = await delegatesres.text();
-        const delegatesXML = parser.parse(delegatestext)
-        const delegates: Array<string> = delegatesXML.WA.DELEGATES.split(',')
+        let delegatesXML = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?wa=1&q=delegates`, main)
+		const delegates: Array<string> = delegatesXML.WA.DELEGATES.split(',')
         progress += `<p>${delegates.length} delegates found.</p>`
-        const proposalres = await fetch(`https://www.nationstates.net/cgi-bin/api.cgi?wa=${councilID}&q=proposals`)
-        const proposaltext = await proposalres.text();
-        const proposalXML = parser.parse(proposaltext)
+        const proposalXML = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?wa=${councilID}&q=proposals`, main)
         const proposal = proposalXML.WA.PROPOSALS.PROPOSAL.filter((proposal: { [x: string]: string; }) => proposal["@_id"] === proposalid)[0]
         if (!proposal) {
             progress += `<p class="text-red-400">No proposal found matching ${proposalid} in the ${council}.</p>`

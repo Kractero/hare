@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
-	import { parseXML } from '$lib/helpers/utils';
+	import { parseXML, sleep } from '$lib/helpers/utils';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import type { PageData } from './$types';
@@ -11,6 +11,7 @@
 	let progress = "";
 	let puppets = '';
 	let main = '';
+	let stoppable = false;
 	onMount(() => {
 		main = data.parameters.main || localStorage.getItem("main") as string || "";
 		puppets = localStorage.getItem("puppets") as string || "";
@@ -18,6 +19,7 @@
 	async function findWA(main: string, puppets: string) {
 		pushHistory(`?main=${main}`)
 		progress = '';
+		stoppable = true;
 		const puppetsList = puppets.split('\n');
 		const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?wa=1&q=members`, main);
 		const members = xml.WA.MEMBERS.split(',');
@@ -26,6 +28,7 @@
 				progress = `<p>I found your WA on <a href="https://nationstates.net/nation=${puppet}">${puppet}</a>.</p>`;
 			}
 		})
+		stoppable = false;
 	}
 </script>
 
@@ -34,7 +37,7 @@
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => findWA(main, puppets)} class="flex flex-col gap-8">
 		<InputCredentials bind:main bind:puppets authenticated={false} />
-		<Buttons />
+		<Buttons bind:stoppable={stoppable} />
 	</form>
 	<Terminal bind:progress={progress} />
 </div>

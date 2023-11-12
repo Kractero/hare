@@ -23,7 +23,7 @@
 	});
 	onDestroy(() => abortController.abort());
 	async function checkForExistence(userAgent: string, username: string, password: string) {
-		const res = await fetch(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${username}&q=ping`,
+		let res = await fetch(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${username}&q=ping`,
 			{
 				headers: {
 					'X-Password': password,
@@ -33,6 +33,11 @@
 		const existence = res.status
 		if (existence === 404) return false
 		if (existence === 200 || existence === 409) return true
+		while (existence === 409) {
+			stoppable = true
+			await sleep(Number(res.headers.get('retry-after')) * 1000)
+			await checkForExistence(userAgent, username, password)
+		}
 		return false
 	}
 	async function ping(main: string, puppets: string, password: string) {
