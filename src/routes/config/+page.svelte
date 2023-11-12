@@ -47,7 +47,8 @@
         signalCollectionsOrDecks: '',
         signalAsksBidsNation: '',
         signalMode: 'Collection',
-        statisticsScales: ''
+        statisticsScales: '',
+        deckMode: 'Signal'
     };
 
     onMount(() => {
@@ -161,6 +162,8 @@
         <Textarea text={"Coll/Decks"} bind:bindValue={localStorageObject.signalCollectionsOrDecks} forValue="mode"  />
         <h2 class="text-2xl text-center font-bold tracking-tight">Statistics</h2>
         <Textarea text="Scale" bind:bindValue={localStorageObject.statisticsScales} forValue="scale" />
+        <h2 class="text-2xl text-center font-bold tracking-tight">Deck</h2>
+        <Select name="Issues and Packs" bind:mode={localStorageObject.deckMode} options={["Signal", "IDs"]} />
         <div class="max-w-lg flex justify-center">
             <button
                 type="submit"

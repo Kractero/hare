@@ -7,24 +7,28 @@
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import ToolContent from '$lib/component/ToolContent.svelte';
+	import type { Card } from '$lib/types';
+	import Select from '$lib/component/Select.svelte';
 	export let data: PageData;
 	let progress = "";
 	let main = '';
 	let nennation = '';
     let downloadable = false;
     let dl = ""
+	let mode = "Signal"
 
 	onMount(() => {
 		main = data.parameters.main || localStorage.getItem("main") as string || "";
 		nennation = data.parameters.nation || "";
+		main = data.parameters.mode || localStorage.getItem("main") as string || "";
 	});
 
 	async function nen() {
         downloadable = false;
-		pushHistory(`?main=${main}&nation=${nennation}`)
+		pushHistory(`?main=${main}&nation=${nennation}&mode=${mode}`)
 		progress = '';
         const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+deck;nationname=${nennation}`, main);
-        dl = Array.from(new Set(xml.CARDS.DECK.CARD.map((card: { CARDID: string; }) => card.CARDID))).join('\n')
+        dl = Array.from(new Set((xml.CARDS.DECK.CARD as Card[]).map((card) => mode === "Signal" ? `${card.CARDID},${card.SEASON}` : card.CARDID))).join('\n')
         downloadable = true;
         progress += `<p>Finished processing</p>`
 	}
@@ -36,6 +40,7 @@
 	<form on:submit|preventDefault={() => nen()} class="flex flex-col gap-8">
 		<Input text={`User Agent`} bind:bindValue={main} forValue="main" required={true} />
 		<Input text={`Nation`} bind:bindValue={nennation} forValue="nennation" required={true} />
+		<Select name="Issues and Packs" bind:mode={mode} options={["Signal", "IDs"]} />
         <Buttons downloadButton={true} bind:downloadable={downloadable} bind:content={dl} name="Deck" type="txt" />
 	</form>
 	<Terminal bind:progress={progress} />

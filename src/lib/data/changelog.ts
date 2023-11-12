@@ -1,5 +1,28 @@
 export const changelog = [
     {
+        "date": "2023-11-12",
+        "changes": {
+            "features": [
+                [
+                    "All Tools Using the API",
+                    "Respect the retry-after header when ratelimited, wait the duration, then continue."
+                ],
+                [
+                    "Approvals",
+                    "Utilize the parseXML helper function."
+                ],
+                [
+                    "Deck",
+                    "New default option to return card ids formatted with their season after (ID,season) for use with Signal."
+                ],
+                [
+                    "Where's WA",
+                    "Is now stoppable (for when you are rate-limited)."
+                ]
+            ]
+        }
+    },
+    {
         "date": "2023-11-09",
         "changes": {
             "features": [

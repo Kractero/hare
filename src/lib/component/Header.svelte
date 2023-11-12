@@ -10,6 +10,9 @@
 		<a href="https://github.com/Kractero/hare" target="_blank" rel="noreferrer noopener">
 			<img src="/Github.png" alt="Github" />
 		</a>
+		<a href={`/changelog`}>
+			<img src="/Newspaper.png" alt="Changelog" />
+		</a>
 		<a href={`/config`}>
 			<img src="/Settings.png" alt="Settings" />
 		</a>
