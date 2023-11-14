@@ -98,5 +98,3 @@ scores.split('\n').forEach((score) => {
         .map((word) => word[0].toUpperCase() + word.substring(1))
         .join(' ')
 });
-
-console.log(scoresObj)

@@ -124,7 +124,6 @@
 						const marketValue = card.MARKET_VALUE;
 						const region = String(card.REGION);
 						const flag = String(card.FLAG)
-						console.log(flag)
 						let highestBid = 0;
 						const markets = card.MARKETS ? card.MARKETS.MARKET : [];
 						if (Array.isArray(markets)) {
