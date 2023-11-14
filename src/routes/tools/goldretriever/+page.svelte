@@ -47,9 +47,10 @@
 		}
 		for (let i = 0; i < puppetList.length; i++) {
 			let nation = puppetList[i];
-			if (mode === "Include" && !password) {
+			let nationSpecificPassword = "";
+			if (mode === "Include" && nation.includes(',')) {
 				nation = puppetList[i].split(',')[0];
-				password = puppetList[i].split(',')[1];
+				nationSpecificPassword = puppetList[i].split(',')[1];
 			}
 			if (abortController.signal.aborted || stopped) {
 				break;
@@ -93,7 +94,7 @@
 				}
 				if (mode === "Include") {
 					await sleep(700);
-					const issuesAndPacks = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`, main, password.replaceAll(' ', '_'));
+					const issuesAndPacks = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`, main, nationSpecificPassword ? nationSpecificPassword : password.replaceAll(' ', '_'));
 					const packs = issuesAndPacks.NATION.PACKS;
 					const issues: Issue = issuesAndPacks.NATION.ISSUES.ISSUE || []
 					if (issues && !Array.isArray(issues)) {

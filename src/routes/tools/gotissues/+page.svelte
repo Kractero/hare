@@ -47,9 +47,10 @@
 		const interimPacks = [];
 		for (let i = 0; i < puppetList.length; i++) {
 			let nation = puppetList[i];
-			if (!password) {
+			let nationSpecificPassword = "";
+			if (nation.includes(',')) {
 				nation = puppetList[i].split(',')[0];
-				password = puppetList[i].split(',')[1];
+				nationSpecificPassword = puppetList[i].split(',')[1];
 			}
 			if (abortController.signal.aborted || stopped) {
 				break;
@@ -58,7 +59,7 @@
 			try {
 				await sleep(700);
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`;
-				const xmlObj = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`, main, password?.replaceAll(' ', '_'));
+				const xmlObj = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`, main, nationSpecificPassword ? nationSpecificPassword : password?.replaceAll(' ', '_'));
 				if (mode === "Both" || mode === "Issues") {
 					const issues: Issue = xmlObj.NATION.ISSUES.ISSUE || []
 					let issueIds: Array<string> = []

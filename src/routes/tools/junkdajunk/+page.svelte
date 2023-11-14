@@ -68,7 +68,7 @@
 		junkHtml = '';
 		sellContent = '';
 		const interimSells = [];
-		let puppetsList = puppets.split('\n');
+		let puppetList = puppets.split('\n');
 		const whiteList = regionalwhitelist ? regionalwhitelist.split('\n') : [];
 		if (whiteList.length > 0) {
 			progress += `<p>Whitelisting regions: ${whiteList.map((region) => region.trim()).join(', ')}</p>`;
@@ -91,12 +91,13 @@
 			progress += `<p>${rarityArr[i][0]} junk threshold at ${rarityArr[i][1]}</p>`;
 		}
 		progress += `<p class="font-bold">Initiating JunkDaJunk...</p>`;
-		for (let i = 0; i < puppetsList.length; i++) {
+		for (let i = 0; i < puppetList.length; i++) {
 			let currentNationXPin = ""
-			let nation = puppetsList[i];
-			if (!password) {
-				nation = puppetsList[i].split(',')[0];
-				password = puppetsList[i].split(',')[1];
+			let nation = puppetList[i];
+			let nationSpecificPassword = "";
+			if (nation.includes(',')) {
+				nation = puppetList[i].split(',')[0];
+				nationSpecificPassword = puppetList[i].split(',')[1];
 			}
 			if (abortController.signal.aborted || stopped) {
 				break;
@@ -104,7 +105,7 @@
 			nation = nation.toLowerCase().replaceAll(' ', '_');
 			try {
 				await sleep(700);
-				progress += `<p class="font-semibold">Processing ${nation} ${i + 1}/${puppetsList.length} puppets</p>`;
+				progress += `<p class="font-semibold">Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`;
 				const xmlDocument = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
 				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD;
 					cards = cards ? Array.isArray(cards) ? cards : [cards] : []
@@ -195,7 +196,7 @@
 									'User-Agent': main,
 								}
 								if (currentNationXPin) headers['X-Pin'] = currentNationXPin
-								else headers['X-Password'] = password
+								else headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
 								const prepare = await fetch(
 									`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`, {headers: headers}
 								);

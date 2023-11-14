@@ -43,16 +43,17 @@
 		stoppable = true;
 		stopped = false;
 		openNewLinkArr = [];
-		let puppetsList = puppets.split('\n');
+		let puppetList = puppets.split('\n');
 		progress = "<p>Initiating Finder...</p>";
 		const toFind = finderlist.split('\n');
 		progress += `<p>Finding -> ${toFind.map((card) => card.trim()).join(', ')}</p>`;
-		for (let i = 0; i < puppetsList.length; i++) {
+		for (let i = 0; i < puppetList.length; i++) {
 			let currentNationXPin = ""
-			let nation = puppetsList[i];
-			if (mode === "Include" && !password) {
-				nation = puppetsList[i].split(',')[0];
-				password = puppetsList[i].split(',')[1];
+			let nation = puppetList[i];
+			let nationSpecificPassword = "";
+			if (mode === "Include" && nation.includes(',')) {
+				nation = puppetList[i].split(',')[0];
+				nationSpecificPassword = puppetList[i].split(',')[1];
 			}
 			if (abortController.signal.aborted || stopped) {
 				break;
@@ -60,7 +61,7 @@
 			nation = nation.toLowerCase().replaceAll(' ', '_');
 			try {
 				await sleep(700);
-				progress += `<p>Processing ${nation} ${i + 1}/${puppetsList.length} puppets</p>`;
+				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`;
 				const response = await fetch(
 					`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`,
 					{
@@ -86,7 +87,7 @@
 							if (matchSeason && matchSeason !== String(season)) {
 								progress += `<p>Found ${id} but not right season.`
 							} else {
-								progress += `<p class="text-green-400">Found S${season} ${id} on ${puppetsList[i]}</p>`;
+								progress += `<p class="text-green-400">Found S${season} ${id} on ${puppetList[i]}</p>`;
 								if (mode === "Gift") {
 									let token = ""
 									await sleep(700);
@@ -94,7 +95,7 @@
 										'User-Agent': main,
 									}
 									if (currentNationXPin) headers['X-Pin'] = currentNationXPin
-									else headers['X-Password'] = password
+									else headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
 									const prepare = await fetch(
 										`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`, {headers: headers}
 									);

@@ -1,5 +1,16 @@
 export const changelog = [
     {
+        "date": "2023-11-14",
+        "changes": {
+            "features": [
+                [
+                    "Finder, Gold Retriever, gotIssues, JunkDaJunk, Pinger",
+                    "Properly handle multiple separate passwords with commas, additionally fallback to any provided general password value if any."
+                ],
+            ]
+        }
+    },
+    {
         "date": "2023-11-12",
         "changes": {
             "features": [

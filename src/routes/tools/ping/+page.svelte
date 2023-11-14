@@ -40,23 +40,24 @@
 		}
 		return false
 	}
-	async function ping(main: string, puppets: string, password: string) {
+	async function ping() {
 		pushHistory(`?main=${main}`)
 		stoppable = true;
 		stopped = false;
 		progress = '';
-		let puppetsList = puppets.split('\n');
-		for (let i = 0; i < puppetsList.length; i++) {
+		let puppetList = puppets.split('\n');
+		for (let i = 0; i < puppetList.length; i++) {
 			await sleep(700);
-			let nation = puppetsList[i];
-			if (!password) {
-				nation = puppetsList[i].split(',')[0];
-				password = puppetsList[i].split(',')[1];
+			let nation = puppetList[i];
+			let nationSpecificPassword = "";
+			if (nation.includes(',')) {
+				nation = puppetList[i].split(',')[0];
+				nationSpecificPassword = puppetList[i].split(',')[1];
 			}
 			if (abortController.signal.aborted || stopped) {
 				break;
 			}
-			const existence = await checkForExistence(main, nation, password);
+			const existence = await checkForExistence(main, nation, nationSpecificPassword ? nationSpecificPassword : password);
 			if (existence === false) {
 				progress += `<p class="text-red-400">Failed to log into ${nation}, attemping to restore...</p>`;
 				await sleep (6000)
@@ -70,7 +71,7 @@
 							iframeContents.getElementById("restoreLoggingIn").value = "1";
 							iframeContents.getElementById("restoreNation").value = nation;
 							iframeContents.getElementById("restoreRestoreNation").value = `Restore ${nation}`;
-							iframeContents.getElementById("restoreRestorePassword").value = password;
+							iframeContents.getElementById("restoreRestorePassword").value = nationSpecificPassword ? nationSpecificPassword : password;
 							iframeContents.getElementById("restoreSubmit").click();
 						}
 						resolve();
@@ -80,7 +81,7 @@
 				iframe.src = "/iframe.html";
 				await loadHandler;
 				await sleep(700)
-				const existence = await checkForExistence(main, nation, password);
+				const existence = await checkForExistence(main, nation, nationSpecificPassword ? nationSpecificPassword : password);
 				if (existence === false) {
 					progress += `<p class="text-red-400">Are you sure ${nation} is a nation or you provided the right credentials? Skipping...</p>`
 				}
@@ -102,7 +103,7 @@
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form
-		on:submit|preventDefault={async () => await ping(main, puppets, password)}
+		on:submit|preventDefault={async () => await ping()}
 		class="flex flex-col gap-8"
 	>
 		<InputCredentials bind:main bind:puppets bind:password authenticated={true} />
