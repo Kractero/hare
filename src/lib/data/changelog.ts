@@ -1,8 +1,19 @@
 export const changelog = [
     {
+        "date": "2023-11-15",
+        "changes": {
+            "fixes": [
+                [
+                    "JunkDaJunk",
+                    "Fix variable name duplication on owner count to allow for owner count whitelisting."
+                ],
+            ]
+        }
+    },
+    {
         "date": "2023-11-14",
         "changes": {
-            "features": [
+            "fixes": [
                 [
                     "Finder, Gold Retriever, gotIssues, JunkDaJunk, Pinger",
                     "Properly handle multiple separate passwords with commas, additionally fallback to any provided general password value if any."

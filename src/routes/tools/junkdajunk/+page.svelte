@@ -119,7 +119,7 @@
 						await sleep(700);
 						const xmlDocument = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?cardid=${id}&season=${season}&q=card+markets+info+owners`, main);
 						const card: Card = xmlDocument.CARD
-						const owners = new Set(card.OWNERS.OWNER)
+						const cardOwners = new Set(card.OWNERS.OWNER)
 						const category = card.CATEGORY;
 						const marketValue = card.MARKET_VALUE;
 						const region = String(card.REGION);
@@ -156,7 +156,9 @@
 							junk = false;
 							reason = `<span class="text-blue-400">is ignored season ${season}</span>`
 						}
-						if (owners && Number(owners) < owners.size) {
+						console.log(Number(owners))
+						console.log(cardOwners.size)
+						if (owners && Number(owners) < cardOwners.size) {
 							junk = false;
 							reason = `<span class="text-blue-400">has less owners than ${owners}</span>`
 						}
