@@ -7,6 +7,10 @@ export const changelog = [
                     "JunkDaJunk",
                     "Fix variable name duplication on owner count to allow for owner count whitelisting."
                 ],
+                [
+                    "Finder",
+                    "Correct numerical increment on table rows for html output."
+                ]
             ]
         }
     },

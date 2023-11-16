@@ -47,6 +47,7 @@
 		progress = "<p>Initiating Finder...</p>";
 		const toFind = finderlist.split('\n');
 		progress += `<p>Finding -> ${toFind.map((card) => card.trim()).join(', ')}</p>`;
+		let findCount = 0;
 		for (let i = 0; i < puppetList.length; i++) {
 			let currentNationXPin = ""
 			let nation = puppetList[i];
@@ -124,9 +125,10 @@
 										...openNewLinkArr,
 										`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
 									];
-									junkHtml += `<tr><td><p>${i + 1} of ${
+									junkHtml += `<tr><td><p>${findCount + 1} of ${
 										cards.length
 									}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
+									findCount++;
 								}
 							}
 						}
