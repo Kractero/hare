@@ -1,5 +1,16 @@
 export const changelog = [
     {
+        "date": "2023-11-16",
+        "changes": {
+            "fixes": [
+                [
+                    "Guides",
+                    "Include mentions of cardtainers, and replace mentions of gi-browser suite tools with Hare."
+                ]
+            ]
+        }
+    },
+    {
         "date": "2023-11-15",
         "changes": {
             "fixes": [

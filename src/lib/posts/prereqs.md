@@ -6,11 +6,14 @@ author: Kractero
 order: 1
 ---
 To install most of these tools, you will be expected to have some knowledge of the browser. A lot of trading card tools involve automation, through scripting or hotkeys.
+
+Now, the point of Hare is to make cards easier. However, you still need to put in some effort to make the experience better for yourself. At the minimum, you need to get the **right browser**, a **userscript manager**, and **containers set up**.
+
 While it may seem daunting at the start, with some work everything should click and work properly. Follow this to get all the prerequisites installed.
 
 1. [Note on Browsers](#browsers)
 2. [Installing Userscripts](#userscripts)
-3. [Containerise](#containers)
+3. [Containers](#containers)
 4. [Python](#programming-languages)
 
 ### <a name="browsers"></a>  Browsers
@@ -85,17 +88,27 @@ that retain their own cookies and sessions. This allows you to be logged on to m
 
 As mentioned [above](#browsers), the only browsers that supports this are Firefox and its derivatives. Sorry to chromiumites.
 
-<div class="flex gap-4 justify-center">
-    <a href="https://addons.mozilla.org/en-US/firefox/addon/containerise/" rel="noopener noreferrer" target="_blank">
-        <img src="https://addons.mozilla.org/user-media/addon_icons/859/859380-64.png?modified=1553034276" alt="containerise" />
-    </a>
-</div>
+There are two choices:
 
-Open Firefox, then <a href="https://addons.mozilla.org/en-US/firefox/addon/containerise/" rel="noopener noreferrer" target="_blank">Install the Containerise addon.</a>
+1. Cardtainers - Read more here -> <a href="/guides/cardtainers" target="_blank" rel="noreferrer noopener">Cardtainers advert</a>
 
-After you have generated some container rules, you can add them by clicking the pencil icon, pasting them in the text area, then hitting the save icon.
+    The pros to cardtainers is not needing Python, and a quick and easy setup.
 
-![pencil icon](https://raw.githubusercontent.com/Kractero/cards-resources/main/static/containerise.png)
+2. Containerise
+
+    <div class="flex gap-4 justify-center">
+        <a href="https://addons.mozilla.org/en-US/firefox/addon/containerise/" rel="noopener noreferrer" target="_blank">
+            <img src="https://addons.mozilla.org/user-media/addon_icons/859/859380-64.png?modified=1553034276" alt="containerise" />
+        </a>
+    </div>
+
+    Open Firefox, then <a href="https://addons.mozilla.org/en-US/firefox/addon/containerise/" rel="noopener noreferrer" target="_blank">Install the Containerise addon.</a>
+
+    After you have generated some container rules, you can add them by clicking the pencil icon, pasting them in the text area, then hitting the save icon.
+
+    ![pencil icon](https://raw.githubusercontent.com/Kractero/cards-resources/main/static/containerise.png)
+
+    More steps can be found in <a href="/guides/containers" target="_blank" rel="noreferrer noopener">here</a>.
     
 ### <a name="programming-languages"></a>  Programming Languages
 

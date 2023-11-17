@@ -36,7 +36,7 @@ Before any of that, install these two userscripts.
 Now, continue by picking one of the two methods.
 
 1. [As a Script](#traditional)
-2. [In the Browser](#browser)
+2. [Hare](#browser)
 
 ### <a id="traditional" name="traditional"></a> Traditional Script
 There is the traditional way written by 9003, which involves running the gotIssues script and waiting for the sheet to be generated to start farming. 
@@ -76,14 +76,14 @@ python Sheet_Maker.py
 ```
 This will generate the html sheet, named 9003samazinglistofcards.html. Essentially how this sheet will work is that when you open it up in a browser with containerise, you can click the Link to Card button, then spam enter all the way down. Each click will open an issue choice up, answer it, then close it.
 
-### <a id="browser" name="browser"></a> gi-browser
+### <a id="browser" name="browser"></a> Hare
 I have been on an endless hunt of making gotIssues more usable to the average farmer. It even came to the point of an unsigned executable that antiviruses would cry about. Nevertheless, you can now access and use gotIssues through the browser, and circumvent the normal pain point of waiting for it to finish by answering the issues immediately after it starts running.
 
-1. <a href="https://kractero.github.io/gi-browser/" rel="noopener noreferrer" target="_blank">Visit the site.</a> 
+1. <a href="https://hare.vercel.app/tools/gotissues/" rel="noopener noreferrer" target="_blank">Visit the gotIssues tool.</a> 
 
-2. Fill in your main nation's name. This is required so NationStates knows who is making the requests.
+2. Fill in your main nation's name in the user agent field. This is required so NationStates knows who is making the requests.
 
-3. If all your puppets have the same password, put it into the Shared Password field. Then, list all your puppets in the textarea following this example:
+3. If all your puppets have the same password, put it into the Password field. Then, list all your puppets in the puppets textarea following this example:
 ```
 nation name
 Kazakhstan
@@ -92,7 +92,7 @@ Farmers
 Norway
 ```
 
-If your puppets have different passwords, click Multiple Passwords, then list your puppets following this example:
+If your puppets have different passwords, put in your puppets in the text area field and skip the password field, following this example:
 ```
 nation,password
 Kazakhstan,astana
@@ -101,9 +101,9 @@ Farmers,farmers
 Norway,oslo
 ```
 
-If you already have a prepared puppet.csv file formatted like nation,password, click the Different Passwords button, even if they are all the same. Then, paste the contents of puppet.csv into this text box. Likewise, if you already have a sheet with all your nations and the same password, use shared passwords.
+4. Determine if you want issues, packs, or both.
 
-4. Click Run. If text starts appearing indicating the stage on which the script is at (like Processing...) it is running.
+5. Click Run. If text starts appearing indicating the stage on which the script is at (like Processing...) it is running.
 
 A cool thing about the browser version is that you can start answering issues immediately, instead of waiting until the end. Click open next link and start answering.
 
