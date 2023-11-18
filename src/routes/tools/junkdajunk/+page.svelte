@@ -36,6 +36,7 @@
 	let skipseason = '';
 	let skipexnation = false;
 	let sellContent = '';
+	let finderlist = '';
 	
 	onMount(() => {
 		main = data.parameters.main || localStorage.getItem("main") as string || "";
@@ -44,6 +45,7 @@
 		mode = data.parameters.mode || localStorage.getItem("finderMode") as string || "Gift";
 		regionalwhitelist = data.parameters.regions?.replaceAll(',', '\n') || localStorage.getItem("junkdajunkRegionalWhitelist") as string || "";
 		flagwhitelist = data.parameters.flags?.replaceAll(',', '\n') || localStorage.getItem("junkdajunkFlagWhitelist") as string || "";
+		finderlist = data.parameters.ids?.replaceAll(',', '\n') || localStorage.getItem("junkdajunkFinderList") as string || "";
 		giftee = data.parameters.giftee || localStorage.getItem("finderGiftee") as string || "";
 		rarities = localStorage.getItem("junkdajunkRarities") ? JSON.parse(localStorage.getItem("junkdajunkRarities") as string) : {
             common: 0.5,
@@ -60,7 +62,7 @@
 	onDestroy(() => abortController.abort());
 
 	async function junkDaJunk(main: string, puppets: string) {
-		pushHistory(`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ""}${owners ? `&owners=${owners}` : ""}${cardcount ? `&cardcount=${cardcount}` : ""}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ""}${flagwhitelist ? `&flags=${flagwhitelist.replaceAll('\n', ',')}` : ""}${skipseason ? `&skipseason=${skipseason}` : ""}${skipexnation ? `&skipexnation=${skipexnation}` : ""}`)
+		pushHistory(`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ""}${owners ? `&owners=${owners}` : ""}${cardcount ? `&cardcount=${cardcount}` : ""}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ""}${flagwhitelist ? `&flags=${flagwhitelist.replaceAll('\n', ',')}` : ""}${finderlist ? `&ids=${finderlist.replaceAll('\n', ',')}` : ""}${skipseason ? `&skipseason=${skipseason}` : ""}${skipexnation ? `&skipexnation=${skipexnation}` : ""}`)
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
@@ -76,6 +78,10 @@
 		const fwhiteList = flagwhitelist ? flagwhitelist.split('\n') : [];
 		if (fwhiteList.length > 0) {
 			progress += `<p>Whitelisting regions: ${fwhiteList.map((flag) => flag.trim()).join(', ')}</p>`;
+		}
+		const toFind = finderlist ? finderlist.split('\n') : [];
+		if (toFind.length > 0) {
+			progress += `<p>Whitelisting cards: ${toFind.map((flag) => flag.trim()).join(', ')}</p>`;
 		}
 		if (skipseason.length > 0) {
 			progress += `<p>Skipping seasons:`
@@ -152,12 +158,25 @@
 								reason = `<span class="text-blue-400">Flag is whitelisted ${flag}</span>`
 							}
 						})
+						const findSplit = finderlist.split('\n').map(matcher => matcher.split(','))
+						findSplit.forEach((findid, i) => {
+							const matchSeason = findSplit[i][1];
+							if (findid[0] === String(id)) {
+								if (matchSeason) { 
+									if (matchSeason === season) {
+										junk = false;
+										reason = `<span class="text-blue-400">is whitelisted card ${findid} season ${season}</span>`
+									}
+								} else {
+									junk = false;
+									reason = `<span class="text-blue-400">is whitelisted card ${findid}</span>`
+								}
+							}
+						})
 						if (skipseason.includes(String(season))) {
 							junk = false;
 							reason = `<span class="text-blue-400">is ignored season ${season}</span>`
 						}
-						console.log(Number(owners))
-						console.log(cardOwners.size)
 						if (owners && Number(owners) < cardOwners.size) {
 							junk = false;
 							reason = `<span class="text-blue-400">has less owners than ${owners}</span>`
@@ -255,6 +274,7 @@
 </script>
 
 <ToolContent toolTitle="JunkDaJunk" caption={"An even faster way to junk cards with JavaScript."} author="9003" originalBlurb="rewritten in JS for browser use by Kractero" link="https://github.com/jmikk/Card-Proccessor" additional={`<p class="text-xs mb-4 max-w-sm">
+	The card id whitelist can specify season as well with CARDID,SEASON. 
 	The regional whitelist indicates regions to skip when deciding to junk cards. The card count threshold only runs Junking
 	analyzing on specified nations that have over a certain amount of cards. The owner count threshold will indicate cards to skip
 	that have less than the specified amount. The rarity threshold dictates when to skip based on the card's rarity and market value.
@@ -269,6 +289,7 @@
 		{#if mode === "Gift"}
 			<Input text={`Gift To`} bind:bindValue={giftee} forValue="giftee" required={true} />
 		{/if}
+		<Textarea text="Card ID Whitelist" bind:bindValue={finderlist} forValue="find" required />
 		<Textarea text="Regional Whitelist" bind:bindValue={regionalwhitelist} forValue="regions" />
 		<Textarea text="Flag Whitelist" bind:bindValue={flagwhitelist} forValue="flags" />
 		<Input text={`Card Count Threshold`} bind:bindValue={cardcount} forValue="card" />

@@ -26,6 +26,7 @@
         finderList: '',
         junkdajunkRegionalWhitelist: '',
         junkdajunkFlagWhitelist: '',
+        junkdajunkFinderList: '',
         finderMode: 'Gift',
         junkdajunkRarities: {
             common: 0.5,
@@ -138,6 +139,7 @@
         <Select name="Behavior" bind:mode={localStorageObject.finderMode} options={['Gift', 'Sell', 'Exclude']} />
         <Input text="Gift To" bind:bindValue={localStorageObject.finderGiftee} forValue="giftee" />
         <h2 class="text-2xl text-center font-bold tracking-tight">JunkDaJunk</h2>
+        <Textarea text="Card ID Whitelist" bind:bindValue={localStorageObject.junkdajunkFinderList} forValue="jdjfind" />
         <Textarea text="Regional Whitelist" bind:bindValue={localStorageObject.junkdajunkRegionalWhitelist} forValue="regions" />
         <Textarea text="Flag Whitelist" bind:bindValue={localStorageObject.junkdajunkFlagWhitelist} forValue="flags" />
         <Input text="Card Count Threshold" bind:bindValue={localStorageObject.junkdajunkCardCount} forValue="card" />

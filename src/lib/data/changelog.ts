@@ -1,5 +1,16 @@
 export const changelog = [
     {
+        "date": "2023-11-17",
+        "changes": {
+            "features": [
+                [
+                    "JunkDaJunk",
+                    "Whitelist specific cards."
+                ]
+            ]
+        }
+    },
+    {
         "date": "2023-11-16",
         "changes": {
             "fixes": [
