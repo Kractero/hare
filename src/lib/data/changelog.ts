@@ -4,6 +4,17 @@ export const changelog = [
         "changes": {
             "fixes": [
                 [
+                    "Finder, JunkDaJunk",
+                    "Remove autoclose from view links.",
+                ]
+            ]
+        }
+    },
+    {
+        "date": "2023-11-18",
+        "changes": {
+            "fixes": [
+                [
                     "JunkDaJunk",
                     "Remove required status from Card ID whitelist.",
                     "Fix owner count whitelist logic."
