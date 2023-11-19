@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import { parser, sleep } from '$lib/helpers/utils';
+	import { parseXML, parser, sleep } from '$lib/helpers/utils';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Input from '$lib/component/Input.svelte';
@@ -48,6 +48,7 @@
 		const toFind = finderlist.split('\n');
 		progress += `<p>Finding -> ${toFind.map((card) => card.trim()).join(', ')}</p>`;
 		let findCount = 0;
+		let failedGiftCount = 0;
 		for (let i = 0; i < puppetList.length; i++) {
 			let currentNationXPin = ""
 			let nation = puppetList[i];
@@ -63,16 +64,7 @@
 			try {
 				await sleep(700);
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`;
-				const response = await fetch(
-					`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`,
-					{
-						headers: {
-							'User-Agent': main
-						}
-					}
-				);
-				const xml = await response.text();
-				const xmlDocument = parser.parse(xml);
+				const xmlDocument = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
 				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD;
 				cards = cards ? Array.isArray(cards) ? cards : [cards] : []
                 const matches = finderlist.split('\n').map(matcher => matcher.split(','))
@@ -88,7 +80,6 @@
 							if (matchSeason && matchSeason !== String(season)) {
 								progress += `<p>Found ${id} but not right season.`
 							} else {
-								progress += `<p class="text-green-400">Found S${season} ${id} on ${puppetList[i]}</p>`;
 								if (mode === "Gift") {
 									let token = ""
 									await sleep(700);
@@ -115,7 +106,25 @@
 										}
 									);
 									if (gift.status === 200) {
-										progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftee}`;
+										let successfulGift = true;
+										await sleep(700);
+										const verify = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
+										let verifyCards: Array<Card> = verify.CARDS.DECK.CARD;
+										verifyCards = verifyCards ? Array.isArray(verifyCards) ? verifyCards : [verifyCards] : []
+										if (verifyCards && verifyCards.length > 0) {
+											let ids = verifyCards.map(card => card.CARDID)
+											if (ids.includes(id)) {
+												successfulGift = false
+												openNewLinkArr = [
+													...openNewLinkArr,
+													`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero`
+												];
+												junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero\n">Link to Card</a></p></td></tr>\n`;
+												progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}`;
+												failedGiftCount++;
+											}
+										}
+										if (successfulGift) progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftee}`;
 									} else {
 										progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}`;
 									}
@@ -126,8 +135,8 @@
 										`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero`
 									];
 									junkHtml += `<tr><td><p>${findCount + 1}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero\n">Link to Card</a></p></td></tr>\n`;
-									findCount++;
 								}
+								findCount++;
 							}
 						}
 					}
@@ -138,7 +147,7 @@
 				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
 			}
 		}
-		progress += `<p>Finished processing</p>`;
+		progress += `<p>Finished processing, found ${findCount}, ${mode === "Gift" ? `with ${failedGiftCount} failed gifts` : `on mode ${mode}.`}</p>`;
 		downloadable = true;
 		stoppable = false;
 	}

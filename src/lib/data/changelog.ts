@@ -2,6 +2,13 @@ export const changelog = [
     {
         "date": "2023-11-18",
         "changes": {
+            "features": [
+                [
+                    "Finder",
+                    "Handle failed gifts by adding them to another sheet and properly outputting that it failed.",
+                    "After running, output the amount of found cards and if Finder was set to gift also output the amount of failed gifts."
+                ]
+            ],
             "fixes": [
                 [
                     "Finder, JunkDaJunk",
