@@ -289,7 +289,7 @@
 		{#if mode === "Gift"}
 			<Input text={`Gift To`} bind:bindValue={giftee} forValue="giftee" required={true} />
 		{/if}
-		<Textarea text="Card ID Whitelist" bind:bindValue={finderlist} forValue="find" required />
+		<Textarea text="Card ID Whitelist" bind:bindValue={finderlist} forValue="find" />
 		<Textarea text="Regional Whitelist" bind:bindValue={regionalwhitelist} forValue="regions" />
 		<Textarea text="Flag Whitelist" bind:bindValue={flagwhitelist} forValue="flags" />
 		<Input text={`Card Count Threshold`} bind:bindValue={cardcount} forValue="card" />

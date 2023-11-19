@@ -1,5 +1,16 @@
 export const changelog = [
     {
+        "date": "2023-11-18",
+        "changes": {
+            "fixes": [
+                [
+                    "JunkDaJunk",
+                    "Remove required status from Card ID whitelist."
+                ]
+            ]
+        }
+    },
+    {
         "date": "2023-11-17",
         "changes": {
             "features": [
