@@ -76,7 +76,7 @@
 						if (matchingIndex !== -1) {
 							const matchSeason = matches[matchingIndex][1];
 							const matchGiftee = matches[matchingIndex][2];
-							giftee = matchGiftee || giftee;
+							let currGiftee = matchGiftee || giftee;
 							if (matchSeason && matchSeason !== String(season)) {
 								progress += `<p>Found ${id} but not right season.`
 							} else {
@@ -89,7 +89,7 @@
 									if (currentNationXPin) headers['X-Pin'] = currentNationXPin
 									else headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
 									const prepare = await fetch(
-										`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`, {headers: headers}
+										`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=prepare&c=giftcard`, {headers: headers}
 									);
 									if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || "";
 									const text = await prepare.text()
@@ -97,7 +97,7 @@
 									token = xml.NATION.SUCCESS
 									await sleep(700);
 									const gift = await fetch(
-										`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
+										`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=execute&c=giftcard&token=${token}`,
 										{
 											headers: {
 												'User-Agent': main,
@@ -118,17 +118,17 @@
 													successfulGift = false
 													openNewLinkArr = [
 														...openNewLinkArr,
-														`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftee}`
+														`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${currGiftee}`
 													];
-													junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftee}\n">Link to Card</a></p></td></tr>\n`;
-													progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}`;
+													junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${currGiftee}\n">Link to Card</a></p></td></tr>\n`;
+													progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${currGiftee}`;
 													failedGiftCount++;
 												}
 											}
 										}
-										if (successfulGift) progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftee}`;
+										if (successfulGift) progress += `<p class="text-green-400">${nation} gifted ${id} to ${currGiftee}`;
 									} else {
-										progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}`;
+										progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${currGiftee}`;
 									}
 								} else {
 									progress += `<p class="text-green-400">${nation} owns ${id}!`;

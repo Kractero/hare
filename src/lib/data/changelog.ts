@@ -21,6 +21,10 @@ export const changelog = [
                 [
                     "Finder, JunkDaJunk",
                     "Remove autoclose from view links. On gift failures, add gift=1.",
+                ],
+                [
+                    "Finder",
+                    "Rename giftee variables to avoid collision from default and locally set giftee nations."
                 ]
             ]
         }
