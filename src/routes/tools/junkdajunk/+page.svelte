@@ -177,7 +177,7 @@
 							junk = false;
 							reason = `<span class="text-blue-400">is ignored season ${season}</span>`
 						}
-						if (owners && Number(owners) < cardOwners.size) {
+						if (owners && Number(owners) > cardOwners.size) {
 							junk = false;
 							reason = `<span class="text-blue-400">has less owners than ${owners}</span>`
 						}

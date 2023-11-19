@@ -5,7 +5,8 @@ export const changelog = [
             "fixes": [
                 [
                     "JunkDaJunk",
-                    "Remove required status from Card ID whitelist."
+                    "Remove required status from Card ID whitelist.",
+                    "Fix owner count whitelist logic."
                 ]
             ]
         }
