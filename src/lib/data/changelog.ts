@@ -1,18 +1,26 @@
 export const changelog = [
     {
-        "date": "2023-11-18",
+        "date": "2023-11-19",
         "changes": {
             "features": [
+                [
+                    "Finder, JunkDaJunk",
+                    "Add a query parameter giftto for gift userscript purposes."
+                ],
                 [
                     "Finder",
                     "Handle failed gifts by adding them to another sheet and properly outputting that it failed.",
                     "After running, output the amount of found cards and if Finder was set to gift also output the amount of failed gifts."
+                ],
+                [
+                    "JunkDaJunk",
+                    "Handle failed gifts by adding them to the bottom of the junk sheet on gift mode. Regardless you should be using finder to gift, not junkdajunk."
                 ]
             ],
             "fixes": [
                 [
                     "Finder, JunkDaJunk",
-                    "Remove autoclose from view links.",
+                    "Remove autoclose from view links. On gift failures, add gift=1.",
                 ]
             ]
         }

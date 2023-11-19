@@ -71,6 +71,7 @@
 		sellContent = '';
 		const interimSells = [];
 		let puppetList = puppets.split('\n');
+		let failedGiftCount = 0;
 		const whiteList = regionalwhitelist ? regionalwhitelist.split('\n') : [];
 		if (whiteList.length > 0) {
 			progress += `<p>Whitelisting regions: ${whiteList.map((region) => region.trim()).join(', ')}</p>`;
@@ -235,9 +236,26 @@
 									}
 								);
 								if (gift.status === 200) {
-									progress += `<p>${i + 1}/${
-										cards.length
-									} -> <span class="text-green-400">Gifted ${id} to ${giftee}</span>`;
+									let successfulGift = true
+									await sleep(700);
+									const verify = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
+									let verifyCards: Array<Card> = verify.CARDS.DECK.CARD;
+									verifyCards = verifyCards ? Array.isArray(verifyCards) ? verifyCards : [verifyCards] : []
+									if (verifyCards && verifyCards.length > 0) {
+										let ids = verifyCards.map(card => card.CARDID)
+										for (let i = 0; i < ids.length; i++) {
+											if (ids[i] === id) {
+												successfulGift = false
+												interimSells.push(
+													`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftee}`
+												);
+												sellContent += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftee}\n">Link to Card</a></p></td></tr>\n`;
+												progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}`;
+												failedGiftCount++;
+											}
+										}
+									}
+									if (successfulGift) progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftee}`;
 								} else {
 									progress += `<p>${i + 1}/${
 										cards.length
@@ -278,6 +296,13 @@
 	The regional whitelist indicates regions to skip when deciding to junk cards. The card count threshold only runs Junking
 	analyzing on specified nations that have over a certain amount of cards. The owner count threshold will indicate cards to skip
 	that have less than the specified amount. The rarity threshold dictates when to skip based on the card's rarity and market value.
+</p>
+<p class="mb-2">
+	For optimal use, you should use the
+	<a class="underline" href="https://github.com/Kractero/userscripts/blob/main/gift.user.js" target="_blank" rel="noreferrer noopener">
+		finder gift default
+	</a>
+	userscript when gifting.
 </p>
 <p class="text-xs mb-16">
 	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.

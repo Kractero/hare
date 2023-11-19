@@ -113,15 +113,17 @@
 										verifyCards = verifyCards ? Array.isArray(verifyCards) ? verifyCards : [verifyCards] : []
 										if (verifyCards && verifyCards.length > 0) {
 											let ids = verifyCards.map(card => card.CARDID)
-											if (ids.includes(id)) {
-												successfulGift = false
-												openNewLinkArr = [
-													...openNewLinkArr,
-													`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero`
-												];
-												junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero\n">Link to Card</a></p></td></tr>\n`;
-												progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}`;
-												failedGiftCount++;
+											for (let i = 0; i < ids.length; i++) {
+												if (ids[i] === id) {
+													successfulGift = false
+													openNewLinkArr = [
+														...openNewLinkArr,
+														`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftee}`
+													];
+													junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftee}\n">Link to Card</a></p></td></tr>\n`;
+													progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}`;
+													failedGiftCount++;
+												}
 											}
 										}
 										if (successfulGift) progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftee}`;
@@ -156,6 +158,13 @@
 <ToolContent toolTitle="Finder" caption="Find which of the specified nations have which of the specified cards." author="Kractero" link="https://github.com/Kractero/cards-utilities/blob/main/finder.py" additional={`<p class="mb-2">
 	You can specify season and nation to gift with CARDID,SEASON,GIFTTO instead of just CARDID on each line. 
 	GIFTTO will overrule the Gift To nation if provided.
+</p>
+<p class="mb-2">
+	For optimal use, you should use the
+	<a class="underline" href="https://github.com/Kractero/userscripts/blob/main/gift.user.js" target="_blank" rel="noreferrer noopener">
+		finder gift default
+	</a>
+	userscript when gifting.
 </p>
 <p class="text-xs mb-16">
 	Password input for gifting is optional and will be disabled if the puppet list includes a comma for nation,password.
