@@ -8,7 +8,7 @@ order: 2
 
 Hare is a central location that contains many browser executable scripts that typically would require the installation of Python and some understanding of running Python scripts. 
 
-### A Userscript Manager
+### 1. A Userscript Manager
 A userscript allows you to extend a website's functionality beyond what is present in the website's current scripts. To facilitate this, install either:
 
 1. <a href="https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/" rel="noopener noreferrer" target="_blank">TamperMonkey</a>
@@ -23,7 +23,7 @@ A userscript allows you to extend a website's functionality beyond what is prese
     To add a script to Violentmonkey, click the Violentmonkey icon and then click Create a new script.
     ![add script to Violentmonkey](https://raw.githubusercontent.com/Kractero/cards-resources/main/static/violentmonkey.png)
 
-### Containers with Cardtainers
+### 2. Containers with Cardtainers
 
 What glues most card tools together are containers. Cardtainers is an extension that provides an easy way to set up containers without requiring any script to be run.
 
@@ -37,7 +37,7 @@ norway
 puppet farmer 1
 ```
 
-### Login into the Containers
+### 3. Login into the Containers
 
 Containers are useless if they are not logged into each nation. 
 
@@ -48,7 +48,7 @@ Containers are useless if they are not logged into each nation.
 3. Once the sheet is generated, click Link to Nation and then click enter until the sheet is finished.
 
 
-### gotIssues
+### 4. gotIssues
 
 gotIssues is the primary tool that enables card farming, as it allows you to clear all your puppet's issues and open packs through an html sheet.
 
@@ -62,11 +62,12 @@ gotIssues is the primary tool that enables card farming, as it allows you to cle
 
 5. Once it is finished, Download will be clickable, download the sheet, then click Link to Issue and spam enter.
 
-### Configuration
+### 5. Configuration
 
 If you find yourself using Hare a lot, it would help to visit <a href="/tools/config" target="_blank" rel="noreferrer noopener">the configuration page</a> to store values for multiple sessions.
 
-#### Beyond
+
+### Beyond
 
 Once you're setup, useful scripts for managing puppets include:
 
