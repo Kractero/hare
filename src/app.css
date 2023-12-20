@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 @layer base {
-	:root {
+	html[data-theme="Light"] {
 		--color-primary: 255 255 255;
 		--color-secondary: 229 231 235;
 		--color-tertiary: 203 213 225;
@@ -19,9 +19,23 @@
 		--herobuttons-hover: 51 65 85;
 	}
 
-	@media (prefers-color-scheme: dark) {
-		:root {
-			--color-primary: 30 41 59;
+	html[data-theme="Dark"] {
+		--color-primary: 30 41 59;
+		--color-secondary: 226 232 240;
+		--color-tertiary: 148 163 184;
+		--text-primary: 255 255 255;
+		--text-content: 214 211 209;
+		--card-text-primary: 15 23 42;
+		--card-text-secondary: 51 65 85;
+		--labels: 0 0 0;
+		--buttons: 255 255 255;
+		--herobuttons: 71 85 105;
+		--herobuttons-hover: 148 163 184;
+	}
+
+
+	html[data-theme="Amoled"] {
+			--color-primary: 0 0 0;
 			--color-secondary: 226 232 240;
 			--color-tertiary: 148 163 184;
 			--text-primary: 255 255 255;
@@ -32,7 +46,6 @@
 			--buttons: 255 255 255;
 			--herobuttons: 71 85 105;
 			--herobuttons-hover: 148 163 184;
-		}
 	}
 }
 

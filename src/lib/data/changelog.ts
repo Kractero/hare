@@ -1,5 +1,16 @@
 export const changelog = [
     {
+        "date": "2023-12-19",
+        "changes": {
+            "features": [
+                [
+                    "Themes",
+                    "Test a theme changer in the configuration and an 'amoled' theme which is just dark but with a black background."
+                ]
+            ]
+        }
+    },
+    {
         "date": "2023-11-19",
         "changes": {
             "features": [
@@ -137,11 +148,11 @@ export const changelog = [
                 ]
             ],
             "fixes": [
-                [   
+                [
                     "JunkDaJunk",
                     "Cast the region returned from the NationStates API into a string. I believe this will avoid regions like 0000 being caught in the whitelist."
-                ],              
-                [   
+                ],
+                [
                     "Legendary Tracker",
                     "Fixed date interpolation in the subtitle."
                 ]
@@ -152,7 +163,7 @@ export const changelog = [
         "date": "2023-11-05",
         "changes": {
             "features": [
-                [   
+                [
                     "Finder, Gold Retriever, JunkDaJunk, Pinger",
                     "Added support for nation,password formatting, identical to the behavior of gotIssues."
                 ]

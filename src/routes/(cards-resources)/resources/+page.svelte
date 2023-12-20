@@ -24,7 +24,7 @@
 <Head title={"Hare - Resources"} description={"Searchable hub of NationStates tools, utilies, and scripts."} />
 
 <p class="text-3xl font-bold mb-4">Search</p>
-<input class="w-full h-10 rounded-md max-w-lg lg:max-w-5xl p-4 mb-8 border border-black dark:border-none text-black" bind:value={searchTerm} />
+<input class="w-full h-10 rounded-md max-w-lg lg:max-w-5xl p-4 mb-8 border border-black data-[theme=Dark]:border-none text-black" bind:value={searchTerm} />
 
 <p class="text-xl font-semibold">or filter by tags</p>
 <Filterer />
