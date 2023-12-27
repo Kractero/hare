@@ -20,7 +20,7 @@
         rocSpecific: '',
         rocMode: 'Top',
         endotartEndotarter: '',
-        endotartLimit: "0",
+        endotartLimit: "",
         endotartImmune: '',
         endotartSource: 'XML',
         nenNation: '',
