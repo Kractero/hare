@@ -20,7 +20,7 @@
 	onMount(() => {
 		main = data.parameters.main || localStorage.getItem("main") as string || "";
 		nennation = data.parameters.nation || "";
-		main = data.parameters.mode || localStorage.getItem("main") as string || "";
+		mode = data.parameters.mode || localStorage.getItem("mode") as string || "";
 	});
 
 	async function nen() {
