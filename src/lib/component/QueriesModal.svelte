@@ -18,7 +18,7 @@
 
 <p>{addenddum}</p>
 
-{#if selectedItems.length === 0}
+{#if (selectedItems.length === 0 || selectedItems.length === items.length)}
 <p>Query: <span class="text-xs italic">everything is implicitly included</span></p>
 {:else}
 <p>Query: {title.toLowerCase()}={selectedItems.join(bool === "or" ? '|' : ",")}</p>
@@ -35,7 +35,7 @@
 					<div class="flex">
 						<p>{item}</p>
 						{#if title !== "Trophies"}
-						<button on:click={() => {
+						<button type="button" on:click={() => {
 							if (selectedItems.includes(item)) {
 								selectedItems = selectedItems.filter(ex => ex !== item)
 							} else {
@@ -59,7 +59,7 @@
 {#each items as item}
 	<div class="flex">
 		<p>{item}</p>
-		<button on:click={() => {
+		<button type="button" on:click={() => {
 			if (selectedItems.includes(item)) {
 				selectedItems = selectedItems.filter(ex => ex !== item)
 			} else {
