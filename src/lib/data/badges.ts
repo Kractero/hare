@@ -23,3 +23,16 @@ export const badges = [
   'Site Supporter',
   'WA'
 ]
+
+export const badgesDict: { [key: string]: string } = {
+  "Founder": "founder",
+  "Retired Moderator": "modex",
+  "Easter Egg": "eegg1",
+  "Issues Author": "issuesauthor",
+  "Postmaster": "acc_supporter_silver",
+  "Postmaster-General": "acc_supporter",
+  "Historical Resolution Author": "resauthorun",
+  "General Assembly Resolution Author": "resauthorga",
+  "Moderator": "mod",
+  "Site Supporter": "acc_supporter_bronze"
+}

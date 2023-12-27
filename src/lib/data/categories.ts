@@ -1,4 +1,4 @@
-export const governments = [
+export const categories = [
   'Anarchy',
   'Authoritarian Democracy',
   'Benevolent Dictatorship',
