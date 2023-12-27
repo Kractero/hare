@@ -16,6 +16,9 @@
 	let puppets = '';
 	let main = '';
 	let flags = '';
+	let downloadable = false;
+	let content = ""
+	let count = 0;
 
 	onMount(() => {
 		main = data.parameters.main || localStorage.getItem("main") as string || "";
@@ -25,6 +28,7 @@
 	onDestroy(() => abortController.abort());
 
 	async function ping() {
+		downloadable = false;
 		pushHistory(`?main=${main}`)
 		stoppable = true;
 		stopped = false;
@@ -42,7 +46,13 @@
 					`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=flag`, main
 				)
 				for (const flag of flagsList) {
-					if (response.NATION.FLAG.includes(flag)) progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="https://nationstates.net/nation=${nation}" class="underline">${nation}</a> has flag containing ${flag}!</p>`
+					if (response.NATION.FLAG.includes(flag)) {
+						progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="https://nationstates.net/nation=${nation}" class="underline">${nation}</a> has flag containing ${flag}!</p>`
+						content += `<tr><td><p>${
+                count + 1
+            }</p></td><td><p><a target="_blank" href="https://nationstates.net/nation=${nation}">Link to Nation</a></p></td></tr>`
+						count++;
+					}
 				}
 				await sleep(700);
 			} catch (err) {
@@ -51,6 +61,7 @@
 		}
 		progress += `Flag manager finished searching!`
 		stoppable = false;
+		downloadable = true;
 	}
 </script>
 
@@ -63,7 +74,7 @@
 	>
 		<InputCredentials bind:main bind:puppets authenticated={false} />
         <Textarea text="Search Flags" bind:bindValue={flags} forValue="flags" required />
-		<Buttons stopButton={true} bind:stopped={stopped} bind:stoppable={stoppable} />
+		<Buttons downloadButton={true} bind:downloadable={downloadable} bind:content={content} type="html" stopButton={true} bind:stopped={stopped} bind:stoppable={stoppable} />
 	</form>
 	<Terminal bind:progress={progress} />
 </div>
