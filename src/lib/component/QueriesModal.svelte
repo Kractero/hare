@@ -12,6 +12,7 @@
 	let searchValue = "";
 
 	export let selectedItems: string[] = []
+	if (selectedItems.length === items.length) selectedItems = []
 </script>
 
 <h2>{title}</h2>
@@ -31,7 +32,7 @@
 
 	<Input bind:bindValue={searchValue} forValue={title} text={`${title}` } />
       {#if searchValue}
-				{#each items.filter(badge => badge.includes(searchValue)) as item}
+				{#each items.filter(badge => badge.includes(searchValue.toLowerCase().replaceAll(' ', '_'))) as item}
 					<div class="flex">
 						<p>{item}</p>
 						{#if title !== "Trophies"}

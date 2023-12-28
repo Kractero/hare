@@ -17,7 +17,7 @@
 		<slot name="header" />
 		<slot />
 		<!-- svelte-ignore a11y-autofocus -->
-		<button autofocus on:click={() => dialog.close()}>close modal</button>
+		<button class="m-auto w-max bg-green-500 rounded-md px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-700" autofocus on:click={() => dialog.close()}>Close</button>
 	</div>
 </dialog>
 
@@ -55,8 +55,5 @@
 		to {
 			opacity: 1;
 		}
-	}
-	button {
-		display: block;
 	}
 </style>
