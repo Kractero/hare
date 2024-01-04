@@ -111,6 +111,6 @@ export const otherHareTools: Array<Tool> = [
 	{
 		name: 'Ledger',
 		slug: 'https://kractero.github.io/ledger',
-		description: 'View legendaries and whether they are CTE or not.'
+		description: 'Data and statistics for the top 100 nations.'
 	},
 ]
