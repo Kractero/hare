@@ -1,5 +1,16 @@
 export const changelog = [
     {
+        "date": "2023-1-04",
+        "changes": {
+            "features": [
+                [
+                    "Ledger Shortcut",
+                    "Add ledger shortcut to resources row on the front page."
+                ]
+            ]
+        }
+    },
+    {
         "date": "2023-12-19",
         "changes": {
             "features": [

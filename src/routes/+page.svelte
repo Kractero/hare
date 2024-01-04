@@ -44,6 +44,6 @@
 			return project;
 		}
 	}) as tool}
-		<Tool slug={`/resources/${tool.slug}`} tool={tool.name} description={tool.description} />
+		<Tool slug={tool.slug.includes('https') ? tool.slug : `/resources/${tool.slug}`} tool={tool.name} description={tool.description} />
 	{/each}
 </div>
