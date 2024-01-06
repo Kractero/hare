@@ -20,7 +20,7 @@
 	let puppets = '';
 	let password = '';
 	let mode: string;
-	
+
 	onMount(() => {
 		main = data.parameters.main || localStorage.getItem("main") as string || "";
 		puppets = localStorage.getItem("puppets") as string || "";
@@ -35,6 +35,7 @@
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
+		content = "";
 		progress = "<p>Initiating Gold Retriever...</p>"
 		let puppetList = puppets.split('\n');
 		let totals = {
@@ -87,11 +88,10 @@
 						(categoryCounts.common || 0) * 0.01 +
 						(categoryCounts.uncommon || 0) * 0.05 +
 						(categoryCounts['ultra-rare'] || 0) * 0.2).toFixed(2));
-
-					deck.bank = deckInfo.CARDS.INFO.BANK;
-					deck.deckValue = deckInfo.CARDS.INFO.DECK_VALUE;
-					deck.cardCount = deckInfo.CARDS.INFO.NUM_CARDS;
 				}
+				deck.bank = deckInfo.CARDS.INFO.BANK;
+				deck.deckValue = deckInfo.CARDS.INFO.DECK_VALUE;
+				deck.cardCount = deckInfo.CARDS.INFO.NUM_CARDS;
 				if (mode === "Include") {
 					await sleep(700);
 					const issuesAndPacks = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`, main, nationSpecificPassword ? nationSpecificPassword : password.replaceAll(' ', '_'));

@@ -1,5 +1,16 @@
 export const changelog = [
     {
+        "date": "2023-11-19",
+        "changes": {
+            "fixes": [
+                [
+                    "Gold Retriever",
+                    "Move calculation of bank, deck value, and card count to be independent of actually having cards as they are separate objects."
+                ]
+            ]
+        }
+    },
+    {
         "date": "2023-1-04",
         "changes": {
             "features": [
