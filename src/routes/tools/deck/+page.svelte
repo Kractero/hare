@@ -16,21 +16,30 @@
     let downloadable = false;
     let dl = ""
 	let mode = "Signal"
+	let type = "Deck
 
 	onMount(() => {
 		main = data.parameters.main || localStorage.getItem("main") as string || "";
 		nennation = data.parameters.nation || "";
 		mode = data.parameters.mode || localStorage.getItem("mode") as string || "";
+		type = data.parameters.type || "Deck";
 	});
 
 	async function nen() {
         downloadable = false;
-		pushHistory(`?main=${main}&nation=${nennation}&mode=${mode}`)
+		pushHistory(`?main=${main}&nation=${nennation}&mode=${mode}&type=${type}`)
 		progress = '';
-        const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+deck;nationname=${nennation}`, main);
-				let deckObj: Array<Card> = xml.CARDS.DECK.CARD;
-				deckObj = deckObj ? Array.isArray(deckObj) ? deckObj : [deckObj] : []
-        dl = Array.from(new Set((deckObj as Card[]).map((card) => mode === "Signal" ? `${card.CARDID},${card.SEASON}` : card.CARDID))).join('\n')
+		if (type.toLowerCase() === "deck") {
+			const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+deck;nationname=${nennation}`, main);
+			let deckObj: Array<Card> = xml.CARDS.DECK.CARD;
+			deckObj = deckObj ? Array.isArray(deckObj) ? deckObj : [deckObj] : []
+			dl = Array.from(new Set((deckObj as Card[]).map((card) => mode === "Signal" ? `${card.CARDID},${card.SEASON}` : card.CARDID))).join('\n')
+		} else {
+			const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+collection;collectionid=${nennation}`, main);
+			let collObj: Array<Card> = xml.CARDS.COLLECTION.DECK.CARD
+			collObj = collObj ? Array.isArray(collObj) ? collObj : [collObj] : []
+			dl = Array.from(new Set((collObj as Card[]).map((card) => mode === "Signal" ? `${card.CARDID},${card.SEASON}` : card.CARDID))).join('\n')
+		}
         downloadable = true;
         progress += `<p>Finished processing</p>`
 	}
@@ -41,7 +50,8 @@
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => nen()} class="flex flex-col gap-8">
 		<Input text={`User Agent`} bind:bindValue={main} forValue="main" required={true} />
-		<Input text={`Nation`} bind:bindValue={nennation} forValue="nennation" required={true} />
+		<Input text={type.toLowerCase() === "deck" ?  `Nation` : 'Collection'} bind:bindValue={nennation} forValue="nennation" required={true} />
+		<Select name="Type" bind:mode={type} options={["Deck", "Collection"]} />
 		<Select name="Output Format" bind:mode={mode} options={["Signal", "IDs"]} />
         <Buttons downloadButton={true} bind:downloadable={downloadable} bind:content={dl} name="Deck" type="txt" />
 	</form>
