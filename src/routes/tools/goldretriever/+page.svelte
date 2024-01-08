@@ -73,7 +73,8 @@
 
 				const categoryCounts: { [key: string]: number } = {};
 				if (deckInfo.CARDS.DECK.CARD) {
-					const deckObj: Array<Card> = deckInfo.CARDS.DECK.CARD;
+					let deckObj: Array<Card> = deckInfo.CARDS.DECK.CARD;
+						deckObj = deckObj ? Array.isArray(deckObj) ? deckObj : [deckObj] : []
 					for (let i = 0; i < deckObj.length; i++) {
 						const category = deckObj[i].CATEGORY;
 						if (categoryCounts[category]) {
@@ -82,16 +83,17 @@
 							categoryCounts[category] = 1;
 						}
 					}
-					deck.junkValue =
+				}
+				deck.bank = deckInfo.CARDS.INFO.BANK;
+				deck.deckValue = deckInfo.CARDS.INFO.DECK_VALUE;
+				deck.cardCount = deckInfo.CARDS.INFO.NUM_CARDS;
+				deck.junkValue =
 						Number(((categoryCounts.legendary || 0) * 1 +
 						(categoryCounts.epic || 0) * 0.5 +
 						(categoryCounts.common || 0) * 0.01 +
 						(categoryCounts.uncommon || 0) * 0.05 +
 						(categoryCounts['ultra-rare'] || 0) * 0.2).toFixed(2));
-				}
-				deck.bank = deckInfo.CARDS.INFO.BANK;
-				deck.deckValue = deckInfo.CARDS.INFO.DECK_VALUE;
-				deck.cardCount = deckInfo.CARDS.INFO.NUM_CARDS;
+
 				if (mode === "Include") {
 					await sleep(700);
 					const issuesAndPacks = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`, main, nationSpecificPassword ? nationSpecificPassword : password.replaceAll(' ', '_'));

@@ -5,6 +5,17 @@ export const changelog = [
             "fixes": [
                 [
                     "Gold Retriever",
+                    "Fix issue where nations with one card in their deck do not get properly parsed."
+                ]
+            ]
+        }
+    },
+    {
+        "date": "2023-11-19",
+        "changes": {
+            "fixes": [
+                [
+                    "Gold Retriever",
                     "Move calculation of bank, deck value, and card count to be independent of actually having cards as they are separate objects."
                 ]
             ]

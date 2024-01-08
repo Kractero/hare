@@ -28,7 +28,9 @@
 		pushHistory(`?main=${main}&nation=${nennation}&mode=${mode}`)
 		progress = '';
         const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+deck;nationname=${nennation}`, main);
-        dl = Array.from(new Set((xml.CARDS.DECK.CARD as Card[]).map((card) => mode === "Signal" ? `${card.CARDID},${card.SEASON}` : card.CARDID))).join('\n')
+				let deckObj: Array<Card> = xml.CARDS.DECK.CARD;
+				deckObj = deckObj ? Array.isArray(deckObj) ? deckObj : [deckObj] : []
+        dl = Array.from(new Set((deckObj as Card[]).map((card) => mode === "Signal" ? `${card.CARDID},${card.SEASON}` : card.CARDID))).join('\n')
         downloadable = true;
         progress += `<p>Finished processing</p>`
 	}
