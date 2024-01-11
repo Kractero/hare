@@ -37,7 +37,7 @@
 	let skipexnation = false;
 	let sellContent = '';
 	let finderlist = '';
-	
+
 	onMount(() => {
 		main = data.parameters.main || localStorage.getItem("main") as string || "";
 		puppets = localStorage.getItem("gotissuesPuppets") as string || "";
@@ -163,7 +163,7 @@
 						findSplit.forEach((findid, i) => {
 							const matchSeason = findSplit[i][1];
 							if (findid[0] === String(id)) {
-								if (matchSeason) { 
+								if (matchSeason) {
 									if (matchSeason === season) {
 										junk = false;
 										reason = `<span class="text-blue-400">is whitelisted card ${findid} season ${season}</span>`
@@ -185,6 +185,10 @@
 						if (rarities.hasOwnProperty(category) && highestBid > rarities[category]) {
 							junk = false;
 							reason = `<span class="text-blue-400">has high bid</span>`
+						}
+						if (rarities.hasOwnProperty(category) && rarities[category] === -1) {
+							junk = false;
+							reason = `<span class="text-blue-400">category set to gift</span>`
 						}
 						if (parseFloat(marketValue) > 10) {
 							junk = false;
@@ -292,7 +296,7 @@
 </script>
 
 <ToolContent toolTitle="JunkDaJunk" caption={"An even faster way to junk cards with JavaScript."} author="9003" originalBlurb="rewritten in JS for browser use by Kractero" link="https://github.com/jmikk/Card-Proccessor" additional={`<p class="text-xs mb-4 max-w-sm">
-	The card id whitelist can specify season as well with CARDID,SEASON. 
+	The card id whitelist can specify season as well with CARDID,SEASON.
 	The regional whitelist indicates regions to skip when deciding to junk cards. The card count threshold only runs Junking
 	analyzing on specified nations that have over a certain amount of cards. The owner count threshold will indicate cards to skip
 	that have less than the specified amount. The rarity threshold dictates when to skip based on the card's rarity and market value.
