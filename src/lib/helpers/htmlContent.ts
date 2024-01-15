@@ -44,13 +44,13 @@ export const htmlContent = (content: string, style?: string, sortFunction?: stri
         background-color: black;
       }
       a, p {
-        color: darkgray;
+        color: rgb(232, 211, 162);
       }
       a:visited {
-        color: gray;
+        color: rgb(145, 23, 76);
       }
       table, tr, td {
-        border: 1px solid darkblue;
+        border: 1px solid rgb(51, 0, 111);
       }
     }
     `

@@ -21,9 +21,9 @@ export const tools: Array<Tool> = [
 		description: 'Check the card count, bank, deck value, and junk value of all your puppets.'
 	},
 	{
-		name: 'Containerise Rules',
-		slug: 'containerise',
-		description: 'Generate container rules for use with Containerise.'
+		name: 'RCES',
+		slug: 'rces',
+		description: 'Generate a sheet of clickable links pointing to various puppets.'
 	},
 	{
 		name: 'Login Sheet',
@@ -44,6 +44,11 @@ export const tools: Array<Tool> = [
 		name: 'Rate of Change',
 		slug: 'roc',
 		description: 'Calculate the rate of change for an amount of nations over an amount of days.'
+	},
+	{
+		name: 'Containerise Rules',
+		slug: 'containerise',
+		description: 'Generate container rules for use with Containerise.'
 	},
 	{
 		name: 'Endotart',
@@ -107,6 +112,11 @@ export const otherHareTools: Array<Tool> = [
 		name: 'Legendary Tracker',
 		slug: 'legends',
 		description: 'View legendaries and whether they are CTE or not.'
+	},
+	{
+		name: 'Bazaar',
+		slug: 'https://bazaar.sideroca.com',
+		description: 'View historical trade information dating back to April 1st, 2018.'
 	},
 	{
 		name: 'Ledger',

@@ -1,17 +1,65 @@
 export const changelog = [
     {
-        "date": "2023-11-19",
+        "date": "2023-1-14",
         "changes": {
+            "features": [
+                [
+                    "Bazaar",
+                    "Add link to new external trade records website."
+                ],
+                [
+                    "RCES Sheet",
+                    "Add a Hare port of the RCES sheet generator."
+                ]
+            ],
             "fixes": [
                 [
-                    "Gold Retriever",
-                    "Fix issue where nations with one card in their deck do not get properly parsed."
+                    "General",
+                    "Make dark mode sheet more legible, as it was difficult to tell if a link was clicked, also Purple Reign."
                 ]
             ]
         }
     },
     {
-        "date": "2023-11-19",
+        "date": "2023-01-11",
+        "changes": {
+            "features": [
+                [
+                    "JunkDaJunk",
+                    "Ability to gift all cards by setting -1 to the bid value."
+                ]
+            ],
+            "fixes": [
+                [
+                    "JunkDaJunk",
+                    "Fix issue with handling highest bid due to the type of configurable category bid value being a string."
+                ]
+            ]
+        }
+    },
+    {
+        "date": "2023-1-08",
+        "changes": {
+            "features": [
+                [
+                    "Deck to IDs",
+                    "Now supports collections with new mode."
+                ]
+            ],
+            "fixes": [
+                [
+                    "Deck to IDs",
+                    "Properly handle nations with only one card decks."
+                ],
+                [
+                    "GoldRetriever",
+                    "Fix bad logic assuming all deck information is locked behind the CARDS.DECK.CARD object."
+                ]
+            ]
+        }
+    },
+    {
+        "date": "2023-1-06",
         "changes": {
             "fixes": [
                 [
@@ -28,6 +76,45 @@ export const changelog = [
                 [
                     "Ledger Shortcut",
                     "Add ledger shortcut to resources row on the front page."
+                ]
+            ]
+        }
+    },
+    {
+        "date": "2023-12-28",
+        "changes": {
+            "features": [
+                [
+                    "General",
+                    "Dark mode support CSS for downloaded html sheets."
+                ]
+            ]
+        }
+    },
+    {
+        "date": "2023-12-27",
+        "changes": {
+            "features": [
+                [
+                    "Flag Manager",
+                    "Output now downloadable"
+                ]
+            ],
+            "fixes": [
+                [
+                    "Deck to IDs",
+                    "Fix issue with wrong value loaded for mode on page load."
+                ]
+            ]
+        }
+    },
+    {
+        "date": "2023-12-26",
+        "changes": {
+            "fixes": [
+                [
+                    "Endotart",
+                    "Change default limit to have no value instead of 0."
                 ]
             ]
         }

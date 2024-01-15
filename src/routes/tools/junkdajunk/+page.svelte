@@ -186,7 +186,6 @@
 							junk = false;
 							reason = `<span class="text-blue-400">has high bid</span>`
 						}
-						console.log(rarities)
 						if (rarities.hasOwnProperty(category) && Number(rarities[category]) === -1) {
 							junk = false;
 							reason = `<span class="text-blue-400">category set to gift</span>`
