@@ -106,7 +106,7 @@
         class="flex flex-col gap-8"
     >
         <h2 class="text-2xl text-center font-bold tracking-tight">General Config</h2>
-        <Select name="Theme" bind:mode={localStorageObject.theme} options={["Light", "Dark", "Amoled"]} />
+        <Select name="Theme" bind:mode={localStorageObject.theme} options={["Light", "Dark"]} />
         <Input text="User Agent" bind:bindValue={localStorageObject.main} forValue="main" />
         <Textarea text="General Puppets" bind:bindValue={localStorageObject.puppets} forValue="pup" />
         <p class="text-xs">These puppets do not apply for gotIssues or junkdajunk.</p>
@@ -118,7 +118,7 @@
                 title={localStorageObject.puppets.includes(',')
                     ? 'A comma is detected in the puppet list, assuming that format.'
                     : ''}
-                class="text-right text-black p-1 max-w-xs rounded-md border border-black data-[theme=Dark]:border-none disabled:opacity-25"
+                class="text-right text-black p-1 max-w-xs rounded-md border border-black dark:border-none disabled:opacity-25"
             />
         </div>
         <h2 class="text-2xl text-center font-bold tracking-tight">gotIssues and junkDaJunk</h2>
