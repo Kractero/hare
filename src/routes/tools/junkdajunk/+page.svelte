@@ -126,7 +126,7 @@
 						await sleep(700);
 						const xmlDocument = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?cardid=${id}&season=${season}&q=card+markets+info+owners`, main);
 						const card: Card = xmlDocument.CARD
-						const cardOwners = new Set(card.OWNERS.OWNER)
+						const cardOwners = Array.isArray(card.OWNERS.OWNER) ? new Set(card.OWNERS.OWNER) : new Set([card.OWNERS.OWNER]);
 						const category = card.CATEGORY;
 						const marketValue = card.MARKET_VALUE;
 						const region = String(card.REGION);
