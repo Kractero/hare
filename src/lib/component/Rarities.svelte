@@ -10,7 +10,7 @@
             required
             id="common"
             bind:value={rarities.common}
-            class="text-black p-1 w-20 rounded-md border border-black Dark:border-none"
+            class="text-black p-1 w-20 rounded-md border border-black dark:border-none"
         />
     </div>
     <div class="flex items-center gap-4 justify-between max-w-lg">
@@ -20,7 +20,7 @@
             required
             id="uncommon"
             bind:value={rarities.uncommon}
-            class="text-black p-1 w-20 rounded-md border border-black Dark:border-none"
+            class="text-black p-1 w-20 rounded-md border border-black dark:border-none"
         />
     </div>
     <div class="flex items-center gap-4 justify-between max-w-lg">
@@ -30,7 +30,7 @@
             required
             id="rare"
             bind:value={rarities.rare}
-            class="text-black p-1 w-20 rounded-md border border-black Dark:border-none"
+            class="text-black p-1 w-20 rounded-md border border-black dark:border-none"
         />
     </div>
     <div class="flex items-center gap-4 justify-between max-w-lg">
@@ -40,7 +40,7 @@
             required
             id="ultra-rare"
             bind:value={rarities['ultra-rare']}
-            class="text-black p-1 w-20 rounded-md border border-black Dark:border-none"
+            class="text-black p-1 w-20 rounded-md border border-black dark:border-none"
         />
     </div>
     <div class="flex items-center gap-4 justify-between max-w-lg">
@@ -50,7 +50,7 @@
             required
             id="epic"
             bind:value={rarities.epic}
-            class="text-black p-1 w-20 rounded-md border border-black Dark:border-none"
+            class="text-black p-1 w-20 rounded-md border border-black dark:border-none"
         />
     </div>
 </div>

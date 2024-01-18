@@ -176,7 +176,7 @@ export const projects: Array<{ name: string; author: string; url: string; keywor
     },
     {
         "name": "North Pacific Cards Guide",
-        "author": "The Northern Light",
+        "author": "The Northern light",
         "url": "https://www.nationstates.net/page=dispatch/id=1301085",
         "keywords": ["guides"],
         "description": "Interested in Building Your Dream Deck?"

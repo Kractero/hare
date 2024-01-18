@@ -13,6 +13,6 @@
         id={forValue}
         bind:value={bindValue}
         disabled={disabled}
-        class="text-right text-black p-2 max-w-xs rounded-md border border-black Dark:border-none"
+        class="text-right text-black p-2 max-w-xs rounded-md border border-black dark:border-none"
     />
 </div>

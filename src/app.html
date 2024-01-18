@@ -8,12 +8,12 @@
 	%sveltekit.head%
 	<script>
 		if (localStorage.getItem('theme')) {
-			document.documentElement.classList.toggle(localStorage.getItem('theme'));
+			document.documentElement.classList.toggle(localStorage.getItem('theme').toLowerCase());
 		} else {
 			if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-				document.documentElement.classList.toggle('Dark');
+				document.documentElement.classList.toggle('dark');
 			} else {
-				document.documentElement.classList.toggle('Light');
+				document.documentElement.classList.toggle('light');
 			}
 		}
 	</script>
