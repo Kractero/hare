@@ -54,7 +54,7 @@
     };
 
     onMount(() => {
-        localStorageObject.theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'Dark' : 'Light'
+        localStorageObject.theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
         Object.keys(localStorageObject).forEach((key) => {
             if (key === "junkdajunkExnation") {
                 localStorageObject.junkdajunkExnation = localStorage.getItem(key) === "true" || false;
@@ -106,7 +106,7 @@
         class="flex flex-col gap-8"
     >
         <h2 class="text-2xl text-center font-bold tracking-tight">General Config</h2>
-        <Select name="Theme" bind:mode={localStorageObject.theme} options={["Light", "Dark"]} />
+        <Select name="Theme" bind:mode={localStorageObject.theme} options={["light", "dark"]} />
         <Input text="User Agent" bind:bindValue={localStorageObject.main} forValue="main" />
         <Textarea text="General Puppets" bind:bindValue={localStorageObject.puppets} forValue="pup" />
         <p class="text-xs">These puppets do not apply for gotIssues or junkdajunk.</p>
