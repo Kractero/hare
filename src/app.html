@@ -11,9 +11,9 @@
 			document.documentElement.classList.toggle(localStorage.getItem('theme'));
 		} else {
 			if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-				document.documentElement.classList.toggle('dark');
+				document.documentElement.classList.toggle('Dark');
 			} else {
-				document.documentElement.classList.toggle('light');
+				document.documentElement.classList.toggle('Light');
 			}
 		}
 	</script>

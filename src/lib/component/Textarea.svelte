@@ -14,6 +14,6 @@
 		disabled={disabled}
 		rows="10"
 		bind:value={bindValue}
-		class="text-right text-black p-2 w-96 rounded-md border border-black dark:border-none"
+		class="text-right text-black p-2 w-96 rounded-md border border-black Dark:border-none"
 	/>
 </div>
