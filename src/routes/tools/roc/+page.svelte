@@ -4,7 +4,6 @@
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import type { Census, Nation } from '$lib/types';
 	import Textarea from '$lib/component/Textarea.svelte';
 	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
@@ -43,8 +42,8 @@
 				if (abortController.signal.aborted) {
 					break;
 				}
-				const xml: Census = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?q=censusranks&scale=86&start=${start}`, main);
-				names = names.concat(xml.WORLD.CENSUSRANKS.NATIONS.NATION.map(nation => nation.NAME));
+				const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?q=censusranks&scale=86&start=${start}`, main);
+				names = names.concat(xml.WORLD.CENSUSRANKS.NATIONS.NATION.map((nation: { NAME: string; }) => nation.NAME));
 				await sleep(700);
 			}
 			names = names.slice(0, Number(top));
@@ -59,7 +58,7 @@
 				break;
 			}
 			progress += `<p>Evaluating ${nation}, ${j+1}/${names.length}</p>`;
-			const xml: Nation = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nation};q=census;scale=86;mode=history;from=${fromTimestamp}`, main);
+			const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nation};q=census;scale=86;mode=history;from=${fromTimestamp}`, main);
 			const point = xml.NATION.CENSUS.SCALE.POINT;
 			if (Array.isArray(point)) {
 				const timestamps = point.map((point) => Number(point.TIMESTAMP));

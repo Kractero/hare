@@ -1,5 +1,15 @@
 # Changelog
 
+## 2023-1-21
+
+### Features
+
+1. Who's Farmin
+    - Quick little tool that analyzes the world happenings shard for last 200 laws passed, and matches the names against 9003's puppet reporting sheet. This is all done in client and also not cached.
+
+2. Bad Ledger GUI
+    - Hare native gui, you can use it [here](https://hare.vercel.app/resources/ledger) but the non-Hare version is superior.
+
 ## 2023-1-17
 
 ### Fixes

@@ -46,11 +46,6 @@ export const tools: Array<Tool> = [
 		description: 'Calculate the rate of change for an amount of nations over an amount of days.'
 	},
 	{
-		name: 'Containerise Rules',
-		slug: 'containerise',
-		description: 'Generate container rules for use with Containerise.'
-	},
-	{
 		name: 'Endotart',
 		slug: 'endotart',
 		description: 'Specify a nation and get all the regionmates they are not endorsing.'
@@ -59,6 +54,16 @@ export const tools: Array<Tool> = [
 		name: 'Not Endorsing',
 		slug: 'nen',
 		description: 'Specify a nation and get all the regionmates not endorsing them.'
+	},
+		{
+		name: 'Whos Farmin',
+		slug: 'whosfarmin',
+		description: 'Scan the last 200 happenings and see who is farming'
+	},
+	{
+		name: 'Containerise Rules',
+		slug: 'containerise',
+		description: 'Generate container rules for use with Containerise.'
 	},
 	{
 		name: 'Approvals List',

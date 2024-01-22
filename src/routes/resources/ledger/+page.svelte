@@ -8,9 +8,9 @@
     "S3 Common", "S3 Uncommon", "S3 Rare", "S3 Ultra-Rare", "S3 Epic", "S3 Legendary",
   ]
   let ledgerTable: HTMLTableElement;
-  let ledger = "";
+  let ledger: any;
   let body;
-  let displayDate;
+  let displayDate: string;
   async function fillTable(date: string | undefined = "") {
       let fetchDate: Date | string | undefined = date;
       if (!fetchDate) {
@@ -75,10 +75,10 @@
     <table bind:this={ledgerTable} class="caption-bottom text-sm text-right border-collapse">
       <tr class="border-b border-black">
         <th>#</th>
-        {#each validHeaders as header, index}
+        {#each validHeaders as header}
           <th class='sort h-12 p-4 font-medium sort' data-order='none'>{header}</th>
         {/each}
-        {#each hideableHeaders as header, index}
+        {#each hideableHeaders as header}
           <th class='sort h-12 p-4 font-medium hideable hidden sort' data-order='none'>{header}</th>
         {/each}
       </tr>

@@ -52,10 +52,3 @@
 	</form>
 	<Terminal bind:progress={progress} />
 </div>
-
-<iframe
-	id="iframe"
-	style="position: absolute; left: -5000px;"
-	src="/iframe.html"
-	title="iFrame for logging/restoring nations"
-/>
