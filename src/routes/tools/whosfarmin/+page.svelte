@@ -43,10 +43,14 @@
         }
       }
     })
-    Object.entries(ownerList).forEach(([owner, puppets]) => {
-      progress += `<p><a class="underline" target="_blank" rel="noreferrer noopener"
-          href="https://nationstates.net/nation=${owner}">${owner}</a> is currently farming!</p>\n`
-    });
+    if (Object.keys(ownerList).length === 0) {
+      progress += `<p>It seems nobody is farming at the moment...</p>`
+    } else {
+      Object.keys(ownerList).forEach(owner => {
+        progress += `<p><a class="underline" target="_blank" rel="noreferrer noopener"
+            href="https://nationstates.net/nation=${owner}">${owner}</a> is currently farming!</p>\n`
+      });
+    }
 	}
 </script>
 
