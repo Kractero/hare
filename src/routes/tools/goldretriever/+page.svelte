@@ -35,7 +35,7 @@
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
-		content = "";
+		content = `<tr><th>Nation</th><th class='sort' data-order='none'>Bank</th><th class='sort' data-order='none'>Deck Value</th><th class='sort' data-order='none'>Junk Value</th><th class='sort' data-order='none'>Card Count</th></tr>\n`;
 		progress = "<p>Initiating Gold Retriever...</p>"
 		let puppetList = puppets.split('\n');
 		let totals = {

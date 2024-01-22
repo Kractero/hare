@@ -10,6 +10,11 @@
 2. Bad Ledger GUI
     - Hare native gui, you can use it [here](https://hare.vercel.app/resources/ledger) but the non-Hare version is superior.
 
+### Fixes
+
+1. Gold Retriever
+    - Readd the header row, it was being cleared on start.
+
 ## 2023-1-17
 
 ### Fixes
