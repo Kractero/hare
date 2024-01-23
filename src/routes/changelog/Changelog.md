@@ -1,5 +1,12 @@
 # Changelog
 
+## 2023-1-23
+
+### Fixes
+
+1. Gold Retriever
+    - Properly show issues and packs when the mode is set to include them.
+
 ## 2023-1-21
 
 ### Features
