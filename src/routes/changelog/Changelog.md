@@ -2,6 +2,11 @@
 
 ## 2023-1-23
 
+### Features
+
+1. Wiz
+    - Can now point to a region instead, idk useful for sniffing out randoms in your puppet regions I guess?
+
 ### Fixes
 
 1. Gold Retriever
