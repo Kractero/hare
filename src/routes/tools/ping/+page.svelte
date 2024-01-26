@@ -15,6 +15,9 @@
 	let puppets = '';
 	let main = '';
 	let password = '';
+	let content = '';
+	let restoreCount = 0;
+	let downloadable = false;
 
 	onMount(() => {
 		main = data.parameters.main || localStorage.getItem("main") as string || "";
@@ -42,6 +45,7 @@
 	}
 	async function ping() {
 		pushHistory(`?main=${main}`)
+		downloadable = false;
 		stoppable = true;
 		stopped = false;
 		progress = '';
@@ -59,46 +63,34 @@
 			}
 			const existence = await checkForExistence(main, nation, nationSpecificPassword ? nationSpecificPassword : password);
 			if (existence === false) {
-				progress += `<p class="text-red-400">Failed to log into ${nation}, attemping to restore...</p>`;
-				await sleep (6000)
-				const iframe = document.getElementById("iframe")! as HTMLIFrameElement;
-				const loadHandler = new Promise<void>((resolve) => {
-					async function loadHandler(this: any) {
-						iframe.removeEventListener("load", loadHandler);
-						const iframeContents = iframe.contentWindow?.document! as any;
-						if (iframeContents) {
-							iframeContents.getElementById("restoreUserAgent").value = main;
-							iframeContents.getElementById("restoreLoggingIn").value = "1";
-							iframeContents.getElementById("restoreNation").value = nation;
-							iframeContents.getElementById("restoreRestoreNation").value = `Restore ${nation}`;
-							iframeContents.getElementById("restoreRestorePassword").value = nationSpecificPassword ? nationSpecificPassword : password;
-							iframeContents.getElementById("restoreSubmit").click();
-						}
-						resolve();
-					}
-					iframe.addEventListener("load", loadHandler);
-				});
-				iframe.src = "/iframe.html";
-				await loadHandler;
+				progress += `<p class="text-red-400">Failed to log into ${nation}, adding to restore sheet...</p>`;
+				let nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
+				content +=`<tr><td><p>${restoreCount + 1}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=upload_flag/test=1/nation=${nation_formatted}/User_agent=${main}">Link to Restore ${nation}</a></p></td></tr>`;
+				restoreCount++;
 				await sleep(700)
-				const existence = await checkForExistence(main, nation, nationSpecificPassword ? nationSpecificPassword : password);
-				if (existence === false) {
-					progress += `<p class="text-red-400">Are you sure ${nation} is a nation or you provided the right credentials? Skipping...</p>`
-				}
-				if (existence === true) {
-					progress += `<p>Successfully restored ${nation}</p>`;
-				}
 			}
 			if (existence === true) {
 				progress += `<p>Successfully logged into ${nation}</p>`;
 			}
 		}
+		progress += `<p>Finished processing ${puppetList.length} nations, logging into ${puppetList.length - restoreCount} nations and ready to restore ${restoreCount} nations</p>`;
 		stoppable = false;
+		downloadable = true;
 	}
 </script>
 
-<ToolContent toolTitle="Pinger" caption="Ping your puppets to prevent ctes, or bring them back from the dead." additional={`<p class="text-xs mb-16">
+<ToolContent toolTitle="Pinger" caption="Ping your puppets to prevent ctes, or bring them back from the dead." additional={`<p class="text-xs mb-4">
 	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
+</p>
+<p class="text-xs mb-16">
+	To restore nations, YOU NEED CONTAINERS, as to maintain legality restores cannot be done automatically. It isn't in Hare's interest to pause its execution to wait for user prompt like Auralia's tool does. If you would like to use
+	<a class="underline" href="https://auralia.github.io/nslogin-web/build/" target="_blank" rel="noreferrer noopener">Auralia's tool</a> instead, click the link.
+	To facilitate container-based revives, <a class="underline" href="https://github.com/Kractero/cards-utilities/raw/main/log_into_containers/autologautoclose.user.js" target="_blank" rel="noreferrer noopener">
+		autocloser
+	</a> and
+	<a class="underline" href="https://github.com/Kractero/cards-utilities/blob/main/log_into_containers/autolog.user.js" target="_blank" rel="noreferrer noopener">
+		autolog
+	</a> are needed which does require configuration which you can read about in the repository.
 </p>`} />
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
@@ -107,14 +99,7 @@
 		class="flex flex-col gap-8"
 	>
 		<InputCredentials bind:main bind:puppets bind:password authenticated={true} />
-		<Buttons stopButton={true} bind:stopped={stopped} bind:stoppable={stoppable} />
+		<Buttons stopButton={true} bind:stopped={stopped} bind:stoppable={stoppable} downloadButton={true} bind:downloadable={downloadable} bind:content={content} name="restore" />
 	</form>
 	<Terminal bind:progress={progress} />
 </div>
-
-<iframe
-	id="iframe"
-	style="position: absolute; left: -5000px;"
-	src="/iframe.html"
-	title="iFrame for logging/restoring nations"
-/>

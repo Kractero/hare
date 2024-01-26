@@ -1,6 +1,13 @@
 # Changelog
 
-## 2023-1-23
+## 2023-1-26
+
+### Adjustments
+
+1. Pinger
+    - To maintain legality, restores cannot be done automatically. This means that in order to restore, you now need containers, with the same scripts as required in login sheet. Essentially, it will build a login sheet for the nations that require restores. A modification to the autologin userscript will allow it to autofill the revival page, meaning once pinger finishes execution, you just need to clear a login sheet to restore.
+
+## 2023-1-25
 
 ### Features
 
