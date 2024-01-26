@@ -83,9 +83,8 @@
 	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
 </p>
 <p class="text-xs mb-16">
-	To restore nations, YOU NEED CONTAINERS, as to maintain legality restores cannot be done automatically. It isn't in Hare's interest to pause its execution to wait for user prompt like Auralia's tool does. If you would like to use
-	<a class="underline" href="https://auralia.github.io/nslogin-web/build/" target="_blank" rel="noreferrer noopener">Auralia's tool</a> instead, click the link.
-	To facilitate container-based revives, <a class="underline" href="https://github.com/Kractero/cards-utilities/raw/main/log_into_containers/autologautoclose.user.js" target="_blank" rel="noreferrer noopener">
+	To restore nations, YOU NEED CONTAINERS, as to maintain legality restores cannot be done automatically. To facilitate container-based revives,
+	<a class="underline" href="https://github.com/Kractero/cards-utilities/raw/main/log_into_containers/autologautoclose.user.js" target="_blank" rel="noreferrer noopener">
 		autocloser
 	</a> and
 	<a class="underline" href="https://github.com/Kractero/cards-utilities/blob/main/log_into_containers/autolog.user.js" target="_blank" rel="noreferrer noopener">
