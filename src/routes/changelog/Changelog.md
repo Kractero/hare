@@ -4,6 +4,18 @@
 
 ### Features
 
+1. Deck to IDs
+    - Now pulls mode and type from config.
+
+### Fixes
+
+1. General
+    - Fix issue with saving config because of wrong object.
+
+## 2023-1-23
+
+### Features
+
 1. Wiz
     - Can now point to a region instead, idk useful for sniffing out randoms in your puppet regions I guess?
 

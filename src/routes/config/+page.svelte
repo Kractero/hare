@@ -50,7 +50,8 @@
         signalAsksBidsNation: '',
         signalMode: 'Collection',
         statisticsScales: '',
-        deckMode: 'Signal'
+        deckMode: 'Signal',
+        deckCollMode: 'Deck'
     };
 
     onMount(() => {
@@ -59,7 +60,7 @@
             if (key === "junkdajunkExnation") {
                 localStorageObject.junkdajunkExnation = localStorage.getItem(key) === "true" || false;
             } else if (key === "theme") {
-                localStorageObject.theme = localStorageObject.getItem(key).toLowerCase()
+                localStorageObject.theme = localStorage.getItem(key).toLowerCase()
             } else {
                 localStorageObject[key] = localStorage.getItem(key) || localStorageObject[key];
             }
@@ -172,6 +173,7 @@
         <Textarea text="Scale" bind:bindValue={localStorageObject.statisticsScales} forValue="scale" />
         <h2 class="text-2xl text-center font-bold tracking-tight">Deck</h2>
         <Select name="Output Format" bind:mode={localStorageObject.deckMode} options={["Signal", "IDs"]} />
+        <Select name="Mode" bind:mode={localStorageObject.deckCollMode} options={["Deck", "Collection"]} />
         <div class="max-w-lg flex justify-center">
             <button
                 type="submit"

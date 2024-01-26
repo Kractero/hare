@@ -13,16 +13,16 @@
 	let progress = "";
 	let main = '';
 	let nennation = '';
-    let downloadable = false;
-    let dl = ""
+	let downloadable = false;
+	let dl = ""
 	let mode = "Signal"
 	let type = "Deck"
 
 	onMount(() => {
 		main = data.parameters.main || localStorage.getItem("main") as string || "";
 		nennation = data.parameters.nation || "";
-		mode = data.parameters.mode || localStorage.getItem("mode") as string || "";
-		type = data.parameters.type || "Deck";
+		mode = data.parameters.mode || localStorage.getItem("deckMode") as string || "";
+		type = data.parameters.type || localStorage.getItem("deckCollMode") as string || "Deck";
 	});
 
 	async function nen() {

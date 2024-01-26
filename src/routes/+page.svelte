@@ -14,6 +14,7 @@
 	<Linkbar />
 </div>
 
+<p class="mb-2">Search</p>
 <input
 	bind:value={searchTerm}
 	class="text-black p-1 w-full rounded-md border border-black dark:border-none mb-16"
