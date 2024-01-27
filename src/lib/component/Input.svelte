@@ -7,7 +7,12 @@
 </script>
 
 <div class="flex gap-4 justify-between max-w-lg">
-    <label class="w-24" for={forValue}>{text}</label>
+    <label class="w-24" for={forValue}>
+        {text}
+        {#if text === "User Agent"}
+            <span class="text-xs">(Main nation)</span>
+        {/if}
+    </label>
     <input
         required={required}
         id={forValue}
