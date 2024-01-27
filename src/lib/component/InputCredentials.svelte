@@ -14,6 +14,7 @@
 		<label class="w-24" for="main">Password</label>
 		<input
 			id="pass"
+			type="password"
 			disabled={puppets.includes(',')}
 			bind:value={password}
 			required={true}
