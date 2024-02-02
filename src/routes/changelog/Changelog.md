@@ -1,13 +1,20 @@
 # Changelog
 
-## 2023-1-26
+## 2024-2-01
+
+### Features
+
+1. Deck to IDs
+    - Duplicates or singles option.
+
+## 2024-1-26
 
 ### Adjustments
 
 1. Pinger
     - To maintain legality, restores cannot be done automatically. This means that in order to restore, you now need containers, with the same scripts as required in login sheet. Essentially, it will build a login sheet for the nations that require restores. A modification to the autologin userscript will allow it to autofill the revival page, meaning once pinger finishes execution, you just need to clear a login sheet to restore.
 
-## 2023-1-25
+## 2024-1-25
 
 ### Features
 
@@ -19,7 +26,7 @@
 1. General
     - Fix issue with saving config because of wrong object.
 
-## 2023-1-23
+## 2024-1-23
 
 ### Features
 
@@ -31,7 +38,7 @@
 1. Gold Retriever
     - Properly show issues and packs when the mode is set to include them.
 
-## 2023-1-21
+## 2024-1-21
 
 ### Features
 
@@ -46,7 +53,7 @@
 1. Gold Retriever
     - Readd the header row, it was being cleared on start.
 
-## 2023-1-17
+## 2024-1-17
 
 ### Fixes
 
@@ -57,7 +64,7 @@
 2. Changelog
     - Make changelog more maintainable by rendering it from markdown instead of a typescript object.
 
-## 2023-1-14
+## 2024-1-14
 
 ### Features
 1. Bazaar
@@ -71,7 +78,7 @@
     - Make dark mode HTML sheet more legible, as it was difficult to tell if a link was already clicked, also Purple Reign.
 
 
-## 2023-1-11
+## 2024-1-11
 
 ### Features
 1. JunkDaJunk
@@ -82,7 +89,7 @@
 1. JunkDaJunk
     - Fix issue with handling highest bid due to the configurable bid values being interpolated as a string instead of a number.
 
-## 2023-1-08
+## 2024-1-08
 
 ### Features
 1. Deck to IDs
@@ -95,7 +102,7 @@
 2. Gold Retriever
     - Properly retrieve data for nations without decks. Previously it was skipping nations with an empty CARDS.DECK.CARD.
 
-## 2023-1-04
+## 2024-1-04
 
 ### Features
 1. Ledger
