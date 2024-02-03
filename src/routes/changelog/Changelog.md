@@ -1,5 +1,12 @@
 # Changelog
 
+## 2024-2-02
+
+### Fixes
+
+1. All tools using User Agent
+    - Specify me as owner and for hare.
+
 ## 2024-2-01
 
 ### Features

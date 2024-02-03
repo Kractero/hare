@@ -14,7 +14,7 @@ export function sleep(ms: number) {
 
 export async function parseXML(url: string, userAgent: string, password?: string): Promise<{[key: string]: any}> {
 	const headers: Record<string, string> = {
-		'User-Agent': userAgent
+		'User-Agent': `Used by ${userAgent} with Hare, written by Kractero`
 	};
 
 	if (password) {
