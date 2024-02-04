@@ -58,7 +58,12 @@ export const tools: Array<Tool> = [
 		{
 		name: 'Whos Farmin',
 		slug: 'whosfarmin',
-		description: 'Scan the last 200 happenings and see who is farming'
+		description: 'Scan the last 200 happenings and see who is farming.'
+	},
+	{
+		name: 'Transfer',
+		slug: 'transfer',
+		description: 'Takes a bank threshold and receive a text file with puppets that have that bank or higher.'
 	},
 	{
 		name: 'Containerise Rules',

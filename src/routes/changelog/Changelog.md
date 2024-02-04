@@ -2,10 +2,17 @@
 
 ## 2024-2-02
 
+### Features
+
+1. Transfer
+    - New tool that is essentially just Gold Retriever, except it is specialized to output a text file list of nations that contain over a threshold of bank. This makes it easier to extract just the names for things like mass place bids and other scripts that handle transfers that aren't runnable in Hare's browser context.
+
 ### Fixes
 
 1. All tools using User Agent
     - Specify me as owner and for hare.
+
+2. The year is 2024 now, fix wrong year changelogs.
 
 ## 2024-2-01
 
