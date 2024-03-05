@@ -6,7 +6,7 @@ author: Kractero
 order: 2
 ---
 
-Hare is a central location that contains many browser executable scripts that typically would require the installation of Python and some understanding of running Python scripts. 
+Hare is a central location that contains many browser executable scripts that typically would require the installation of Python and some understanding of running Python scripts.
 
 ### 1. A Userscript Manager
 A userscript allows you to extend a website's functionality beyond what is present in the website's current scripts. To facilitate this, install either:
@@ -39,11 +39,11 @@ puppet farmer 1
 
 ### 3. Login into the Containers
 
-Containers are useless if they are not logged into each nation. 
+Containers are useless if they are not logged into each nation.
 
-1. To do this, visit the Hare tool <a href="/tools/login" target="_blank" rel="noreferrer noopener">Login Sheet</a> to generate a login sheet. 
+1. To do this, visit the Hare tool <a href="/tools/login" target="_blank" rel="noreferrer noopener">Login Sheet</a> to generate a login sheet.
 
-2. Make sure you install [login autocloser](https://github.com/Kractero/cards-utilities/raw/main/log_into_containers/autologautoclose.user.js) and [autolog](https://github.com/Kractero/cards-utilities/blob/main/log_into_containers/autolog.user.js) (autolog requires configuration and assumes all your nations have the same password, set your password at line 13 and make sure it is in quotes)
+2. Make sure you install [login autocloser](https://github.com/Kractero/userscripts/raw/main/container-login/autologautoclose.user.js) and [autolog](https://github.com/Kractero/userscripts/raw/main/container-login/autolog.user.js) (autolog requires configuration and assumes all your nations have the same password, set your password at line 15 and make sure it is in quotes)
 
 3. Once the sheet is generated, click Link to Nation and then click enter until the sheet is finished.
 
@@ -85,8 +85,8 @@ Generates an html table/sheet that displays the card count, bank, deck value, an
 
 4. Creator Assistant
 
-What creator assistant does is generate a HTML file containing entries that simply open up the create nation page in a specific container. 
+What creator assistant does is generate a HTML file containing entries that simply open up the create nation page in a specific container.
 
-To finish its functionality, you will need to install the userscript [Creator](https://github.com/Kractero/cards-utilities/blob/main/creation_assistant/creator.user.js). When installing, you will need to modify the fields for the slogan, animal, currency, optionally the email, password, confirm password, and you have the choice to alter the flag and government type.
+To finish its functionality, you will need to install the userscript [Creator](https://github.com/Kractero/userscripts/raw/main/nationCreator.user.js). When installing, you will need to modify the fields for the slogan, animal, currency, optionally the email, password, confirm password, and you have the choice to alter the flag and government type.
 
 Once the userscript is installed, you should be able to just click Open and hitting enter will lead you through nation creation. This helps to speed up time until NationStates itself slows you down.

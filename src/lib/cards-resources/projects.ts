@@ -226,7 +226,7 @@ export const projects: Array<{ name: string; author: string; url: string; keywor
     {
         "name": "Container Login Assist",
         "author": "Kractero",
-        "url": "https://github.com/Kractero/container-login-assist",
+        "url": "https://github.com/Kractero/cards-utilities/tree/main/log_into_containers",
         "keywords": ["python", "cli", "containers", "sheet"],
         "description": "After your containers are logged out, use this to generate an html sheet that can get you quickly logged back in."
     },

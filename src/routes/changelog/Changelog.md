@@ -1,5 +1,12 @@
 # Changelog
 
+## 2024-3-04
+
+### Fixes
+
+1. Various
+    - Change links referring to userscripts to match changes to my userscript github repository.
+
 ## 2024-2-04
 
 ### Features

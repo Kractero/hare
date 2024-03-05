@@ -84,10 +84,10 @@
 </p>
 <p class="text-xs mb-16">
 	To restore nations, YOU NEED CONTAINERS, as to maintain legality restores cannot be done automatically. To facilitate container-based revives,
-	<a class="underline" href="https://github.com/Kractero/cards-utilities/raw/main/log_into_containers/autologautoclose.user.js" target="_blank" rel="noreferrer noopener">
+	<a class="underline" href="https://github.com/Kractero/userscripts/raw/main/container-login/autologautoclose.user.js" target="_blank" rel="noreferrer noopener">
 		autocloser
 	</a> and
-	<a class="underline" href="https://github.com/Kractero/cards-utilities/blob/main/log_into_containers/autolog.user.js" target="_blank" rel="noreferrer noopener">
+	<a class="underline" href="https://github.com/Kractero/userscripts/raw/main/container-login/autolog.user.js" target="_blank" rel="noreferrer noopener">
 		autolog
 	</a> are needed which does require configuration which you can read about in the repository.
 </p>`} />
