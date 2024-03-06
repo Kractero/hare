@@ -2,10 +2,8 @@
 	import { onDestroy, onMount } from 'svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import type { PageData } from './$types';
 	import ToolContent from '$lib/component/ToolContent.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
-	export let data: PageData;
 	const abortController = new AbortController();
 	let progress = "";
 	let puppets = '';

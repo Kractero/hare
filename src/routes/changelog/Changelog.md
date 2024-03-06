@@ -1,5 +1,15 @@
 # Changelog
 
+## 2024-3-05
+
+### Features
+
+1. Config, Fast
+    - New configuration setting to change the subdomain to fast.nationstates.net, set to www by default.
+
+2. UI Changes
+    - Move Discord and Github icons to appear only on front page, and make the settings button more obvious.
+
 ## 2024-3-04
 
 ### Fixes
