@@ -92,6 +92,11 @@
             }
         }
         document.documentElement.setAttribute('data-theme', localStorage.getItem("theme")!)
+        if (localStorage.getItem("theme") === "dark") {
+            document.documentElement.classList.replace('light', 'dark')
+        } else {
+            document.documentElement.classList.replace('dark', 'light')
+        }
         if (changes.length > 0) {
             toast.success(`Set ${changes.map((change) => change.trim()).join(', ')}`)
         } else {

@@ -6,6 +6,7 @@
 
 1. Config, Fast
     - New configuration setting to change the subdomain to fast.nationstates.net, set to www by default.
+    - Change the theme immediately on configuration save.
 
 2. UI Changes
     - Move Discord and Github icons to appear only on front page, and make the settings button more obvious.
