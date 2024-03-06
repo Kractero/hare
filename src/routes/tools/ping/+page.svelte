@@ -26,7 +26,7 @@
 	});
 	onDestroy(() => abortController.abort());
 	async function checkForExistence(userAgent: string, username: string, password: string) {
-		let res = await fetch(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${username}&q=ping`,
+		let res = await fetch(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?nation=${username}&q=ping`,
 			{
 				headers: {
 					'X-Password': password,
@@ -51,7 +51,7 @@
 		progress = '';
 		let puppetList = puppets.split('\n');
 		for (let i = 0; i < puppetList.length; i++) {
-			await sleep(700);
+			await sleep(600);
 			let nation = puppetList[i];
 			let nationSpecificPassword = "";
 			if (nation.includes(',')) {
@@ -65,9 +65,9 @@
 			if (existence === false) {
 				progress += `<p class="text-red-400">Failed to log into ${nation}, adding to restore sheet...</p>`;
 				let nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
-				content +=`<tr><td><p>${restoreCount + 1}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=upload_flag/test=1/User_agent=${main}">Link to Restore ${nation}</a></p></td></tr>`;
+				content +=`<tr><td><p>${restoreCount + 1}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=upload_flag/test=1/User_agent=${main}">Link to Restore ${nation}</a></p></td></tr>`;
 				restoreCount++;
-				await sleep(700)
+				await sleep(600)
 			}
 			if (existence === true) {
 				progress += `<p>Successfully logged into ${nation}</p>`;

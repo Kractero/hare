@@ -33,7 +33,7 @@
             if (abortController.signal.aborted || stopped) {
 				break;
 			}
-            const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?region=${regionsList[i]}&q=lastupdate`, main);
+            const xml = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?region=${regionsList[i]}&q=lastupdate`, main);
 		    if (xml.status) progress += `<p class="text-red-400">Request for ${regionsList[i]} ${xml.status}</p>`
             else {
                 if (!xml.REGION['LASTUPDATE']) {
@@ -45,11 +45,11 @@
                         name: regionsList[i],
                         update: xml.REGION['LASTUPDATE']
                     })
-                    await sleep(700)
+                    await sleep(600)
                 }
             }
         }
-        
+
         if (updates.length > 1) {
             updates.sort((a ,b) => Number(a.update) - Number(b.update))
         }
@@ -61,7 +61,7 @@
 			}
             const region = updates[0]
             progress += `<p>Waiting for ${region.name}</p>`
-            const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?region=${region.name}&q=lastupdate`, main);
+            const xml = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?region=${region.name}&q=lastupdate`, main);
             if (xml.status) {
                 progress += `Request for ${xml} ${xml.status}`
                 if (xml.status.includes('409')) await sleep(5000)
@@ -72,7 +72,7 @@
                 progress += `<p class="text-green-400">!!! - UPDATE DETECTED IN ${region.name} - !!!</p>`;
                 updates.shift()
             }
-            await sleep(700)
+            await sleep(600)
         }
 
         progress += `<p>Scan for ${regionsList.length} targets finished.</p>`

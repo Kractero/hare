@@ -94,7 +94,7 @@
               <td class="hideable hidden">
                 {#if deck[header]}<a
                   target='_blank'
-                  href={`https://www.nationstates.net/nation=${deck.Nation}/page=deck/?filter=${header.toLowerCase()}`}
+                  href={`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${deck.Nation}/page=deck/?filter=${header.toLowerCase()}`}
                 >
                   {deck[header]}
                 </a>

@@ -42,9 +42,9 @@
 				if (abortController.signal.aborted) {
 					break;
 				}
-				const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?q=censusranks&scale=86&start=${start}`, main);
+				const xml = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?q=censusranks&scale=86&start=${start}`, main);
 				names = names.concat(xml.WORLD.CENSUSRANKS.NATIONS.NATION.map((nation: { NAME: string; }) => nation.NAME));
-				await sleep(700);
+				await sleep(600);
 			}
 			names = names.slice(0, Number(top));
 		} else {
@@ -58,7 +58,7 @@
 				break;
 			}
 			progress += `<p>Evaluating ${nation}, ${j+1}/${names.length}</p>`;
-			const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nation};q=census;scale=86;mode=history;from=${fromTimestamp}`, main);
+			const xml = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?nation=${nation};q=census;scale=86;mode=history;from=${fromTimestamp}`, main);
 			const point = xml.NATION.CENSUS.SCALE.POINT;
 			if (Array.isArray(point)) {
 				const timestamps = point.map((point) => Number(point.TIMESTAMP));
@@ -70,7 +70,7 @@
 			} else {
 				ratesOfChange.push([nation, Number(point.SCORE)]);
 			}
-			await sleep(700);
+			await sleep(600);
 		}
 		const fallers = ratesOfChange.slice().sort((a, b) => a[1] - b[1]);
 		const risers = ratesOfChange.slice().sort((a, b) => b[1] - a[1]);

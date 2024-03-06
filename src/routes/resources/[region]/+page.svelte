@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
-	import type { NSNation, Region } from '$lib/types';
+	import type { NSNation, NSRegion } from '$lib/types';
 	import { parseXML, parser } from '$lib/helpers/utils';
 	import ToolContent from '$lib/component/ToolContent.svelte';
 
@@ -21,8 +21,8 @@
         upperlim = data.parameters.upperlim || "0";
 		limit = data.parameters.limit  || "0";
  		source = data.parameters.source || localStorage.getItem("endotartSource") as string || "XML";
-        const wamems: Region = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?region=${data.region}&q=wanations`, main)
-        wanations = wamems.REGION.UNNATIONS.split(',')
+        const wamems = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?region=${data.region}&q=wanations`, main)
+        wanations = (wamems.REGION as NSRegion).UNNATIONS.split(',')
         const currentDate = new Date();
         const utcMinus7Date = new Date(currentDate.getTime() - 7 * 60 * 60 * 1000);
         utcMinus7Date.setDate(utcMinus7Date.getDate() - 1);
@@ -32,7 +32,7 @@
         });
         const regionText = await nationRes.text()
         let xml = parser.parse(regionText)
-        let wanationsobj: {[key: string]: number} = {} 
+        let wanationsobj: {[key: string]: number} = {}
         wanations.forEach(nation => {
             wanationsobj[nation] = 0
         })

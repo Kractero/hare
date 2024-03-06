@@ -57,9 +57,9 @@
 			}
 			const nation_formatted = nation.toLowerCase().replaceAll(' ', '_');
 			try {
-				await sleep(700);
+				await sleep(600);
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`;
-				const xmlObj = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`, main, nationSpecificPassword ? nationSpecificPassword : password?.replaceAll(' ', '_'));
+				const xmlObj = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`, main, nationSpecificPassword ? nationSpecificPassword : password?.replaceAll(' ', '_'));
 				if (mode === "Both" || mode === "Issues") {
 					const issues: Issue = xmlObj.NATION.ISSUES.ISSUE || []
 					let issueIds: Array<string> = []
@@ -68,11 +68,11 @@
 					issueIds.forEach((issue) => {
 						openNewLinkArr = [
 							...openNewLinkArr,
-							`https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${main}/Script=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/`
+							`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${main}/Script=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/`
 						];
 						issuesContent += `<tr><td><p>${
 							issuesCount + 1
-						}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${main}/Script=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/">Link to Issue</a></p></td></tr>\n`;
+						}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${main}/Script=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/">Link to Issue</a></p></td></tr>\n`;
 						issuesCount++;
 					});
 				}
@@ -83,16 +83,16 @@
 							if (mode === "Packs") {
 								openNewLinkArr = [
 									...openNewLinkArr,
-									`https://www.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
+									`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
 								];
 							} else {
 								interimPacks.push(
-									`https://www.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
+									`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
 								);
 							}
 							packContent += `<tr><td><p>${
 								packsCount + 1
-							}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1">Link to Pack</a></p></td></tr>\n`;
+							}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1">Link to Pack</a></p></td></tr>\n`;
 							packsCount++;
 						}
 					}

@@ -32,7 +32,7 @@
 		pushHistory(`?main=${main}&nation=${nennation}&mode=${mode}&type=${type}`)
 		progress = '';
 		if (type.toLowerCase() === "deck") {
-			const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+deck;nationname=${nennation}`, main);
+			const xml = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?q=cards+deck;nationname=${nennation}`, main);
 			let deckObj: Array<Card> = xml.CARDS.DECK.CARD;
 			deckObj = deckObj ? Array.isArray(deckObj) ? deckObj : [deckObj] : []
 			if (duplicates === "Skip") {
@@ -41,7 +41,7 @@
 				dl = Array.from(deckObj as Card[]).map((card) => mode === "Signal" ? `${card.CARDID},${card.SEASON}` : card.CARDID).join('\n')
 			}
 		} else {
-			const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+collection;collectionid=${nennation}`, main);
+			const xml = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?q=cards+collection;collectionid=${nennation}`, main);
 			let collObj: Array<Card> = xml.CARDS.COLLECTION.DECK.CARD
 			collObj = collObj ? Array.isArray(collObj) ? collObj : [collObj] : []
 			if (duplicates === "Skip") {

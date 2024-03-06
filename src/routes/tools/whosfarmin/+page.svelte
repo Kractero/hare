@@ -27,7 +27,7 @@
       masterList[puppSplit[0].toLowerCase().replaceAll(' ', '_')] = puppSplit[1]
     });
     const ownerList: {[key: string]: string} = {}
-    const currActives = await parseXML("https://www.nationstates.net/cgi-bin/api.cgi?q=happenings;filter=law;limit=200", main)
+    const currActives = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?q=happenings;filter=law;limit=200`, main)
     currActives.WORLD.HAPPENINGS.EVENT.forEach((event: { TEXT: string; }) => {
       const regex = /@@([\w]+)@@/
       if (event.TEXT) {

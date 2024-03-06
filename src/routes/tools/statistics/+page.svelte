@@ -37,8 +37,8 @@
                 }
                 const nation = puppetsList[j]
                 try {
-                    const scaler = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=census&scale=${scaleList[i]}`, main)
-                    await sleep(700)
+                    const scaler = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=census&scale=${scaleList[i]}`, main)
+                    await sleep(600)
                     scores = [...scores, [scaler.NATION.CENSUS.SCALE.RANK, scaler.NATION.CENSUS.SCALE.SCORE]]
                 } catch (err) {
                     progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;

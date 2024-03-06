@@ -34,12 +34,13 @@
         if (council === "Security Council") {
             councilID = 2;
         }
-		progress = `<p>Retrieving list of esteemed delegates...</p>`
-        await sleep(700);
-        let delegatesXML = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?wa=1&q=delegates`, main)
-		const delegates: Array<string> = delegatesXML.WA.DELEGATES.split(',')
+				progress = `<p>Retrieving list of esteemed delegates...</p>`
+        await sleep(600);
+        let delegatesXML = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?wa=1&q=delegates`, main)
+				const delegates: Array<string> = delegatesXML.WA.DELEGATES.split(',')
         progress += `<p>${delegates.length} delegates found.</p>`
-        const proposalXML = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?wa=${councilID}&q=proposals`, main)
+				await sleep(600)
+        const proposalXML = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?wa=${councilID}&q=proposals`, main)
         const proposal = proposalXML.WA.PROPOSALS.PROPOSAL.filter((proposal: { [x: string]: string; }) => proposal["@_id"] === proposalid)[0]
         if (!proposal) {
             progress += `<p class="text-red-400">No proposal found matching ${proposalid} in the ${council}.</p>`
@@ -58,13 +59,13 @@
         })
         progress += `<p>Finished searching <span class="font-bold">${proposal.NAME}</span> for delegates not approving.</p>`
         notApproving.forEach((delegate, i) => {
-            progress += `<p class="text-red-400"><a class="underline" href="https://nationstates.net/nation=${delegate}">${delegate}</a> is NOT approving!</p>`
+            progress += `<p class="text-red-400"><a class="underline" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${delegate}">${delegate}</a> is NOT approving!</p>`
             content += `<tr><td><p>${
                 i + 1
-            }/${notApproving.length}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/nation=${delegate}//User_agent=${main}/Script=ApprovalListBrowser/Author_main_nation=Kractero/">Link to Nation</a></p></td></tr>\n`;
+            }/${notApproving.length}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${delegate}//User_agent=${main}/Script=ApprovalListBrowser/Author_main_nation=Kractero/">Link to Nation</a></p></td></tr>\n`;
         })
         approving.forEach(delegate => {
-            progress += `<p class="text-green-400"><a class="underline" href="https://nationstates.net/nation=${delegate}">${delegate}</a> is approving!</p>`
+            progress += `<p class="text-green-400"><a class="underline" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${delegate}">${delegate}</a> is approving!</p>`
         })
         downloadable = true;
 		stoppable = false;

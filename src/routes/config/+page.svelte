@@ -9,6 +9,7 @@
     import toast, {Toaster} from 'svelte-french-toast'
 
     const localStorageObject: {[key: string]: any } = {
+        connectionUrl: 'www',
         theme: '',
         puppets: '',
         main: '',
@@ -111,6 +112,7 @@
         class="flex flex-col gap-8"
     >
         <h2 class="text-2xl text-center font-bold tracking-tight">General Config</h2>
+        <Select name="Connection Subdomain" bind:mode={localStorageObject.connectionUrl} options={["www", "fast"]} />
         <Select name="Theme" bind:mode={localStorageObject.theme} options={["light", "dark"]} />
         <Input text="User Agent" bind:bindValue={localStorageObject.main} forValue="main" />
         <Textarea text="General Puppets" bind:bindValue={localStorageObject.puppets} forValue="pup" />

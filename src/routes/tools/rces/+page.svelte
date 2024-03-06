@@ -24,14 +24,14 @@
 			let nation = puppetList[i];
       content += `<tr>\n`
       content += `<td><p>${i}</p></td>`
-      content += `<td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}">${nation}</a></p></td>\n`
-      content += `<td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}/page=dilemmas/template-overall=none">issues</a></p></td>\n`
-      content += `<td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}/page=deck">deck</a></p></td>\n`
-      content += `<td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}/page=deck/value_deck=1">value deck</a></p></td>\n`
-      content += `<td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}/page=telegrams">telegrams</a></p></td>\n`
-      content += `<td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}/page=settings">settings</a></p></td>\n`
-      content += `<td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}/page=tgsettings">tg settings</a></p></td>\n`
-      content += `<td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}/page=create_nation/name=${nation}">create (use /w hare's creator userscripts)</a></p></td>\n`
+      content += `<td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}">${nation}</a></p></td>\n`
+      content += `<td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}/page=dilemmas/template-overall=none">issues</a></p></td>\n`
+      content += `<td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}/page=deck">deck</a></p></td>\n`
+      content += `<td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}/page=deck/value_deck=1">value deck</a></p></td>\n`
+      content += `<td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}/page=telegrams">telegrams</a></p></td>\n`
+      content += `<td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}/page=settings">settings</a></p></td>\n`
+      content += `<td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}/page=tgsettings">tg settings</a></p></td>\n`
+      content += `<td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}/page=create_nation/name=${nation}">create (use /w hare's creator userscripts)</a></p></td>\n`
       content += `</tr>\n`
     }
     downloadable = true;

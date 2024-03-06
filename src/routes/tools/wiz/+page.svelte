@@ -37,10 +37,10 @@
 				if (abortController.signal.aborted || stopped) {
 					break;
 				}
-				await sleep(700);
+				await sleep(600);
 				let nation = puppetsList[i];
 				try {
-						const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=lastactivity`, main);
+						const xml = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=lastactivity`, main);
 				const lastActive: string = xml.NATION.LASTACTIVITY;
 						progress += `<p>${nation} with last seen ${lastActive}.</p>`;
 				} catch (err) {
@@ -48,16 +48,16 @@
 				}
 			}
 		} else {
-			const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?region=${region}&q=nations`, main);
+			const xml = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?region=${region}&q=nations`, main);
 			const nations = xml.REGION.NATIONS ? xml.REGION.NATIONS.split(':') : []
 			for (let i = 0; i < nations.length; i++) {
 				if (abortController.signal.aborted || stopped) {
 					break;
 				}
-				await sleep(700);
+				await sleep(600);
 				let nation = nations[i];
 				try {
-						const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=lastactivity`, main);
+						const xml = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=lastactivity`, main);
 				const lastActive: string = xml.NATION.LASTACTIVITY;
 						progress += `<p>${nation} with last seen ${lastActive}.</p>`;
 				} catch (err) {

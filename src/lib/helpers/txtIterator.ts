@@ -1,5 +1,5 @@
 export async function nsIterator(puppets: string, mode: string, main?: string) {
-	let puppetsList = puppets.split('\n');
+	const puppetsList = puppets.split('\n');
 	let buildString = '';
 	let containerise_nation = '';
 	let containerise_container = '';
@@ -16,12 +16,12 @@ export async function nsIterator(puppets: string, mode: string, main?: string) {
 		if (mode === 'Login Sheet') {
 			buildString += `<tr><td><p>${i + 1} of ${
 				puppetsList.length
-			}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=upload_flag/test=1/User_agent=${main}">Link to Nation</a></p></td></tr>`;
+			}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=upload_flag/test=1/User_agent=${main}">Link to Nation</a></p></td></tr>`;
 		}
 		if (mode === 'Creator') {
 			buildString += `<tr><td><p>${i + 1} of ${
 				puppetsList.length
-			}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=create_nation/name=${nation}">Link to Nation</a></p></td></tr>`;
+			}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=create_nation/name=${nation}">Link to Nation</a></p></td></tr>`;
 		}
 	}
 	return mode === 'Container Rules' ? [containerise_nation, containerise_container] : buildString;

@@ -44,9 +44,9 @@
 				break;
 			}
 			try {
-				await sleep(700);
+				await sleep(600);
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`;
-				const deckInfo = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck+info`, main)
+				const deckInfo = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck+info`, main)
 				let nationalBank = deckInfo.CARDS.INFO.BANK;
         if (nationalBank >= Number(transfer)) {
           progress += `<p class="text-green-400">${nation} can transfer!</p>`;

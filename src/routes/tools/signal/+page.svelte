@@ -41,7 +41,7 @@
         if (mode === "Collection" || mode === "Deck") {
             const collectionsOrDecksArr = collectionsOrDecks.split('\n')
             for (let i = 0 ; i < collectionsOrDecksArr.length; i++) {
-                const endpoint = mode === "Collection" ? `https://www.nationstates.net/cgi-bin/api.cgi?q=cards+${`collection;collectionid=${collectionsOrDecksArr[i]}`}` : `https://www.nationstates.net/cgi-bin/api.cgi?q=cards+${`deck;nationname=${collectionsOrDecksArr[i]}`}`
+                const endpoint = mode === "Collection" ? `https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?q=cards+${`collection;collectionid=${collectionsOrDecksArr[i]}`}` : `https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?q=cards+${`deck;nationname=${collectionsOrDecksArr[i]}`}`
                 const xml = await parseXML(endpoint, main)
                 if (mode === "Collection" && !(xml.CARDS.COLLECTION && xml.CARDS.COLLECTION.DECK.CARD)) {
                     progress += `<p class="text-red-400">Something is wrong with ${collectionsOrDecks[i]}!</p>`
@@ -58,10 +58,10 @@
                     const deckCards = xml.CARDS.DECK.CARD;
                     iterator = [...iterator, ...deckCards];
                 }
-                if (collectionsOrDecksArr.length > 1) await sleep(700)
+                if (collectionsOrDecksArr.length > 1) await sleep(600)
             }
         } else {
-            const xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+asksbids;nationname=${asksBidsNation}`, main)
+            const xml = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?q=cards+asksbids;nationname=${asksBidsNation}`, main)
             if (mode.includes("Asks")) {
                 if (!xml.CARDS.ASKS) {
                     progress += `<p class="text-red-400">${asksBidsNation} has no active asks</p>`
@@ -90,7 +90,7 @@
             noMatch.push(card)
             content += `<tr><td><p>${
                 cardsCount + 1
-            }</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/card=${id}/season=${season}">Link to Card</a></p></td></tr>\n`
+            }</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/card=${id}/season=${season}">Link to Card</a></p></td></tr>\n`
             cardsCount++;
             progress += `<p class="text-green-400">Card ${id} from season ${season} not found within the provided parameters.</p>`
         });

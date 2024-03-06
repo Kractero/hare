@@ -111,9 +111,9 @@
 			}
 			nation = nation.toLowerCase().replaceAll(' ', '_');
 			try {
-				await sleep(700);
+				await sleep(600);
 				progress += `<p class="font-semibold">Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`;
-				const xmlDocument = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
+				const xmlDocument = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
 				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD;
 					cards = cards ? Array.isArray(cards) ? cards : [cards] : []
 				if (cards && cards.length > 0 && cards.length > Number(cardcount)) {
@@ -123,8 +123,8 @@
 						if (abortController.signal.aborted || stopped) {
 							break;
 						}
-						await sleep(700);
-						const xmlDocument = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?cardid=${id}&season=${season}&q=card+markets+info+owners`, main);
+						await sleep(600);
+						const xmlDocument = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?cardid=${id}&season=${season}&q=card+markets+info+owners`, main);
 						const card: Card = xmlDocument.CARD
 						const cardOwners = Array.isArray(card.OWNERS.OWNER) ? new Set(card.OWNERS.OWNER) : new Set([card.OWNERS.OWNER]);
 						const category = card.CATEGORY;
@@ -208,30 +208,30 @@
 								} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}</p>`;
 							openNewLinkArr = [
 								...openNewLinkArr,
-								`https://www.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
+								`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
 							];
 							junkHtml += `<tr><td><p>${i + 1} of ${
 								cards.length
-							}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
+							}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
 						} else {
 							if (mode === "Gift") {
 								let token = ""
-								await sleep(700);
+								await sleep(600);
 								const headers: {[key: string]: string} = {
 									'User-Agent': main,
 								}
 								if (currentNationXPin) headers['X-Pin'] = currentNationXPin
 								else headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
 								const prepare = await fetch(
-									`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`, {headers: headers}
+									`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`, {headers: headers}
 								);
 								if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || "";
 								const text = await prepare.text()
 								const xml = parser.parse(text)
 								token = xml.NATION.SUCCESS
-								await sleep(700);
+								await sleep(600);
 								const gift = await fetch(
-									`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
+									`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
 									{
 										headers: {
 											'User-Agent': main,
@@ -241,8 +241,8 @@
 								);
 								if (gift.status === 200) {
 									let successfulGift = true
-									await sleep(700);
-									const verify = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
+									await sleep(600);
+									const verify = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
 									let verifyCards: Array<Card> = verify.CARDS.DECK.CARD;
 									verifyCards = verifyCards ? Array.isArray(verifyCards) ? verifyCards : [verifyCards] : []
 									if (verifyCards && verifyCards.length > 0) {
@@ -251,9 +251,9 @@
 											if (ids[i] === id) {
 												successfulGift = false
 												interimSells.push(
-													`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftee}`
+													`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftee}`
 												);
-												sellContent += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftee}\n">Link to Card</a></p></td></tr>\n`;
+												sellContent += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftee}\n">Link to Card</a></p></td></tr>\n`;
 												progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}`;
 												failedGiftCount++;
 											}
@@ -271,11 +271,11 @@
 								} -> Skipping ${id} - ${reason}!`;
 								if (mode === 'Sell') {
 									interimSells.push(
-										`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero`
+										`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero`
 									);
 									sellContent += `<tr><td><p>${i + 1} of ${
 										cards.length
-									}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero\n">Link to Card</a></p></td></tr>\n`;
+									}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero\n">Link to Card</a></p></td></tr>\n`;
 								}
 							}
 						}

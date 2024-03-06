@@ -62,9 +62,9 @@
 			}
 			nation = nation.toLowerCase().replaceAll(' ', '_');
 			try {
-				await sleep(700);
+				await sleep(600);
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`;
-				const xmlDocument = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
+				const xmlDocument = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
 				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD;
 				cards = cards ? Array.isArray(cards) ? cards : [cards] : []
                 const matches = finderlist.split('\n').map(matcher => matcher.split(','))
@@ -82,22 +82,22 @@
 							} else {
 								if (mode === "Gift") {
 									let token = ""
-									await sleep(700);
+									await sleep(600);
 									const headers: {[key: string]: string} = {
 										'User-Agent': main,
 									}
 									if (currentNationXPin) headers['X-Pin'] = currentNationXPin
 									else headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
 									const prepare = await fetch(
-										`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=prepare&c=giftcard`, {headers: headers}
+										`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=prepare&c=giftcard`, {headers: headers}
 									);
 									if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || "";
 									const text = await prepare.text()
 									const xml = parser.parse(text)
 									token = xml.NATION.SUCCESS
-									await sleep(700);
+									await sleep(600);
 									const gift = await fetch(
-										`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=execute&c=giftcard&token=${token}`,
+										`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=execute&c=giftcard&token=${token}`,
 										{
 											headers: {
 												'User-Agent': main,
@@ -107,8 +107,8 @@
 									);
 									if (gift.status === 200) {
 										let successfulGift = true;
-										await sleep(700);
-										const verify = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
+										await sleep(600);
+										const verify = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
 										let verifyCards: Array<Card> = verify.CARDS.DECK.CARD;
 										verifyCards = verifyCards ? Array.isArray(verifyCards) ? verifyCards : [verifyCards] : []
 										if (verifyCards && verifyCards.length > 0) {
@@ -118,9 +118,9 @@
 													successfulGift = false
 													openNewLinkArr = [
 														...openNewLinkArr,
-														`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${currGiftee}`
+														`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${currGiftee}`
 													];
-													junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${currGiftee}\n">Link to Card</a></p></td></tr>\n`;
+													junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${currGiftee}\n">Link to Card</a></p></td></tr>\n`;
 													progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${currGiftee}`;
 													failedGiftCount++;
 												}
@@ -134,9 +134,9 @@
 									progress += `<p class="text-green-400">${nation} owns ${id}!`;
 									openNewLinkArr = [
 										...openNewLinkArr,
-										`https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero`
+										`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero`
 									];
-									junkHtml += `<tr><td><p>${findCount + 1}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero\n">Link to Card</a></p></td></tr>\n`;
+									junkHtml += `<tr><td><p>${findCount + 1}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero\n">Link to Card</a></p></td></tr>\n`;
 								}
 								findCount++;
 							}
@@ -156,7 +156,7 @@
 </script>
 
 <ToolContent toolTitle="Finder" caption="Find which of the specified nations have which of the specified cards." author="Kractero" link="https://github.com/Kractero/cards-utilities/blob/main/finder.py" additional={`<p class="mb-2">
-	You can specify season and nation to gift with CARDID,SEASON,GIFTTO instead of just CARDID on each line. 
+	You can specify season and nation to gift with CARDID,SEASON,GIFTTO instead of just CARDID on each line.
 	GIFTTO will overrule the Gift To nation if provided.
 </p>
 <p class="mb-2">

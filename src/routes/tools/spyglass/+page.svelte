@@ -31,11 +31,11 @@
 		pushHistory(`?main=${main}`)
 		downloadable = false
 		progress += `<p>Gathering founderless regions.</p>`
-		const governorless = await parseXML('https://www.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=governorless', main);
+		const governorless = await parseXML('https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=governorless', main);
 		const governorlessArr = governorless.WORLD.REGIONS.split(',');
 
 		progress += `<p>Gathering passwordless regions.</p>`
-		const passwordless = await parseXML('https://www.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=-password', main);
+		const passwordless = await parseXML('https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=-password', main);
 		const passwordlessArr = passwordless.WORLD.REGIONS.split(',');
 
 		const currentDate = new Date();
@@ -72,7 +72,7 @@
 
 			const regionObject: { [key: string]: any } = {
 				Regions: name,
-				'Region Link': `https://www.nationstates.net/region=${name}`,
+				'Region Link': `https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/region=${name}`,
 				'# Nations': nationCount,
 				'Tot. Nations': 0,
 				'Minor Upd. (est)': '',

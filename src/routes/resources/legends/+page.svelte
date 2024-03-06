@@ -84,12 +84,12 @@
 			<tr class="border border-b-1 border-black">
 				<td class="text-xs">{nation.id}</td>
 				<td class="p-2 md:p-4 break-words break-all whitespace-normal text-xs w-[150px] md:w-auto md:text-base">
-					<a class="underline" rel="noreferrer noopener" target="_blank" href={`https://www.nationstates.net/nation=${nation.name}/`}>{nation.name}</a>
+					<a class="underline" rel="noreferrer noopener" target="_blank" href={`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${nation.name}/`}>{nation.name}</a>
 				</td>
 				{#each [1, 2, 3] as season}
 					{#if nation[`S${season}`] === true}
 						<td class="p-2 md:p-4">
-							<a rel="noreferrer noopener" target="_blank" href={`https://www.nationstates.net/page=deck/card=${nation.id}/season=${season}`}>&#9989</a>
+							<a rel="noreferrer noopener" target="_blank" href={`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/card=${nation.id}/season=${season}`}>&#9989</a>
 						</td>
 					{:else}
 						<td class="p-2 md:p-4">&#10060</td>
@@ -97,7 +97,7 @@
 				{/each}
 				{#if nation.exists === true}
 					<td class="p-2 md:p-4"
-						><a rel="noreferrer noopener" target="_blank" href={`https://www.nationstates.net/nation=${nation.name}/`}>&#9989</a>
+						><a rel="noreferrer noopener" target="_blank" href={`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${nation.name}/`}>&#9989</a>
 					</td>
 				{:else}
 					<td class="p-2 md:p-4">&#10060</td>

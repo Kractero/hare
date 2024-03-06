@@ -5,7 +5,7 @@
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
-	import type { NSNation, Nation, Region } from '$lib/types';
+	import type { NSNation, NSRegion, Nation, Region } from '$lib/types';
 	import Select from '$lib/component/Select.svelte';
 	const abortController = new AbortController();
 	import type { PageData } from './$types';
@@ -36,20 +36,20 @@
 		stopped = false;
 		const whiteList = immune ? immune.split('\n').map(nation => nation.toLowerCase().replace(' ', '_')) : [];
 
-        const regionalXML: Nation = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${endotarter}&q=endorsements+region+wa`, main)
+        const regionalXML = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?nation=${endotarter}&q=endorsements+region+wa`, main)
 		if (!regionalXML.NATION) progress += `<p class="text-red-400">Error finding ${endotarter}!</p>`
 		if ((regionalXML as Nation).NATION.UNSTATUS === "Non-member") {
             progress += `<p class="text-red-400">${endotarter} is not in the WA.</p>`
 			return;
         }
-        await sleep(700)
+        await sleep(600)
 
         progress += `<p>Searching for the nations in ${regionalXML.NATION.REGION} not being endorsed by ${endotarter}, using the ${source}</p>`
 		if (whiteList.length > 0) {
 			progress += `<p>Nations immune to endocap: ${whiteList.map((region) => region.trim()).join(', ')}</p>`;
 		}
-		const wamems: Region = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?region=${regionalXML.NATION.REGION}&q=wanations`, main)
-        const regionalWA = wamems.REGION.UNNATIONS.split(',')
+		const wamems = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?region=${regionalXML.NATION.REGION}&q=wanations`, main)
+        const regionalWA = (wamems.REGION as NSRegion).UNNATIONS.split(',')
 		let xml;
 		let NAME;
 		let ENDORSEMENTS;
@@ -80,11 +80,11 @@
 			}
 
 			if (source === "API") {
-				await sleep(700);
-				xml = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?nation=${regionalWA[i]}&q=endorsements+name`, main) as Nation
+				await sleep(600);
+				xml = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?nation=${regionalWA[i]}&q=endorsements+name`, main) as Nation
 				NAME = String(xml.NATION.NAME);
 				ENDORSEMENTS = String(xml.NATION.ENDORSEMENTS).includes(',') ? xml.NATION.ENDORSEMENTS.split(',') : [xml.NATION.ENDORSEMENTS];
-				await sleep(700);
+				await sleep(600);
 			} else {
 				const nations = (xml.NATIONS.NATION as Array<NSNation>).filter(nation => String(nation.NAME).toLowerCase().replace(/ /g, '_') === (regionalWA[i].toLowerCase()));
 				if (nations.length > 0) {

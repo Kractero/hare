@@ -43,18 +43,18 @@
 				}
 				progress += `<p>Computing ${nation}'s flag</p>`
 				const response = await parseXML(
-					`https://www.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=flag`, main
+					`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=flag`, main
 				)
 				for (const flag of flagsList) {
 					if (response.NATION.FLAG.includes(flag)) {
-						progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="https://nationstates.net/nation=${nation}" class="underline">${nation}</a> has flag containing ${flag}!</p>`
+						progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${nation}" class="underline">${nation}</a> has flag containing ${flag}!</p>`
 						content += `<tr><td><p>${
                 count + 1
-            }</p></td><td><p><a target="_blank" href="https://nationstates.net/nation=${nation}">Link to Nation</a></p></td></tr>`
+            }</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${nation}">Link to Nation</a></p></td></tr>`
 						count++;
 					}
 				}
-				await sleep(700);
+				await sleep(600);
 			} catch (err) {
 				progress += `<p class="text-red-400">Error occured on ${nation}: ${err}`
 			}

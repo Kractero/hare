@@ -58,9 +58,9 @@
 			}
 			const nation_formatted = nation.toLowerCase().replaceAll(' ', '_');
 			try {
-				await sleep(700);
+				await sleep(600);
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`;
-				const deckInfo = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck+info`, main)
+				const deckInfo = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck+info`, main)
 				const deck = {
 					nation: nation,
 					bank: 0,
@@ -95,8 +95,8 @@
 						(categoryCounts['ultra-rare'] || 0) * 0.2).toFixed(2));
 
 				if (mode === "Include") {
-					await sleep(700);
-					const issuesAndPacks = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`, main, nationSpecificPassword ? nationSpecificPassword : password.replaceAll(' ', '_'));
+					await sleep(600);
+					const issuesAndPacks = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`, main, nationSpecificPassword ? nationSpecificPassword : password.replaceAll(' ', '_'));
 					const packs = issuesAndPacks.NATION.PACKS;
 					const issues: Issue = issuesAndPacks.NATION.ISSUES.ISSUE || []
 					if (issues && !Array.isArray(issues)) {
@@ -113,7 +113,7 @@
 				totals.cardCount = totals.cardCount + deck.cardCount
 				totals.issues = totals.issues + deck.issues;
 				totals.packs = totals.packs + deck.packs;
-				content += `<tr><td><a target='_blank' href='https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}'>${deck.nation}</a></td><td><a target='_blank' href='https://www.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1'>${deck.bank}</a></td><td><a target='_blank' href='https://www.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1'>${deck.deckValue}</a></td><td><a target='_blank' href='https://www.nationstates.net/page=deck/container=${nation_formatted}/nation={container_url}'>${deck.junkValue}</a></td><td><a target='_blank' href='https://www.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}'>${deck.cardCount}</a></td>${mode === "Include" ? `<td><a target='_blank' href='https://www.nationstates.net/page=dilemmas/container=${nation_formatted}/nation=${nation_formatted}'>${deck.issues}</a></td><td><a target='_blank' href='https://www.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}'>${deck.packs}</a></td>` : "" }</tr>\n`;
+				content += `<tr><td><a target='_blank' href='https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}'>${deck.nation}</a></td><td><a target='_blank' href='https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1'>${deck.bank}</a></td><td><a target='_blank' href='https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1'>${deck.deckValue}</a></td><td><a target='_blank' href='https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation_formatted}/nation={container_url}'>${deck.junkValue}</a></td><td><a target='_blank' href='https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}'>${deck.cardCount}</a></td>${mode === "Include" ? `<td><a target='_blank' href='https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=dilemmas/container=${nation_formatted}/nation=${nation_formatted}'>${deck.issues}</a></td><td><a target='_blank' href='https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}'>${deck.packs}</a></td>` : "" }</tr>\n`;
 			} catch (err) {
 				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
 			}
