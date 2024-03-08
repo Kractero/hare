@@ -1,5 +1,17 @@
 # Changelog
 
+## 2024-3-08
+
+### Features
+
+1. Orphans
+    - New tool migrated from queries to find cards inside of a deck that are not inside any collection.
+
+### Adjustments
+
+1. Rendering
+    - Generate the entire site statically on the server.
+
 ## 2024-3-05
 
 ### Features

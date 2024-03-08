@@ -106,6 +106,11 @@ export const tools: Array<Tool> = [
 		description: 'Generate a sheet that has links for nation creation that works with the provided userscripts.'
 	},
 	{
+		name: 'Orphans',
+		slug: 'orphans',
+		description: 'Get a list of cards not in any collection.'
+	},
+	{
 		name: 'Wiz',
 		slug: 'wiz',
 		description: 'Output the last login date of the provided puppet list.'
