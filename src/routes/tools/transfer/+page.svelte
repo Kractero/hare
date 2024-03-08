@@ -27,7 +27,7 @@
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || '';
 		puppets = (localStorage.getItem('puppets') as string) || '';
 		transfer = $page.url.searchParams.get('transfer') || (localStorage.getItem('transferBank') as string) || '10';
-		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('tranfersMode') as string) || 'Bank';
+		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('transferMode') as string) || 'Bank';
 	});
 
 	onDestroy(() => abortController.abort());
