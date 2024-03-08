@@ -4,12 +4,12 @@
 	import { parseXML, sleep } from '$lib/helpers/utils';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import ToolContent from '$lib/component/ToolContent.svelte';
 	import Select from '$lib/component/Select.svelte';
 	import Input from '$lib/component/Input.svelte';
-	export let data: PageData;
+	import { page } from '$app/stores';
+
     const abortController = new AbortController();
 	let puppets = '';
 	let main = '';
@@ -19,10 +19,10 @@
 	let mode = 'Puppets';
 	let region = '';
 	onMount(() => {
-		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
 		puppets = localStorage.getItem("puppets") as string || "";
-		mode = data.parameters.mode || localStorage.getItem("mode") as string || "Puppets";
-		region = data.parameters.region || localStorage.getItem("region") as string || "";
+		mode = $page.url.searchParams.get('mode') || localStorage.getItem("mode") as string || "Puppets";
+		region = $page.url.searchParams.get('region') || localStorage.getItem("region") as string || "";
 	});
     onDestroy(() => abortController.abort());
 

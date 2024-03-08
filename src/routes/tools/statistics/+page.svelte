@@ -4,13 +4,13 @@
 	import { parseXML, sleep } from '$lib/helpers/utils';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import ToolContent from '$lib/component/ToolContent.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
 	import { scoreCodes } from '$lib/helpers/scores';
+	import { page } from '$app/stores';
     const abortController = new AbortController();
-	export let data: PageData;
+
 	let progress = "";
 	let puppets = '';
 	let main = '';
@@ -18,9 +18,9 @@
     let stoppable = false;
 	let stopped = false;
 	onMount(() => {
-		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
 		puppets = localStorage.getItem("puppets") as string || "";
-        scales = data.parameters.scale || localStorage.getItem("statisticsScales") as string || "";
+        scales = $page.url.searchParams.get('scale') || localStorage.getItem("statisticsScales") as string || "";
 	});
 	async function findWA(main: string, puppets: string) {
 		pushHistory(`?main=${main}&scale=${scales.replace('\n', ',')}`)

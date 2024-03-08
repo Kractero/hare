@@ -6,11 +6,10 @@
 	import Buttons from '$lib/component/Buttons.svelte';
 	import type { Issue } from '$lib/types';
 	import Select from '$lib/component/Select.svelte';
-	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import ToolContent from '$lib/component/ToolContent.svelte';
 	import OpenButton from '$lib/component/OpenButton.svelte';
-	export let data: PageData;
+	import { page } from '$app/stores';
 	const abortController = new AbortController();
 	let progress = "";
 	let openNewLinkArr: Array<string> = [];
@@ -25,10 +24,10 @@
 	let password = '';
 	let mode =  '';
 	onMount(() => {
-		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
 		puppets = localStorage.getItem("gotissuesPuppets") as string || "";
 		password = localStorage.getItem("password") as string || "";
-		mode = data.parameters.mode || localStorage.getItem("gotissuesMode") as string || "";
+		mode = $page.url.searchParams.get('mode') || localStorage.getItem("gotissuesMode") as string || "";
 	});
 	onDestroy(() => abortController.abort());
 

@@ -4,11 +4,10 @@
 	import { parseXML, sleep } from '$lib/helpers/utils';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import Textarea from '$lib/component/Textarea.svelte';
 	import ToolContent from '$lib/component/ToolContent.svelte';
-	export let data: PageData;
+	import { page } from '$app/stores';
 	const abortController = new AbortController();
 	let progress = "";
 	let stoppable = false;
@@ -21,7 +20,7 @@
 	let count = 0;
 
 	onMount(() => {
-		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
 		puppets = localStorage.getItem("puppets") as string || "";
 		flags = localStorage.getItem("flagmanagerFlags") as string || "";
 	});

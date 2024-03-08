@@ -5,16 +5,16 @@
 	import { parseXML, parser } from '$lib/helpers/utils';
 	import * as ExcelJS from 'exceljs';
 	import type { NSRegion } from '$lib/types';
-	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import { onMount } from 'svelte';
 	import ToolContent from '$lib/component/ToolContent.svelte';
-	export let data: PageData;
+	import { page } from '$app/stores';
+
 	let main = '';
 	let progress = '';
 	let workbook: any;
 	let downloadable = false;
-	onMount(() => { main = data.parameters.main || localStorage.getItem("main") as string || ""; });
+	onMount(() => { main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || ""; });
 	function sanitize(string: string) {
 		try {
 			if (['=', '+', '-', '@'].includes(string.charAt(0))) {

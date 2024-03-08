@@ -6,12 +6,11 @@
 	import Input from '$lib/component/Input.svelte';
 	import Select from '$lib/component/Select.svelte';
 	const abortController = new AbortController();
-	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import ToolContent from '$lib/component/ToolContent.svelte';
-	export let data: PageData;
+	import { page } from '$app/stores';
 	let progress = "";
-    let content = "";
+	let content = "";
 	let downloadable = false;
 	let stopped = false;
 	let stoppable = false;
@@ -20,9 +19,9 @@
     let council: string;
 	let proposalid: string;
 	onMount(() => {
-		main = data.parameters.main || localStorage.getItem("main") as string || "";
-		council = data.parameters.council || localStorage.getItem("approvalCouncil") as string || "General Assembly";
-		proposalid = data.parameters.proposal || localStorage.getItem("approvalProposal") as string || "";
+		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
+		council = $page.url.searchParams.get('council') || localStorage.getItem("approvalCouncil") as string || "General Assembly";
+		proposalid = $page.url.searchParams.get('proposal') || localStorage.getItem("approvalProposal") as string || "";
 	});
 	onDestroy(() => abortController.abort() );
 	async function approvals() {

@@ -4,18 +4,17 @@
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import type { Nation } from '$lib/types';
-	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import ToolContent from '$lib/component/ToolContent.svelte';
-	export let data: PageData;
+	import { page } from '$app/stores';
+
 	let progress = '';
 	let main = '';
 	let nennation = '';
 
 	onMount(() => {
-		main = data.parameters.main || (localStorage.getItem('main') as string) || '';
-		nennation = data.parameters.nennation || (localStorage.getItem('nenNation') as string) || '';
+		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || '';
+		nennation = $page.url.searchParams.get('nennation') || (localStorage.getItem('nenNation') as string) || '';
 	});
 
 	async function nen() {

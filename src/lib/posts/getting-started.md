@@ -54,7 +54,7 @@ gotIssues is the primary tool that enables card farming, as it allows you to cle
 
 1. For gotIssues to be usable at all, you will need to install the userscripts [Autoclose](https://raw.githubusercontent.com/jmikk/gotIssues/master/autoclose%3D1.user.js) and [NSIssueCompactorRand](https://raw.githubusercontent.com/jmikk/gotIssues/master/NsIssueCompactorRand.js).
 
-2. Once these userscripts are installed, assuming your containers are setup properly, visit <a href="/tools/gotIssues" target="_blank" rel="noreferrer noopener">gotIssues</a>.
+2. Once these userscripts are installed, assuming your containers are setup properly, visit <a href="/tools/gotissues" target="_blank" rel="noreferrer noopener">gotIssues</a>.
 
 3. Fill in the required inputs and click start.
 
@@ -64,7 +64,7 @@ gotIssues is the primary tool that enables card farming, as it allows you to cle
 
 ### 5. Configuration
 
-If you find yourself using Hare a lot, it would help to visit <a href="/tools/config" target="_blank" rel="noreferrer noopener">the configuration page</a> to store values for multiple sessions.
+If you find yourself using Hare a lot, it would help to visit <a href="/config" target="_blank" rel="noreferrer noopener">the configuration page</a> to store values for multiple sessions.
 
 
 ### Beyond

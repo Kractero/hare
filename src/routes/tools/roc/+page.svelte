@@ -5,11 +5,11 @@
 	import Input from '$lib/component/Input.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
-	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import Select from '$lib/component/Select.svelte';
 	import ToolContent from '$lib/component/ToolContent.svelte';
-	export let data: PageData;
+	import { page } from '$app/stores';
+
 	const abortController = new AbortController();
 	let progress = '';
 	let stoppable = false;
@@ -20,10 +20,10 @@
 	let specific = '';
 	let mode = "Top"
 	onMount(() => {
-		main = data.parameters.main || localStorage.getItem("main") as string || "";
-		top = data.parameters.top || localStorage.getItem("rocTop") as string || "100";
-		days = data.parameters.days || localStorage.getItem("rocDays") as string || "30";
-		mode = data.parameters.mode || localStorage.getItem("rocMode") as string || "Top";
+		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
+		top = $page.url.searchParams.get('top') || localStorage.getItem("rocTop") as string || "100";
+		days = $page.url.searchParams.get('days') || localStorage.getItem("rocDays") as string || "30";
+		mode = $page.url.searchParams.get('mode') || localStorage.getItem("rocMode") as string || "Top";
 		specific = localStorage.getItem("rocSpecific") as string || "";
 	});
 	onDestroy(() => abortController.abort());

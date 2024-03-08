@@ -3,12 +3,12 @@
 	import { parseXML, sleep } from '$lib/helpers/utils';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import type { PageData } from '../trigonometry/$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import Textarea from '$lib/component/Textarea.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import ToolContent from '$lib/component/ToolContent.svelte';
-	export let data: PageData;
+	import { page } from '$app/stores';
+
 	let progress = "";
 	let regions = '';
 	let main = '';
@@ -16,7 +16,7 @@
 	let stopped = false;
     const abortController = new AbortController();
 	onMount(() => {
-		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
 		regions = localStorage.getItem("regions") as string || "";
 	});
     onDestroy(() => abortController.abort());

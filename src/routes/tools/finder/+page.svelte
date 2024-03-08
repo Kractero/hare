@@ -7,12 +7,11 @@
 	import Select from '$lib/component/Select.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
 	import type { Card } from '$lib/types';
-	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import ToolContent from '$lib/component/ToolContent.svelte';
 	import OpenButton from '$lib/component/OpenButton.svelte';
-	export let data: PageData;
+	import { page } from '$app/stores';
 	const abortController = new AbortController();
 	let progress = "";
 	let openNewLinkArr: Array<string> = [];
@@ -28,12 +27,12 @@
 	let password = "";
 	let giftee = "";
 	onMount(() => {
-		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
 		puppets = localStorage.getItem("puppets") as string || "";
 		finderlist = localStorage.getItem("finderList") as string || "";
 		password = localStorage.getItem("password") as string || "";
-		mode = data.parameters.mode || localStorage.getItem("finderMode") as string || "Gift";
-		giftee = data.parameters.giftee || localStorage.getItem("finderGiftee") as string || "";
+		mode = $page.url.searchParams.get('mode') || localStorage.getItem("finderMode") as string || "Gift";
+		giftee = $page.url.searchParams.get('giftee') || localStorage.getItem("finderGiftee") as string || "";
 	});
 	onDestroy(() => abortController.abort());
 

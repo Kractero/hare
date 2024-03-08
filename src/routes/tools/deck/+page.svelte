@@ -4,12 +4,11 @@
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import ToolContent from '$lib/component/ToolContent.svelte';
 	import type { Card } from '$lib/types';
 	import Select from '$lib/component/Select.svelte';
-	export let data: PageData;
+	import { page } from '$app/stores';
 	let progress = "";
 	let main = '';
 	let nennation = '';
@@ -20,11 +19,11 @@
 	let duplicates = "Skip"
 
 	onMount(() => {
-		main = data.parameters.main || localStorage.getItem("main") as string || "";
-		nennation = data.parameters.nation || "";
-		mode = data.parameters.mode || localStorage.getItem("deckMode") as string || "";
-		duplicates = data.parameters.duplicates || localStorage.getItem("deckDuplicates") as string || "Skip";
-		type = data.parameters.type || localStorage.getItem("deckCollMode") as string || "Deck";
+		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
+		nennation = $page.url.searchParams.get('nation') || "";
+		mode = $page.url.searchParams.get('mode') || localStorage.getItem("deckMode") as string || "";
+		duplicates = $page.url.searchParams.get('duplicates') || localStorage.getItem("deckDuplicates") as string || "Skip";
+		type = $page.url.searchParams.get('type') || localStorage.getItem("deckCollMode") as string || "Deck";
 	});
 
 	async function nen() {

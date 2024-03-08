@@ -5,13 +5,12 @@
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
-	import type { NSNation, NSRegion, Nation, Region } from '$lib/types';
+	import type { NSNation, NSRegion, Nation } from '$lib/types';
 	import Select from '$lib/component/Select.svelte';
 	const abortController = new AbortController();
-	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import ToolContent from '$lib/component/ToolContent.svelte';
-	export let data: PageData;
+	import { page } from '$app/stores';
 	let progress = "";
 	let stopped = false;
 	let stoppable = false;
@@ -22,11 +21,11 @@
 	let immune: string;
 	let limit: string;
 	onMount(() => {
-		main = data.parameters.main || localStorage.getItem("main") as string || "";
-		endotarter = data.parameters.endotarter || localStorage.getItem("endotartEndotarter") as string || "";
-		immune = data.parameters.immune ? data.parameters.immune.replaceAll(',', '\n') : localStorage.getItem("endotartImmune") as string || "";
-		limit = data.parameters.limit || localStorage.getItem("endotartLimit") as string || "";
- 		source = data.parameters.source || localStorage.getItem("endotartSource") as string || "XML";
+		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
+		endotarter = $page.url.searchParams.get('endotarter') || localStorage.getItem("endotartEndotarter") as string || "";
+		immune = $page.url.searchParams.get('immune') ? $page.url.searchParams.get('immune')!.replaceAll(',', '\n') : localStorage.getItem("endotartImmune") as string || "";
+		limit = $page.url.searchParams.get('limit') || localStorage.getItem("endotartLimit") as string || "";
+ 		source = $page.url.searchParams.get('source') || localStorage.getItem("endotartSource") as string || "XML";
 	});
 	onDestroy(() => abortController.abort() );
 	async function endotart() {

@@ -10,12 +10,12 @@
 	import type { Card } from '$lib/types';
 	import Select from '$lib/component/Select.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
-	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import Checkbox from '$lib/component/Checkbox.svelte';
 	import ToolContent from '$lib/component/ToolContent.svelte';
 	import OpenButton from '$lib/component/OpenButton.svelte';
-	export let data: PageData;
+	import { page } from '$app/stores';
+
 	let progress: "";
 	let openNewLinkArr: Array<string> = [];
 	let counter = 0;
@@ -39,14 +39,14 @@
 	let finderlist = '';
 
 	onMount(() => {
-		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
 		puppets = localStorage.getItem("gotissuesPuppets") as string || "";
 		password = localStorage.getItem("password") as string || "";
-		mode = data.parameters.mode || localStorage.getItem("finderMode") as string || "Gift";
-		regionalwhitelist = data.parameters.regions?.replaceAll(',', '\n') || localStorage.getItem("junkdajunkRegionalWhitelist") as string || "";
-		flagwhitelist = data.parameters.flags?.replaceAll(',', '\n') || localStorage.getItem("junkdajunkFlagWhitelist") as string || "";
-		finderlist = data.parameters.ids?.replaceAll(',', '\n') || localStorage.getItem("junkdajunkFinderList") as string || "";
-		giftee = data.parameters.giftee || localStorage.getItem("finderGiftee") as string || "";
+		mode = $page.url.searchParams.get('mode') || localStorage.getItem("finderMode") as string || "Gift";
+		regionalwhitelist = $page.url.searchParams.get('regions')?.replaceAll(',', '\n') || localStorage.getItem("junkdajunkRegionalWhitelist") as string || "";
+		flagwhitelist = $page.url.searchParams.get('flags')?.replaceAll(',', '\n') || localStorage.getItem("junkdajunkFlagWhitelist") as string || "";
+		finderlist = $page.url.searchParams.get('ids')?.replaceAll(',', '\n') || localStorage.getItem("junkdajunkFinderList") as string || "";
+		giftee = $page.url.searchParams.get('giftee') || localStorage.getItem("finderGiftee") as string || "";
 		rarities = localStorage.getItem("junkdajunkRarities") ? JSON.parse(localStorage.getItem("junkdajunkRarities") as string) : {
             common: 0.5,
             uncommon: 1,
@@ -54,10 +54,10 @@
             'ultra-rare': 1,
             epic: 1,
         }
-		owners = data.parameters.owners || localStorage.getItem("junkdajunkOwnerCount") as string || "";
-		cardcount = data.parameters.cardcount || localStorage.getItem("junkdajunkCardCount") as string || "";
-		skipseason = data.parameters.skipseason || localStorage.getItem("junkdajunkOmittedSeasons") as string || "";
-		skipexnation = (data.parameters.skipexnation === 'true') || (localStorage.getItem("junkdajunkExnation") === 'true') || false;
+		owners = $page.url.searchParams.get('owners') || localStorage.getItem("junkdajunkOwnerCount") as string || "";
+		cardcount = $page.url.searchParams.get('cardcount') || localStorage.getItem("junkdajunkCardCount") as string || "";
+		skipseason = $page.url.searchParams.get('skipseason') || localStorage.getItem("junkdajunkOmittedSeasons") as string || "";
+		skipexnation = ($page.url.searchParams.get('skipexnation') === 'true') || (localStorage.getItem("junkdajunkExnation") === 'true') || false;
 	});
 	onDestroy(() => abortController.abort());
 

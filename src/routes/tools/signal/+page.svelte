@@ -5,11 +5,11 @@
 	import Input from '$lib/component/Input.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Textarea from '$lib/component/Textarea.svelte';
-	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import Select from '$lib/component/Select.svelte';
 	import ToolContent from '$lib/component/ToolContent.svelte';
-	export let data: PageData;
+	import { page } from '$app/stores';
+
 	const abortController = new AbortController();
 	let progress = '';
 	let stoppable = false;
@@ -23,11 +23,11 @@
     let cardsCount = 0;
     let downloadable = false;
 	onMount(() => {
-		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
         cardIds = localStorage.getItem("signalCardIds") as string || "";
         collectionsOrDecks = localStorage.getItem("signalCollectionsOrDecks") as string || "";
 		asksBidsNation = localStorage.getItem("signalAsksBidsNation") as string || "";
-		mode = data.parameters.mode || localStorage.getItem("signalMode") as string || "Collection";
+		mode = $page.url.searchParams.get('mode') || localStorage.getItem("signalMode") as string || "Collection";
 	});
 	onDestroy(() => abortController.abort());
 

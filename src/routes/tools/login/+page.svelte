@@ -4,16 +4,16 @@
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
-	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
 	import ToolContent from '$lib/component/ToolContent.svelte';
-	export let data: PageData;
+	import { page } from '$app/stores';
+
 	let progress = '';
 	let puppets = '';
 	let main = '';
 	let content: string;
 	let downloadable = false;
-	onMount(() => { main = data.parameters.main || localStorage.getItem("main") as string || ""; });
+	onMount(() => { main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || ""; });
 	async function login(puppets: string) {
 		pushHistory(`?main=${main}`)
 		downloadable = false;

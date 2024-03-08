@@ -2,17 +2,17 @@
 	import { onDestroy, onMount } from 'svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
-	import type { PageData } from './$types';
 	import ToolContent from '$lib/component/ToolContent.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import { parseXML } from '$lib/helpers/utils';
-	export let data: PageData;
+	import { page } from '$app/stores';
+
 	const abortController = new AbortController();
 	let progress = "";
 	let main = '';
 
 	onMount(() => {
-		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
   })
 
 	onDestroy(() => abortController.abort());

@@ -4,12 +4,11 @@
 	import { parseXML, sleep } from '$lib/helpers/utils';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
-	import type { PageData } from './$types';
 	import { pushHistory } from '$lib/helpers/utils';
-	export let data: PageData;
 	import type { Card, Issue } from '$lib/types';
 	import Select from '$lib/component/Select.svelte';
 	import ToolContent from '$lib/component/ToolContent.svelte';
+	import { page } from '$app/stores';
 	const abortController = new AbortController();
 	let progress = "";
 	let downloadable = false;
@@ -22,10 +21,10 @@
 	let mode: string;
 
 	onMount(() => {
-		main = data.parameters.main || localStorage.getItem("main") as string || "";
+		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
 		puppets = localStorage.getItem("puppets") as string || "";
 		password = localStorage.getItem("password") as string || "";
-		mode = data.parameters.mode || localStorage.getItem("goldretrieverMode") as string || "Include";
+		mode = $page.url.searchParams.get('mode') || localStorage.getItem("goldretrieverMode") as string || "Include";
 	});
 
 	onDestroy(() => abortController.abort());
