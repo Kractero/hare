@@ -1,5 +1,12 @@
 # Changelog
 
+## 2024-3-09
+
+### Fixes
+
+1. Config
+    - Remove required attribute from two inputs.
+
 ## 2024-3-08
 
 ### Features

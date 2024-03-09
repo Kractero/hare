@@ -187,10 +187,10 @@
         <Select name="Mode" bind:mode={localStorageObject.deckCollMode} options={["Deck", "Collection"]} />
         <Select name="Duplicates" bind:mode={localStorageObject.deckDuplicates} options={["Skip", "Include"]} />
         <h2 class="text-2xl text-center font-bold tracking-tight">Transfer</h2>
-        <Input text="Transfer Bank Threshold" bind:bindValue={localStorageObject.transferBank} forValue="transfer" required={true} />
+        <Input text="Transfer Bank Threshold" bind:bindValue={localStorageObject.transferBank} forValue="transfer" />
         <Select name="Transfer Bank Mode" bind:mode={localStorageObject.transferMode} options={["Bank", "Junk"]} />
         <h2 class="text-2xl text-center font-bold tracking-tight">Orphans</h2>
-        <Input text="Deck" bind:bindValue={localStorageObject.orphansDeck} forValue="orphansDeck" required={true} />
+        <Input text="Deck" bind:bindValue={localStorageObject.orphansDeck} forValue="orphansDeck" />
         <div class="max-w-lg flex justify-center">
             <button
                 type="submit"
