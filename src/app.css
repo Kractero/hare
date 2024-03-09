@@ -20,17 +20,17 @@
 	}
 
 	.dark {
-		--color-primary: 30 41 59;
-		--color-secondary: 226 232 240;
+		--color-primary: 16 16 16;
+		--color-secondary: 38 38 38;
 		--color-tertiary: 148 163 184;
 		--text-primary: 255 255 255;
 		--text-content: 214 211 209;
-		--card-text-primary: 15 23 42;
-		--card-text-secondary: 51 65 85;
+		--card-text-primary: 255 255 255;
+		--card-text-secondary: 163 163 163;
 		--labels: 0 0 0;
 		--buttons: 255 255 255;
-		--herobuttons: 71 85 105;
-		--herobuttons-hover: 148 163 184;
+		--herobuttons: 64 64 64;
+		--herobuttons-hover: 89 89 89;
 	}
 
 }

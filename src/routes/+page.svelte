@@ -25,7 +25,7 @@
 <p class="mb-2">Search</p>
 <input
 	bind:value={searchTerm}
-	class="text-black p-1 w-full rounded-md border border-black dark:border-none mb-16"
+	class="text-black p-1 w-full rounded-md border border-black dark:border-none mb-16 dark:bg-neutral-200"
 />
 
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

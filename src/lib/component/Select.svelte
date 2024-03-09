@@ -11,7 +11,7 @@
             name={mode}
             id={mode}
             bind:value={mode}
-            class="text-black pl-4 p-1 w-max rounded-md border border-black dark:border-none"
+            class="text-black pl-4 p-1 w-max rounded-md border border-black dark:border-none dark:bg-neutral-300"
         >
             {#each options as option}
                 <option value={option} selected>{option}</option>

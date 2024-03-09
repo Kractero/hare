@@ -2,6 +2,14 @@
 
 ## 2024-3-09
 
+### Adjustments
+
+1. Dark Mode
+    - Darker dark mode
+
+2. Tool styling
+    - More internal spacing and margins within the tool components on the home page.
+
 ### Fixes
 
 1. Config

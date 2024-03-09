@@ -21,7 +21,7 @@
 			title={puppets.includes(',')
 				? 'A comma is detected in the puppet list, assuming that format.'
 				: ''}
-			class="text-right text-black p-2 max-w-xs rounded-md border border-black dark:border-none disabled:opacity-25"
+			class="text-right text-black p-2 max-w-xs rounded-md border border-black dark:border-none disabled:opacity-25 dark:bg-neutral-300"
 		/>
 	</div>
 {/if}

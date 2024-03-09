@@ -66,7 +66,7 @@ export const tools: Array<Tool> = [
 		description: 'Takes a bank threshold and receive a text file with puppets that have that bank or higher.'
 	},
 	{
-		name: 'Containerise Rules',
+		name: 'Containerise',
 		slug: 'containerise',
 		description: 'Generate container rules for use with Containerise.'
 	},
@@ -101,7 +101,7 @@ export const tools: Array<Tool> = [
 		description: 'Provided WA scales and puppets, get the mean, median, and mode for each scale. (WIP)'
 	},
 	{
-		name: 'Creator Assistant',
+		name: 'Creator',
 		slug: 'creation',
 		description: 'Generate a sheet that has links for nation creation that works with the provided userscripts.'
 	},
