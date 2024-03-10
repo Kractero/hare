@@ -2,9 +2,9 @@ export function handleDownload(filetype: string, files: Array<string> | string, 
 	let blob;
 	if (Array.isArray(files)) {
 		blob = new Blob([files[0]], { type: `text/${filetype}` });
-		urlObject(blob, 'Containerise (Container)');
-		blob = new Blob([files[1]], { type: `text/${filetype}` });
 		urlObject(blob, 'Containerise (Nation)');
+		blob = new Blob([files[1]], { type: `text/${filetype}` });
+		urlObject(blob, 'Containerise (Container)');
 	} else {
 		blob = new Blob([files], { type: `text/${filetype}` });
 		urlObject(blob, name);
