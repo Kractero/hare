@@ -19,7 +19,7 @@
     downloadable = false;
 		let puppetList = puppets.split('\n');
 		for (let i = 0; i < puppetList.length; i++) {
-			let nation = puppetList[i];
+			let nation = puppetList[i].replaceAll(' ', '_');
       content += `<tr>\n`
       content += `<td><p>${i}</p></td>`
       content += `<td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}">${nation}</a></p></td>\n`
@@ -46,7 +46,7 @@
 		class="flex flex-col gap-8"
 	>
   <Textarea text="Puppets" bind:bindValue={puppets} forValue="pup" required />
-  <Buttons downloadButton={true} bind:downloadable={downloadable} bind:content={content} type="html" name="Creator" />
+  <Buttons downloadButton={true} bind:downloadable={downloadable} bind:content={content} type="html" name="RCES" />
 	</form>
 	<Terminal bind:progress={progress} />
 </div>
