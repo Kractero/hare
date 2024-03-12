@@ -19,7 +19,7 @@
     downloadable = false;
 		let puppetList = puppets.split('\n');
 		for (let i = 0; i < puppetList.length; i++) {
-			let nation = puppetList[i].replaceAll(' ', '_');
+			let nation = puppetList[i].replaceAll(' ', '_').toLowerCase();
       content += `<tr>\n`
       content += `<td><p>${i}</p></td>`
       content += `<td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}">${nation}</a></p></td>\n`
