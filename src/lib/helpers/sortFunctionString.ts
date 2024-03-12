@@ -71,4 +71,38 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+@media (prefers-color-scheme: dark) {
+    html {
+      background-color: black;
+    }
+    a, p {
+      color: rgb(232, 211, 162);
+    }
+    a:visited {
+      color: rgb(145, 23, 76);
+    }
+    table, tr, td {
+      border: 1px solid rgb(51, 0, 111);
+    }
+  }
 `;
+export let script = `
+document.querySelectorAll("a").forEach(function(el) {
+    el.addEventListener("click", function(ev) {
+        if (!ev.repeat) {
+            let myidx = 0;
+            const row = el.closest("tr");
+            let child = el.closest("td");
+            while((child = child.previousElementSibling) != null) {
+                myidx++;
+            }
+            try {
+                row.nextElementSibling.children[myidx].querySelector("p > a").focus();
+            } finally {
+                row.parentNode.removeChild(row);
+            }
+        }
+    });
+});
+` 

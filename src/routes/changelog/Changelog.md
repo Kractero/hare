@@ -7,6 +7,8 @@
 1. User Agent
     - Comply with stupid disallowed headers on chromium browsers by passing the user agent as a parameter on all API calls.
 
+2. RCES, Gold Retriever
+    - Improve tabbing experience in row from column to next column.
 
 ## 2024-3-09
 

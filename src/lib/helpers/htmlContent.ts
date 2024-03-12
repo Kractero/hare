@@ -1,12 +1,11 @@
-export const htmlContent = (content: string, style?: string, sortFunction?: string) => {
-	return `
+export const htmlContent = (content: string, style?: string, sortFunction?: string, script?: string) => {
+  return `
     <html>
     <head>
     <style>
-    ${
-			style
-				? style
-				: `
+    ${style
+      ? style
+      : `
     td.createcol p {
       padding-left: 10em;
     }
@@ -54,16 +53,15 @@ export const htmlContent = (content: string, style?: string, sortFunction?: stri
       }
     }
     `
-		}
+    }
     </style>
     </head>
     <body>
     <table>
     ${content}
-    ${
-			sortFunction
-				? ''
-				: `
+    ${sortFunction
+      ? ''
+      : `
     <tr>
     <td>
       <p>
@@ -77,9 +75,10 @@ export const htmlContent = (content: string, style?: string, sortFunction?: stri
     </td>
   </tr>
     `
-		}
+    }
     </table>
     <script>
+    ${script ? script : `
     document.querySelectorAll("td").forEach(function(el) {
       el.addEventListener("click", function() {
         const row = el.parentNode;
@@ -87,6 +86,8 @@ export const htmlContent = (content: string, style?: string, sortFunction?: stri
         row.parentNode.removeChild(row);
       });
     });
+   `
+    } 
     ${sortFunction || ''}
     </script>
     </body>
