@@ -12,7 +12,7 @@ export function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function parseXML(url: string, userAgent: string, password?: string): Promise<{[key: string]: any}> {
+export async function parseXML(url: string, userAgent: string, password?: string): Promise<{[key: string]: unknown}> {
 	const headers: Record<string, string> = {
 		'User-Agent': `Used by ${userAgent} with Hare, written by Kractero`
 	};
@@ -21,7 +21,7 @@ export async function parseXML(url: string, userAgent: string, password?: string
 		headers['X-Password'] = password;
 	}
 
-	const response = await fetch(url, {
+	const response = await fetch(`${url}&userAgent=${userAgent} using Hare by Kractero`, {
 		method: 'GET',
 		headers
 	});

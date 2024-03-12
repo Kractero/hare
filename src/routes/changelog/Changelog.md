@@ -1,5 +1,13 @@
 # Changelog
 
+## 2024-3-11
+
+### Fixes
+
+1. User Agent
+    - Comply with stupid disallowed headers on chromium browsers by passing the user agent as a parameter on all API calls.
+
+
 ## 2024-3-09
 
 ### Adjustments
