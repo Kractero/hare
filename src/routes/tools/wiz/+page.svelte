@@ -10,28 +10,30 @@
 	import Input from '$lib/component/Input.svelte';
 	import { page } from '$app/stores';
 
-    const abortController = new AbortController();
+	const abortController = new AbortController();
 	let puppets = '';
 	let main = '';
-	let progress = "";
+	let progress = '';
 	let stoppable = false;
 	let stopped = true;
 	let mode = 'Puppets';
 	let region = '';
 	onMount(() => {
-		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
-		puppets = localStorage.getItem("puppets") as string || "";
-		mode = $page.url.searchParams.get('mode') || localStorage.getItem("mode") as string || "Puppets";
-		region = $page.url.searchParams.get('region') || localStorage.getItem("region") as string || "";
+		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || '';
+		puppets = (localStorage.getItem('puppets') as string) || '';
+		mode =
+			$page.url.searchParams.get('mode') || (localStorage.getItem('mode') as string) || 'Puppets';
+		region =
+			$page.url.searchParams.get('region') || (localStorage.getItem('region') as string) || '';
 	});
-    onDestroy(() => abortController.abort());
+	onDestroy(() => abortController.abort());
 
 	async function lastactivity(main: string, puppets: string) {
-			pushHistory(`?main=${main}${mode ? `&mode=${mode}` : ""}${region ? `&region=${region}` : ""}`)
-			progress = "";
-			stoppable = true;
-			stopped = false;
-			if (mode.toLowerCase() === "Puppets") {
+		pushHistory(`?main=${main}${mode ? `&mode=${mode}` : ''}${region ? `&region=${region}` : ''}`);
+		progress = '';
+		stoppable = true;
+		stopped = false;
+		if (mode.toLowerCase() === 'puppets') {
 			let puppetsList = puppets.split('\n');
 			for (let i = 0; i < puppetsList.length; i++) {
 				if (abortController.signal.aborted || stopped) {
@@ -40,16 +42,22 @@
 				await sleep(600);
 				let nation = puppetsList[i];
 				try {
-						const xml = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=lastactivity`, main);
-				const lastActive: string = xml.NATION.LASTACTIVITY;
-						progress += `<p>${nation} with last seen ${lastActive}.</p>`;
+					const xml = await parseXML(
+						`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=lastactivity`,
+						main
+					);
+					const lastActive: string = xml.NATION.LASTACTIVITY;
+					progress += `<p>${nation} with last seen ${lastActive}.</p>`;
 				} catch (err) {
 					progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
 				}
 			}
 		} else {
-			const xml = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?region=${region}&q=nations`, main);
-			const nations = xml.REGION.NATIONS ? xml.REGION.NATIONS.split(':') : []
+			const xml = await parseXML(
+				`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?region=${region}&q=nations`,
+				main
+			);
+			const nations = xml.REGION.NATIONS ? xml.REGION.NATIONS.split(':') : [];
 			for (let i = 0; i < nations.length; i++) {
 				if (abortController.signal.aborted || stopped) {
 					break;
@@ -57,9 +65,12 @@
 				await sleep(600);
 				let nation = nations[i];
 				try {
-						const xml = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=lastactivity`, main);
-				const lastActive: string = xml.NATION.LASTACTIVITY;
-						progress += `<p>${nation} with last seen ${lastActive}.</p>`;
+					const xml = await parseXML(
+						`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=lastactivity`,
+						main
+					);
+					const lastActive: string = xml.NATION.LASTACTIVITY;
+					progress += `<p>${nation} with last seen ${lastActive}.</p>`;
 				} catch (err) {
 					progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
 				}
@@ -77,14 +88,14 @@
 		on:submit|preventDefault={async () => await lastactivity(main, puppets)}
 		class="flex flex-col gap-8"
 	>
-		<Select name="Mode" bind:mode={mode} options={["Puppets", "Region"]} />
-		{#if mode.toLowerCase() === "region"}
+		<Select name="Mode" bind:mode options={['Puppets', 'Region']} />
+		{#if mode.toLowerCase() === 'region'}
 			<Input text={`User Agent`} bind:bindValue={main} forValue="main" required={true} />
 			<Input text={`Region`} bind:bindValue={region} forValue="region" required={true} />
 		{:else}
 			<InputCredentials bind:main bind:puppets authenticated={false} />
 		{/if}
-		<Buttons stopButton={true} bind:stopped={stopped} bind:stoppable={stoppable} />
+		<Buttons stopButton={true} bind:stopped bind:stoppable />
 	</form>
-	<Terminal bind:progress={progress} />
+	<Terminal bind:progress />
 </div>
