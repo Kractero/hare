@@ -4,7 +4,7 @@
 	import Terminal from '$lib/component/Terminal.svelte';
 	import ToolContent from '$lib/component/ToolContent.svelte';
 	import Input from '$lib/component/Input.svelte';
-	import { parseXML } from '$lib/helpers/utils';
+	import { parseXML, pushHistory } from '$lib/helpers/utils';
 	import { page } from '$app/stores';
 
 	const abortController = new AbortController();
@@ -18,6 +18,7 @@
 	onDestroy(() => abortController.abort());
 
 	async function detector() {
+    pushHistory(`?main=${main}`);
     progress = "";
     const fetcha = await fetch("https://docs.google.com/spreadsheets/d/1MZ-4GLWAZDgB1TDvwtssEcVKHKunOKi3l90Jof1pBB4/export?format=tsv&id=1MZ-4GLWAZDgB1TDvwtssEcVKHKunOKi3l90Jof1pBB4&gid=733627866")
     const text = await fetcha.text()
