@@ -1,5 +1,12 @@
 # Changelog
 
+## 2024-3-15
+
+### Fixes
+
+1. Junk Da Junk
+   - Fix bad array iteration logic and cast number to string for comparison.
+
 ## 2024-3-13
 
 ### Fixes

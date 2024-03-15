@@ -66,7 +66,7 @@
 				const xmlDocument = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
 				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD;
 				cards = cards ? Array.isArray(cards) ? cards : [cards] : []
-                const matches = finderlist.split('\n').map(matcher => matcher.split(','))
+				const matches = finderlist.split('\n').map(matcher => matcher.split(','))
 				if (cards && cards.length > 0) {
 					for (let j = 0; j < cards.length; j++) {
 						const id = cards[j].CARDID;

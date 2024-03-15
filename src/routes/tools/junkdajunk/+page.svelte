@@ -84,6 +84,7 @@
 		if (toFind.length > 0) {
 			progress += `<p>Whitelisting cards: ${toFind.map((flag) => flag.trim()).join(', ')}</p>`;
 		}
+		const findSplit = finderlist.split('\n').map(matcher => matcher.split(','))
 		if (skipseason.length > 0) {
 			progress += `<p>Skipping seasons:`
 			for (let i = 0; i < skipseason.length; i++) {
@@ -159,14 +160,13 @@
 								reason = `<span class="text-blue-400">Flag is whitelisted ${flag}</span>`
 							}
 						})
-						const findSplit = finderlist.split('\n').map(matcher => matcher.split(','))
-						findSplit.forEach((findid, i) => {
-							const matchSeason = findSplit[i][1];
+						findSplit.forEach((findid) => {
+							const matchSeason = findid[1];
 							if (findid[0] === String(id)) {
 								if (matchSeason) {
-									if (matchSeason === season) {
+									if (matchSeason === String(season)) {
 										junk = false;
-										reason = `<span class="text-blue-400">is whitelisted card ${findid} season ${season}</span>`
+										reason = `<span class="text-blue-400">is whitelisted card ${findid[0]} season ${season}</span>`
 									}
 								} else {
 									junk = false;
