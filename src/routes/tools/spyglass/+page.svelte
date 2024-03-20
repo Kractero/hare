@@ -31,12 +31,12 @@
 		pushHistory(`?main=${main}`)
 		downloadable = false
 		progress += `<p>Gathering founderless regions.</p>`
-		const governorless = await parseXML('https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=governorless', main);
-		const governorlessArr = governorless.WORLD.REGIONS.split(',');
+		const governorless = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=governorless`, main);
+		const governorlessArr = (governorless.WORLD as { REGIONS: string }).REGIONS.split(',');
 
 		progress += `<p>Gathering passwordless regions.</p>`
-		const passwordless = await parseXML('https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=-password', main);
-		const passwordlessArr = passwordless.WORLD.REGIONS.split(',');
+		const passwordless = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=-password`, main);
+		const passwordlessArr = (governorless.WORLD as { REGIONS: string }).REGIONS.split(',');
 
 		const currentDate = new Date();
 		const utcMinus7Date = new Date(currentDate.getTime() - 7 * 60 * 60 * 1000);

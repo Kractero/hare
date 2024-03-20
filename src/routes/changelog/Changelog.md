@@ -1,5 +1,12 @@
 # Changelog
 
+## 2024-3-20
+
+### Fixes
+
+1. Spyglass
+   - Fix improperly formatted template string.
+
 ## 2024-3-15
 
 ### Fixes
