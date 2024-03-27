@@ -45,7 +45,9 @@
         goldretrieverMode: "Include",
         junkdajunkOmittedSeasons: "",
         junkdajunkExnation: false,
+        flagmanagerMode: "Flags",
         flagmanagerFlags: '',
+        flagmanagerMotto: '',
         signalCardIds: '',
         signalCollectionsOrDecks: '',
         signalAsksBidsNation: '',
@@ -174,7 +176,9 @@
 		<Select name="Council" bind:mode={localStorageObject.approvalCouncil} options={['General Assembly', 'Security Council']} />
         <Input text="Proposal ID" bind:bindValue={localStorageObject.approvalProposal} forValue="proposalID" />
         <h2 class="text-2xl text-center font-bold tracking-tight">Flags</h2>
+        <Select name="Mode" bind:mode={localStorageObject.flagmanagerMode} options={["Flags", "Mottos"]} />
         <Textarea text="Search Flags" bind:bindValue={localStorageObject.flagmanagerFlags} forValue="flags" />
+        <Input text="Motto" bind:bindValue={localStorageObject.flagmanagerMotto} forValue="mottos" required />
         <h2 class="text-2xl text-center font-bold tracking-tight">Signal</h2>
 		<Textarea text="Card IDs" bind:bindValue={localStorageObject.signalCardIds} forValue="cardIds"  />
 		<Select name="Behavior" bind:mode={localStorageObject.signalMode} options={["Collection", "Deck", "Asks", "Bids", "Asks and Bids"]} />

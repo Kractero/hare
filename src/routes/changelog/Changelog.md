@@ -1,5 +1,12 @@
 # Changelog
 
+## 2024-3-27
+
+### Features
+
+1. Flag Manager
+   - New mode that lets you search for specific mottos on a set of nation (intended for customization).
+
 ## 2024-3-20
 
 ### Fixes
