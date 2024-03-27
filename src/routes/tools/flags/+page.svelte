@@ -21,14 +21,14 @@
 	let content = ""
 	let count = 0;
 	let mode = "Flags";
-	let motto = '';
+	let mottos = '';
 
 	onMount(() => {
 		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
 		mode = $page.url.searchParams.get('mode') || localStorage.getItem("flagmanagerMode") as string || "Flags";
 		puppets = localStorage.getItem("puppets") as string || "";
 		flags = localStorage.getItem("flagmanagerFlags") as string || "";
-		motto = localStorage.getItem("flagmanagerMotto") as string || "";
+		mottos = localStorage.getItem("flagmanagerMottos") as string || "";
 	});
 	onDestroy(() => abortController.abort());
 
@@ -39,6 +39,7 @@
 		stopped = false;
 		progress = '<p>Initiating Flag Manager...</p>';
 		let flagsList = flags.split('\n');
+		let mottosList = mottos.split('\n');
 		let puppetsList = puppets.split('\n');
 		for (let i = 0; i < puppetsList.length; i++) {
 			let nation = puppetsList[i];
@@ -64,12 +65,14 @@
 					const response = await parseXML(
 						`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=motto`, main
 					)
-					if (response.NATION.MOTTO === motto) {
-						progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${nation}" class="underline">${nation}</a> has motto equal to ${motto}!</p>`
-						content += `<tr><td><p>${
-								count + 1
-						}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${nation}">Link to Nation</a></p></td></tr>`
-						count++;
+					for (const motto of mottosList) {
+						if (response.NATION.MOTTO === motto) {
+							progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${nation}" class="underline">${nation}</a> has motto equal to ${motto}!</p>`
+							content += `<tr><td><p>${
+									count + 1
+							}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${nation}">Link to Nation</a></p></td></tr>`
+							count++;
+						}
 					}
 				}
 				await sleep(600);
@@ -95,7 +98,7 @@
 		{#if mode === "Flags"}
 		<Textarea text="Search Flags" bind:bindValue={flags} forValue="flags" required />
 		{:else}
-		<Input text="Motto" bind:bindValue={motto} forValue="mottos" required />
+		<Textarea text="Motto" bind:bindValue={mottos} forValue="mottos" required />
 		{/if}
 		<Buttons downloadButton={true} bind:downloadable={downloadable} bind:content={content} type="html" stopButton={true} bind:stopped={stopped} bind:stoppable={stoppable} name="manager" />
 	</form>
