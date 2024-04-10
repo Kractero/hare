@@ -178,7 +178,7 @@
         <h2 class="text-2xl text-center font-bold tracking-tight">Flags</h2>
         <Select name="Mode" bind:mode={localStorageObject.flagmanagerMode} options={["Flags", "Mottos"]} />
         <Textarea text="Search Flags" bind:bindValue={localStorageObject.flagmanagerFlags} forValue="flags" />
-        <Textarea text="Motto" bind:bindValue={localStorageObject.flagmanagerMottos} forValue="mottos" required />
+        <Textarea text="Motto" bind:bindValue={localStorageObject.flagmanagerMottos} forValue="mottos" />
         <h2 class="text-2xl text-center font-bold tracking-tight">Signal</h2>
 		<Textarea text="Card IDs" bind:bindValue={localStorageObject.signalCardIds} forValue="cardIds"  />
 		<Select name="Behavior" bind:mode={localStorageObject.signalMode} options={["Collection", "Deck", "Asks", "Bids", "Asks and Bids"]} />
