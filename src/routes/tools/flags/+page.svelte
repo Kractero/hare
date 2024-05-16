@@ -48,7 +48,7 @@
 					break;
 				}
 				progress += `<p>Computing ${nation}'s ${mode === "flags" ? "flag" : "motto"}</p>`
-				if (mode === "flags") {
+				if (mode.toLowerCase() === "flags") {
 					const response = await parseXML(
 						`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=flag`, main
 					)
