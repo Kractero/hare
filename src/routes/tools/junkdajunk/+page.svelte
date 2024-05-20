@@ -190,6 +190,10 @@
 							junk = false;
 							reason = `<span class="text-blue-400">category set to gift</span>`
 						}
+						if (rarities.hasOwnProperty(category) && parseFloat(marketValue) > Number(rarities[category])) {
+							junk = false;
+							reason = `<span class="text-blue-400">has mv exceeding threshold</span>`
+						}
 						if (parseFloat(marketValue) > 10) {
 							junk = false;
 							reason = `<span class="text-blue-400">MV over 10</span>`
