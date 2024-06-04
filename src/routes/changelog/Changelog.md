@@ -1,5 +1,20 @@
 # Changelog
 
+## 2024-6-03
+
+### Adjustments
+
+1. JunkDaJunk
+   - Change output of the outputted sheet to indicate the national name and the global number count card.
+
+### Fixes
+
+1. Flag Manager
+   - Tool is no longer pulling the wrong mode parameter.
+
+2. JunkDaJunk
+   - Fix issue where threshold would not actually properly pull from market value.
+
 ## 2024-3-27
 
 ### Features

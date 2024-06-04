@@ -32,7 +32,13 @@
 	let password = '';
 	let owners = '';
 	let cardcount = '';
-	let rarities: {[key: string]: number};
+	let rarities: {[key: string]: number} = {
+		common: 0.5,
+		uncommon: 1,
+		rare: 1,
+		'ultra-rare': 1,
+		epic: 1,
+	};
 	let skipseason = '';
 	let skipexnation = false;
 	let sellContent = '';
@@ -99,6 +105,9 @@
 			progress += `<p>${rarityArr[i][0]} junk threshold at ${rarityArr[i][1]}</p>`;
 		}
 		progress += `<p class="font-bold">Initiating JunkDaJunk...</p>`;
+
+		let currCard = 1;
+		let currSellCard = 1;
 		for (let i = 0; i < puppetList.length; i++) {
 			let currentNationXPin = ""
 			let nation = puppetList[i];
@@ -190,7 +199,7 @@
 							junk = false;
 							reason = `<span class="text-blue-400">category set to gift</span>`
 						}
-						if (rarities.hasOwnProperty(category) && parseFloat(marketValue) > Number(rarities[category])) {
+						if (rarities.hasOwnProperty(category) && parseFloat(marketValue) >= Number(rarities[category])) {
 							junk = false;
 							reason = `<span class="text-blue-400">has mv exceeding threshold</span>`
 						}
@@ -214,9 +223,10 @@
 								...openNewLinkArr,
 								`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
 							];
-							junkHtml += `<tr><td><p>${i + 1} of ${
+							junkHtml += `<tr><td><p>${nation} | ${i + 1} of ${
 								cards.length
-							}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
+							} (${currCard})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
+							currCard = currCard + 1;
 						} else {
 							if (mode === "Gift") {
 								let token = ""
@@ -257,7 +267,8 @@
 												interimSells.push(
 													`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftee}`
 												);
-												sellContent += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftee}\n">Link to Card</a></p></td></tr>\n`;
+												sellContent += `<tr><td><p>${nation} | ${failedGiftCount + 1} (${currSellCard})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftee}\n">Link to Card</a></p></td></tr>\n`;
+												currSellCard = currSellCard + 1;
 												progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}`;
 												failedGiftCount++;
 											}
@@ -277,9 +288,10 @@
 									interimSells.push(
 										`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero`
 									);
-									sellContent += `<tr><td><p>${i + 1} of ${
+									sellContent += `<tr><td><p>${nation} | ${i + 1} of ${
 										cards.length
-									}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero\n">Link to Card</a></p></td></tr>\n`;
+									} (${currSellCard})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}Script=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero\n">Link to Card</a></p></td></tr>\n`;
+									currSellCard = currSellCard + 1;
 								}
 							}
 						}
@@ -293,7 +305,7 @@
 			}
 		}
 		junkHtml = junkHtml + sellContent;
-		progress += `<p>Finished processing</p>`;
+		progress += `<p>Finished processing ${puppetList.length} nations, adding ${currCard + currSellCard} to sheet.</p>`;
 		downloadable = true;
 		stoppable = false;
 	}
@@ -327,12 +339,10 @@
 		<Textarea text="Flag Whitelist" bind:bindValue={flagwhitelist} forValue="flags" />
 		<Input text={`Card Count Threshold`} bind:bindValue={cardcount} forValue="card" />
 		<Input text={`Owner Count Threshold`} bind:bindValue={owners} forValue="owner" />
-		{#if rarities}
-			<div class="flex gap-4 justify-between max-w-lg">
-				<p class="w-24">Rarity Threshold</p>
-				<Rarities bind:rarities={rarities} />
-			</div>
-		{/if}
+		<div class="flex gap-4 justify-between max-w-lg">
+			<p class="w-24">Rarity Threshold</p>
+			<Rarities bind:rarities={rarities} />
+		</div>
 		<Checkbox bind:omittedSeasons={skipseason} />
 		<div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
             <p class="w-24">Skip S1 Exnation</p>
