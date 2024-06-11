@@ -32,8 +32,15 @@
 	let password = '';
 	let owners = '';
 	let cardcount = '';
-	let rarities: {[key: string]: number} = {
+	let raritiesMV: {[key: string]: number} = {
 		common: 0.5,
+		uncommon: 1,
+		rare: 1,
+		'ultra-rare': 1,
+		epic: 1,
+	};
+	let raritiesLowestBid: {[key: string]: number } = {
+		common: 1,
 		uncommon: 1,
 		rare: 1,
 		'ultra-rare': 1,
@@ -53,13 +60,20 @@
 		flagwhitelist = $page.url.searchParams.get('flags')?.replaceAll(',', '\n') || localStorage.getItem("junkdajunkFlagWhitelist") as string || "";
 		finderlist = $page.url.searchParams.get('ids')?.replaceAll(',', '\n') || localStorage.getItem("junkdajunkFinderList") as string || "";
 		giftee = $page.url.searchParams.get('giftee') || localStorage.getItem("finderGiftee") as string || "";
-		rarities = localStorage.getItem("junkdajunkRarities") ? JSON.parse(localStorage.getItem("junkdajunkRarities") as string) : {
+		raritiesMV = localStorage.getItem("junkdajunkRarities") ? JSON.parse(localStorage.getItem("junkdajunkRarities") as string) : {
             common: 0.5,
             uncommon: 1,
             rare: 1,
             'ultra-rare': 1,
             epic: 1,
         }
+		raritiesLowestBid = localStorage.getItem("junkdajunkRaritiesBid") ? JSON.parse(localStorage.getItem("junkdajunkRaritiesBid") as string) : {
+			common: 1,
+			uncommon: 1,
+			rare: 1,
+			'ultra-rare': 1,
+			epic: 1,
+		};
 		owners = $page.url.searchParams.get('owners') || localStorage.getItem("junkdajunkOwnerCount") as string || "";
 		cardcount = $page.url.searchParams.get('cardcount') || localStorage.getItem("junkdajunkCardCount") as string || "";
 		skipseason = $page.url.searchParams.get('skipseason') || localStorage.getItem("junkdajunkOmittedSeasons") as string || "";
@@ -100,9 +114,13 @@
 		if (skipexnation === true) {
 			progress += `<p>Skipping s1 exnations</p>`
 		}
-		const rarityArr = Object.entries(rarities);
+		const rarityArr = Object.entries(raritiesMV);
 		for (let i = 0; i < rarityArr.length; i++) {
 			progress += `<p>${rarityArr[i][0]} junk threshold at ${rarityArr[i][1]}</p>`;
+		}
+		const rarityLowestBidArr = Object.entries(raritiesLowestBid);
+		for (let i = 0; i < rarityLowestBidArr.length; i++) {
+			progress += `<p>${rarityLowestBidArr[i][0]} junk threshold at ${rarityLowestBidArr[i][1]}</p>`;
 		}
 		progress += `<p class="font-bold">Initiating JunkDaJunk...</p>`;
 
@@ -191,17 +209,17 @@
 							junk = false;
 							reason = `<span class="text-blue-400">has less owners than ${owners}</span>`
 						}
-						if (rarities.hasOwnProperty(category) && highestBid > Number(rarities[category])) {
-							junk = false;
-							reason = `<span class="text-blue-400">has high bid</span>`
-						}
-						if (rarities.hasOwnProperty(category) && Number(rarities[category]) === -1) {
+						if (raritiesMV.hasOwnProperty(category) && Number(raritiesMV[category]) === -1) {
 							junk = false;
 							reason = `<span class="text-blue-400">category set to gift</span>`
 						}
-						if (rarities.hasOwnProperty(category) && parseFloat(marketValue) >= Number(rarities[category])) {
+						if (raritiesMV.hasOwnProperty(category) && parseFloat(marketValue) >= Number(raritiesMV[category])) {
 							junk = false;
 							reason = `<span class="text-blue-400">has mv exceeding threshold</span>`
+						}
+						if (raritiesLowestBid.hasOwnProperty(category) && highestBid >= Number(raritiesLowestBid[category])) {
+							junk = false;
+							reason = `<span class="text-blue-400">has high bid</span>`
 						}
 						if (parseFloat(marketValue) > 10) {
 							junk = false;
@@ -229,6 +247,14 @@
 							currCard = currCard + 1;
 						} else {
 							if (mode === "Gift") {
+								let giftto = giftee;
+								findSplit.forEach((findid) => {
+									const matchGiftee = findid[2];
+									if (findid[0] === String(id)) {
+										if (matchGiftee) giftto = matchGiftee
+									}
+								});
+
 								let token = ""
 								await sleep(600);
 								const headers: {[key: string]: string} = {
@@ -237,7 +263,7 @@
 								if (currentNationXPin) headers['X-Pin'] = currentNationXPin
 								else headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
 								const prepare = await fetch(
-									`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`, {headers: headers}
+									`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftto}&mode=prepare&c=giftcard`, {headers: headers}
 								);
 								if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || "";
 								const text = await prepare.text()
@@ -245,7 +271,7 @@
 								token = xml.NATION.SUCCESS
 								await sleep(600);
 								const gift = await fetch(
-									`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
+									`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftto}&mode=execute&c=giftcard&token=${token}`,
 									{
 										headers: {
 											'User-Agent': main,
@@ -265,20 +291,20 @@
 											if (ids[i] === id) {
 												successfulGift = false
 												interimSells.push(
-													`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftee}`
+													`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftto}`
 												);
-												sellContent += `<tr><td><p>${nation} | ${failedGiftCount + 1} (${currSellCard})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftee}\n">Link to Card</a></p></td></tr>\n`;
+												sellContent += `<tr><td><p>${nation} | ${failedGiftCount + 1} (${currSellCard})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}Script=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftto}\n">Link to Card</a></p></td></tr>\n`;
 												currSellCard = currSellCard + 1;
-												progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}`;
+												progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftto}`;
 												failedGiftCount++;
 											}
 										}
 									}
-									if (successfulGift) progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftee}`;
+									if (successfulGift) progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftto}`;
 								} else {
 									progress += `<p>${i + 1}/${
 										cards.length
-									} -> <span class="text-red-400">Failed to gift ${id} to ${giftee}</span>`;
+									} -> <span class="text-red-400">Failed to gift ${id} to ${giftto}</span>`;
 								}
 							} else {
 								progress += `<p>${i + 1}/${
@@ -311,8 +337,9 @@
 	}
 </script>
 
-<ToolContent toolTitle="JunkDaJunk" caption={"An even faster way to junk cards with JavaScript."} author="9003" originalBlurb="rewritten in JS for browser use by Kractero" link="https://github.com/jmikk/Card-Proccessor" additional={`<p class="text-xs mb-4 max-w-sm">
-	The card id whitelist can specify season as well with CARDID,SEASON.
+<ToolContent toolTitle="JunkDaJunk" caption={"An even faster way to junk cards with JavaScript."} author="9003" originalBlurb="rewritten in JS for browser use by Kractero" link="https://github.com/jmikk/Card-Proccessor" additional={`<p class="text-xs mb-4">
+	The card id whitelist can specify season as well with CARDID,SEASON,GIFTTO instead of just CARDID on each line.
+	GIFTTO will overrule the Gift To nation if provided but to providee GIFTTO a season must be provided.
 	The regional whitelist indicates regions to skip when deciding to junk cards. The card count threshold only runs Junking
 	analyzing on specified nations that have over a certain amount of cards. The owner count threshold will indicate cards to skip
 	that have less than the specified amount. The rarity threshold dictates when to skip based on the card's rarity and market value.
@@ -324,9 +351,12 @@
 	</a>
 	userscript when gifting.
 </p>
-<p class="text-xs mb-16">
+<p class="text-xs mb-2">
 	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
-</p>`}/>
+</p>
+<h2 class="text-xl mb-16">
+	Hare does not junk cards, it generates a html file of cards to junk.
+</h2>`}/>
 
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => junkDaJunk(main, puppets)} class="flex flex-col gap-8">
@@ -340,8 +370,12 @@
 		<Input text={`Card Count Threshold`} bind:bindValue={cardcount} forValue="card" />
 		<Input text={`Owner Count Threshold`} bind:bindValue={owners} forValue="owner" />
 		<div class="flex gap-4 justify-between max-w-lg">
-			<p class="w-24">Rarity Threshold</p>
-			<Rarities bind:rarities={rarities} />
+			<p class="w-24">Rarity Market Value Threshold</p>
+			<Rarities bind:rarities={raritiesMV} />
+		</div>
+		<div class="flex gap-4 justify-between max-w-lg">
+			<p class="w-24">Rarity Lowest Bid Value Threshold</p>
+			<Rarities bind:rarities={raritiesLowestBid} />
 		</div>
 		<Checkbox bind:omittedSeasons={skipseason} />
 		<div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">

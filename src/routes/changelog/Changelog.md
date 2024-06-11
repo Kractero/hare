@@ -1,5 +1,18 @@
 # Changelog
 
+## 2024-6-11
+
+### Adjustments
+
+1. JunkDaJunk
+   - Split the logic of junkdajunk's rarity threshold into a market value threshold and bid value threshold.
+   - Now takes a giftto value to specify which whitelisted cards should be gifted to who (same as finder), a season value must be provided for this to be parsed
+
+### Fixes
+
+1. Finder
+   - Finder should no longer report successfully gifted cards as failed if you have multiple copies of it in the gift queue.
+
 ## 2024-6-03
 
 ### Adjustments

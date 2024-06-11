@@ -37,6 +37,13 @@
             'ultra-rare': 1,
             epic: 1,
         },
+        junkdajunkRaritiesBid: {
+            common: 0.5,
+            uncommon: 1,
+            rare: 1,
+            'ultra-rare': 1,
+            epic: 1,
+        },
         finderGiftee: '',
         junkdajunkOwnerCount: '',
         junkdajunkCardCount: '',
@@ -75,6 +82,9 @@
         if (typeof localStorageObject.junkdajunkRarities === "string") {
             localStorageObject.junkdajunkRarities = JSON.parse(localStorageObject.junkdajunkRarities)
         }
+        if (typeof localStorageObject.junkdajunkRaritiesBid === "string") {
+            localStorageObject.junkdajunkRaritiesBid = JSON.parse(localStorageObject.junkdajunkRaritiesBid)
+        }
     });
 
 	async function setConfig() {
@@ -88,6 +98,14 @@
                     if (curr[rarity] !== conf[rarity]) changes.push(key)
                 })
                 localStorage.setItem(key, JSON.stringify(localStorageObject.junkdajunkRarities))
+            } else if (key === "junkdajunkRaritiesBid") {
+                const rarities = localStorage.getItem(key);
+                const curr = rarities ? JSON.parse(rarities) : {};
+                const conf = localStorageObject.junkdajunkRaritiesBid
+                Object.keys(curr).forEach(rarity => {
+                    if (curr[rarity] !== conf[rarity]) changes.push(key)
+                })
+                localStorage.setItem(key, JSON.stringify(localStorageObject.junkdajunkRaritiesBid))
             } else {
                 if (localStorage.getItem(key) !== String(localStorageObject[key])) {
                     changes.push(key)
@@ -165,6 +183,7 @@
         <Input text="Card Count Threshold" bind:bindValue={localStorageObject.junkdajunkCardCount} forValue="card" />
         <Input text="Owner Threshold" bind:bindValue={localStorageObject.junkdajunkOwnerCount} forValue="owner" />
         <Rarities bind:rarities={localStorageObject.junkdajunkRarities} />
+        <Rarities bind:rarities={localStorageObject.junkdajunkRaritiesBid} />
         <Checkbox bind:omittedSeasons={localStorageObject.junkdajunkOmittedSeasons} />
 		<div class="flex flex-col lg:flex-row gap-4 justify-between max-w-lg">
             <p class="w-24">Skip S1 Exnation</p>
