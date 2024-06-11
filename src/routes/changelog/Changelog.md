@@ -5,7 +5,7 @@
 ### Adjustments
 
 1. JunkDaJunk
-   - Split the logic of junkdajunk's rarity threshold into a market value threshold and bid value threshold.
+   - Split the logic of junkdajunk's rarity threshold into a market value threshold and bid value threshold. The bid value threshold will inherit the market value threshold for legacy reasons so people are not screwed over if they are unaware of the change.
    - Now takes a giftto value to specify which whitelisted cards should be gifted to who (same as finder), a season value must be provided for this to be parsed
 
 ### Fixes

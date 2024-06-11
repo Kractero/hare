@@ -38,11 +38,11 @@
             epic: 1,
         },
         junkdajunkRaritiesBid: {
-            common: 0.5,
-            uncommon: 1,
-            rare: 1,
-            'ultra-rare': 1,
-            epic: 1,
+            common: undefined,
+            uncommon: undefined,
+            rare: undefined,
+            'ultra-rare': undefined,
+            epic: undefined,
         },
         finderGiftee: '',
         junkdajunkOwnerCount: '',
@@ -85,9 +85,14 @@
         if (typeof localStorageObject.junkdajunkRaritiesBid === "string") {
             localStorageObject.junkdajunkRaritiesBid = JSON.parse(localStorageObject.junkdajunkRaritiesBid)
         }
+
+        // Fallback for junkdajunkRaritiesBid if not defined
+        if (!localStorage.getItem("junkdajunkRaritiesBid")) {
+            localStorageObject.junkdajunkRaritiesBid = localStorageObject.junkdajunkRarities;
+        }
     });
 
-	async function setConfig() {
+    async function setConfig() {
         const changes = []
         for (const key in localStorageObject) {
             if (key === "junkdajunkRarities") {
@@ -102,10 +107,18 @@
                 const rarities = localStorage.getItem(key);
                 const curr = rarities ? JSON.parse(rarities) : {};
                 const conf = localStorageObject.junkdajunkRaritiesBid
+
+                // Use rarities from junkdajunkRarities if not set
+                Object.keys(conf).forEach(rarity => {
+                    if (!curr[rarity]) {
+                        curr[rarity] = localStorageObject.junkdajunkRarities[rarity];
+                    }
+                });
+
                 Object.keys(curr).forEach(rarity => {
                     if (curr[rarity] !== conf[rarity]) changes.push(key)
                 })
-                localStorage.setItem(key, JSON.stringify(localStorageObject.junkdajunkRaritiesBid))
+                localStorage.setItem(key, JSON.stringify(conf))
             } else {
                 if (localStorage.getItem(key) !== String(localStorageObject[key])) {
                     changes.push(key)
