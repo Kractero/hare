@@ -3,7 +3,13 @@
     {
       "source": "/(.*)",
       "destination": "https://hare.kractero.com/$1",
-      "permanent": true
+      "permanent": true,
+      "has": [
+        {
+          "type": "host",
+          "value": "hare.vercel.app"
+        }
+      ]
     }
   ]
 }
