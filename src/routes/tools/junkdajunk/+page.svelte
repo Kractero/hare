@@ -67,13 +67,17 @@
             'ultra-rare': 1,
             epic: 1,
         }
-		raritiesLowestBid = localStorage.getItem("junkdajunkRaritiesBid") ? JSON.parse(localStorage.getItem("junkdajunkRaritiesBid") as string) : {
-			common: 1,
-			uncommon: 1,
-			rare: 1,
-			'ultra-rare': 1,
-			epic: 1,
-		};
+		raritiesLowestBid = localStorage.getItem("junkdajunkRaritiesBid")
+			? JSON.parse(localStorage.getItem("junkdajunkRaritiesBid") as string)
+			: localStorage.getItem("junkdajunkRarities")
+				? JSON.parse(localStorage.getItem("junkdajunkRarities") as string)
+				: {
+					common: 0.5,
+					uncommon: 1,
+					rare: 1,
+					'ultra-rare': 1,
+					epic: 1,
+        };
 		owners = $page.url.searchParams.get('owners') || localStorage.getItem("junkdajunkOwnerCount") as string || "";
 		cardcount = $page.url.searchParams.get('cardcount') || localStorage.getItem("junkdajunkCardCount") as string || "";
 		skipseason = $page.url.searchParams.get('skipseason') || localStorage.getItem("junkdajunkOmittedSeasons") as string || "";
