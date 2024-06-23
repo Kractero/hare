@@ -15,6 +15,7 @@
 	import ToolContent from '$lib/component/ToolContent.svelte';
 	import OpenButton from '$lib/component/OpenButton.svelte';
 	import { page } from '$app/stores';
+	import { beforeUnload } from '$lib/helpers/beforeunload';
 
 	let progress: "";
 	let openNewLinkArr: Array<string> = [];
@@ -87,6 +88,7 @@
 
 	async function junkDaJunk(main: string, puppets: string) {
 		pushHistory(`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ""}${owners ? `&owners=${owners}` : ""}${cardcount ? `&cardcount=${cardcount}` : ""}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ""}${flagwhitelist ? `&flags=${flagwhitelist.replaceAll('\n', ',')}` : ""}${finderlist ? `&ids=${finderlist.replaceAll('\n', ',')}` : ""}${skipseason ? `&skipseason=${skipseason}` : ""}${skipexnation ? `&skipexnation=${skipexnation}` : ""}`)
+		window.addEventListener('beforeunload', beforeUnload);
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
@@ -338,6 +340,7 @@
 		progress += `<p>Finished processing ${puppetList.length} nations, adding ${currCard + currSellCard} to sheet.</p>`;
 		downloadable = true;
 		stoppable = false;
+		window.removeEventListener('beforeunload', beforeUnload);
 	}
 </script>
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2024-6-23
+
+### Adjustments
+
+1. JunkDaJunk
+   - Test having junkdajunk attempt to prompt the user to not close it whilst it is being run.
+
 ## 2024-6-11
 
 ### Adjustments
