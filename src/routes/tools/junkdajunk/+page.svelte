@@ -51,6 +51,7 @@
 	let skipexnation = false;
 	let sellContent = '';
 	let finderlist = '';
+	let jdjtransfer = '-1';
 
 	onMount(() => {
 		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
@@ -83,6 +84,7 @@
 		cardcount = $page.url.searchParams.get('cardcount') || localStorage.getItem("junkdajunkCardCount") as string || "";
 		skipseason = $page.url.searchParams.get('skipseason') || localStorage.getItem("junkdajunkOmittedSeasons") as string || "";
 		skipexnation = ($page.url.searchParams.get('skipexnation') === 'true') || (localStorage.getItem("junkdajunkExnation") === 'true') || false;
+		jdjtransfer = $page.url.searchParams.get('jdjtransfer') || (localStorage.getItem('junkdajunkTransferBank') as string) || '-1';
 	});
 	onDestroy(() => abortController.abort());
 
@@ -147,7 +149,12 @@
 			try {
 				await sleep(600);
 				progress += `<p class="font-semibold">Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`;
-				const xmlDocument = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main);
+				const xmlDocument = await parseXML(`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck+info`, main);
+				let nationalBank = xmlDocument.CARDS.INFO.BANK;
+				if (Number(jdjtransfer) !== -1 && nationalBank >= Number(jdjtransfer)) {
+					progress += `<p>Skipping ${nation} as they exceed <span class="text-blue-400">${jdjtransfer}</span> bank.</p>`;
+					continue;
+				}
 				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD;
 					cards = cards ? Array.isArray(cards) ? cards : [cards] : []
 				if (cards && cards.length > 0 && cards.length > Number(cardcount)) {
@@ -350,6 +357,7 @@
 	The regional whitelist indicates regions to skip when deciding to junk cards. The card count threshold only runs Junking
 	analyzing on specified nations that have over a certain amount of cards. The owner count threshold will indicate cards to skip
 	that have less than the specified amount. The rarity threshold dictates when to skip based on the card's rarity and market value.
+	The maximum bank threshold tells JDJ to skip the nation if it exceeds a certain bank amount (-1 means don't skip at any amount).
 </p>
 <p class="mb-2">
 	For optimal use, you should use the
@@ -389,6 +397,12 @@
             <p class="w-24">Skip S1 Exnation</p>
 			<input on:change={() => skipexnation = !skipexnation} checked={skipexnation} class="m-1" type="checkbox" />
 		</div>
+		<Input
+			text="Maximum Bank Threshold"
+			bind:bindValue={jdjtransfer}
+			forValue="jdjtransfer"
+			required={true}
+		/>
         <Select name="Behavior" bind:mode={mode} options={['Gift', 'Sell', 'Exclude']} />
 		<Buttons stopButton={true} bind:stopped={stopped} bind:stoppable={stoppable} downloadButton={true} bind:downloadable={downloadable} bind:content={junkHtml} name="junkDaJunk" >
 			<OpenButton bind:counter={counter} bind:progress={progress} bind:openNewLinkArr={openNewLinkArr} />

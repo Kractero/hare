@@ -1,5 +1,12 @@
 # Changelog
 
+## 2024-7-4
+
+### Features
+
+1. JunkDaJunk
+   - New option, maximum bank threshold, that lets you skip nations that have bank over a certain amount. -1 means don't skip.
+
 ## 2024-6-23
 
 ### Adjustments

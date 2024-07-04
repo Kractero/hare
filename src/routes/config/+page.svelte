@@ -65,7 +65,8 @@
         deckDuplicates: 'Skip',
         transferBank: "10",
         transferMode: "Bank",
-        orphansDeck: ""
+        orphansDeck: "",
+        junkdajunkTransferBank: "-1",
     };
 
     onMount(() => {
@@ -202,6 +203,12 @@
             <p class="w-24">Skip S1 Exnation</p>
 			<input on:change={() => localStorageObject.junkdajunkExnation = !localStorageObject.junkdajunkExnation} checked={localStorageObject.junkdajunkExnation} class="m-1" type="checkbox" />
 		</div>
+        <Input
+            text="Maximum Bank Threshold"
+            bind:bindValue={localStorageObject.junkdajunkTransferBank}
+            forValue="jdjtransfer"
+            required={true}
+        />
         <h2 class="text-2xl text-center font-bold tracking-tight">Finder</h2>
         <Textarea text="Card IDs to Find" bind:bindValue={localStorageObject.finderList} forValue="find" />
         <h2 class="text-2xl text-center font-bold tracking-tight">Approval</h2>
