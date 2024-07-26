@@ -54,10 +54,10 @@
 					)
 					for (const flag of flagsList) {
 						if (response.NATION.FLAG.includes(flag)) {
-							progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${nation}" class="underline">${nation}</a> has flag containing ${flag}!</p>`
+							progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${nation}/User_agent=${main}/Script=Flag_Manager/Generated_by=Flag_Manager/Author_discord=scrambleds/Author_main_nation=Kractero/" class="underline">${nation}</a> has flag containing ${flag}!</p>`
 							content += `<tr><td><p>${
 									count + 1
-							}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${nation}">Link to Nation</a></p></td></tr>`
+							}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${nation}/User_agent=${main}/Script=Flag_Manager/Generated_by=Flag_Manager/Author_discord=scrambleds/Author_main_nation=Kractero/">Link to Nation</a></p></td></tr>`
 							count++;
 						}
 					}
@@ -67,10 +67,10 @@
 					)
 					for (const motto of mottosList) {
 						if (response.NATION.MOTTO === motto) {
-							progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${nation}" class="underline">${nation}</a> has motto equal to ${motto}!</p>`
+							progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${nation}/User_agent=${main}/Script=Flag_Manager/Generated_by=Flag_Manager/Author_discord=scrambleds/Author_main_nation=Kractero/" class="underline">${nation}</a> has motto equal to ${motto}!</p>`
 							content += `<tr><td><p>${
 									count + 1
-							}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${nation}">Link to Nation</a></p></td></tr>`
+							}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${nation}/User_agent=${main}/Script=Flag_Manager/Generated_by=Flag_Manager/Author_discord=scrambleds/Author_main_nation=Kractero/">Link to Nation</a></p></td></tr>`
 							count++;
 						}
 					}

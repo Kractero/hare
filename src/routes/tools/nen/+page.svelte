@@ -47,7 +47,7 @@
 			.forEach((member: string) => {
 				progress += `<p><a class="underline" href="https://${
 					localStorage.getItem('connectionUrl') || 'www'
-				}.nationstates.net/nation=${member}">${member}</a> is not endorsing ${nennation}.</p>`;
+				}.nationstates.net/nation=${member}/User_agent=${main}/Script=Nen/Generated_by=Nen/Author_discord=scrambleds/Author_main_nation=Kractero/">${member}</a> is not endorsing ${nennation}.</p>`;
 			});
 		progress += `<p>Finished processing</p>`;
 	}

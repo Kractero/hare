@@ -25,7 +25,7 @@
 		const members = xml.WA.MEMBERS.split(',');
 		puppetsList.forEach(puppet => {
 			if (members.includes(puppet.toLowerCase().replace(' ', '_'))) {
-				progress = `<p>I found your WA on <a href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${puppet}">${puppet}</a>.</p>`;
+				progress = `<p>I found your WA on <a href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${puppet}User_agent=${main}/Script=Whereswa/Generated_by=Whereswa/Author_discord=scrambleds/Author_main_nation=Kractero/">${puppet}</a>.</p>`;
 			}
 		})
 		stoppable = false;

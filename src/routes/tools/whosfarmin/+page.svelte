@@ -49,7 +49,7 @@
     } else {
       Object.keys(ownerList).forEach(owner => {
         progress += `<p><a class="underline" target="_blank" rel="noreferrer noopener"
-            href="https://nationstates.net/nation=${owner}">${owner}</a> is currently farming!</p>\n`
+            href="https://nationstates.net/nation=${owner}/User_agent=${main}/Script=Whosfarmin/Generated_by=Whosfarmin/Author_discord=scrambleds/Author_main_nation=Kractero/">${owner}</a> is currently farming!</p>\n`
       });
     }
 	}

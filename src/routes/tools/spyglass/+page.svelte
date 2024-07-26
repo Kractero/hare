@@ -72,7 +72,7 @@
 
 			const regionObject: { [key: string]: any } = {
 				Regions: name,
-				'Region Link': `https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/region=${name}`,
+				'Region Link': `https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/region=${name}User_agent=${main}/Script=Spyglass/Generated_by=Spyglass/Author_discord=scrambleds/Author_main_nation=Kractero/`,
 				'# Nations': nationCount,
 				'Tot. Nations': 0,
 				'Minor Upd. (est)': '',

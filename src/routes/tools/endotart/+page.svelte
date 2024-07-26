@@ -95,22 +95,22 @@
 
 			if (NAME && ENDORSEMENTS) {
 				if (endotarter.toLowerCase().replaceAll(' ', '_') === String(NAME).toLowerCase().replaceAll(' ', '_')) {
-					progress += `<p class="text-yellow-400 font-extralight">${i+1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is the endotart nation.</p>`
+					progress += `<p class="text-yellow-400 font-extralight">${i+1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}/User_agent=${main}/Script=Endotart/Generated_by=Endotart/Author_discord=scrambleds/Author_main_nation=Kractero/"}>${regionalWA[i]}</a> is the endotart nation.</p>`
 				} else if (limit) {
 					if (whiteList.includes(regionalWA[i])) {
-						progress += `<p class="text-yellow-400 font-extralight">${i+1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is in your immune nations.</p>`
+						progress += `<p class="text-yellow-400 font-extralight">${i+1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}/User_agent=${main}/Script=Endotart/Generated_by=Endotart/Author_discord=scrambleds/Author_main_nation=Kractero/"}>${regionalWA[i]}</a> is in your immune nations.</p>`
 					} else if (ENDORSEMENTS.length < Number(limit) && !ENDORSEMENTS.includes(endotarter.toLowerCase().replaceAll(' ', '_')) && regionalWA[i] !== endotarter.toLowerCase().replaceAll(' ', '_')) {
-						progress += `<p class="text-green-400">${i+1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is not being endorsed by ${endotarter}.</p>`
+						progress += `<p class="text-green-400">${i+1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}/User_agent=${main}/Script=Endotart/Generated_by=Endotart/Author_discord=scrambleds/Author_main_nation=Kractero/"}>${regionalWA[i]}</a> is not being endorsed by ${endotarter}.</p>`
 					} else if (ENDORSEMENTS.length > Number(limit)) {
-						progress += `<p class="text-red-400 font-extralight">${i+1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> has more than ${limit} endorsements.</p>`
+						progress += `<p class="text-red-400 font-extralight">${i+1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}/User_agent=${main}/Script=Endotart/Generated_by=Endotart/Author_discord=scrambleds/Author_main_nation=Kractero/"}>${regionalWA[i]}</a> has more than ${limit} endorsements.</p>`
 					} else {
-						progress += `<p class="text-red-400 font-extralight">${i+1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is already endorsed by ${endotarter}.</p>`
+						progress += `<p class="text-red-400 font-extralight">${i+1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}/User_agent=${main}/Script=Endotart/Generated_by=Endotart/Author_discord=scrambleds/Author_main_nation=Kractero/"}>${regionalWA[i]}</a> is already endorsed by ${endotarter}.</p>`
 					}
 				} else {
 					if (!ENDORSEMENTS.includes(endotarter.toLowerCase().replaceAll(' ', '_')) && regionalWA[i] !== endotarter.toLowerCase().replaceAll(' ', '_')) {
-						progress += `<p class="text-green-400">${i+1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is not being endorsed by ${endotarter}.</p>`
+						progress += `<p class="text-green-400">${i+1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}/User_agent=${main}/Script=Endotart/Generated_by=Endotart/Author_discord=scrambleds/Author_main_nation=Kractero/"}>${regionalWA[i]}</a> is not being endorsed by ${endotarter}.</p>`
 					} else {
-						progress += `<p class="text-red-400 font-extralight">${i+1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}"}>${regionalWA[i]}</a> is already endorsed by ${endotarter}.</p>`
+						progress += `<p class="text-red-400 font-extralight">${i+1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}/User_agent=${main}/Script=Endotart/Generated_by=Endotart/Author_discord=scrambleds/Author_main_nation=Kractero/"}>${regionalWA[i]}</a> is already endorsed by ${endotarter}.</p>`
 					}
 				}
 			}

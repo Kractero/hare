@@ -100,7 +100,7 @@
     });
 
     cardsNotInCollection.forEach(card => {
-      content += `<tr><td><p>S${card.SEASON} ${card.CARDID}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/card=${card.CARDID}/season=${card.SEASON}">Link to Card</a></p></td></tr>\n`;
+      content += `<tr><td><p>S${card.SEASON} ${card.CARDID}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/card=${card.CARDID}/season=${card.SEASON}/User_agent=${main}/Script=Orphans/Generated_by=Orphans/Author_discord=scrambleds/Author_main_nation=Kractero/">Link to Card</a></p></td></tr>\n`;
     })
 
 		progress += `<p>Found ${cardsNotInCollection.length} cards not in a collection</p>`;

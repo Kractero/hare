@@ -67,11 +67,11 @@
 					issueIds.forEach((issue) => {
 						openNewLinkArr = [
 							...openNewLinkArr,
-							`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${main}/Script=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/`
+							`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${main}/Script=Gotissues/Generated_by=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/`
 						];
 						issuesContent += `<tr><td><p>${
 							issuesCount + 1
-						}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${main}/Script=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/">Link to Issue</a></p></td></tr>\n`;
+						}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${main}/Script=Gotissues/Generated_by=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/">Link to Issue</a></p></td></tr>\n`;
 						issuesCount++;
 					});
 				}
@@ -82,16 +82,16 @@
 							if (mode === "Packs") {
 								openNewLinkArr = [
 									...openNewLinkArr,
-									`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
+									`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none/User_agent=${main}/Script=Gotissues/Generated_by=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
 								];
 							} else {
 								interimPacks.push(
-									`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
+									`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none/User_agent=${main}/Script=Gotissues/Generated_by=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
 								);
 							}
 							packContent += `<tr><td><p>${
 								packsCount + 1
-							}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1">Link to Pack</a></p></td></tr>\n`;
+							}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Generated_by=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1">Link to Pack</a></p></td></tr>\n`;
 							packsCount++;
 						}
 					}

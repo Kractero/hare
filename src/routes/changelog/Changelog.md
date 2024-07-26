@@ -1,5 +1,11 @@
 # Changelog
 
+## 2024-7-26
+
+### Fixes
+
+1. Tools that generate clickable links should include Generated_By.
+
 ## 2024-7-4
 
 ### Features

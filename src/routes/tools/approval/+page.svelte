@@ -61,7 +61,7 @@
             progress += `<p class="text-red-400"><a class="underline" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${delegate}">${delegate}</a> is NOT approving!</p>`
             content += `<tr><td><p>${
                 i + 1
-            }/${notApproving.length}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${delegate}//User_agent=${main}/Script=ApprovalListBrowser/Author_main_nation=Kractero/">Link to Nation</a></p></td></tr>\n`;
+            }/${notApproving.length}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${delegate}//User_agent=${main}/Script=ApprovalListBrowser/Generated_by=ApprovalListBrowser/Author_main_nation=Kractero/">Link to Nation</a></p></td></tr>\n`;
         })
         approving.forEach(delegate => {
             progress += `<p class="text-green-400"><a class="underline" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/nation=${delegate}">${delegate}</a> is approving!</p>`

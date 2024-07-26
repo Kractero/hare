@@ -90,7 +90,7 @@
             noMatch.push(card)
             content += `<tr><td><p>${
                 cardsCount + 1
-            }</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/card=${id}/season=${season}">Link to Card</a></p></td></tr>\n`
+            }</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/card=${id}/season=${season}User_agent=${main}/Script=Signal/Generated_by=Signal/Author_discord=scrambleds/Author_main_nation=Kractero/">Link to Card</a></p></td></tr>\n`
             cardsCount++;
             progress += `<p class="text-green-400">Card ${id} from season ${season} not found within the provided parameters.</p>`
         });
