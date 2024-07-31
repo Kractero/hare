@@ -47,7 +47,7 @@
 				if (abortController.signal.aborted || stopped) {
 					break;
 				}
-				progress += `<p>Computing ${nation}'s ${mode === "flags" ? "flag" : "motto"}</p>`
+				progress += `<p>Computing ${nation}'s ${mode === "flags" ? "flags" : "motto"}</p>`
 				if (mode.toLowerCase() === "flags") {
 					const response = await parseXML(
 						`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=flag`, main
