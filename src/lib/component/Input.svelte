@@ -4,13 +4,14 @@
     export let forValue: string;
     export let required: boolean = false;
     export let disabled: boolean = false;
+    export let subTitle: string = "";
 </script>
 
 <div class="flex gap-4 justify-between max-w-lg">
     <label class="w-24" for={forValue}>
         {text}
-        {#if text === "User Agent"}
-            <span class="text-xs">(Main nation)</span>
+        {#if subTitle}
+            <span class="text-xs">{subTitle}</span>
         {/if}
     </label>
     <input

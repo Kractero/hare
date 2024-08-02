@@ -7,7 +7,7 @@
 	export let password: string = '';
 </script>
 
-<Input text={`User Agent`} bind:bindValue={main} forValue="main" required />
+<Input text={`User Agent`} bind:bindValue={main} forValue="main" subTitle="(Main Nation)" required />
 <Textarea text="Puppets" bind:bindValue={puppets} forValue="pup" required />
 {#if authenticated}
 	<div class="flex gap-4 justify-between max-w-lg">
