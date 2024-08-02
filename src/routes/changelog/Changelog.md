@@ -1,5 +1,13 @@
 # Changelog
 
+## 2024-8-01
+
+### Features
+
+1. Gold Retriever
+   - An option to include a column for a transfer card (links to gift=1), needs to be passed as id,season.
+   - Added a row for legendaries (mainly for catching low MV legs like AOCI)
+
 ## 2024-7-26
 
 ### Fixes
