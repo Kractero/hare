@@ -159,7 +159,7 @@
 													...openNewLinkArr,
 													`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}/Script=Finder/Generated_by=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${currGiftee}`
 												];
-												junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}/Script=Finder/Generated_by=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${currGiftee}\n">Link to Card</a></p></td></tr>\n`;
+												junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}/Script=Finder/Generated_by=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${currGiftee}">Link to Card</a></p></td></tr>\n`;
 												progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${currGiftee}`;
 												failedGiftCount++;
 											}
@@ -175,7 +175,7 @@
 										...openNewLinkArr,
 										`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}/Script=Finder/Generated_by=Finder/Author_discord=scrambleds/Author_main_nation=Kractero`
 									];
-									junkHtml += `<tr><td><p>${findCount + 1}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}/Script=Finder/Generated_by=Finder/Author_discord=scrambleds/Author_main_nation=Kractero\n">Link to Card</a></p></td></tr>\n`;
+									junkHtml += `<tr><td><p>${findCount + 1}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}/Script=Finder/Generated_by=Finder/Author_discord=scrambleds/Author_main_nation=Kractero">Link to Card</a></p></td></tr>\n`;
 								}
 								findCount++;
 							}

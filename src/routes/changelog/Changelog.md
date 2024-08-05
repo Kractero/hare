@@ -1,5 +1,12 @@
 # Changelog
 
+## 2024-8-04
+
+### Fixes
+
+1. Finder/JunkDaJunk
+   - Remove confoundingly stupid \n characters splitting each tr from the resulting html sheet.
+
 ## 2024-8-01
 
 ### Features

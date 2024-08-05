@@ -256,7 +256,7 @@
 							];
 							junkHtml += `<tr><td><p>${nation} | ${i + 1} of ${
 								cards.length
-							} (${currCard})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1\n">Link to Card</a></p></td></tr>\n`;
+							} (${currCard})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1">Link to Card</a></p></td></tr>\n`;
 							currCard = currCard + 1;
 						} else {
 							if (mode === "Gift") {
@@ -306,7 +306,7 @@
 												interimSells.push(
 													`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftto}`
 												);
-												sellContent += `<tr><td><p>${nation} | ${failedGiftCount + 1} (${currSellCard})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftto}\n">Link to Card</a></p></td></tr>\n`;
+												sellContent += `<tr><td><p>${nation} | ${failedGiftCount + 1} (${currSellCard})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftto}">Link to Card</a></p></td></tr>\n`;
 												currSellCard = currSellCard + 1;
 												progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftto}`;
 												failedGiftCount++;
@@ -329,7 +329,7 @@
 									);
 									sellContent += `<tr><td><p>${nation} | ${i + 1} of ${
 										cards.length
-									} (${currSellCard})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero\n">Link to Card</a></p></td></tr>\n`;
+									} (${currSellCard})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero">Link to Card</a></p></td></tr>\n`;
 									currSellCard = currSellCard + 1;
 								}
 							}
