@@ -1,5 +1,12 @@
 # Changelog
 
+## 2024-8-06
+
+### Creator
+
+1. Creator
+   - Creator asks for user agent now and also pulls the nation name properly. This pulling should be adjusted on the userscript to be honest but its harder to get that updated and pushed out so moving the parameter to the end will suffice.
+
 ## 2024-8-04
 
 ### Fixes

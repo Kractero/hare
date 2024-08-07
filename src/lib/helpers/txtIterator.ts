@@ -21,7 +21,7 @@ export async function nsIterator(puppets: string, mode: string, main?: string) {
 		if (mode === 'Creator') {
 			buildString += `<tr><td><p>${i + 1} of ${
 				puppetsList.length
-			}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/page=create_nation/name=${nation}/User_agent=${main}/Script=Creator/Generated_by=Creator/Author_discord=scrambleds/Author_main_nation=Kractero/nation=${nation_formatted}">Link to Nation</a></p></td></tr>`;
+			}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=create_nation/User_agent=${main}/Script=Creator/Generated_by=Creator/Author_discord=scrambleds/Author_main_nation=Kractero/nation=${nation}">Link to Nation</a></p></td></tr>`;
 		}
 	}
 	return mode === 'Container Rules' ? [containerise_nation, containerise_container] : buildString;
