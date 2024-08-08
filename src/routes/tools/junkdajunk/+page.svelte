@@ -361,7 +361,7 @@
 </p>
 <p class="mb-2">
 	For optimal use, you should use the
-	<a class="underline" href="https://github.com/Kractero/userscripts/blob/main/gift.user.js" target="_blank" rel="noreferrer noopener">
+	<a class="underline" href="https://github.com/Kractero/userscripts/blob/main/finderJDJDefault.user.js" target="_blank" rel="noreferrer noopener">
 		finder gift default
 	</a>
 	userscript when gifting.
