@@ -209,7 +209,7 @@
             text="Maximum Bank Threshold"
             bind:bindValue={localStorageObject.junkdajunkTransferBank}
             forValue="jdjtransfer"
-            required={true}
+            required={false}
         />
         <h2 class="text-2xl text-center font-bold tracking-tight">Finder</h2>
         <Textarea text="Card IDs to Find" bind:bindValue={localStorageObject.finderList} forValue="find" />
