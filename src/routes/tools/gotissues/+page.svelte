@@ -23,11 +23,13 @@
 	let puppets = '';
 	let password = '';
 	let mode =  '';
+	let issueCount = "5";
 	onMount(() => {
 		main = $page.url.searchParams.get('main') || localStorage.getItem("main") as string || "";
 		puppets = localStorage.getItem("gotissuesPuppets") as string || "";
 		password = localStorage.getItem("password") as string || "";
 		mode = $page.url.searchParams.get('mode') || localStorage.getItem("gotissuesMode") as string || "";
+		issueCount = $page.url.searchParams.get('issueCount') || localStorage.getItem("gotissuesIssueCount") as string || "5";
 	});
 	onDestroy(() => abortController.abort());
 
@@ -64,16 +66,17 @@
 					let issueIds: Array<string> = []
 					if (!Array.isArray(issues)) issueIds.push(issues['@_id'])
 					else issueIds = issues.map((issue) => issue['@_id'])
-					issueIds.forEach((issue) => {
+					for (let i = 0; i < Number(issueCount); i++) {
+						let issue = issueIds[i]
 						openNewLinkArr = [
 							...openNewLinkArr,
-							`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${main}/Script=Gotissues/Generated_by=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/`
+							`https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none/User_agent=${main}/Script=Gotissues/Generated_by=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/`
 						];
 						issuesContent += `<tr><td><p>${
 							issuesCount + 1
-						}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none//User_agent=${main}/Script=Gotissues/Generated_by=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/">Link to Issue</a></p></td></tr>\n`;
+						}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none/User_agent=${main}/Script=Gotissues/Generated_by=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/">Link to Issue</a></p></td></tr>\n`;
 						issuesCount++;
-					});
+					}
 				}
 				if (mode === "Both" || mode === "Packs") {
 					const packs = xmlObj.NATION.PACKS;
@@ -91,7 +94,7 @@
 							}
 							packContent += `<tr><td><p>${
 								packsCount + 1
-							}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none//User_agent=${main}/Script=Gotissues/Generated_by=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1">Link to Pack</a></p></td></tr>\n`;
+							}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none/User_agent=${main}/Script=Gotissues/Generated_by=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1">Link to Pack</a></p></td></tr>\n`;
 							packsCount++;
 						}
 					}
@@ -128,6 +131,7 @@
 	>
 		<InputCredentials bind:main bind:puppets bind:password authenticated={true} />
 		<Select name="Issues and Packs" bind:mode={mode} options={["Both", "Issues", "Packs"]} />
+		<Select name="Issues Count" bind:mode={issueCount} options={["1", "2", "3", "4", "5"]} />
 		<Buttons stopButton={true} bind:stopped={stopped} bind:stoppable={stoppable} downloadButton={true} bind:downloadable={downloadable} bind:content={issuesContent} name="gotIssues" >
 			<OpenButton bind:counter={counter} bind:progress={progress} bind:openNewLinkArr={openNewLinkArr} />
 		</Buttons>

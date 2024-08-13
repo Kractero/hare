@@ -1,8 +1,22 @@
 # Changelog
 
+## 2024-8-13
+
+### Features
+
+1. gotIssues
+   - You can now set the amount of issues to be added per call, default to 5.
+
+## 2024-8-10
+
+### Fixes
+
+1. JunkDaJunk
+   - Remove the required attribute and set default values to junkdajunk rarities bid.
+
 ## 2024-8-06
 
-### Creator
+### Features
 
 1. Creator
    - Creator asks for user agent now and also pulls the nation name properly. This pulling should be adjusted on the userscript to be honest but its harder to get that updated and pushed out so moving the parameter to the end will suffice.
@@ -65,6 +79,7 @@
 ### Fixes
 
 1. Flag Manager
+
    - Tool is no longer pulling the wrong mode parameter.
 
 2. JunkDaJunk

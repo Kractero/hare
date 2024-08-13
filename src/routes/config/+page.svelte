@@ -16,6 +16,7 @@
         password: '',
         gotissuesPuppets: '',
         gotissuesMode: 'Both',
+        gotissuesIssuesCount: '5',
         rocTop: '100',
         rocDays: '30',
         rocSpecific: '',
@@ -174,6 +175,7 @@
         <Textarea text="Puppets" bind:bindValue={localStorageObject.gotissuesPuppets} forValue="gipup" />
         <h2 class="text-2xl text-center font-bold tracking-tight">gotIssues</h2>
         <Select name="Behavior" bind:mode={localStorageObject.gotissuesMode} options={["Both", "Issues", "Packs"]} />
+        <Select name="Issues Count" bind:mode={localStorageObject.gotissuesIssueCount} options={["1", "2", "3", "4", "5"]} />
         <h2 class="text-2xl text-center font-bold tracking-tight">Rate of Change</h2>
         <Input text="Top {localStorageObject.rocTop}" bind:bindValue={localStorageObject.rocTop} forValue="top" />
         <Input text="Over {localStorageObject.rocDays} Days" bind:bindValue={localStorageObject.rocDays} forValue="days" />
