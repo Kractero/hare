@@ -29,16 +29,16 @@
 		puppets = localStorage.getItem("gotissuesPuppets") as string || "";
 		password = localStorage.getItem("password") as string || "";
 		mode = $page.url.searchParams.get('mode') || localStorage.getItem("gotissuesMode") as string || "";
-		issueCount = $page.url.searchParams.get('issueCount') || localStorage.getItem("gotissuesIssueCount") as string || "5";
+		issueCount = $page.url.searchParams.get('count') || localStorage.getItem("gotissuesIssueCount") as string || "5";
 	});
 	onDestroy(() => abortController.abort());
 
 	async function gotIssues() {
-		pushHistory(`?main=${main}&mode=${mode}`)
+		pushHistory(`?main=${main}&mode=${mode}&count=${issueCount}`)
 		downloadable = false;
 		stoppable = true;
 		stopped = false;
-		progress = `<p class="font-bold">Initiating gotIssues...mode set to ${mode}</p>`;
+		progress = `<p class="font-bold">Initiating gotIssues...mode set to ${mode} for ${issueCount} issues</p>`;
 		openNewLinkArr = [];
 		issuesContent = "";
 		let puppetList = puppets.split('\n');
@@ -66,7 +66,7 @@
 					let issueIds: Array<string> = []
 					if (!Array.isArray(issues)) issueIds.push(issues['@_id'])
 					else issueIds = issues.map((issue) => issue['@_id'])
-					for (let i = 0; i < Number(issueCount); i++) {
+					for (let i = 0; i < Math.min(issueIds.length, Number(issueCount)); i++) {
 						let issue = issueIds[i]
 						openNewLinkArr = [
 							...openNewLinkArr,
