@@ -8,7 +8,15 @@
 	%sveltekit.head%
 	<script>
 		if (localStorage.getItem('theme')) {
-			document.documentElement.classList.toggle(localStorage.getItem('theme').toLowerCase());
+			if (localStorage.getItem('theme') === "system") {
+				if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+					document.documentElement.classList.toggle('dark');
+				} else {
+					document.documentElement.classList.toggle('light');
+				}
+			} else {
+				document.documentElement.classList.toggle(localStorage.getItem('theme').toLowerCase());
+			}
 		} else {
 			if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
 				document.documentElement.classList.toggle('dark');

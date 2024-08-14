@@ -5,7 +5,11 @@
 ### Features
 
 1. gotIssues
+
    - You can now set the amount of issues to be added per call, default to 5.
+
+2. Config
+   - New system theme option set to default.
 
 ## 2024-8-10
 

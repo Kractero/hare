@@ -10,7 +10,7 @@
 
     const localStorageObject: {[key: string]: any } = {
         connectionUrl: 'www',
-        theme: '',
+        theme: 'system',
         puppets: '',
         main: '',
         password: '',
@@ -72,12 +72,11 @@
     };
 
     onMount(() => {
-        localStorageObject.theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
         Object.keys(localStorageObject).forEach((key) => {
-            if (key === "junkdajunkExnation") {
-                localStorageObject.junkdajunkExnation = localStorage.getItem(key) === "true" || false;
-            } else if (key === "theme") {
-                localStorageObject.theme = localStorage.getItem(key)!.toLowerCase()
+            if (key === "theme") {
+                localStorageObject.theme = localStorage.getItem(key)?.toLowerCase() || localStorageObject.theme;
+            } else if (key === "junkdajunkExnation") {
+                localStorageObject.junkdajunkExnation = localStorage.getItem(key) === "true";
             } else {
                 localStorageObject[key] = localStorage.getItem(key) || localStorageObject[key];
             }
@@ -156,7 +155,7 @@
     >
         <h2 class="text-2xl text-center font-bold tracking-tight">General Config</h2>
         <Select name="Connection Subdomain" bind:mode={localStorageObject.connectionUrl} options={["www", "fast"]} />
-        <Select name="Theme" bind:mode={localStorageObject.theme} options={["light", "dark"]} />
+        <Select name="Theme" bind:mode={localStorageObject.theme} options={["system", "light", "dark"]} />
         <Input text="User Agent" bind:bindValue={localStorageObject.main} forValue="main" />
         <Textarea text="General Puppets" bind:bindValue={localStorageObject.puppets} forValue="pup" />
         <p class="text-xs">These puppets do not apply for gotIssues or junkdajunk.</p>

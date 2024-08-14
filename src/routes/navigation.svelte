@@ -11,9 +11,7 @@
 					resolve(); // Resolve the promise after the transition is complete
 				});
 			});
-		} else {
-			// Directly await navigation.complete if startViewTransition is not available
-			await navigation.complete;
 		}
+		return;
 	});
 </script>
