@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
-	import { parseXML, parser, sleep } from '$lib/helpers/utils';
+	import { parseXML, parser } from '$lib/helpers/utils';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Input from '$lib/component/Input.svelte';
@@ -70,7 +70,6 @@
 			nation = nation.toLowerCase().replaceAll(' ', '_');
 
 			try {
-				await sleep(600);
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`;
 				const xmlDocument = await parseXML(
 					`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`,
@@ -81,10 +80,13 @@
 				const matches = finderlist.split('\n').map((matcher) => matcher.split(','));
 
 				if (cards && cards.length > 0) {
-					const originalCardCounts: { [key: string]: number } = cards.reduce((counts, card) => {
-						counts[card.CARDID] = (counts[card.CARDID] || 0) + 1;
-						return counts;
-					}, {} as { [key: string]: number });
+					const originalCardCounts: { [key: string]: number } = cards.reduce(
+						(counts, card) => {
+							counts[card.CARDID] = (counts[card.CARDID] || 0) + 1;
+							return counts;
+						},
+						{} as { [key: string]: number }
+					);
 
 					for (let j = 0; j < cards.length; j++) {
 						const id = cards[j].CARDID;
@@ -101,7 +103,6 @@
 							} else {
 								if (mode === 'Gift') {
 									let token = '';
-									await sleep(600);
 									const headers: { [key: string]: string } = { 'User-Agent': main };
 
 									if (currentNationXPin) headers['X-Pin'] = currentNationXPin;
@@ -120,7 +121,6 @@
 									const xml = parser.parse(text);
 									token = xml.NATION.SUCCESS;
 
-									await sleep(600);
 									const gift = await fetch(
 										`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=execute&c=giftcard&token=${token}`,
 										{
@@ -133,7 +133,6 @@
 
 									if (gift.status === 200) {
 										let successfulGift = true;
-										await sleep(600);
 										const verify = await parseXML(
 											`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`,
 											main
@@ -146,12 +145,18 @@
 											: [];
 
 										if (verifyCards && verifyCards.length > 0) {
-											const verifyCardCounts: { [key: string]: number } = verifyCards.reduce((counts, card) => {
-												counts[card.CARDID] = (counts[card.CARDID] || 0) + 1;
-												return counts;
-											}, {} as { [key: string]: number });
+											const verifyCardCounts: { [key: string]: number } = verifyCards.reduce(
+												(counts, card) => {
+													counts[card.CARDID] = (counts[card.CARDID] || 0) + 1;
+													return counts;
+												},
+												{} as { [key: string]: number }
+											);
 
-											if (!(id in verifyCardCounts) || verifyCardCounts[id] < originalCardCounts[id]) {
+											if (
+												!(id in verifyCardCounts) ||
+												verifyCardCounts[id] < originalCardCounts[id]
+											) {
 												successfulGift = true;
 											} else {
 												successfulGift = false;

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { parseXML, sleep } from '$lib/helpers/utils';
+	import { parseXML } from '$lib/helpers/utils';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Input from '$lib/component/Input.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
@@ -14,7 +14,10 @@
 
 	onMount(() => {
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || '';
-		nennation = $page.url.searchParams.get('nennation') || (localStorage.getItem('nenNation') as string) || '';
+		nennation =
+			$page.url.searchParams.get('nennation') ||
+			(localStorage.getItem('nenNation') as string) ||
+			'';
 	});
 
 	async function nen() {
@@ -30,7 +33,6 @@
 			progress += `<p class="text-red-400">${nennation} is not in the WA.</p>`;
 			return;
 		}
-		await sleep(600);
 		progress += `<p">Searching for the nations in ${xml.NATION.REGION} not endorsing ${nennation}</p>`;
 		const wamems = await parseXML(
 			`https://${

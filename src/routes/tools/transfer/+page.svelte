@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
-	import { parseXML, sleep } from '$lib/helpers/utils';
+	import { parseXML } from '$lib/helpers/utils';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import { pushHistory } from '$lib/helpers/utils';
@@ -26,8 +26,14 @@
 	onMount(() => {
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || '';
 		puppets = (localStorage.getItem('puppets') as string) || '';
-		transfer = $page.url.searchParams.get('transfer') || (localStorage.getItem('transferBank') as string) || '10';
-		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('transferMode') as string) || 'Bank';
+		transfer =
+			$page.url.searchParams.get('transfer') ||
+			(localStorage.getItem('transferBank') as string) ||
+			'10';
+		mode =
+			$page.url.searchParams.get('mode') ||
+			(localStorage.getItem('transferMode') as string) ||
+			'Bank';
 	});
 
 	onDestroy(() => abortController.abort());
@@ -48,7 +54,6 @@
 				break;
 			}
 			try {
-				await sleep(600);
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`;
 				const deckInfo = await parseXML(
 					`https://${
@@ -114,7 +119,7 @@
 <div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
 	<form on:submit|preventDefault={() => goldRetriever()} class="flex flex-col gap-8">
 		<InputCredentials bind:main bind:puppets authenticated={false} />
-		<Select name="Transfer Value" bind:mode={mode} options={['Bank', 'Junk']} />
+		<Select name="Transfer Value" bind:mode options={['Bank', 'Junk']} />
 		<Input
 			text="Transfer Bank Threshold"
 			bind:bindValue={transfer}

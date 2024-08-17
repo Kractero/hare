@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import InputCredentials from '$lib/component/InputCredentials.svelte';
-	import { parseXML, sleep } from '$lib/helpers/utils';
+	import { parseXML } from '$lib/helpers/utils';
 	import Buttons from '$lib/component/Buttons.svelte';
 	import Terminal from '$lib/component/Terminal.svelte';
 	import { pushHistory } from '$lib/helpers/utils';
@@ -39,7 +39,6 @@
 				if (abortController.signal.aborted || stopped) {
 					break;
 				}
-				await sleep(600);
 				let nation = puppetsList[i];
 				try {
 					const xml = await parseXML(
@@ -62,7 +61,6 @@
 				if (abortController.signal.aborted || stopped) {
 					break;
 				}
-				await sleep(600);
 				let nation = nations[i];
 				try {
 					const xml = await parseXML(
