@@ -1,9 +1,34 @@
 {
+	"arrowParens": "avoid",
+	"endOfLine": "lf",
+	"tabWidth": 2,
 	"useTabs": true,
 	"singleQuote": true,
-	"trailingComma": "none",
+	"trailingComma": "es5",
 	"printWidth": 100,
-	"plugins": ["prettier-plugin-svelte"],
+	"plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss", "@ianvs/prettier-plugin-sort-imports"],
 	"pluginSearchDirs": ["."],
-	"overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }]
+	"overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }],
+	"importOrder": [
+		"<BUILTIN_MODULES>",
+		"^(svelte/(.*)$)|^(svelte$)",
+		"<THIRD_PARTY_MODULES>",
+		"",
+		"^types$",
+		"^@/types/(.*)$",
+		"^@/config/(.*)$",
+		"^@/lib/helpers/(.*)$",
+		"^@/lib/components/ui/(.*)$",
+		"^@/lib/components/(.*)$",
+		"^@/lib/component/(.*)$",
+		"^@/lib/(.*)$",
+		"",
+		"^[./]"
+	  ],
+	  "importOrderSeparation": false,
+	  "importOrderSortSpecifiers": true,
+	  "importOrderBuiltinModulesToTop": true,
+	  "importOrderParserPlugins": ["typescript", "jsx", "decorators-legacy"],
+	  "importOrderMergeDuplicateImports": true,
+	  "importOrderCombineTypeAndValueImports": true
 }
