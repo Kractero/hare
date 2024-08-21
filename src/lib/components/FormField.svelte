@@ -21,11 +21,17 @@
 		{/if}</Label
 	>
 	{#if type === 'input'}
-		<Input class="max-w-xs text-right" {id} {placeholder} bind:value={bindValue} {required} />
+		<Input
+			class="max-w-xs text-right text-base"
+			{id}
+			{placeholder}
+			bind:value={bindValue}
+			{required}
+		/>
 	{/if}
 	{#if type === 'textarea'}
 		<Textarea
-			class="w-96 text-right"
+			class="w-96 text-right text-base"
 			{id}
 			{placeholder}
 			bind:value={bindValue}

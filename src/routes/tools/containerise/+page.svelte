@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Buttons from '$lib/components/Buttons.svelte'
 	import FormField from '$lib/components/FormField.svelte'
+	import Puppets from '$lib/components/formFields/Puppets.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { nsIterator } from '$lib/helpers/txtIterator'
@@ -26,14 +27,7 @@
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form on:submit|preventDefault={() => containerise()} class="flex flex-col gap-8">
-		<FormField
-			type="textarea"
-			bind:bindValue={puppets}
-			id="pup"
-			label="Puppets"
-			placeholder="Puppets"
-			required={true}
-		/>
+		<Puppets bind:puppets />
 		<Buttons {downloadable} downloadButton={true} {content} />
 	</form>
 	<Terminal bind:progress />

@@ -2,7 +2,8 @@
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
-	import FormField from '$lib/components/FormField.svelte'
+	import Puppets from '$lib/components/formFields/Puppets.svelte'
+	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { nsIterator } from '$lib/helpers/txtIterator'
@@ -42,23 +43,8 @@
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form on:submit|preventDefault={() => login(puppets)} class="flex flex-col gap-8">
-		<FormField
-			type="input"
-			bind:bindValue={main}
-			id="ua"
-			label="User Agent"
-			placeholder="Main Nation"
-			required={true}
-			subTitle={'(Main Nation)'}
-		/>
-		<FormField
-			type="textarea"
-			bind:bindValue={puppets}
-			id="pup"
-			label="Puppets"
-			placeholder="Puppets"
-			required={true}
-		/>
+		<UserAgent bind:main />
+		<Puppets bind:puppets />
 		<Buttons {downloadable} downloadButton={true} {content} />
 	</form>
 	<Terminal bind:progress />
