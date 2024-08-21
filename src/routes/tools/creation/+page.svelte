@@ -44,7 +44,7 @@
 	<form on:submit|preventDefault={() => login(puppets)} class="flex flex-col gap-8">
 		<FormField
 			type="input"
-			bindValue={main}
+			bind:bindValue={main}
 			id="ua"
 			label="User Agent"
 			placeholder="Main Nation"
@@ -53,13 +53,13 @@
 		/>
 		<FormField
 			type="textarea"
-			bindValue={puppets}
+			bind:bindValue={puppets}
 			id="pup"
 			label="Puppets"
 			placeholder="Puppets"
 			required={true}
 		/>
-		<Buttons downloadButton={true} />
+		<Buttons {downloadable} downloadButton={true} {content} />
 	</form>
 	<Terminal bind:progress />
 </div>

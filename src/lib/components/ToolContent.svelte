@@ -25,7 +25,7 @@
 		{/if}
 	{/if}
 </p>
-<p class="mb-1 leading-7 [&:not(:first-child)]:mt-6">{caption}</p>
+<p class={`mb-1 leading-7 ${author && 'mt-6'} ${!additional && 'mb-16'}`}>{caption}</p>
 {#if additional}
 	{@html additional}
 {/if}

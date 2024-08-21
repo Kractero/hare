@@ -16,7 +16,7 @@ export async function nsIterator(puppets: string, mode: string, main?: string) {
     };
 
     switch (mode) {
-        case 'Container Rules':
+        case 'Containerise':
             return generateContainerRules();
 
         case 'Login Sheet':
