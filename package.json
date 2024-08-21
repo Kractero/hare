@@ -38,7 +38,6 @@
 	"type": "module",
 	"dependencies": {
 		"@sveltejs/adapter-auto": "^3.2.4",
-		"@sveltejs/adapter-static": "^3.0.4",
 		"exceljs": "^4.4.0",
 		"fast-xml-parser": "^4.4.1",
 		"svelte-french-toast": "^1.2.0"
