@@ -6,6 +6,7 @@
 	"singleQuote": true,
 	"trailingComma": "es5",
 	"printWidth": 100,
+	"semi": false,
 	"plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss", "@ianvs/prettier-plugin-sort-imports"],
 	"pluginSearchDirs": ["."],
 	"overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }],
