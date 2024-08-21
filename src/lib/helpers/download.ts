@@ -1,23 +1,20 @@
-export function handleDownload(filetype: string, files: Array<string> | string, name?: string) {
-	let blob;
+const textFiles = ['Transfer', 'Deck', 'Containerise']
+
+export function handleDownload(name: string, files: string[] | string) {
 	if (Array.isArray(files)) {
-		blob = new Blob([files[0]], { type: `text/${filetype}` });
-		urlObject(blob, 'Containerise (Nation)');
-		blob = new Blob([files[1]], { type: `text/${filetype}` });
-		urlObject(blob, 'Containerise (Container)');
+		downloadBlob(new Blob([files[0]], { type: "text/txt" }), 'Containerise (Nation).txt')
+		downloadBlob(new Blob([files[1]], { type: "text/txt" }), 'Containerise (Container).txt')
 	} else {
-		blob = new Blob([files], { type: `text/${filetype}` });
-		urlObject(blob, name);
+		const extension = textFiles.includes(name) ? 'txt' : 'html'
+		downloadBlob(new Blob([files], { type: extension }), `${name}.${extension}`)
 	}
 }
 
-export function urlObject(blob: Blob | MediaSource, mode: string | undefined) {
-	const url = window.URL.createObjectURL(blob);
-	const link = document.createElement('a');
-	link.href = url;
-	link.download = `${mode}.${
-		(mode === "Transfer" || mode === "Deck" || mode?.includes('Containerise')) ? 'txt' : 'html'
-	}`;
-	link.click();
-	window.URL.revokeObjectURL(url);
+function downloadBlob(blob: Blob, fileName: string) {
+	const url = URL.createObjectURL(blob)
+	const link = document.createElement('a')
+	link.href = url
+	link.download = fileName
+	link.click()
+	URL.revokeObjectURL(url)
 }

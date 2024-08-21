@@ -101,7 +101,7 @@ export const tools: Array<Tool> = [
 		description: 'Provided WA scales and puppets, get the mean, median, and mode for each scale. (WIP)'
 	},
 	{
-		name: 'Creator',
+		name: 'Creation Assistant',
 		slug: 'creation',
 		description: 'Generate a sheet that has links for nation creation that works with the provided userscripts.'
 	},

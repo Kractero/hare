@@ -1,9 +1,11 @@
-export const htmlContent = (content: string, style?: string, sortFunction?: string, script?: string) => {
+import { script, sort, style } from '$lib/helpers/sortFunctionString';
+
+export const htmlContent = (content: string, name: string) => {
   return `
     <html>
     <head>
     <style>
-    ${style
+    ${name === "Gold Retriever"
       ? style
       : `
     td.createcol p {
@@ -59,26 +61,24 @@ export const htmlContent = (content: string, style?: string, sortFunction?: stri
     <body>
     <table>
     ${content}
-    ${sortFunction
-      ? ''
-      : `
-    <tr>
-    <td>
-      <p>
-        <a target="_blank" href="https://this-page-intentionally-left-blank.org/">Done!</a>
-      </p>
-    </td>
-    <td>
-      <p>
-        <a target="_blank" href="https://this-page-intentionally-left-blank.org/">Done!</a>
-      </p>
-    </td>
-  </tr>
+    ${name !== "Gold Retriever" && `
+      <tr>
+        <td>
+          <p>
+            <a target="_blank" href="https://this-page-intentionally-left-blank.org/">Done!</a>
+          </p>
+        </td>
+        <td>
+          <p>
+            <a target="_blank" href="https://this-page-intentionally-left-blank.org/">Done!</a>
+          </p>
+        </td>
+      </tr>
     `
     }
     </table>
     <script>
-    ${script ? script : `
+    ${name === "RCES" ? script : `
     document.querySelectorAll("td").forEach(function(el) {
       el.addEventListener("click", function() {
         const row = el.parentNode;
@@ -87,8 +87,8 @@ export const htmlContent = (content: string, style?: string, sortFunction?: stri
       });
     });
    `
-    } 
-    ${sortFunction || ''}
+    }
+    ${name === "Gold Retriever" ? sort : ''}
     </script>
     </body>
     </html>
