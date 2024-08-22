@@ -11,7 +11,7 @@
 </script>
 
 <div class={`flex max-w-lg items-center justify-between gap-4`}>
-	<Label class={'w-24'} for={id}
+	<Label class={'w-[66px] sm:w-24'} for={id}
 		>{label}
 		{#if subTitle}
 			<span class="text-xs">{subTitle}</span>
@@ -23,7 +23,9 @@
 		}}
 		selected={bindValue}
 	>
-		<Select.Trigger class="flex-1 justify-end data-[placeholder]:[&>span]:text-textprimary">
+		<Select.Trigger
+			class="w-[206px] flex-1 justify-end sm:max-w-[221px] data-[placeholder]:[&>span]:text-textprimary"
+		>
 			<Select.Value class="mr-2" placeholder={bindValue} />
 		</Select.Trigger>
 		<Select.Content class="text-left">

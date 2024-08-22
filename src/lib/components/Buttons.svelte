@@ -18,8 +18,7 @@
 		<DownloadButton bind:downloadable bind:content {type} {name} />
 	{/if}
 	{#if stopButton === true}
-		<button
-			type="button"
+		<Button
 			disabled={!stoppable}
 			on:click={() => {
 				{
@@ -27,10 +26,10 @@
 					stopped = true
 				}
 			}}
-			class="rounded-md bg-red-500 px-4 py-2 transition duration-300 hover:bg-red-300 disabled:opacity-20 disabled:hover:bg-red-500"
+			class="mx-auto w-max"
+			variant="destructive"
+			type="button">Stop</Button
 		>
-			Stop
-		</button>
 	{/if}
 	<slot />
 </div>

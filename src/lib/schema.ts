@@ -10,13 +10,13 @@ const userAgent = z
 
 export const creationSchema = z.object({
 	useragent: userAgent,
-	puppets: z.string(),
+	puppets: z.string().min(1),
 })
 
 export const approvalSchema = z.object({
 	useragent: userAgent,
 	council: z.enum(['General Assembly', 'Security Council']),
-	proposalid: z.string(),
+	proposalid: z.string().min(1),
 	// proposalid: z.number({ coerce: true }),
 })
 
@@ -38,3 +38,11 @@ export const deckSchema = z.discriminatedUnion('type', [
 		...deckCommon,
 	}),
 ])
+
+export const endotartSchema = z.object({
+	useragent: userAgent,
+	endotarter: userAgent,
+	limit: z.number({ coerce: true }),
+	immune: z.string().min(1),
+	source: z.enum(['XML', 'API']),
+})
