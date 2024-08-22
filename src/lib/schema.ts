@@ -134,3 +134,10 @@ export const grSchema = z.object({
 			}
 		),
 })
+
+export const giSchema = z.object({
+	useragent: userAgent,
+	puppets: z.string(),
+	mode: z.enum(['Both', 'Issues', 'Packs']),
+	issuesCount: z.enum(['1', '2', '3', '4', '5']),
+})
