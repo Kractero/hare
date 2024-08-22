@@ -10,7 +10,6 @@
 	bind:errors
 	id="ua"
 	label="User Agent"
-	placeholder="Main Nation"
 	required={true}
 	subTitle={'(Main Nation)'}
 />

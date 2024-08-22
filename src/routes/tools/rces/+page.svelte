@@ -38,8 +38,8 @@
 </script>
 
 <ToolContent
-	toolTitle="RCES Sheet Maker"
-	originalBlurb="rewritten in JS for browser use by Kractero"
+	toolTitle="RCES"
+	originalBlurb="Sheet maker rewritten in JS for browser use by Kractero"
 	author="Racoda"
 	link="https://github.com/dithpri/RCES#puppet-links-sheet"
 	caption="Generates a sheet of clickable links pointing to various puppets."
