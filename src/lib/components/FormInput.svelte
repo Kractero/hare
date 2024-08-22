@@ -11,7 +11,8 @@
 	export let disabled: boolean = false
 	export let type = ''
 
-	export let errors: Array<{ field: string | number; message: string }>
+	export let errors: Array<{ field: string | number; message: string }> = []
+	const rarities = ['common', 'uncommon', 'rare', 'ultra-rare', 'epic']
 </script>
 
 <div class={`flex max-w-lg items-center justify-between gap-4`}>
@@ -22,7 +23,7 @@
 		{/if}</Label
 	>
 	<Input
-		class="max-w-min text-right text-base"
+		class={`${rarities.includes(id) ? 'w-20' : 'max-w-min'} text-right text-base`}
 		{id}
 		type={type || 'text'}
 		{placeholder}
