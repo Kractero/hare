@@ -91,3 +91,20 @@ export const finderSchema = z.object({
 	finderlist: finderListSchema,
 	mode: z.enum(['Gift', 'Sell']),
 })
+
+export const flagSchema = z.discriminatedUnion('mode', [
+	z.object({
+		mode: z.literal('Flags'),
+		useragent: userAgent,
+		puppets: z.string(),
+		flags: z.string(),
+		mottos: z.undefined(),
+	}),
+	z.object({
+		mode: z.literal('Motto'),
+		useragent: userAgent,
+		puppets: z.string(),
+		flags: z.undefined(),
+		mottos: z.string(),
+	}),
+])
