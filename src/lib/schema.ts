@@ -108,3 +108,29 @@ export const flagSchema = z.discriminatedUnion('mode', [
 		mottos: z.string(),
 	}),
 ])
+
+export const grSchema = z.object({
+	useragent: userAgent,
+	puppets: z.string(),
+	mode: z.enum(['Include', 'Skip']),
+	transferCard: z
+		.string()
+		.optional()
+		.refine(
+			value => {
+				if (!value) return true
+
+				const parts = value.split(',')
+				if (parts.length !== 2) return false
+
+				const [id, season] = parts
+				const idIsValid = !isNaN(Number(id))
+				const seasonIsValid = ['1', '2', '3'].includes(season.trim())
+
+				return idIsValid && seasonIsValid
+			},
+			{
+				message: "The transfer card must formatted like 'id,season'",
+			}
+		),
+})

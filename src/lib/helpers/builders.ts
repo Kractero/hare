@@ -2,8 +2,8 @@ const textFiles = ['Transfer', 'Deck', 'Containerise']
 
 export function handleDownload(name: string, files: string[] | string) {
 	if (Array.isArray(files)) {
-		downloadBlob(new Blob([files[0]], { type: "text/txt" }), 'Containerise (Nation).txt')
-		downloadBlob(new Blob([files[1]], { type: "text/txt" }), 'Containerise (Container).txt')
+		downloadBlob(new Blob([files[0]], { type: 'text/txt' }), 'Containerise (Nation).txt')
+		downloadBlob(new Blob([files[1]], { type: 'text/txt' }), 'Containerise (Container).txt')
 	} else {
 		const extension = textFiles.includes(name) ? 'txt' : 'html'
 		downloadBlob(new Blob([files], { type: extension }), `${name}.${extension}`)
@@ -19,47 +19,71 @@ function downloadBlob(blob: Blob, fileName: string) {
 	URL.revokeObjectURL(url)
 }
 
-
 export async function nsIterator(puppets: string, mode: string, main?: string) {
-    const puppetsList = puppets.split('\n').map(nation => nation.split(',')[0].trim().toLowerCase().replace(/ /g, '_'));
+	const puppetsList = puppets
+		.split('\n')
+		.map(nation => nation.split(',')[0].trim().toLowerCase().replace(/ /g, '_'))
 
-    const baseURL = `https://${localStorage.getItem("connectionUrl") || "www"}.nationstates.net`;
+	const baseURL = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 
-    const buildTableRow = (index: number, nation: string, path: string, script: string) => `
+	const buildTableRow = (index: number, nation: string, path: string, script: string) => `
         <tr>
             <td><p>${index + 1} of ${puppetsList.length}</p></td>
             <td><p><a target="_blank" href="${baseURL}/${path}/User_agent=${main}/Script=${script}/Generated_by=${script}/Author_discord=scrambleds/Author_main_nation=Kractero/${path.includes('create_nation') ? `nation=${nation}` : ''}">Link to Nation</a></p></td>
-        </tr>`;
+        </tr>`
 
-    const generateContainerRules = () => {
-        const nationRules = puppetsList.map(nation => `@^.*\\.nationstates\\.net/(.*/)?nation=${nation}(/.*)?$ , ${nation}`).join('\n');
-        const containerRules = puppetsList.map(nation => `@^.*\\.nationstates\\.net/(.*/)?container=${nation}(/.*)?$ , ${nation}`).join('\n');
-        return [nationRules, containerRules];
-    };
+	const generateContainerRules = () => {
+		const nationRules = puppetsList
+			.map(nation => `@^.*\\.nationstates\\.net/(.*/)?nation=${nation}(/.*)?$ , ${nation}`)
+			.join('\n')
+		const containerRules = puppetsList
+			.map(nation => `@^.*\\.nationstates\\.net/(.*/)?container=${nation}(/.*)?$ , ${nation}`)
+			.join('\n')
+		return [nationRules, containerRules]
+	}
 
-    switch (mode) {
-        case 'Containerise':
-            return generateContainerRules();
+	switch (mode) {
+		case 'Containerise':
+			return generateContainerRules()
 
-        case 'Login Sheet':
-            return puppetsList.map((nation, i) => buildTableRow(i, nation, `container=${nation}/nation=${nation}/page=upload_flag/test=1`, 'Login_Sheet')).join('\n');
+		case 'Login Sheet':
+			return puppetsList
+				.map((nation, i) =>
+					buildTableRow(
+						i,
+						nation,
+						`container=${nation}/nation=${nation}/page=upload_flag/test=1`,
+						'Login_Sheet'
+					)
+				)
+				.join('\n')
 
-        case 'Creator':
-            return puppetsList.map((nation, i) => buildTableRow(i, nation, `container=${nation}/nation=${nation}/page=create_nation`, 'Creator')).join('\n');
+		case 'Creator':
+			return puppetsList
+				.map((nation, i) =>
+					buildTableRow(
+						i,
+						nation,
+						`container=${nation}/nation=${nation}/page=create_nation`,
+						'Creator'
+					)
+				)
+				.join('\n')
 
-        default:
-            return '';
-    }
+		default:
+			return ''
+	}
 }
 
 export const htmlContent = (content: string, name: string) => {
-    return `
+	console.log(`
       <html>
       <head>
       <style>
-      ${name === "Gold Retriever"
-        ? style
-        : `
+      ${
+				name === 'Gold Retriever'
+					? style
+					: `
       td.createcol p {
         padding-left: 10em;
       }
@@ -107,13 +131,15 @@ export const htmlContent = (content: string, name: string) => {
         }
       }
       `
-      }
+			}
       </style>
       </head>
       <body>
       <table>
       ${content}
-      ${name !== "Gold Retriever" && `
+      ${
+				name !== 'Gold Retriever' &&
+				`
         <tr>
           <td>
             <p>
@@ -127,10 +153,13 @@ export const htmlContent = (content: string, name: string) => {
           </td>
         </tr>
       `
-      }
+			}
       </table>
       <script>
-      ${name === "RCES" ? script : `
+      ${
+				name === 'RCES'
+					? script
+					: `
       document.querySelectorAll("td").forEach(function(el) {
         el.addEventListener("click", function() {
           const row = el.parentNode;
@@ -139,15 +168,114 @@ export const htmlContent = (content: string, name: string) => {
         });
       });
      `
-      }
-      ${name === "Gold Retriever" ? sort : ''}
+			}
+      ${name === 'Gold Retriever' ? sort : ''}
       </script>
       </body>
       </html>
-      `;
-  };
+      `)
+	return `
+      <html>
+      <head>
+      <style>
+      ${
+				name === 'Gold Retriever'
+					? style
+					: `
+      td.createcol p {
+        padding-left: 10em;
+      }
 
-  let sort = `
+      a {
+        text-decoration: none;
+        color: black;
+      }
+
+      a:visited {
+        color: grey;
+      }
+
+      table {
+        border-collapse: collapse;
+        display: table-cell;
+        max-width: 100%;
+        border: 1px solid darkorange;
+      }
+
+      tr, td {
+        border-bottom: 1px solid darkorange;
+      }
+
+      td p {
+        padding: 0.5em;
+      }
+
+      tr:hover {
+        background-color: lightgrey;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        html {
+          background-color: black;
+        }
+        a, p {
+          color: rgb(232, 211, 162);
+        }
+        a:visited {
+          color: rgb(145, 23, 76);
+        }
+        table, tr, td {
+          border: 1px solid rgb(51, 0, 111);
+        }
+      }
+      `
+			}
+      </style>
+      </head>
+      <body>
+      <table>
+      ${content}
+      ${
+				name !== 'Gold Retriever'
+					? `
+        <tr>
+          <td>
+            <p>
+              <a target="_blank" href="https://this-page-intentionally-left-blank.org/">Done!</a>
+            </p>
+          </td>
+          <td>
+            <p>
+              <a target="_blank" href="https://this-page-intentionally-left-blank.org/">Done!</a>
+            </p>
+          </td>
+        </tr>
+      `
+					: ''
+			}
+      </table>
+      <script>
+      ${
+				name === 'RCES'
+					? script
+					: `
+      document.querySelectorAll("td").forEach(function(el) {
+        el.addEventListener("click", function() {
+          const row = el.parentNode;
+          row.nextElementSibling.querySelector("a").focus();
+          row.parentNode.removeChild(row);
+        });
+      });
+     `
+			}
+      ${name === 'Gold Retriever' ? sort : ''}
+      </script>
+      </body>
+      </html>
+      `
+}
+
+let sort = `
   const sortableColumns = document.querySelectorAll('.sort');
   sortableColumns.forEach(col => {
       col.addEventListener('click', () => {
@@ -172,8 +300,8 @@ export const htmlContent = (content: string, name: string) => {
           col.setAttribute('data-order', newOrder);
       });
   });
-  `;
-  let style = `
+  `
+let style = `
   body {
       font-size: 14px;
       font-family: Arial, sans-serif;
@@ -235,8 +363,8 @@ export const htmlContent = (content: string, name: string) => {
         border: 1px solid rgb(51, 0, 111);
       }
     }
-  `;
-  let script = `
+  `
+let script = `
   document.querySelectorAll("a").forEach(function(el) {
       el.addEventListener("click", function(ev) {
           if (!ev.repeat) {
