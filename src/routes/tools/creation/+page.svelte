@@ -6,20 +6,25 @@
 	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { nsIterator } from '$lib/helpers/txtIterator'
-	import { pushHistory } from '$lib/helpers/utils'
+	import { nsIterator } from '$lib/helpers/builders'
+	import { pushHistory } from '$lib/helpers/navigation'
+	import { validate } from '$lib/helpers/validate'
+	import { creationSchema } from '$lib/schema'
 
 	let progress = ''
 	let content: string
 	let downloadable = false
 	let puppets = ''
 	let main = ''
+	let errors: Array<{ field: string | number; message: string }> = []
 
 	onMount(async () => {
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 	})
 
 	async function login(puppets: string) {
+		errors = validate(creationSchema, { useragent: main, puppets: puppets })
+		if (errors.length > 0) return
 		pushHistory(`?main=${main}`)
 		downloadable = false
 		content = (await nsIterator(puppets, 'Creator', main)) as string
@@ -43,7 +48,7 @@
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form on:submit|preventDefault={() => login(puppets)} class="flex flex-col gap-8">
-		<UserAgent bind:main />
+		<UserAgent bind:main bind:errors />
 		<Puppets bind:puppets />
 		<Buttons {downloadable} downloadButton={true} {content} />
 	</form>

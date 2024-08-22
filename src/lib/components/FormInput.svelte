@@ -8,6 +8,8 @@
 	export let bindValue: string | number | undefined
 	export let subTitle: string = ''
 	export let required: boolean = false
+
+	export let errors: Array<{ field: string | number; message: string }>
 </script>
 
 <div class={`flex max-w-lg items-center justify-between gap-4`}>
@@ -25,3 +27,9 @@
 		{required}
 	/>
 </div>
+
+{#if errors && errors.length > 0 && errors.find(error => error.field === id)}
+	<p class="text-sm font-medium text-destructive">
+		{errors.find(error => error.field === id)?.message}
+	</p>
+{/if}

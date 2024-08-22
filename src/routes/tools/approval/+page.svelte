@@ -9,6 +9,8 @@
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { pushHistory } from '$lib/helpers/navigation'
 	import { parseXML } from '$lib/helpers/parser'
+	import { validate } from '$lib/helpers/validate'
+	import { approvalSchema } from '$lib/schema'
 
 	const abortController = new AbortController()
 
@@ -17,10 +19,11 @@
 	let downloadable = false
 	let stopped = false
 	let stoppable = false
+	let main: string = ''
+	let council: string = 'General Assembly'
+	let proposalid: string = ''
+	let errors: Array<{ field: string | number; message: string }> = []
 
-	let main: string
-	let council: string
-	let proposalid: string
 	onMount(() => {
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		council =
@@ -35,6 +38,8 @@
 	onDestroy(() => abortController.abort())
 	async function approvals() {
 		pushHistory(`?main=${main}&council=${council}&proposal=${proposalid}`)
+		errors = validate(approvalSchema, { useragent: main, council: council, proposalid: proposalid })
+		if (errors.length > 0) return
 		downloadable = false
 		stoppable = true
 		stopped = false
@@ -102,7 +107,7 @@
 	class="flex flex-col justify-between gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row"
 >
 	<form on:submit|preventDefault={() => approvals()} class="flex flex-col gap-8">
-		<UserAgent bind:main />
+		<UserAgent bind:main bind:errors />
 		<FormSelect
 			id="council"
 			label="Council"
@@ -111,7 +116,8 @@
 		/>
 		<FormInput
 			bind:bindValue={proposalid}
-			id="proposalID"
+			bind:errors
+			id="proposalid"
 			label="Proposal ID"
 			placeholder="311"
 			required={true}
