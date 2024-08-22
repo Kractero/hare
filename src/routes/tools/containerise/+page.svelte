@@ -27,7 +27,7 @@
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form on:submit|preventDefault={() => containerise()} class="flex flex-col gap-8">
 		<Puppets bind:puppets />
-		<Buttons {downloadable} downloadButton={true} {content} />
+		<Buttons {downloadable} downloadButton={true} {content} type="txt" name="Containerise" />
 	</form>
 	<Terminal bind:progress />
 </div>

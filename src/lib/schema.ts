@@ -19,3 +19,22 @@ export const approvalSchema = z.object({
 	proposalid: z.string(),
 	// proposalid: z.number({ coerce: true }),
 })
+
+const deckCommon = {
+	mode: z.enum(['Signal', 'IDs']),
+	duplicates: z.enum(['Skip', 'Include']),
+	useragent: userAgent,
+}
+
+export const deckSchema = z.discriminatedUnion('type', [
+	z.object({
+		type: z.literal('Deck'),
+		checkObject: userAgent,
+		...deckCommon,
+	}),
+	z.object({
+		type: z.literal('Collection'),
+		checkObject: z.number({ coerce: true }),
+		...deckCommon,
+	}),
+])

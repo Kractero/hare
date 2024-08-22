@@ -1,6 +1,9 @@
-import { type ZodObject } from 'zod'
+import { ZodDiscriminatedUnion, type ZodObject } from 'zod'
 
-export function validate(formSchema: ZodObject<any>, object: { [key: string]: any }) {
+export function validate(
+	formSchema: ZodObject<any> | ZodDiscriminatedUnion<any, any>,
+	object: { [key: string]: any }
+) {
 	const validate = formSchema.safeParse(object)
 	if (!validate.success) {
 		return validate.error.errors.map(error => {
