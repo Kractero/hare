@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte'
-	import { handleDownload } from '$lib/helpers/download'
-	import { htmlContent } from '$lib/helpers/htmlContent'
+	import { handleDownload, htmlContent } from '$lib/helpers/builders'
 
 	export let downloadable = false
 	export let content: Array<string> | string = ''
@@ -11,7 +10,7 @@
 </script>
 
 <Button
-	variant="default"
+	variant="secondary"
 	type="button"
 	class="mx-auto w-max"
 	disabled={!downloadable}

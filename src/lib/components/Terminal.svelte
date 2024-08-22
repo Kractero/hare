@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let progress: string | string[];
+	export let progress: string | string[]
 </script>
 
 <pre

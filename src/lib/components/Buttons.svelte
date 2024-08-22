@@ -13,7 +13,7 @@
 </script>
 
 <div class="mx-auto flex w-max max-w-lg flex-wrap justify-center gap-2">
-	<Button class="mx-auto w-max" variant="outline" type="submit">Start</Button>
+	<Button class="mx-auto w-max" variant="default" type="submit">Start</Button>
 	{#if downloadButton === true}
 		<DownloadButton bind:downloadable bind:content type="html" name="Creator" />
 	{/if}

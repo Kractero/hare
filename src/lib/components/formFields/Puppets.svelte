@@ -1,11 +1,10 @@
 <script lang="ts">
-	import FormField from '../FormField.svelte'
+	import FormTextArea from '../FormTextArea.svelte'
 
 	export let puppets: string
 </script>
 
-<FormField
-	type="textarea"
+<FormTextArea
 	bind:bindValue={puppets}
 	id="pup"
 	label="Puppets"

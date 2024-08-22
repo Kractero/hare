@@ -1,10 +1,9 @@
 <script lang="ts">
 	import Buttons from '$lib/components/Buttons.svelte'
-	import FormField from '$lib/components/FormField.svelte'
 	import Puppets from '$lib/components/formFields/Puppets.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { nsIterator } from '$lib/helpers/txtIterator'
+	import { nsIterator } from '$lib/helpers/builders'
 
 	let progress = ''
 	let puppets = ''
