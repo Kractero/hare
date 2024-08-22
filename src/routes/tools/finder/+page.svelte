@@ -241,13 +241,7 @@
 			authenticated={mode === 'Gift' ? true : false}
 		/>
 		{#if mode === 'Gift'}
-			<FormInput
-				placeholder="Kractero"
-				label={'Gift To'}
-				bind:bindValue={giftee}
-				id="giftee"
-				required={true}
-			/>
+			<FormInput label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />
 		{/if}
 		<div class="-mb-6 flex flex-col">
 			<p class="mb-1 text-center font-light text-muted-foreground">Presets</p>
@@ -266,13 +260,7 @@
 				>
 			</div>
 		</div>
-		<FormTextArea
-			bind:bindValue={finderlist}
-			label={'Cards to Find'}
-			placeholder={'1'}
-			id="finderlist"
-			required
-		/>
+		<FormTextArea bind:bindValue={finderlist} label={'Cards to Find'} id="finderlist" required />
 		<FormSelect bind:bindValue={mode} id="mode" items={['Gift', 'Sell']} label="Behavior" />
 		<div class="flex max-w-lg justify-center gap-2">
 			<Buttons

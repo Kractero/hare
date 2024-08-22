@@ -106,21 +106,9 @@
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
 		<FormSelect id="mode" label="Mode" items={['Flags', 'Mottos']} bind:bindValue={mode} />
 		{#if mode === 'Flags'}
-			<FormTextArea
-				bind:bindValue={flags}
-				id="flags"
-				label="Search Flags"
-				placeholder="svg"
-				required
-			/>
+			<FormTextArea bind:bindValue={flags} id="flags" label="Search Flags" required />
 		{:else}
-			<FormTextArea
-				bind:bindValue={mottos}
-				id="mottos"
-				label="Search Mottos"
-				placeholder="You Can't Stop Progress"
-				required
-			/>
+			<FormTextArea bind:bindValue={mottos} id="mottos" label="Search Mottos" required />
 		{/if}
 		<Buttons
 			downloadButton={true}

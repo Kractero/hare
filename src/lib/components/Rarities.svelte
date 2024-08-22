@@ -6,17 +6,10 @@
 
 <div class="flex flex-col gap-4">
 	<div class="flex max-w-lg items-center justify-between gap-4">
-		<FormInput
-			placeholder="0.5"
-			label={'Common'}
-			bind:bindValue={rarities.common}
-			id="common"
-			required={true}
-		/>
+		<FormInput label={'Common'} bind:bindValue={rarities.common} id="common" required={true} />
 	</div>
 	<div class="flex max-w-lg items-center justify-between gap-4">
 		<FormInput
-			placeholder="1"
 			label={'Uncommon'}
 			bind:bindValue={rarities.uncommon}
 			id="uncommon"
@@ -24,17 +17,10 @@
 		/>
 	</div>
 	<div class="flex max-w-lg items-center justify-between gap-4">
-		<FormInput
-			placeholder="1"
-			label={'Rare'}
-			bind:bindValue={rarities.rare}
-			id="rare"
-			required={true}
-		/>
+		<FormInput label={'Rare'} bind:bindValue={rarities.rare} id="rare" required={true} />
 	</div>
 	<div class="flex max-w-lg items-center justify-between gap-4">
 		<FormInput
-			placeholder="1"
 			label={'Ultra-Rare'}
 			bind:bindValue={rarities['ultra-rare']}
 			id="ultra-rare"
@@ -42,12 +28,6 @@
 		/>
 	</div>
 	<div class="flex max-w-lg items-center justify-between gap-4">
-		<FormInput
-			placeholder="1"
-			label={'Epic'}
-			bind:bindValue={rarities.epic}
-			id="epic"
-			required={true}
-		/>
+		<FormInput label={'Epic'} bind:bindValue={rarities.epic} id="epic" required={true} />
 	</div>
 </div>

@@ -37,7 +37,6 @@
 	onDestroy(() => abortController.abort())
 	async function approvals() {
 		pushHistory(`?main=${main}&council=${council}&proposal=${proposalid}`)
-		console.log(checkUserAgent(main))
 		if (errors.length > 0) return
 		downloadable = false
 		stoppable = true
@@ -113,13 +112,7 @@
 			bind:bindValue={council}
 			items={['General Assembly', 'Security Council']}
 		/>
-		<FormInput
-			bind:bindValue={proposalid}
-			id="proposalid"
-			label="Proposal ID"
-			placeholder="311"
-			required={true}
-		/>
+		<FormInput bind:bindValue={proposalid} id="proposalid" label="Proposal ID" required={true} />
 		<Buttons downloadButton={true} bind:downloadable bind:content type="html" name="Approvals" />
 	</form>
 	<Terminal bind:progress />

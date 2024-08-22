@@ -4,7 +4,6 @@
 
 	export let id: string
 	export let label: string
-	export let placeholder: string
 	export let bindValue: string | number | undefined
 	export let disabled: boolean = false
 	export let subTitle: string = ''
@@ -20,14 +19,7 @@
 			<span class="text-xs">{subTitle}</span>
 		{/if}</Label
 	>
-	<Textarea
-		class="w-96 text-right text-base"
-		{id}
-		{placeholder}
-		bind:value={bindValue}
-		{required}
-		rows={10}
-	/>
+	<Textarea class="w-96 text-right text-base" {id} bind:value={bindValue} {required} rows={10} />
 </div>
 
 <!-- {#if errors && errors.length > 0 && errors.find(error => error.field === id)}

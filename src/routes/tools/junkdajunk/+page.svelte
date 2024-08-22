@@ -449,44 +449,13 @@
 			authenticated={mode === 'Gift' ? true : false}
 		/>
 		{#if mode === 'Gift'}
-			<FormInput
-				placeholder="Kractero"
-				label={'Gift To'}
-				bind:bindValue={giftee}
-				id="giftee"
-				required={true}
-			/>
+			<FormInput label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />
 		{/if}
-		<FormTextArea
-			bind:bindValue={finderlist}
-			label={'Card ID Whitelist'}
-			placeholder={'1'}
-			id="finderlist"
-		/>
-		<FormTextArea
-			bind:bindValue={regionalwhitelist}
-			label={'Regional Whitelist'}
-			placeholder={'The North Pacific'}
-			id="regions"
-		/>
-		<FormTextArea
-			bind:bindValue={flagwhitelist}
-			label={'Flag Whitelist'}
-			placeholder={'gif'}
-			id="flags"
-		/>
-		<FormInput
-			placeholder="205"
-			label={'Card Count Threshold'}
-			bind:bindValue={cardcount}
-			id="cardcount"
-		/>
-		<FormInput
-			placeholder="10"
-			label={'Owner Count Threshold'}
-			bind:bindValue={owners}
-			id="owners"
-		/>
+		<FormTextArea bind:bindValue={finderlist} label={'Card ID Whitelist'} id="finderlist" />
+		<FormTextArea bind:bindValue={regionalwhitelist} label={'Regional Whitelist'} id="regions" />
+		<FormTextArea bind:bindValue={flagwhitelist} label={'Flag Whitelist'} id="flags" />
+		<FormInput label={'Card Count Threshold'} bind:bindValue={cardcount} id="cardcount" />
+		<FormInput label={'Owner Count Threshold'} bind:bindValue={owners} id="owners" />
 		<div class="flex max-w-lg justify-between gap-4">
 			<p class="w-24">Rarity Market Value Threshold</p>
 			<Rarities bind:rarities={raritiesMV} />
@@ -503,7 +472,6 @@
 		/>
 		<FormCheckbox bind:checked={skipexnation} id="skipexnation" label="Skip Exnation" />
 		<FormInput
-			placeholder="-1"
 			label={'Maximum Bank Threshold'}
 			bind:bindValue={jdjtransfer}
 			id="jdjtransfer"

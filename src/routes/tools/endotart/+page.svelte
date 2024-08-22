@@ -173,27 +173,14 @@
 	<form on:submit|preventDefault={endotart} class="flex flex-col gap-8">
 		<UserAgent bind:main bind:errors />
 		<FormInput
-			placeholder="Endotart Nation"
 			label={'Endotart Nation'}
 			bind:bindValue={endotarter}
 			id="endotarter"
 			required={true}
 		/>
-		<FormInput
-			placeholder="0"
-			label={'Endorse Limit'}
-			bind:bindValue={limit}
-			id="limit"
-			required={false}
-		/>
+		<FormInput label={'Endorse Limit'} bind:bindValue={limit} id="limit" required={false} />
 		<FormSelect id="source" label="Source" bind:bindValue={source} items={['XML', 'API']} />
-		<FormTextArea
-			bind:bindValue={immune}
-			id="immune"
-			label="Immune Nations"
-			placeholder="Nations that are immune to a limit"
-			required={false}
-		/>
+		<FormTextArea bind:bindValue={immune} id="immune" label="Immune Nations" required={false} />
 		<Buttons stopButton={true} bind:stopped bind:stoppable />
 	</form>
 	<Terminal bind:progress />

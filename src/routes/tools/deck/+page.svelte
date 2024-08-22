@@ -100,7 +100,6 @@
 	<form on:submit|preventDefault={() => nen()} class="flex flex-col gap-8">
 		<UserAgent bind:main bind:errors />
 		<FormInput
-			placeholder="Nation or Collection"
 			label={type.toLowerCase() === 'deck' ? `Nation` : 'Collection'}
 			bind:bindValue={checkObject}
 			id="checkObject"

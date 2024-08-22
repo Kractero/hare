@@ -178,7 +178,6 @@
 			subTitle="(optional: id,season)"
 			bind:bindValue={transferCard}
 			id="transferCard"
-			placeholder="My Transfer"
 			required={false}
 		/>
 		<Buttons

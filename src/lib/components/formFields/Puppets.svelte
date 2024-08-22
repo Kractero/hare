@@ -4,10 +4,4 @@
 	export let puppets: string
 </script>
 
-<FormTextArea
-	bind:bindValue={puppets}
-	id="pup"
-	label="Puppets"
-	placeholder="Puppets"
-	required={true}
-/>
+<FormTextArea bind:bindValue={puppets} id="pup" label="Puppets" required={true} />
