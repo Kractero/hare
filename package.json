@@ -43,7 +43,8 @@
 		"exceljs": "^4.4.0",
 		"fast-xml-parser": "^4.4.1",
 		"lucide-svelte": "^0.429.0",
-		"svelte-french-toast": "^1.2.0",
+		"mode-watcher": "^0.4.1",
+		"svelte-sonner": "^0.3.27",
 		"tailwind-merge": "^2.5.2",
 		"tailwind-variants": "^0.2.1",
 		"zod": "^3.23.8"

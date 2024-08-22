@@ -7,7 +7,8 @@
 	import Head from '$lib/components/Head.svelte'
 	import Rarities from '$lib/components/Rarities.svelte'
 	import Button from '$lib/components/ui/button/button.svelte'
-	import toast, { Toaster } from 'svelte-french-toast'
+	import { Toaster } from '$lib/components/ui/sonner'
+	import { toast } from 'svelte-sonner'
 
 	const localStorageObject: { [key: string]: any } = {
 		connectionUrl: 'www',
@@ -139,7 +140,7 @@
 			document.documentElement.classList.replace('dark', 'light')
 		}
 		if (changes.length > 0) {
-			toast.success(`Set ${changes.map(change => change.trim()).join(', ')}`)
+			toast(`Set ${changes.map(change => change.trim()).join(', ')}`)
 		} else {
 			toast('Nothing was changed... ¯_(ツ)_/¯')
 		}
