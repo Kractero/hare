@@ -1,97 +1,102 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
-	import InputCredentials from '$lib/component/InputCredentials.svelte';
-	import { parseXML } from '$lib/helpers/utils';
-	import Buttons from '$lib/component/Buttons.svelte';
-	import Terminal from '$lib/component/Terminal.svelte';
-	import { pushHistory } from '$lib/helpers/utils';
-	import ToolContent from '$lib/component/ToolContent.svelte';
-	import Select from '$lib/component/Select.svelte';
-	import Input from '$lib/component/Input.svelte';
-	import { page } from '$app/stores';
+	import { onDestroy, onMount } from 'svelte'
+	import { page } from '$app/stores'
+	import Buttons from '$lib/components/Buttons.svelte'
+	import FormInput from '$lib/components/FormInput.svelte'
+	import FormSelect from '$lib/components/FormSelect.svelte'
+	import InputCredentials from '$lib/components/InputCredentials.svelte'
+	import Terminal from '$lib/components/Terminal.svelte'
+	import ToolContent from '$lib/components/ToolContent.svelte'
+	import { pushHistory } from '$lib/helpers/navigation'
+	import { parseXML } from '$lib/helpers/parser'
+	import { checkUserAgent } from '$lib/helpers/validate'
 
-	const abortController = new AbortController();
-	let puppets = '';
-	let main = '';
-	let progress = '';
-	let stoppable = false;
-	let stopped = true;
-	let mode = 'Puppets';
-	let region = '';
+	const abortController = new AbortController()
+	let puppets = ''
+	let main = ''
+	let progress = ''
+	let stoppable = false
+	let stopped = true
+	let mode = 'Puppets'
+	let region = ''
+	let errors: Array<{ field: string | number; message: string }> = []
+
 	onMount(() => {
-		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || '';
-		puppets = (localStorage.getItem('puppets') as string) || '';
+		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
+		puppets = (localStorage.getItem('puppets') as string) || ''
 		mode =
-			$page.url.searchParams.get('mode') || (localStorage.getItem('mode') as string) || 'Puppets';
+			$page.url.searchParams.get('mode') || (localStorage.getItem('mode') as string) || 'Puppets'
 		region =
-			$page.url.searchParams.get('region') || (localStorage.getItem('region') as string) || '';
-	});
-	onDestroy(() => abortController.abort());
+			$page.url.searchParams.get('region') || (localStorage.getItem('region') as string) || ''
+	})
+	onDestroy(() => abortController.abort())
 
 	async function lastactivity(main: string, puppets: string) {
-		pushHistory(`?main=${main}${mode ? `&mode=${mode}` : ''}${region ? `&region=${region}` : ''}`);
-		progress = '';
-		stoppable = true;
-		stopped = false;
+		pushHistory(`?main=${main}${mode ? `&mode=${mode}` : ''}${region ? `&region=${region}` : ''}`)
+		errors = checkUserAgent('main')
+		if (errors.length > 0) return
+		progress = ''
+		stoppable = true
+		stopped = false
 		if (mode.toLowerCase() === 'puppets') {
-			let puppetsList = puppets.split('\n');
+			let puppetsList = puppets.split('\n')
 			for (let i = 0; i < puppetsList.length; i++) {
 				if (abortController.signal.aborted || stopped) {
-					break;
+					break
 				}
-				let nation = puppetsList[i];
+				let nation = puppetsList[i]
 				try {
 					const xml = await parseXML(
 						`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=lastactivity`,
 						main
-					);
-					const lastActive: string = xml.NATION.LASTACTIVITY;
-					progress += `<p>${nation} with last seen ${lastActive}.</p>`;
+					)
+					const lastActive: string = xml.NATION.LASTACTIVITY
+					progress += `<p>${nation} with last seen ${lastActive}.</p>`
 				} catch (err) {
-					progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
+					progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
 				}
 			}
 		} else {
 			const xml = await parseXML(
 				`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?region=${region}&q=nations`,
 				main
-			);
-			const nations = xml.REGION.NATIONS ? xml.REGION.NATIONS.split(':') : [];
+			)
+			const nations = xml.REGION.NATIONS ? xml.REGION.NATIONS.split(':') : []
 			for (let i = 0; i < nations.length; i++) {
 				if (abortController.signal.aborted || stopped) {
-					break;
+					break
 				}
-				let nation = nations[i];
+				let nation = nations[i]
 				try {
 					const xml = await parseXML(
 						`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=lastactivity`,
 						main
-					);
-					const lastActive: string = xml.NATION.LASTACTIVITY;
-					progress += `<p>${nation} with last seen ${lastActive}.</p>`;
+					)
+					const lastActive: string = xml.NATION.LASTACTIVITY
+					progress += `<p>${nation} with last seen ${lastActive}.</p>`
 				} catch (err) {
-					progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
+					progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
 				}
 			}
 		}
-		progress += `<p>Wiz finished</p>`;
-		stoppable = false;
+		progress += `<p>Wiz finished</p>`
+		stoppable = false
 	}
 </script>
 
 <ToolContent toolTitle="Wiz" caption="Query all your nations for their last logged in date." />
 
-<div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
+<div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form
 		on:submit|preventDefault={async () => await lastactivity(main, puppets)}
 		class="flex flex-col gap-8"
 	>
-		<Select name="Mode" bind:mode options={['Puppets', 'Region']} />
+		<FormSelect id="mode" label="Mode" bind:bindValue={mode} items={['Puppets', 'Region']} />
 		{#if mode.toLowerCase() === 'region'}
-			<Input text={`User Agent`} bind:bindValue={main} forValue="main" required={true} />
-			<Input text={`Region`} bind:bindValue={region} forValue="region" required={true} />
+			<FormInput label={`User Agent`} bind:bindValue={main} id="main" required={true} />
+			<FormInput label={`Region`} bind:bindValue={region} id="region" required={true} />
 		{:else}
-			<InputCredentials bind:main bind:puppets authenticated={false} />
+			<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
 		{/if}
 		<Buttons stopButton={true} bind:stopped bind:stoppable />
 	</form>
