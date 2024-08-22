@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
-	import Input from '$lib/component/Input.svelte'
-	import Select from '$lib/component/Select.svelte'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import FormInput from '$lib/components/FormInput.svelte'
 	import FormSelect from '$lib/components/FormSelect.svelte'
@@ -11,8 +9,7 @@
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { pushHistory } from '$lib/helpers/navigation'
 	import { parseXML } from '$lib/helpers/parser'
-	import { validate } from '$lib/helpers/validate'
-	import { grSchema } from '$lib/schema'
+	import { checkUserAgent } from '$lib/helpers/validate'
 	import type { Card, Issue } from '$lib/types'
 
 	const abortController = new AbortController()
@@ -48,12 +45,7 @@
 		pushHistory(
 			`?main=${main}&mode=${mode}${transferCard && `&goldretrieverTransferCard=${transferCard}`}`
 		)
-		errors = validate(grSchema, {
-			useragent: main,
-			mode: mode,
-			puppets: puppets,
-			transferCard: transferCard,
-		})
+		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		downloadable = false
 		stoppable = true
@@ -182,7 +174,6 @@
 			items={['Include', 'Skip']}
 		/>
 		<FormInput
-			bind:errors
 			label={`Transfer Card`}
 			subTitle="(optional: id,season)"
 			bind:bindValue={transferCard}

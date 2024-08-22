@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
-	import Select from '$lib/component/Select.svelte'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import OpenButton from '$lib/components/buttons/OpenButton.svelte'
 	import FormSelect from '$lib/components/FormSelect.svelte'
@@ -10,8 +9,7 @@
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { pushHistory } from '$lib/helpers/navigation'
 	import { parseXML } from '$lib/helpers/parser'
-	import { validate } from '$lib/helpers/validate'
-	import { giSchema } from '$lib/schema'
+	import { checkUserAgent } from '$lib/helpers/validate'
 	import type { Issue } from '$lib/types'
 
 	const abortController = new AbortController()
@@ -46,12 +44,7 @@
 
 	async function gotIssues() {
 		pushHistory(`?main=${main}&mode=${mode}&count=${issueCount}`)
-		errors = validate(giSchema, {
-			useragent: main,
-			mode: mode,
-			puppets: puppets,
-			issuesCount: issueCount,
-		})
+		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		downloadable = false
 		stoppable = true

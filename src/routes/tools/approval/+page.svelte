@@ -9,8 +9,7 @@
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { pushHistory } from '$lib/helpers/navigation'
 	import { parseXML } from '$lib/helpers/parser'
-	import { validate } from '$lib/helpers/validate'
-	import { approvalSchema } from '$lib/schema'
+	import { checkUserAgent } from '$lib/helpers/validate'
 
 	const abortController = new AbortController()
 
@@ -38,7 +37,7 @@
 	onDestroy(() => abortController.abort())
 	async function approvals() {
 		pushHistory(`?main=${main}&council=${council}&proposal=${proposalid}`)
-		errors = validate(approvalSchema, { useragent: main, council: council, proposalid: proposalid })
+		console.log(checkUserAgent(main))
 		if (errors.length > 0) return
 		downloadable = false
 		stoppable = true
@@ -116,7 +115,6 @@
 		/>
 		<FormInput
 			bind:bindValue={proposalid}
-			bind:errors
 			id="proposalid"
 			label="Proposal ID"
 			placeholder="311"

@@ -9,8 +9,7 @@
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { pushHistory } from '$lib/helpers/navigation'
 	import { parseXML } from '$lib/helpers/parser'
-	import { validate } from '$lib/helpers/validate'
-	import { flagSchema } from '$lib/schema'
+	import { checkUserAgent } from '$lib/helpers/validate'
 
 	const abortController = new AbortController()
 	let progress = ''
@@ -41,13 +40,8 @@
 	async function ping() {
 		downloadable = false
 		pushHistory(`?main=${main}&mode=${mode}`)
-		errors = validate(flagSchema, {
-			useragent: main,
-			mode: mode,
-			flags: flags,
-			mottos: mottos,
-			puppets: puppets,
-		})
+		errors = checkUserAgent(main)
+		if (errors.length > 0) return
 		stoppable = true
 		stopped = false
 		progress = '<p>Initiating Flag Manager...</p>'

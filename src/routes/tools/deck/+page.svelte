@@ -9,8 +9,7 @@
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { pushHistory } from '$lib/helpers/navigation'
 	import { parseXML } from '$lib/helpers/parser'
-	import { validate } from '$lib/helpers/validate'
-	import { deckSchema } from '$lib/schema'
+	import { checkUserAgent } from '$lib/helpers/validate'
 	import type { Card } from '$lib/types'
 
 	let progress = ''
@@ -43,13 +42,7 @@
 		pushHistory(
 			`?main=${main}&nation=${checkObject}&mode=${mode}&type=${type}&duplicates=${duplicates}`
 		)
-		errors = validate(deckSchema, {
-			useragent: main,
-			type: type,
-			mode: mode,
-			duplicates: duplicates,
-			checkObject: checkObject,
-		})
+		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		progress = ''
 		if (type.toLowerCase() === 'deck') {
@@ -107,7 +100,6 @@
 	<form on:submit|preventDefault={() => nen()} class="flex flex-col gap-8">
 		<UserAgent bind:main bind:errors />
 		<FormInput
-			bind:errors
 			placeholder="Nation or Collection"
 			label={type.toLowerCase() === 'deck' ? `Nation` : 'Collection'}
 			bind:bindValue={checkObject}

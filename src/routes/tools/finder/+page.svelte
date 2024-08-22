@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
-	import OpenButton from '$lib/component/OpenButton.svelte'
 	import Buttons from '$lib/components/Buttons.svelte'
+	import OpenButton from '$lib/components/buttons/OpenButton.svelte'
 	import FormInput from '$lib/components/FormInput.svelte'
 	import FormSelect from '$lib/components/FormSelect.svelte'
 	import FormTextArea from '$lib/components/FormTextArea.svelte'
@@ -12,8 +12,7 @@
 	import Button from '$lib/components/ui/button/button.svelte'
 	import { pushHistory } from '$lib/helpers/navigation'
 	import { parser, parseXML } from '$lib/helpers/parser'
-	import { validate } from '$lib/helpers/validate'
-	import { finderSchema } from '$lib/schema'
+	import { checkUserAgent } from '$lib/helpers/validate'
 	import type { Card } from '$lib/types'
 
 	const abortController = new AbortController()
@@ -46,13 +45,7 @@
 
 	async function finder(main: string, puppets: string) {
 		pushHistory(`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ''}`)
-		errors = validate(finderSchema, {
-			useragent: main,
-			giftto: giftee,
-			finderlist: finderlist,
-			puppets: puppets,
-			mode: mode,
-		})
+		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		downloadable = false
 		stoppable = true
@@ -249,7 +242,6 @@
 		/>
 		{#if mode === 'Gift'}
 			<FormInput
-				bind:errors
 				placeholder="Kractero"
 				label={'Gift To'}
 				bind:bindValue={giftee}
@@ -276,7 +268,6 @@
 		</div>
 		<FormTextArea
 			bind:bindValue={finderlist}
-			bind:errors
 			label={'Cards to Find'}
 			placeholder={'1'}
 			id="finderlist"

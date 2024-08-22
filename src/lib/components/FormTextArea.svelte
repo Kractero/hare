@@ -10,7 +10,7 @@
 	export let subTitle: string = ''
 	export let required: boolean = false
 
-	export let errors: Array<{ field: string | number; message: string }> = []
+	// export let errors: Array<{ field: string | number; message: string }> = []
 </script>
 
 <div class={`flex max-w-lg items-center justify-between gap-4`}>
@@ -30,8 +30,8 @@
 	/>
 </div>
 
-{#if errors && errors.length > 0 && errors.find(error => error.field === id)}
+<!-- {#if errors && errors.length > 0 && errors.find(error => error.field === id)}
 	<p class="max-w-lg text-wrap text-sm font-medium text-destructive">
 		{errors.find(error => error.field === id)?.message}
 	</p>
-{/if}
+{/if} -->

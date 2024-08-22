@@ -2,14 +2,12 @@
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
-	import Puppets from '$lib/components/formFields/Puppets.svelte'
-	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
+	import InputCredentials from '$lib/components/InputCredentials.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { nsIterator } from '$lib/helpers/builders'
 	import { pushHistory } from '$lib/helpers/navigation'
-	import { validate } from '$lib/helpers/validate'
-	import { creationSchema } from '$lib/schema'
+	import { checkUserAgent, validate } from '$lib/helpers/validate'
 
 	let progress = ''
 	let content: string
@@ -23,7 +21,7 @@
 	})
 
 	async function login(puppets: string) {
-		errors = validate(creationSchema, { useragent: main, puppets: puppets })
+		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		pushHistory(`?main=${main}`)
 		downloadable = false
@@ -48,8 +46,7 @@
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form on:submit|preventDefault={() => login(puppets)} class="flex flex-col gap-8">
-		<UserAgent bind:main bind:errors />
-		<Puppets bind:puppets />
+		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
 		<Buttons {downloadable} downloadButton={true} {content} />
 	</form>
 	<Terminal bind:progress />

@@ -14,7 +14,6 @@
 <Puppets bind:puppets />
 {#if authenticated}
 	<FormInput
-		bind:errors
 		placeholder="hunter2"
 		label={'Password'}
 		bind:bindValue={password}

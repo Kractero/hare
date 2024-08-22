@@ -14,6 +14,7 @@
 	import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte'
 	import { beforeUnload, pushHistory } from '$lib/helpers/navigation'
 	import { parser, parseXML } from '$lib/helpers/parser'
+	import { checkUserAgent } from '$lib/helpers/validate'
 	import type { Card } from '$lib/types'
 
 	const abortController = new AbortController()
@@ -122,6 +123,8 @@
 		pushHistory(
 			`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ''}${owners ? `&owners=${owners}` : ''}${cardcount ? `&cardcount=${cardcount}` : ''}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ''}${flagwhitelist ? `&flags=${flagwhitelist.replaceAll('\n', ',')}` : ''}${finderlist ? `&ids=${finderlist.replaceAll('\n', ',')}` : ''}${skipseason ? `&skipseason=${skipseason}` : ''}${skipexnation ? `&skipexnation=${skipexnation}` : ''}`
 		)
+		errors = checkUserAgent(main)
+		if (errors.length > 0) return
 		window.addEventListener('beforeunload', beforeUnload)
 		downloadable = false
 		stoppable = true
@@ -447,7 +450,6 @@
 		/>
 		{#if mode === 'Gift'}
 			<FormInput
-				bind:errors
 				placeholder="Kractero"
 				label={'Gift To'}
 				bind:bindValue={giftee}
@@ -474,14 +476,12 @@
 			id="flags"
 		/>
 		<FormInput
-			bind:errors
 			placeholder="205"
 			label={'Card Count Threshold'}
 			bind:bindValue={cardcount}
 			id="cardcount"
 		/>
 		<FormInput
-			bind:errors
 			placeholder="10"
 			label={'Owner Count Threshold'}
 			bind:bindValue={owners}
@@ -489,11 +489,11 @@
 		/>
 		<div class="flex max-w-lg justify-between gap-4">
 			<p class="w-24">Rarity Market Value Threshold</p>
-			<Rarities bind:errors bind:rarities={raritiesMV} />
+			<Rarities bind:rarities={raritiesMV} />
 		</div>
 		<div class="flex max-w-lg justify-between gap-4">
 			<p class="w-24">Rarity Lowest Bid Value Threshold</p>
-			<Rarities bind:errors bind:rarities={raritiesLowestBid} />
+			<Rarities bind:rarities={raritiesLowestBid} />
 		</div>
 		<FormSelect
 			bind:bindValue={skipseason}
@@ -503,7 +503,6 @@
 		/>
 		<FormCheckbox bind:checked={skipexnation} id="skipexnation" label="Skip Exnation" />
 		<FormInput
-			bind:errors
 			placeholder="-1"
 			label={'Maximum Bank Threshold'}
 			bind:bindValue={jdjtransfer}
