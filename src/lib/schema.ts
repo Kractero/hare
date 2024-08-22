@@ -46,3 +46,48 @@ export const endotartSchema = z.object({
 	immune: z.string().min(1),
 	source: z.enum(['XML', 'API']),
 })
+
+const seasonSchema = z.union([z.literal(1), z.literal(2), z.literal(3)])
+
+const finderLineSchema = z.union([
+	z.coerce.number().positive(),
+	z
+		.string()
+		.regex(/^\d+,\d$/, "Must be in the format 'CARDID,SEASON'")
+		.refine(line => {
+			const [cardId, season] = line.split(',')
+			return (
+				z.coerce.number().positive().safeParse(cardId).success &&
+				seasonSchema.safeParse(Number(season)).success
+			)
+		}),
+	z
+		.string()
+		.regex(/^\d+,\d,[^,]+$/, "Must be in the format 'CARDID,SEASON,GIFTTO'")
+		.refine(line => {
+			const [cardId, season] = line.split(',')
+			return (
+				z.coerce.number().positive().safeParse(cardId).success &&
+				seasonSchema.safeParse(Number(season)).success
+			)
+		}),
+])
+
+const finderListSchema = z.string().refine(
+	value => {
+		const lines = value.split('\n').filter(line => line.trim().length > 0)
+		return lines.every(line => finderLineSchema.safeParse(line).success)
+	},
+	{
+		message:
+			"Each line must be either 'CARDID' or 'CARDID,SEASON', or 'CARDID, SEASON,GIFTTO' with season being 1, 2, or 3 and GIFTTO being a valid nation.",
+	}
+)
+
+export const finderSchema = z.object({
+	useragent: userAgent,
+	puppets: z.string(),
+	giftto: userAgent,
+	finderlist: finderListSchema,
+	mode: z.enum(['Gift', 'Sell']),
+})

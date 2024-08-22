@@ -8,6 +8,8 @@
 	export let bindValue: string | number | undefined
 	export let subTitle: string = ''
 	export let required: boolean = false
+	export let disabled: boolean = false
+	export let type = ''
 
 	export let errors: Array<{ field: string | number; message: string }>
 </script>
@@ -22,9 +24,11 @@
 	<Input
 		class="max-w-min text-right text-base"
 		{id}
+		type={type || 'text'}
 		{placeholder}
 		bind:value={bindValue}
 		{required}
+		{disabled}
 	/>
 </div>
 
