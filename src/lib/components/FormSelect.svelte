@@ -21,9 +21,10 @@
 		onSelectedChange={v => {
 			bindValue = v && v.value
 		}}
+		selected={bindValue}
 	>
-		<Select.Trigger class="flex-1">
-			<Select.Value placeholder={items[0]} />
+		<Select.Trigger class="flex-1 justify-end data-[placeholder]:[&>span]:text-textprimary">
+			<Select.Value class="mr-2" placeholder={bindValue} />
 		</Select.Trigger>
 		<Select.Content class="text-left">
 			{#each items as item}
