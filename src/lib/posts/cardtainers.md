@@ -1,23 +1,27 @@
 ---
 title: Cardtainers Advert
-description: Why to use Cartainers
+description: Why to use Cardtainers
 url: cardtainers
 author: Kractero
 order: 3
 ---
 
-[Cardtainers](https://addons.mozilla.org/en-US/firefox/addon/cardtainers/) is a firefox extension that I wasted time on to prevent the need to generate containerise rules every time you make a new puppet. The way it works is by taking an input of puppet names through a textarea when you click the extension icon, then matching the url for /nation= and /container= for each nation, and either creates a container and opens that tab in the new container, or opens the tab in an existing container.
+[Cardtainers](https://addons.mozilla.org/en-US/firefox/addon/cardtainers/) is a Firefox extension designed to simplify the management of containers for NationStates.
 
-Use [Cardtainers](https://addons.mozilla.org/en-US/firefox/addon/cardtainers/) if you don't want to generate container rules all the time, especially if you found nations very often.
+Instead of manually generating container rules every time you create a new puppet, Cardtainers automates this process. It allows you to input a list of puppet names into a textarea when you click the extension icon. The extension then matches the URLs for `/nation=` and `/container=` for each nation, either creating a new container or using an existing one to open the tab.
+
+Use [Cardtainers](https://addons.mozilla.org/en-US/firefox/addon/cardtainers/) if you want to avoid the hassle of generating container rules repeatedly, especially if you're frequently creating new nations.
 
 [Get it here](https://addons.mozilla.org/en-US/firefox/addon/cardtainers/)
 
 ## Differences
 
-Generation of container rules is no longer necessary, you just need to paste in a list of your puppets into the text area under the extension toolbar button like
-    
-```
+With Cardtainers, you no longer need to manually generate container rules. Simply paste a list of your puppets into the textarea under the extension toolbar button, formatted like:
+
+```plaintext
 kazakhstan
 norway
-puppet farmer 1
+puppet farmer1
 ```
+
+Cardtainers will handle the rest, making your workflow more efficient and less tedious.

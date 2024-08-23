@@ -6,100 +6,73 @@ author: Kractero
 order: 1
 ---
 
-To install most of these tools, you will be expected to have some knowledge of the browser. A lot of trading card tools involve automation, through scripting or hotkeys.
+To install and effectively use most of these tools, having a basic understanding of your browser's capabilities is essential. Many trading card tools involve some degree of automation, whether through scripting or hotkeys.
 
-Now, the point of Hare is to make cards easier. However, you still need to put in some effort to make the experience better for yourself. At the minimum, you need to get the **right browser**, a **userscript manager**, and **containers set up**.
+However, no matter which method you choose, certain prerequisites will make your card farming journey smoother and more efficient. Before diving into any specific tool or method, it's important to ensure you have the _right browser_, a _userscript manager_, and _containers_ properly set up.
 
-While it may seem daunting at the start, with some work everything should click and work properly. Follow this to get all the prerequisites installed.
+Getting started may feel overwhelming, but with a little guidance, you'll find that everything falls into place smoothly. This guide will walk you through the essential prerequisites to get you up and running.
+
+It is important to note that while the Hare and Got Issues methods are popular for card farming, they are by no means the only options available. There are several alternative approaches, like RCES by Racoda, or other bespoke tools and strategies tailored to different playstyles and goals.
 
 1. [Note on Browsers](#browsers)
 2. [Installing Userscripts](#userscripts)
 3. [Containers](#containers)
 4. [Python](#programming-languages)
 
-### <a name="browsers"></a> Browsers
+### <a name="browsers">Browsers</a>
 
-Depending on your usecase, you may not need to worry about this section. However, most card farmers should probably keep reading.
+Depending on your specific needs, you might not need to worry too much about this section. However, if you're serious about card farming, it's worth reading on.
 
-Userscripts can work on any browser, as most userscript extensions work on all major browsers. However, most card tools rely on the use of containers, which is only supported by Firefox and its derivatives. Sorry to chromiumites. <a href="https://www.mozilla.org/en-US/firefox/new/" rel="noopener noreferrer" target="_blank">Installing Firefox is quite simple.</a>
+While userscripts can function on almost any browser—thanks to widespread support by userscript extensions—most advanced card farming tools rely on the use of containers. Unfortunately, this feature is only available in Firefox and its derivatives. So, if you're using a Chromium-based browser, you might want to consider switching. <a href="https://www.mozilla.org/en-US/firefox/new/" rel="noopener noreferrer" target="_blank">Installing Firefox is quick and easy.</a>
 
 <div class="flex gap-4 justify-center">
     <a href="https://www.mozilla.org/en-US/firefox/new/" rel="noopener noreferrer" target="_blank">
-        <img src="https://ucarecdn.com/9dc9b403-3b4c-49ba-8154-20880be23d37/firefox_browser_logo_icon_152991-4214717325.png" />
+        <img src="https://ucarecdn.com/9dc9b403-3b4c-49ba-8154-20880be23d37/firefox_browser_logo_icon_152991-4214717325.png" alt="Firefox Browser Logo"/>
     </a>
 </div>
 
-Other options include Firefox ESR, Firefox Nightly, Firefox Developer's Edition, LibreWolf, Floorp, Waterfox, and others, but unless you know what you're doing you should use the original.
+Other alternatives include Firefox ESR, Firefox Nightly, Firefox Developer Edition, LibreWolf, Floorp, Waterfox, and more. However, unless you're familiar with these versions, it's best to stick with the original Firefox.
 
-If you don't plan on using containers, keep using whatever browser you want.
+If you don't plan on using containers, you can continue using whatever browser you prefer.
 
-### <a name="userscripts"></a> Userscripts
+### <a name="userscripts">Userscripts</a>
 
-For most people, userscripts should be enough to take them to the next level. To enable the use of userscripts, you will need a userscript manager.
+For most people, userscripts are the gateway to taking their card farming to the next level. To use userscripts, you'll need a userscript manager.
 
 <div class="flex gap-4 justify-center">
     <a href="https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/" rel="noopener noreferrer" target="_blank">
-        <img src="https://addons.mozilla.org/user-media/addon_icons/683/683490-64.png?modified=1625638973" alt="tampermonkey" />
-    </a>
-    <a href="https://addons.mozilla.org/en-US/firefox/addon/violentmonkey/" rel="noopener noreferrer" target="_blank">
-        <img src="https://addons.mozilla.org/user-media/addon_icons/797/797378-64.png?modified=1692854978" alt="violentmonkey" />
-    </a>
-    <a href="https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/" rel="noopener noreferrer" target="_blank">
-        <img src="https://addons.mozilla.org/user-media/addon_icons/0/748-64.png?modified=1531822767" alt="greasemonkey" />
-    </a>
-    <a href="https://addons.mozilla.org/en-US/firefox/addon/firemonkey/" rel="noopener noreferrer" target="_blank">
-        <img src="https://addons.mozilla.org/user-media/addon_icons/1019/1019336-64.png?modified=f7e6f88a" alt="firemonkey" />
+        <img src="https://addons.mozilla.org/user-media/addon_icons/683/683490-64.png?modified=1625638973" alt="TamperMonkey" />
     </a>
 </div>
 
-There are four primary userscript managers, all with their tradeoffs.
+There are a number of userscript managers, but I would recommend TamperMonkey for most users. It's modern, user-friendly, and works well with most scripts you'll find online. While it's not open source, it's reliable and widely used, making it the best choice for most people.
 
-1. <a href="https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/" rel="noopener noreferrer" target="_blank">TamperMonkey</a>
+To add a script to TamperMonkey, simply click the TamperMonkey icon in your toolbar and select "Create a new script."
 
-   - Probably the best option for 98% of users. It's modern and works well. Sticklers for open source will need to turn away though, as Tampermonkey is closed source and frequently asks for donations.
-
-   To add a script to Tampermonkey, click the Tampermonkey icon and then click create script.
-   ![add script to tampermonkey](https://raw.githubusercontent.com/Kractero/cards-resources/main/static/tampermonkey.png)
-
-2. <a href="https://addons.mozilla.org/en-US/firefox/addon/violentmonkey/" rel="noopener noreferrer" target="_blank">ViolentMonkey</a>
-
-   - Probably the best option for those who don't want to use Tampermonkey. Free and open source. Smaller userbase, and they've had some drama in the past.
-
-   To add a script to Violentmonkey, click the Violentmonkey icon and then click Create a new script.
-   ![add script to Violentmonkey](https://raw.githubusercontent.com/Kractero/cards-resources/main/static/violentmonkey.png)
-
-3. <a href="https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/" rel="noopener noreferrer" target="_blank">GreaseMonkey</a>
-
-   - The old premier userscript manager before there were really any to compete with it. Should work fine, but newer scripts will be incompatible. Generally just go with a newer one.
-
-   To add a script to Greasemonkey, click the Greasemonkey icon and then click the + icon.
-   ![add script to Greasemonkey](https://raw.githubusercontent.com/Kractero/cards-resources/main/static/greasemonkey.png)
-
-4. <a href="https://addons.mozilla.org/en-US/firefox/addon/firemonkey/" rel="noopener noreferrer" target="_blank">FireMonkey</a>
-
-   - A newer userscript manager with a very small userbase but an active creator. Is a bit more difficult to setup as it does not expose or use the same grants as the others. It does double as a user styles manager though.
-
-   To add a script to Firemonkey, click the Firemonkey icon and then click the +JS button.
-   ![add script to Firemonkey](https://raw.githubusercontent.com/Kractero/cards-resources/main/static/firemonkey.png)
+![add script to tampermonkey](https://raw.githubusercontent.com/Kractero/hare/main/static/tampermonkey.png)
 
 If after adding the extension the icon does not appear in your toolbar, you may need to pin it. Click the puzzle icon, then click the settings cog for the extension and click pin to toolbar.
 
-![pin extension to bar](https://raw.githubusercontent.com/Kractero/cards-resources/main/static/pintotoolbar.png)
+![pin extension to bar](https://raw.githubusercontent.com/Kractero/hare/main/static/pintotoolbar.png)
 
-### <a name="containers"></a> Containers
+For those who prefer open-source alternatives or are interested in exploring other options, here are a few:
 
-Containers are not necessary for farming, as you can use any puppet manager that allows you to switch, but it definitely makes the job infinitely easier.
+1. ViolentMonkey - A free and open-source option, though it has a smaller user base.
+2. FireMonkey - A newer, less common option that also manages user styles.
 
-Containers are essentially isolated browser instances
-that retain their own cookies and sessions. This allows you to be logged on to multiple accounts at once.
+### <a name="containers">Containers</a>
 
-As mentioned [above](#browsers), the only browsers that supports this are Firefox and its derivatives. Sorry to chromiumites.
+Containers aren't strictly necessary for farming, as you can use any puppet manager that lets you switch accounts. However, they can make the process much easier.
 
-There are two choices:
+Containers are essentially isolated browser instances that retain their own cookies and sessions. This allows you to be logged in to multiple accounts at once.
 
-1. Cardtainers - Read more here -> <a href="/resources/guides/cardtainers" target="_blank" rel="noreferrer noopener">Cardtainers advert</a>
+As mentioned [above](#browsers), the only browsers that support this feature are Firefox and its derivatives. Sorry to Chromium users.
 
-   The pros to cardtainers is not needing Python, and a quick and easy setup.
+You have two main choices for containers:
+
+1. Cardtainers - Read more here -> [Cardtainers advert](/resources/guides/cardtainers)
+
+   - Pros: No need for Python, quick and easy setup.
 
 2. Containerise
 
@@ -109,41 +82,42 @@ There are two choices:
        </a>
    </div>
 
-   Open Firefox, then <a href="https://addons.mozilla.org/en-US/firefox/addon/containerise/" rel="noopener noreferrer" target="_blank">Install the Containerise addon.</a>
+   Open Firefox, then [Install the Containerise addon](https://addons.mozilla.org/en-US/firefox/addon/containerise/).
 
-   After you have generated some container rules, you can add them by clicking the pencil icon, pasting them in the text area, then hitting the save icon.
+   Once you've generated some container rules, add them by clicking the pencil icon, pasting them in the text area, and hitting the save icon.
 
-   ![pencil icon](https://raw.githubusercontent.com/Kractero/cards-resources/main/static/containerise.png)
+   ![pencil icon](https://raw.githubusercontent.com/Kractero/hare/main/static/containerise.png)
 
-   More steps can be found in <a href="/resources/guides/containers" target="_blank" rel="noreferrer noopener">here</a>.
+   More steps can be found [here](/resources/guides/containers).
 
-### <a name="programming-languages"></a> Programming Languages
+### <a name="programming-languages">Programming Languages</a>
 
-Essentially just Python. Most cards tools in use now are developed using Python, although some exist in other languages. There are a lot of traps you can run into while downloading Python, especially on Windows.
-Some things to watch for include adding python to your path.
+For most card tools, Python is the primary language you'll encounter. While some tools exist in other languages, like C# for Henson or PHP for Sitethief's scripts, Python otherwise dominates the scene. However, there are a few traps you can run into while downloading Python, especially on Windows (which itself is a trap). One of the most common issues is not adding Python to your PATH.
 
-Of course, if you use Linux, you wouldn't have that problem!
+Of course, if you're using Linux, you won't have that problem!
 
 <div class="flex gap-4 justify-center">
     <a href="https://www.python.org/downloads/" rel="noopener noreferrer" target="_blank">
-        <img src="https://ucarecdn.com/b23e066d-1f40-4da7-8df3-d11b1c0e99f4/python-logo-only.png" />
+        <img src="https://ucarecdn.com/b23e066d-1f40-4da7-8df3-d11b1c0e99f4/python-logo-only.png" alt="Python Logo"/>
     </a>
 </div>
 
-Here are the steps on how to download Python and get it working, on Windows.
+Here are the steps to download and install Python on Windows:
 
-1. Visit <a href="https://www.python.org/downloads/" rel="noopener noreferrer" target="_blank">the Python website</a> and click Download Python 3.11.5 (version at the time of writing, yours might be different).
+1. Visit [the Python website](https://www.python.org/downloads/) and click the button to download the latest version.
 
-2. Launch the executable.
+2. Run the downloaded executable.
 
-3. On the open prompt, make sure you check "add python.exe to PATH" and select Install Now (as admin).
+3. In the installation prompt, make sure to check "Add python.exe to PATH," then select "Install Now" (admin rights may be required).
 
-![python add to path install](https://raw.githubusercontent.com/Kractero/cards-resources/main/static/python1.png)
+   ![python add to path install](https://raw.githubusercontent.com/Kractero/hare/main/static/python1.png)
 
-4. Follow the steps to the finish.
+4. Follow the installation steps to completion.
 
-5. If you followed these steps, you should be able to open a Command Prompt, type python, and see the below.
+5. To verify the installation, open a Command Prompt, type `python`, and you should see a Python prompt similar to the one below:
 
-![python in command line](https://raw.githubusercontent.com/Kractero/cards-resources/main/static/python2.png)
+   ![python in command line](https://raw.githubusercontent.com/Kractero/hare/main/static/python2.png)
 
-Congratulations, you should now be able to execute any script with Python by either clicking it or going to the directory with command prompt and doing python SCRIPT_NAME.py .
+Congratulations! You should now be able to execute any Python script by either double-clicking it or by navigating to its directory in the Command Prompt and typing `python SCRIPT_NAME.py`.
+
+It's worth noting that while tools like Hare are designed to make Python unnecessary for most tasks, having Python set up can still be useful if you ever need it. Although other languages like C# (Henson) or PHP (Sitethief) are used in the card farming community, they aren't as common as Python, so you don't need to worry about them as much.
