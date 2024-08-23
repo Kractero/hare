@@ -8,7 +8,7 @@
 
 <header class="mb-32 mt-3 flex w-full items-center justify-between">
 	<a href={`/`} class="flex items-center gap-2">
-		<img src="/hare-icon.png" alt="Computer" />
+		<img src="/favicon.png" alt="Hare" />
 		<h2 class="ml-2 text-3xl font-semibold tracking-tight">Hare</h2>
 	</a>
 	<div class="flex gap-1 sm:gap-4">
