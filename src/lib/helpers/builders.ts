@@ -383,3 +383,31 @@ let script = `
       });
   });
   `
+
+export function timeAgo(date: string) {
+	const now = new Date()
+	const createdDate = new Date(date)
+
+	const yearsDiff = now.getFullYear() - createdDate.getFullYear()
+	const monthsDiff = now.getMonth() - createdDate.getMonth()
+	const daysDiff = now.getDate() - createdDate.getDate()
+
+	let years = yearsDiff
+	let months = monthsDiff
+	let days = daysDiff
+
+	if (days < 0) {
+		months -= 1
+		days += new Date(now.getFullYear(), now.getMonth(), 0).getDate()
+	}
+	if (months < 0) {
+		years -= 1
+		months += 12
+	}
+
+	const yearsStr = years > 0 ? `${years} year${years > 1 ? 's' : ''} ` : ''
+	const monthsStr = months > 0 ? `${months} month${months > 1 ? 's' : ''} ` : ''
+	const daysStr = days > 0 ? `${days} day${days > 1 ? 's' : ''} ` : ''
+
+	return `${yearsStr}${monthsStr}${years < 1 && months < 1 ? daysStr : ''} ago`.trim()
+}

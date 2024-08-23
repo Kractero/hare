@@ -1,82 +1,89 @@
 <script lang="ts">
-    import Card  from "$lib/component/Card.svelte"
-    import Filterer from "$lib/component/Filterer.svelte"
-	import { filter, searchAuthor } from '$lib/cards-resources/store';
-	import { projects } from '$lib/cards-resources/projects';
-	import { onMount } from 'svelte';
-	import Head from "$lib/component/Head.svelte";
-	let searchTerm = '';
-	onMount(() => {
-		const observer = new IntersectionObserver((entries) => {
-			entries.forEach((entry, i) => {
-				if (entry.isIntersecting) {
-					entry.target.classList.add('show');
-				} else {
-					entry.target.classList.remove('show');
-				}
-			});
-		});
-		const posts = document.querySelectorAll('.clienthide');
-		posts.forEach((post) => observer.observe(post));
-	});
+	import { filter } from '$lib/cards-resources/store'
+	import Filterer from '$lib/components/Filterer.svelte'
+	import Head from '$lib/components/Head.svelte'
+	import Card from '$lib/components/ResourceCard.svelte'
+	import ResourceSelect from '$lib/components/ResourceSelect.svelte'
+	import projects from '$lib/data/projects.json'
+
+	let sort = 'Last Updated (desc)'
+	let author = 'All'
+	let category = 'All'
+
+	const authorsArray = ['All', ...projects.map(project => project.author).sort()]
+	const authors = new Set(authorsArray)
+	const categoriesArray = ['All', ...projects.map(project => project.category).sort()]
+	const categories = new Set(categoriesArray)
 </script>
 
-<Head title={"Hare - Resources"} description={"Searchable hub of NationStates tools, utilies, and scripts."} />
+<Head
+	title={'Hare - Resources'}
+	description={'Searchable hub of NationStates tools, utilies, and scripts.'}
+/>
 
-<p class="text-3xl font-bold mb-4">Search</p>
-<input class="w-full h-10 rounded-md max-w-lg lg:max-w-5xl p-4 mb-8 border border-black dark:border-none text-black" bind:value={searchTerm} />
+<ResourceSelect
+	bind:bindValue={sort}
+	label="Sort By"
+	items={['Last Update (asc)', 'Last Update (desc)', 'Creation (asc)', 'Creation (asc)']}
+/>
 
-<p class="text-xl font-semibold">or filter by tags</p>
+<ResourceSelect bind:bindValue={author} label="Author" items={Array.from(authors)} />
+<ResourceSelect bind:bindValue={category} label="Categories" items={Array.from(categories)} />
+
 <Filterer />
 
-{#if $searchAuthor}
-	<div class="text-xl relative">
-		Tools by:
-		<button
-			on:click={() => searchAuthor.set('')}
-			class="ml-5 font-bold p-3 bg-tertiary text-label rounded-xl"
-		>
-			<p>
-				<span class="text-red-500">X</span>
-				<span>{$searchAuthor}</span>
-			</p>
-		</button>
-	</div>
-{/if}
-
-<div class="max-w-5xl flex flex-wrap justify-center gap-4 my-8">
+<div class="my-8 grid max-w-5xl grid-cols-2 justify-center gap-4 lg:grid-cols-3">
 	{#each projects
-		.filter((project) => {
+		.filter(project => {
 			if ($filter && $filter !== 'All') {
-				return project.keywords.includes($filter);
+				return project.keywords.includes($filter)
 			} else {
-				return project;
+				return project
 			}
 		})
-		.filter((project) => {
-			if (searchTerm) {
-				return project.description.toLowerCase().includes(searchTerm.toLowerCase()) || project.name
-						.toLowerCase()
-						.includes(searchTerm.toLowerCase()) || project.author
-						.toLowerCase()
-						.includes(searchTerm.toLowerCase());
+		.filter(project => {
+			if (author !== 'All') {
+				return project.author === author
 			} else {
-				return project;
+				return project
 			}
 		})
-		.filter((project) => {
-			if ($searchAuthor) {
-				return project.author === $searchAuthor;
+		.filter(project => {
+			if (category !== 'All') {
+				return project.category === category
 			} else {
-				return project;
+				return project
+			}
+		})
+		.sort((a, b) => {
+			const dateA = new Date(a.lastUpdate).getTime()
+			const dateB = new Date(b.lastUpdate).getTime()
+			const creationA = new Date(a.created).getTime()
+			const creationB = new Date(b.created).getTime()
+
+			switch (sort) {
+				case 'Last Update (asc)':
+					return dateA - dateB
+				case 'Last Update (desc)':
+					return dateB - dateA
+				case 'Creation (asc)':
+					return creationA - creationB
+				case 'Creation (desc)':
+					return creationB - creationA
+				default:
+					return 0
 			}
 		}) as project}
 		<Card
 			name={project.name}
 			author={project.author}
+			authorUrl={project.authorUrl}
 			url={project.url}
 			keywords={project.keywords}
 			description={project.description}
+			category={project.category}
+			lastUpdate={project.lastUpdate}
+			created={project.created}
 		/>
 	{/each}
 </div>
