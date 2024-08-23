@@ -1,5 +1,5 @@
 <script lang="ts">
-	import FormInput from '../FormInput.svelte'
+	import FormInput from '$lib/components/FormInput.svelte'
 
 	export let main: string
 	export let errors: Array<{ field: string | number; message: string }>

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
-	import Input from '$lib/component/Input.svelte'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
 	import FormInput from '$lib/components/FormInput.svelte'
@@ -11,7 +10,6 @@
 	import { parseXML } from '$lib/helpers/parser'
 	import { checkUserAgent } from '$lib/helpers/validate'
 
-	// import Textarea from '$lib/component/Textarea.svelte';
 	const abortController = new AbortController()
 	let progress = ''
 	let stoppable = false

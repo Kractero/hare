@@ -1,5 +1,5 @@
 <script lang="ts">
-	import FormTextArea from '../FormTextArea.svelte'
+	import FormTextArea from '$lib/components/FormTextArea.svelte'
 
 	export let puppets: string
 </script>

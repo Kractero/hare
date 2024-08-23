@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
-	import Input from '$lib/component/Input.svelte'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'

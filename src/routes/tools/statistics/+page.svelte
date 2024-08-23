@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
-	import Textarea from '$lib/component/Textarea.svelte'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import FormTextArea from '$lib/components/FormTextArea.svelte'
 	import InputCredentials from '$lib/components/InputCredentials.svelte'

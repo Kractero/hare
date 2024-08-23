@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
-	import Input from '$lib/component/Input.svelte'
-	import Select from '$lib/component/Select.svelte'
-	import Textarea from '$lib/component/Textarea.svelte'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
 	import FormInput from '$lib/components/FormInput.svelte'

@@ -21,7 +21,6 @@
 		"^@/lib/helpers/(.*)$",
 		"^@/lib/components/ui/(.*)$",
 		"^@/lib/components/(.*)$",
-		"^@/lib/component/(.*)$",
 		"^@/lib/(.*)$",
 		"",
 		"^[./]"
