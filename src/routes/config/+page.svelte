@@ -8,6 +8,7 @@
 	import Rarities from '$lib/components/Rarities.svelte'
 	import Button from '$lib/components/ui/button/button.svelte'
 	import { Toaster } from '$lib/components/ui/sonner'
+	import { resetMode, setMode } from 'mode-watcher'
 	import { toast } from 'svelte-sonner'
 
 	const localStorageObject: { [key: string]: any } = {
@@ -75,10 +76,7 @@
 
 	onMount(() => {
 		Object.keys(localStorageObject).forEach(key => {
-			if (key === 'theme') {
-				localStorageObject.theme =
-					localStorage.getItem(key)?.toLowerCase() || localStorageObject.theme
-			} else if (key === 'junkdajunkExnation') {
+			if (key === 'junkdajunkExnation') {
 				localStorageObject.junkdajunkExnation = localStorage.getItem(key) === 'true'
 			} else {
 				localStorageObject[key] = localStorage.getItem(key) || localStorageObject[key]
@@ -133,12 +131,6 @@
 				localStorage.setItem(key, localStorageObject[key])
 			}
 		}
-		document.documentElement.setAttribute('data-theme', localStorage.getItem('theme')!)
-		if (localStorage.getItem('theme') === 'dark') {
-			document.documentElement.classList.replace('light', 'dark')
-		} else {
-			document.documentElement.classList.replace('dark', 'light')
-		}
 		if (changes.length > 0) {
 			toast(`Set ${changes.map(change => change.trim()).join(', ')}`)
 		} else {
@@ -172,7 +164,7 @@
 		/>
 		<FormInput label="User Agent" bind:bindValue={localStorageObject.main} id="main" />
 		<FormTextArea label="General Puppets" bind:bindValue={localStorageObject.puppets} id="pup" />
-		<p class="text-xs">These puppets do not apply for gotIssues or junkdajunk.</p>
+		<p class="text-center text-xs">These puppets do not apply for gotIssues or junkdajunk.</p>
 		<div class="flex max-w-lg justify-between gap-4">
 			<label class="w-24" for="pass">Password</label>
 			<FormInput

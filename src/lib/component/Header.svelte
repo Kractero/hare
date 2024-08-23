@@ -1,9 +1,25 @@
-<header class="flex justify-between w-full mb-32 mt-3">
+<script lang="ts">
+	import { Button } from '$lib/components/ui/button/index.js'
+	import Moon from 'lucide-svelte/icons/moon'
+	import Sun from 'lucide-svelte/icons/sun'
+	import { toggleMode } from 'mode-watcher'
+</script>
+
+<header class="mb-32 mt-3 flex w-full justify-between">
 	<a href={`/`} class="flex items-center">
 		<img src="/Computer.png" alt="Computer" />
-		<h2 class="text-2xl font-bold tracking-tight ml-2">Hare</h2>
+		<h2 class="ml-2 text-2xl font-bold tracking-tight">Hare</h2>
 	</a>
 	<div class="flex gap-1 sm:gap-4">
+		<Button on:click={toggleMode} variant="outline" size="icon">
+			<Sun
+				class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+			/>
+			<Moon
+				class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+			/>
+			<span class="sr-only">Toggle theme</span>
+		</Button>
 		<a class="flex items-center gap-2" href={`/config`}>
 			<p class="text-xl font-semibold">Settings</p>
 			<img src="/Settings.png" alt="Settings" />
