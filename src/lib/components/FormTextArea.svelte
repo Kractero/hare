@@ -5,7 +5,6 @@
 	export let id: string
 	export let label: string
 	export let bindValue: string | number | undefined
-	export let disabled: boolean = false
 	export let subTitle: string = ''
 	export let required: boolean = false
 

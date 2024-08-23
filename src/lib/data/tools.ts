@@ -12,7 +12,7 @@ export const tools: Array<Tool> = [
 	},
 	{
 		name: 'JunkDaJunk',
-		slug: 'Junkdajunk',
+		slug: 'junkdajunk',
 		description: 'An even faster way to junk cards with JavaScript, with configurable rules.',
 	},
 	{

@@ -1,11 +1,11 @@
 <script>
-	import Head from "$lib/component/Head.svelte";
+	import Head from '$lib/components/Head.svelte'
 </script>
 
 <Head title={`Hare - Disclaimer`} description="Important disclaimer." />
 
-<div class="max-w-lg lg:max-w-5xl flex flex-col gap-4">
-	<p>TL;DR: READ THIS, read the rules ask for help if you need help understanding scripts,</p>
+<div class="prose flex max-w-lg flex-col gap-4 dark:prose-invert lg:max-w-5xl">
+	<h2>TL;DR: READ THIS, read the rules ask for help if you need help understanding scripts,</h2>
 
 	<p>YOU A HUMAN MUST PUSH A BUTTON TO DO AN EVENT.</p>
 
