@@ -66,7 +66,7 @@
 </script>
 
 <ToolContent
-	toolTitle="Farm Detector"
+	toolTitle="Whos Farmin"
 	caption="Detect whose farming at the moment from the last 200 world issue happenings."
 	additional={`<p class="text-xs mb-16">
 	Puppets are linked to their owners via <a class="underline" target="_blank" rel="noreferrer noopener" href="https://docs.google.com/spreadsheets/d/1MZ-4GLWAZDgB1TDvwtssEcVKHKunOKi3l90Jof1pBB4/">9003's sheet</a>, submit

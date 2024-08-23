@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { Check, X } from 'lucide-svelte'
+	import Check from 'lucide-svelte/icons/check'
+	import X from 'lucide-svelte/icons/x'
 
 	let json: Array<{ [key: string]: boolean }> = []
 	let changelog: any[] = []
