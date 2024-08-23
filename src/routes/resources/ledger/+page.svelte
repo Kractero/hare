@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
+	import ToolContent from '$lib/components/ToolContent.svelte'
 	import Button from '$lib/components/ui/button/button.svelte'
 
 	const validHeaders = ['Nation', 'Deck Value', 'Junk Value', 'Bank', 'Card Count', 'Deck Capacity']
@@ -82,11 +83,16 @@
 	})
 </script>
 
-<head>
-	<title>Hare - Gold Ledger</title>
-</head>
+<ToolContent
+	toolTitle="Ledger"
+	caption="Track the trades and movement of the top 100."
+	originalBlurb="rewritten in Svelte for Hare use by Kractero"
+	author="Kractero"
+	link="https://ledger.kractero.com"
+	additional={`<p class="mb-16">As of ${displayDate || maxDate}</p>`}
+/>
 
-<div class="mt-3 flex flex-col gap-2">
+<div class="flex flex-col gap-2">
 	<input
 		class="mx-auto border-none bg-transparent p-2 text-center text-xl text-primary"
 		type="date"

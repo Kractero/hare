@@ -53,6 +53,9 @@
 <ToolContent
 	toolTitle="Legendary Tracker"
 	caption="Track the existence of legendaries per season"
+	originalBlurb="rewritten in Svelte for Hare use by Kractero"
+	author="Kractero"
+	link="https://ledger.kractero.com/legendaries"
 	additional={`<p class="mb-16">As of ${date} (11:30 PM/23:30 UTC-7)</p>`}
 />
 
