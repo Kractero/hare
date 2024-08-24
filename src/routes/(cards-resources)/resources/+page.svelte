@@ -38,7 +38,7 @@
 		<ResourceSelect
 			bind:bindValue={sort}
 			label="Sort By"
-			items={['Last Update (asc)', 'Last Update (desc)', 'Creation (asc)', 'Creation (asc)']}
+			items={['Last Update (asc)', 'Last Update (desc)', 'Creation (asc)', 'Creation (desc)']}
 		/>
 
 		<ResourceSelect bind:bindValue={author} label="Author" items={Array.from(authors)} />
