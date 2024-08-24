@@ -49,11 +49,11 @@ There are a number of userscript managers, but I would recommend TamperMonkey fo
 
 To add a script to TamperMonkey, simply click the TamperMonkey icon in your toolbar and select "Create a new script."
 
-![add script to tampermonkey](https://raw.githubusercontent.com/Kractero/hare/main/static/tampermonkey.png)
+![add script to tampermonkey](https://raw.githubusercontent.com/Kractero/hare/main/static/guides/tampermonkey.png)
 
 If after adding the extension the icon does not appear in your toolbar, you may need to pin it. Click the puzzle icon, then click the settings cog for the extension and click pin to toolbar.
 
-![pin extension to bar](https://raw.githubusercontent.com/Kractero/hare/main/static/pintotoolbar.png)
+![pin extension to bar](https://raw.githubusercontent.com/Kractero/hare/main/static/guides/pintotoolbar.png)
 
 For those who prefer open-source alternatives or are interested in exploring other options, here are a few:
 
@@ -86,7 +86,7 @@ You have two main choices for containers:
 
    Once you've generated some container rules, add them by clicking the pencil icon, pasting them in the text area, and hitting the save icon.
 
-   ![pencil icon](https://raw.githubusercontent.com/Kractero/hare/main/static/containerise.png)
+   ![pencil icon](https://raw.githubusercontent.com/Kractero/hare/main/static/guides/containerise.png)
 
    More steps can be found [here](/resources/guides/containers).
 
@@ -110,13 +110,13 @@ Here are the steps to download and install Python on Windows:
 
 3. In the installation prompt, make sure to check "Add python.exe to PATH," then select "Install Now" (admin rights may be required).
 
-   ![python add to path install](https://raw.githubusercontent.com/Kractero/hare/main/static/python1.png)
+   ![python add to path install](https://raw.githubusercontent.com/Kractero/hare/main/static/guides/python1.png)
 
 4. Follow the installation steps to completion.
 
 5. To verify the installation, open a Command Prompt, type `python`, and you should see a Python prompt similar to the one below:
 
-   ![python in command line](https://raw.githubusercontent.com/Kractero/hare/main/static/python2.png)
+   ![python in command line](https://raw.githubusercontent.com/Kractero/hare/main/static/guides/python2.png)
 
 Congratulations! You should now be able to execute any Python script by either double-clicking it or by navigating to its directory in the Command Prompt and typing `python SCRIPT_NAME.py`.
 

@@ -18,7 +18,7 @@ To extend a website's functionality and automate tasks, you'll need to install a
 
 Once installed, click the TamperMonkey icon in your browser's toolbar Click "Create a new script" to open the script editor.
 
-![add script to tampermonkey](https://raw.githubusercontent.com/Kractero/hare/main/static/tampermonkey.png)
+![add script to tampermonkey](https://raw.githubusercontent.com/Kractero/hare/main/static/guides/tampermonkey.png)
 
 Paste your script into the editor window. lick the "File" menu and select "Save" to activate the script.
 
