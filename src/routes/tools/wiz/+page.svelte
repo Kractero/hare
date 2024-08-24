@@ -33,7 +33,7 @@
 
 	async function lastactivity(main: string, puppets: string) {
 		pushHistory(`?main=${main}${mode ? `&mode=${mode}` : ''}${region ? `&region=${region}` : ''}`)
-		errors = checkUserAgent('main')
+		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		progress = ''
 		stoppable = true
@@ -93,7 +93,7 @@
 	>
 		<FormSelect id="mode" label="Mode" bind:bindValue={mode} items={['Puppets', 'Region']} />
 		{#if mode.toLowerCase() === 'region'}
-			<FormInput label={`User Agent`} bind:bindValue={main} id="main" required={true} />
+			<FormInput bind:errors label={`User Agent`} bind:bindValue={main} id="main" required={true} />
 			<FormInput label={`Region`} bind:bindValue={region} id="region" required={true} />
 		{:else}
 			<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />

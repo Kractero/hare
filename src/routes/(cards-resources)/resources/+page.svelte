@@ -55,7 +55,7 @@
 		Various guides for setting up tools and prerequisites.
 	</p>
 
-	<div class="grid max-w-lg grid-cols-2 justify-center gap-4 lg:max-w-5xl">
+	<div class="mx-auto grid max-w-lg grid-cols-2 justify-center gap-4 lg:max-w-5xl">
 		{#each data.posts as post}
 			<Post author={post.author} description={post.description} title={post.title} url={post.url} />
 		{/each}
@@ -72,7 +72,7 @@
 		Filter and search various NationStates cards tools.
 	</p>
 
-	<div class="flex w-max flex-col items-end gap-3">
+	<div class="mx-auto flex w-max flex-col items-end gap-3">
 		<ResourceSelect
 			bind:bindValue={sort}
 			label="Sort By"
@@ -85,7 +85,7 @@
 
 	<Filterer />
 
-	<div class="my-8 grid max-w-5xl grid-cols-2 justify-center gap-4 lg:grid-cols-3">
+	<div class="my-8 grid max-w-5xl grid-cols-1 justify-center gap-4 sm:grid-cols-2 lg:grid-cols-3">
 		{#each projects
 			.filter(project => {
 				if ($filter && $filter !== 'All') {

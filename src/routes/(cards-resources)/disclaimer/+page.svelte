@@ -4,7 +4,7 @@
 
 <Head title={`Hare - Disclaimer`} description="Important disclaimer." />
 
-<div class="prose flex max-w-lg flex-col gap-4 dark:prose-invert lg:max-w-5xl">
+<div class="prose mx-auto flex max-w-lg flex-col gap-4 dark:prose-invert lg:max-w-5xl">
 	<h2>TL;DR: READ THIS, read the rules ask for help if you need help understanding scripts,</h2>
 
 	<p>YOU A HUMAN MUST PUSH A BUTTON TO DO AN EVENT.</p>

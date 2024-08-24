@@ -7,6 +7,6 @@
 
 <Head title={'Hare - Changelog'} description={'Changelog of Hare'} />
 
-<article class="prose mb-24 max-w-lg p-4 dark:prose-invert md:max-w-3xl lg:max-w-5xl">
+<article class="prose mx-auto mb-24 max-w-lg p-4 dark:prose-invert md:max-w-3xl lg:max-w-5xl">
 	<Changelog />
 </article>

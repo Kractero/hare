@@ -1,4 +1,5 @@
 <script>
+	import Footer from '$lib/components/Footer.svelte'
 	import Head from '$lib/components/Head.svelte'
 	import Linkbar from '$lib/components/Linkbar.svelte'
 	import Tool from '$lib/components/Tool.svelte'
@@ -28,12 +29,6 @@
 	</div>
 </div>
 
-<!-- <p class="mb-2">Search</p>
-<input
-	bind:value={searchTerm}
-	class="mb-16 w-full rounded-md border border-black p-1 text-black dark:border-none dark:bg-neutral-200"
-/> -->
-
 <div class="mx-auto flex w-full flex-wrap justify-around">
 	{#each tools.filter(project => {
 		if (searchTerm) {
@@ -48,7 +43,7 @@
 	{/each}
 </div>
 
-<h2 class="mb-4 text-2xl font-semibold">Non-Scripts</h2>
+<h2 class="mx-auto mb-4 text-2xl font-semibold">Non-Scripts</h2>
 <div class="mx-auto flex w-full flex-wrap justify-around">
 	{#each externalTools.filter(project => {
 		if (searchTerm) {
@@ -66,3 +61,5 @@
 		/>
 	{/each}
 </div>
+
+<Footer />

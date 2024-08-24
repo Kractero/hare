@@ -146,7 +146,7 @@
 <h1 class="mb-16 text-center text-4xl">Configure Default Inputs</h1>
 
 <div
-	class="flex w-max max-w-xs flex-col justify-center gap-8 sm:max-w-5xl lg:w-[1024px] lg:max-w-5xl lg:flex-row"
+	class="mx-auto flex w-max max-w-xs flex-col justify-center gap-8 sm:max-w-5xl lg:w-[1024px] lg:max-w-5xl lg:flex-row"
 >
 	<form on:submit|preventDefault={() => setConfig()} class="flex flex-col gap-8">
 		<h2 class="text-center text-2xl font-bold tracking-tight">General Config</h2>
