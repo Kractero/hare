@@ -15,9 +15,9 @@
 		"description": "Check the card count, bank, deck value, and junk value of all your puppets."
 	},
 	{
-		"name": "RCES",
-		"slug": "rces",
-		"description": "Generate a sheet of clickable links pointing to various puppets."
+		"name": "Finder",
+		"slug": "finder",
+		"description": "Find which of the specified nations have which of the specified cards."
 	},
 	{
 		"name": "Login Sheet",
@@ -30,6 +30,27 @@
 		"description": "Ping all your nations, delaying their impending doom."
 	},
 	{
+		"name": "Whos Farmin",
+		"slug": "whosfarmin",
+		"description": "Scan the last 200 happenings and see who is farming."
+	},
+	{
+		"name": "Endotart",
+		"slug": "endotart",
+		"description": "Specify a nation and get all the regionmates they are not endorsing."
+	},
+	{
+		"name": "Creation Assistant",
+		"slug": "creation",
+		"description":
+			"Generate a sheet that has links for nation creation that works with the provided userscripts."
+	},
+	{
+		"name": "RCES",
+		"slug": "rces",
+		"description": "Generate a sheet of clickable links pointing to various puppets."
+	},
+	{
 		"name": "Where's My WA",
 		"slug": "whereswa",
 		"description": "Locate which of your puppets is your current WA member."
@@ -40,19 +61,9 @@
 		"description": "Calculate the rate of change for an amount of nations over an amount of days."
 	},
 	{
-		"name": "Endotart",
-		"slug": "endotart",
-		"description": "Specify a nation and get all the regionmates they are not endorsing."
-	},
-	{
 		"name": "Not Endorsing",
 		"slug": "nen",
 		"description": "Specify a nation and get all the regionmates not endorsing them."
-	},
-	{
-		"name": "Whos Farmin",
-		"slug": "whosfarmin",
-		"description": "Scan the last 200 happenings and see who is farming."
 	},
 	{
 		"name": "Transfer",
@@ -76,11 +87,6 @@
 		"description": "Generate a spreadsheet containing regional information."
 	},
 	{
-		"name": "Finder",
-		"slug": "finder",
-		"description": "Find which of the specified nations have which of the specified cards."
-	},
-	{
 		"name": "Signal",
 		"slug": "signal",
 		"description":
@@ -96,12 +102,6 @@
 		"slug": "statistics",
 		"description":
 			"Provided WA scales and puppets, get the mean, median, and mode for each scale. (WIP)"
-	},
-	{
-		"name": "Creation Assistant",
-		"slug": "creation",
-		"description":
-			"Generate a sheet that has links for nation creation that works with the provided userscripts."
 	},
 	{
 		"name": "Orphans",
