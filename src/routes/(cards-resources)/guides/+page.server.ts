@@ -1,8 +1,5 @@
-import { posts } from '$lib/server/posts';
-import type { PageServerLoad } from './$types';
+import { redirect } from '@sveltejs/kit'
 
-export const load: PageServerLoad = async ({ params }) => {
-    return {
-        posts,
-    };
-};
+export function load() {
+	throw redirect(308, '/resources')
+}

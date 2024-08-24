@@ -1,54 +1,90 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
+@font-face {
+  font-family: "Noto Sans";
+  src:
+    url("./noto-sans-latin-ext-400-normal.woff2") format("woff2"),
+}
+
+@font-face {
+  font-family: "Fira Code";
+  src:
+    url("./fira-code-latin-ext-400-normal.woff2") format("woff2"),
+}
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-	:root {
-		--color-primary: 255 255 255;
-		--color-secondary: 229 231 235;
-		--color-tertiary: 203 213 225;
-		--text-primary: 30 41 59;
-		--text-content: 71 85 105;
-		--card-text-primary: 15 23 42;
-		--card-text-secondary: 51 65 85;
-		--labels: 0 0 0;
-		--buttons: 255 255 255;
-		--herobuttons: 15 23 42;
-		--herobuttons-hover: 51 65 85;
-	}
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
 
-	.dark {
-		--color-primary: 16 16 16;
-		--color-secondary: 38 38 38;
-		--color-tertiary: 148 163 184;
-		--text-primary: 255 255 255;
-		--text-content: 214 211 209;
-		--card-text-primary: 255 255 255;
-		--card-text-secondary: 163 163 163;
-		--labels: 0 0 0;
-		--buttons: 255 255 255;
-		--herobuttons: 64 64 64;
-		--herobuttons-hover: 89 89 89;
-	}
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
 
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+
+    --destructive: 0 72.2% 50.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --ring: 0 0% 3.9%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --ring: 0 0% 83.1%;
+  }
 }
 
-.clienthide {
-    opacity: 0;
-    transform: translateX(-100%);
-    transition: all 1s;
-}
-
-@media (prefers-reduced-motion) {
-    .clienthide {
-        transition: none;
-    }
-}
-
-.show {
-    opacity: 1;
-    transform: translateX(0);
-    transition: all 1s;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

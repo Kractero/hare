@@ -1,93 +1,97 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
-	import InputCredentials from '$lib/component/InputCredentials.svelte';
-	import { sleep } from '$lib/helpers/utils';
-	import Buttons from '$lib/component/Buttons.svelte';
-	import Terminal from '$lib/component/Terminal.svelte';
-	import { pushHistory } from '$lib/helpers/utils';
-	import ToolContent from '$lib/component/ToolContent.svelte';
-	import { page } from '$app/stores';
+	import { onDestroy, onMount } from 'svelte'
+	import { page } from '$app/stores'
+	import Buttons from '$lib/components/Buttons.svelte'
+	import InputCredentials from '$lib/components/InputCredentials.svelte'
+	import Terminal from '$lib/components/Terminal.svelte'
+	import ToolContent from '$lib/components/ToolContent.svelte'
+	import { pushHistory } from '$lib/helpers/navigation'
+	import { sleep } from '$lib/helpers/parser'
+	import { checkUserAgent } from '$lib/helpers/validate'
 
-	const abortController = new AbortController();
-	let progress = '';
-	let stoppable = false;
-	let stopped = false;
-	let puppets = '';
-	let main = '';
-	let password = '';
-	let content = '';
-	let restoreCount = 0;
-	let downloadable = false;
+	const abortController = new AbortController()
+	let progress = ''
+	let stoppable = false
+	let stopped = false
+	let puppets = ''
+	let main = ''
+	let password = ''
+	let content = ''
+	let restoreCount = 0
+	let downloadable = false
+	let errors: Array<{ field: string | number; message: string }> = []
 
 	onMount(() => {
-		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || '';
-		puppets = (localStorage.getItem('puppets') as string) || '';
-		password = (localStorage.getItem('password') as string) || '';
-	});
-	onDestroy(() => abortController.abort());
+		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
+		puppets = (localStorage.getItem('puppets') as string) || ''
+		password = (localStorage.getItem('password') as string) || ''
+	})
+	onDestroy(() => abortController.abort())
 	async function checkForExistence(userAgent: string, username: string, password: string) {
 		let res = await fetch(
 			`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?nation=${username}&q=ping`,
 			{
 				headers: {
 					'X-Password': password,
-					'User-Agent': userAgent
-				}
+					'User-Agent': userAgent,
+				},
 			}
-		);
-		const existence = res.status;
-		const ratelimitRemaining = Number(res.headers.get('RateLimit-Remaining'));
-		const ratelimitReset = Number(res.headers.get('RateLimit-Reset'));
-		const retryAfter = Number(res.headers.get('Retry-After'));
+		)
+		const existence = res.status
+		const ratelimitRemaining = Number(res.headers.get('RateLimit-Remaining'))
+		const ratelimitReset = Number(res.headers.get('RateLimit-Reset'))
+		const retryAfter = Number(res.headers.get('Retry-After'))
 		if (ratelimitRemaining > 0) {
-        	await sleep((ratelimitReset / ratelimitRemaining) * 1000);
+			await sleep((ratelimitReset / ratelimitRemaining) * 1000)
 		} else {
-			await sleep(ratelimitReset * 1000);
+			await sleep(ratelimitReset * 1000)
 		}
-		if (existence === 404) return false;
-		if (existence === 200 || existence === 409) return true;
+		if (existence === 404) return false
+		if (existence === 200 || existence === 409) return true
 		if (res.status === 429) {
-			const waitTime = retryAfter > 0 ? retryAfter : (ratelimitReset / ratelimitRemaining);
-			await sleep(waitTime * 1000);
-			return await checkForExistence(userAgent, username, password);
+			const waitTime = retryAfter > 0 ? retryAfter : ratelimitReset / ratelimitRemaining
+			await sleep(waitTime * 1000)
+			return await checkForExistence(userAgent, username, password)
 		}
-		return false;
+		return false
 	}
 	async function ping() {
-		pushHistory(`?main=${main}`);
-		downloadable = false;
-		stoppable = true;
-		stopped = false;
-		progress = '';
-		let puppetList = puppets.split('\n');
+		pushHistory(`?main=${main}`)
+		errors = checkUserAgent(main)
+		if (errors.length > 0) return
+		downloadable = false
+		stoppable = true
+		stopped = false
+		progress = ''
+		let puppetList = puppets.split('\n')
 		for (let i = 0; i < puppetList.length; i++) {
-			let nation = puppetList[i];
-			let nationSpecificPassword = '';
+			let nation = puppetList[i]
+			let nationSpecificPassword = ''
 			if (nation.includes(',')) {
-				nation = puppetList[i].split(',')[0];
-				nationSpecificPassword = puppetList[i].split(',')[1];
+				nation = puppetList[i].split(',')[0]
+				nationSpecificPassword = puppetList[i].split(',')[1]
 			}
 			if (abortController.signal.aborted || stopped) {
-				break;
+				break
 			}
 			const existence = await checkForExistence(
 				main,
 				nation,
 				nationSpecificPassword ? nationSpecificPassword : password
-			);
+			)
 			if (existence === false) {
-				progress += `<p class="text-red-400">Failed to log into ${nation}, adding to restore sheet...</p>`;
-				let nation_formatted = nation.toLowerCase().replaceAll(' ', '_');
-				content += `<tr><td><p>${restoreCount + 1}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=upload_flag/test=1/User_agent=${main}/Script=Pinger/Generated_by=Pinger/Author_discord=scrambleds/Author_main_nation=Kractero/">Link to Restore ${nation}</a></p></td></tr>`;
-				restoreCount++;
+				progress += `<p class="text-red-400">Failed to log into ${nation}, adding to restore sheet...</p>`
+				let nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
+				content += `<tr><td><p>${restoreCount + 1}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=upload_flag/test=1/User_agent=${main}/Script=Pinger/Generated_by=Pinger/Author_discord=scrambleds/Author_main_nation=Kractero/">Link to Restore ${nation}</a></p></td></tr>`
+				restoreCount++
 			}
 			if (existence === true) {
-				progress += `<p>Successfully logged into ${nation}</p>`;
+				progress += `<p>Successfully logged into ${nation}</p>`
 			}
 		}
-		progress += `<p>Finished processing ${puppetList.length} nations, logging into ${puppetList.length - restoreCount} nations and ready to restore ${restoreCount} nations</p>`;
-		stoppable = false;
-		downloadable = true;
+		progress += `<p>Finished processing ${puppetList.length} nations, logging into ${puppetList.length - restoreCount} nations and ready to restore ${restoreCount} nations</p>`
+		stoppable = false
+		downloadable = true
 	}
 </script>
 
@@ -108,9 +112,9 @@
 </p>`}
 />
 
-<div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
+<div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form on:submit|preventDefault={async () => await ping()} class="flex flex-col gap-8">
-		<InputCredentials bind:main bind:puppets bind:password authenticated={true} />
+		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={true} />
 		<Buttons
 			stopButton={true}
 			bind:stopped

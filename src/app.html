@@ -6,28 +6,9 @@
 	<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 	<meta name="viewport" content="width=device-width" />
 	%sveltekit.head%
-	<script>
-		if (localStorage.getItem('theme')) {
-			if (localStorage.getItem('theme') === "system") {
-				if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-					document.documentElement.classList.toggle('dark');
-				} else {
-					document.documentElement.classList.toggle('light');
-				}
-			} else {
-				document.documentElement.classList.toggle(localStorage.getItem('theme').toLowerCase());
-			}
-		} else {
-			if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-				document.documentElement.classList.toggle('dark');
-			} else {
-				document.documentElement.classList.toggle('light');
-			}
-		}
-	</script>
 </head>
 
-<body class="flex flex-col items-center min-h-screen text-textprimary bg-background font-notosans p-2 mb-16"
+<body class="flex flex-col items-center min-h-screen text-primary bg-background font-sans p-2 mb-16"
 	data-sveltekit-preload-data="hover">
 	<div style="display: contents">%sveltekit.body%</div>
 </body>

@@ -1,5 +1,70 @@
 # Changelog
 
+## 2024-8-23
+
+Migrates the site to using [shadcn-svelte](https://shadcn-svelte.com/) instead of rolling my own UI components and styling. This makes it more maintainable from a UI standpoint and also opens it up to merging Queries, as Queries using that as its UI framework.
+
+Every tool has seen behind the scenes changes but this shouldn't affect their operations maybe.
+
+### Features
+
+1. Input validation is now conducted on the user agent, to make sure that default browser agents or any kind of improper agent is passed.
+
+2. Finder
+   - Finder now has some buttons you can click to load presets for certain users.
+
+### Adjustments
+
+Rewrote multiple guides.
+
+Merged the resources and guides page to resources, set up a redirect on guides to the new page.
+
+Home page search bar was removed.
+
+1. Resources
+
+   - Removed the weird author filtering button click, replaced with some selects to sort by update/creation date, author, and category.
+   - Removed the animations, they were unnecessary.
+
+2. Ledger
+
+   - Should behave similarly to upstream Ledger and reflect its recent changes.
+
+3. Flag Manager
+
+   - The motto mode now does an inclusive search on the motto instead of an exact match.
+
+4. JunkDaJunk
+   - The skip season is now a dropdown instead of a checkbox, with options of "Don't Skip", "Skip Offseasons", "Skip 1", "Skip 2". This is mainly because I don't want to deal with reimplementing its function yet but nobody was using it anyways.
+   - The progress final output of summed cards will no longer be off by 2.
+   - In the sheet, the global count of cards will bno longer be off by 1.
+
+### Fixes
+
+1. Approval List
+
+   - If there are no current proposals in the selected council, it will now output that instead of crashing.
+
+2. Gold Retriever
+   - Fixed issue with the transfer and legendary card columns only appearing with Issue/Packs mode.
+
+### Removed
+
+1. Guides
+
+   - Removed the gotIssues guide due to it being out of date and relatively unnecessary.
+
+   - Removed Yuno's transfer guide due to it being out of date.
+
+   - Removed suggestions of alternative userscript managers since nobody cares and just uses TamperMonkey (I prefer VioletMonkey).
+
+2. Resources
+
+   - Removed Dispatches (the ones that also appeared in guides), Card Browser, Local Retriever, Container Login Assist, old Queries, Henson, DeathWatch, Creation Assistant, and Rota Fortunae Discord Issues. These were either older versions of my scripts that have been supplanted into Hare or aren't really related to cards.
+
+3. Trigonometry
+   - Some kind of implementation of a trigger tool that was never added to the list and I haven't touched in a while.
+
 ## 2024-8-13
 
 ### Features

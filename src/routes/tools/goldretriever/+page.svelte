@@ -1,78 +1,83 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
-	import InputCredentials from '$lib/component/InputCredentials.svelte';
-	import { parseXML } from '$lib/helpers/utils';
-	import Terminal from '$lib/component/Terminal.svelte';
-	import Buttons from '$lib/component/Buttons.svelte';
-	import { pushHistory } from '$lib/helpers/utils';
-	import type { Card, Issue } from '$lib/types';
-	import Select from '$lib/component/Select.svelte';
-	import ToolContent from '$lib/component/ToolContent.svelte';
-	import { page } from '$app/stores';
-	import Input from '$lib/component/Input.svelte';
-	const abortController = new AbortController();
-	let progress = '';
-	let downloadable = false;
-	let content = `<tr><th>Nation</th><th class='sort' data-order='none'>Bank</th><th class='sort' data-order='none'>Deck Value</th><th class='sort' data-order='none'>Junk Value</th><th class='sort' data-order='none'>Card Count</th>$</tr>\n`;
-	let stoppable = false;
-	let stopped = false;
-	let main = '';
-	let puppets = '';
-	let password = '';
-	let mode: string;
-	let transferCard = '';
+	import { onDestroy, onMount } from 'svelte'
+	import { page } from '$app/stores'
+	import Buttons from '$lib/components/Buttons.svelte'
+	import FormInput from '$lib/components/FormInput.svelte'
+	import FormSelect from '$lib/components/FormSelect.svelte'
+	import InputCredentials from '$lib/components/InputCredentials.svelte'
+	import Terminal from '$lib/components/Terminal.svelte'
+	import ToolContent from '$lib/components/ToolContent.svelte'
+	import { pushHistory } from '$lib/helpers/navigation'
+	import { parseXML } from '$lib/helpers/parser'
+	import { checkUserAgent } from '$lib/helpers/validate'
+	import type { Card, Issue } from '$lib/types'
+
+	const abortController = new AbortController()
+	let progress = ''
+	let downloadable = false
+	let content = `<tr><th>Nation</th><th class='sort' data-order='none'>Bank</th><th class='sort' data-order='none'>Deck Value</th><th class='sort' data-order='none'>Junk Value</th><th class='sort' data-order='none'>Card Count</th>$</tr>\n`
+	let stoppable = false
+	let stopped = false
+	let main = ''
+	let puppets = ''
+	let password = ''
+	let mode: string
+	let transferCard = ''
+	let errors: Array<{ field: string | number; message: string }> = []
 
 	onMount(() => {
-		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || '';
-		puppets = (localStorage.getItem('puppets') as string) || '';
-		password = (localStorage.getItem('password') as string) || '';
+		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
+		puppets = (localStorage.getItem('puppets') as string) || ''
+		password = (localStorage.getItem('password') as string) || ''
 		mode =
 			$page.url.searchParams.get('mode') ||
 			(localStorage.getItem('goldretrieverMode') as string) ||
-			'Include';
+			'Include'
 		transferCard =
 			$page.url.searchParams.get('goldretrieverTransferCard') ||
 			(localStorage.getItem('goldretrieverTransferCard') as string) ||
-			'';
-	});
+			''
+	})
 
-	onDestroy(() => abortController.abort());
+	onDestroy(() => abortController.abort())
 
 	async function goldRetriever() {
 		pushHistory(
 			`?main=${main}&mode=${mode}${transferCard && `&goldretrieverTransferCard=${transferCard}`}`
-		);
-		downloadable = false;
-		stoppable = true;
-		stopped = false;
-		content = `<tr><th>Nation</th><th class='sort' data-order='none'>Bank</th><th class='sort' data-order='none'>Deck Value</th><th class='sort' data-order='none'>Junk Value</th><th class='sort' data-order='none'>Card Count</th>${mode === 'Include' ? "<th class='sort' data-order='none'>Issues</th><th class='sort' data-order='none'>Packs</th>" : ''}<th class='sort' data-order='none'>Legendary Count</th>${transferCard && '<th>Transfer Card</th>'}</tr>\n`;
-		progress = '<p>Initiating Gold Retriever...</p>';
-		let puppetList = puppets.split('\n');
+		)
+		errors = checkUserAgent(main)
+		if (errors.length > 0) return
+		downloadable = false
+		stoppable = true
+		stopped = false
+		content = `<tr><th>Nation</th><th class='sort' data-order='none'>Bank</th><th class='sort' data-order='none'>Deck Value</th><th class='sort' data-order='none'>Junk Value</th><th class='sort' data-order='none'>Card Count</th>${transferCard && '<th>Transfer Card</th>'}${mode === 'Include' ? "<th class='sort' data-order='none'>Issues</th><th class='sort' data-order='none'>Packs</th>" : ''}</tr>\n`
+		progress = '<p>Initiating Gold Retriever...</p>'
+		let puppetList = puppets.split('\n')
 		let totals = {
 			bank: 0,
 			deckValue: 0,
 			junkValue: 0,
 			cardCount: 0,
 			issues: 0,
-			packs: 0
-		};
+			packs: 0,
+		}
 		for (let i = 0; i < puppetList.length; i++) {
-			let nation = puppetList[i];
-			let nationSpecificPassword = '';
+			let nation = puppetList[i]
+			let nationSpecificPassword = ''
 			if (mode === 'Include' && nation.includes(',')) {
-				nation = puppetList[i].split(',')[0];
-				nationSpecificPassword = puppetList[i].split(',')[1];
+				nation = puppetList[i].split(',')[0]
+				nationSpecificPassword = puppetList[i].split(',')[1]
 			}
 			if (abortController.signal.aborted || stopped) {
-				break;
+				break
 			}
-			const nation_formatted = nation.toLowerCase().replaceAll(' ', '_');
+			const nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
 			try {
-				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`;
+				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`
 				const deckInfo = await parseXML(
 					`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck+info`,
 					main
-				);
+				)
 				const deck = {
 					nation: nation,
 					bank: 0,
@@ -80,25 +85,25 @@
 					junkValue: 0,
 					cardCount: 0,
 					issues: 0,
-					packs: 0
-				};
+					packs: 0,
+				}
 
-				const categoryCounts: { [key: string]: number } = {};
+				const categoryCounts: { [key: string]: number } = {}
 				if (deckInfo.CARDS.DECK.CARD) {
-					let deckObj: Array<Card> = deckInfo.CARDS.DECK.CARD;
-					deckObj = deckObj ? (Array.isArray(deckObj) ? deckObj : [deckObj]) : [];
+					let deckObj: Array<Card> = deckInfo.CARDS.DECK.CARD
+					deckObj = deckObj ? (Array.isArray(deckObj) ? deckObj : [deckObj]) : []
 					for (let i = 0; i < deckObj.length; i++) {
-						const category = deckObj[i].CATEGORY;
+						const category = deckObj[i].CATEGORY
 						if (categoryCounts[category]) {
-							categoryCounts[category] += 1;
+							categoryCounts[category] += 1
 						} else {
-							categoryCounts[category] = 1;
+							categoryCounts[category] = 1
 						}
 					}
 				}
-				deck.bank = deckInfo.CARDS.INFO.BANK;
-				deck.deckValue = deckInfo.CARDS.INFO.DECK_VALUE;
-				deck.cardCount = deckInfo.CARDS.INFO.NUM_CARDS;
+				deck.bank = deckInfo.CARDS.INFO.BANK
+				deck.deckValue = deckInfo.CARDS.INFO.DECK_VALUE
+				deck.cardCount = deckInfo.CARDS.INFO.NUM_CARDS
 				deck.junkValue = Number(
 					(
 						(categoryCounts.legendary || 0) * 1 +
@@ -107,38 +112,38 @@
 						(categoryCounts.uncommon || 0) * 0.05 +
 						(categoryCounts['ultra-rare'] || 0) * 0.2
 					).toFixed(2)
-				);
+				)
 
 				if (mode === 'Include') {
 					const issuesAndPacks = await parseXML(
 						`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`,
 						main,
 						nationSpecificPassword ? nationSpecificPassword : password.replaceAll(' ', '_')
-					);
-					const packs = issuesAndPacks.NATION.PACKS;
-					const issues: Issue = issuesAndPacks.NATION.ISSUES.ISSUE || [];
+					)
+					const packs = issuesAndPacks.NATION.PACKS
+					const issues: Issue = issuesAndPacks.NATION.ISSUES.ISSUE || []
 					if (issues && !Array.isArray(issues)) {
-						deck.issues = 1;
+						deck.issues = 1
 					} else {
-						deck.issues = issues.length;
+						deck.issues = issues.length
 					}
-					deck.packs = packs;
+					deck.packs = packs
 				}
 
-				totals.bank = totals.bank + deck.bank;
-				totals.deckValue = totals.deckValue + deck.deckValue;
-				totals.junkValue = totals.junkValue + deck.junkValue;
-				totals.cardCount = totals.cardCount + deck.cardCount;
-				totals.issues = totals.issues + deck.issues;
-				totals.packs = totals.packs + deck.packs;
-				content += `<tr><td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/User_agent=${main}/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>${deck.nation}</a></p></td><td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1/User_agent=${main}/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>${deck.bank}</a></p></td><td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>${deck.deckValue}</a></p></td><td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>${deck.junkValue}</a></p></td><td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>${deck.cardCount}</a></p></td>${mode === 'Include' ? `<td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=dilemmas/container=${nation_formatted}/nation=${nation_formatted}/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>${deck.issues}</a></p></td><td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>${deck.packs}</a></p></td><td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1/?filter=legendary/User_agent=${main}/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>${categoryCounts.legendary ? Number(categoryCounts.legendary) : 0}</a></p></td>${transferCard && `<td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=deck/card=${transferCard.split(',')[0]}/season=${transferCard.split(',')[1]}/gift=1/User_agent=${main}/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>Transfer Card</a></p></td>`}` : ''}</tr>\n`;
+				totals.bank = totals.bank + deck.bank
+				totals.deckValue = totals.deckValue + deck.deckValue
+				totals.junkValue = totals.junkValue + deck.junkValue
+				totals.cardCount = totals.cardCount + deck.cardCount
+				totals.issues = totals.issues + deck.issues
+				totals.packs = totals.packs + deck.packs
+				content += `<tr><td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/User_agent=${main}/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>${deck.nation}</a></p></td><td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1/User_agent=${main}/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>${deck.bank}</a></p></td><td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>${deck.deckValue}</a></p></td><td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>${deck.junkValue}</a></p></td><td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>${deck.cardCount}</a></p></td>${mode === 'Include' ? `<td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=dilemmas/container=${nation_formatted}/nation=${nation_formatted}/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>${deck.issues}</a></p></td><td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>${deck.packs}</a></p></td><td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1/?filter=legendary/User_agent=${main}/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>${categoryCounts.legendary ? Number(categoryCounts.legendary) : 0}</a></p></td>${transferCard && `<td><p><a target='_blank' href='https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=deck/card=${transferCard.split(',')[0]}/season=${transferCard.split(',')[1]}/gift=1/User_agent=${main}/Script=Goldretriever/Generated_by=Goldretriever/Author_discord=scrambleds/Author_main_nation=Kractero/'>Transfer Card</a></p></td>`}` : ''}</tr>\n`
 			} catch (err) {
-				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`;
+				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
 			}
 		}
-		progress += `<p>Finished processing! You have a cumulative ${totals.bank.toFixed(2)} bank, ${totals.deckValue.toFixed(2)} deckValue, ${totals.junkValue.toFixed(2)} junk value, and ${totals.cardCount} cards. ${mode === 'Include' ? `${totals.issues} issues await you, and you have ${totals.packs} packs to open.` : ''}</p>`;
-		downloadable = true;
-		stoppable = false;
+		progress += `<p>Finished processing! You have a cumulative ${totals.bank.toFixed(2)} bank, ${totals.deckValue.toFixed(2)} deckValue, ${totals.junkValue.toFixed(2)} junk value, and ${totals.cardCount} cards. ${mode === 'Include' ? `${totals.issues} issues await you, and you have ${totals.packs} packs to open.` : ''}</p>`
+		downloadable = true
+		stoppable = false
 	}
 </script>
 
@@ -153,20 +158,26 @@
 </p>`}
 />
 
-<div class="lg:w-[1024px] lg:max-w-5xl flex flex-col lg:flex-row gap-8 break-normal">
+<div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form on:submit|preventDefault={() => goldRetriever()} class="flex flex-col gap-8">
 		<InputCredentials
+			bind:errors
 			bind:main
 			bind:puppets
 			bind:password
 			authenticated={mode === 'Include' ? true : false}
 		/>
-		<Select name="Issues and Packs" bind:mode options={['Include', 'Skip']} />
-		<Input
-			text={`Transfer Card`}
+		<FormSelect
+			label="Include Packs?"
+			id="mode"
+			bind:bindValue={mode}
+			items={['Include', 'Skip']}
+		/>
+		<FormInput
+			label={`Transfer Card`}
 			subTitle="(optional: id,season)"
 			bind:bindValue={transferCard}
-			forValue="transferCard"
+			id="transferCard"
 			required={false}
 		/>
 		<Buttons
