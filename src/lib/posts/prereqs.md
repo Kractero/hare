@@ -92,7 +92,7 @@ You have two main choices for containers:
 
 ### <a name="programming-languages">Programming Languages</a>
 
-For most card tools, Python is the primary language you'll encounter. While some tools exist in other languages, like C# for Henson or PHP for Sitethief's scripts, Python otherwise dominates the scene. However, there are a few traps you can run into while downloading Python, especially on Windows (which itself is a trap). One of the most common issues is not adding Python to your PATH.
+For most card tools that require command line execution, Python is the primary language you'll encounter. There are a few traps you can run into while downloading Python, especially on Windows (which itself is a trap). One of the most common issues is not adding Python to your PATH.
 
 Of course, if you're using Linux, you won't have that problem!
 

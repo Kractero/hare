@@ -8,16 +8,13 @@ order: 2
 
 Hare is a powerful tool that centralizes many browser-executable scripts, which typically otherwise would require Python installation and some knowledge of running Python scripts. This guide will walk you through setting up Hare and getting started with card farming, especially if you're new to the process.
 
-Before diving into this guide, I recommend reading the [previous article](insert-link-here) for a foundational understanding. While there may be some overlap, this guide focuses specifically on how to leverage Hare for efficient farming.
+Before diving into this guide, I recommend reading the [previous article](prerequisites) for a foundational understanding. While there may be some overlap, this guide focuses specifically on how to leverage Hare for efficient farming.
 
 ## 1. A Userscript Manager
 
-To extend a website's functionality and automate tasks, you'll need to install a userscript manager. Here are two popular options:
+To extend a website's functionality and automate tasks, you'll need to install a userscript manager, like Tampermonkey
 
-### 1.1 TamperMonkey
-
-- **Best for most users:** Modern, reliable, and feature-rich. It's easy to use and supports a wide range of userscripts.
-- **Installation:** [Install TamperMonkey](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/) from the official Mozilla Firefox Add-ons site.
+[Install TamperMonkey](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/) from the official Mozilla Firefox Add-ons site.
 
 Once installed, click the TamperMonkey icon in your browser's toolbar Click "Create a new script" to open the script editor.
 
@@ -31,10 +28,9 @@ TamperMonkey will now run the script automatically whenever you visit the specif
 
 Containers are crucial for managing multiple accounts simultaneously. Cardtainers is an extension designed to simplify this process.
 
-### 2.1 Setting Up Cardtainers
+[Install Cardtainers](https://addons.mozilla.org/en-US/firefox/addon/cardtainers/).
 
-- **Install the Extension:** [Install Cardtainers](https://addons.mozilla.org/en-US/firefox/addon/cardtainers/).
-- **Configuration:** After installation, click the Cardtainers icon (Testlandia in a jar). Paste your list of puppets into the text input, formatted like this:
+After installation, click the Cardtainers icon (Testlandia in a jar). Paste your list of puppets into the text input, formatted like this:
 
 ```plaintext
 kazakhstan

@@ -16,4 +16,4 @@ A container is an isolated instance within a browser, with its own cookies, sess
 
 Instead of rewriting an excellent guide, you can follow <a href="https://www.nationstates.net/page=dispatch/id=1383002" rel="noopener noreferrer" target="_blank">this guide by Racoda</a> to get started with Containerise.
 
-If you're looking to avoid installing Python for generating rules, you can skip Step 2 of the guide by using <a href="https://hare.vercel.app/tools/containerise/" rel="noopener noreferrer" target="_blank">Hare's Containerise rule generator</a> or opting for <a href="/resources/guides/cardtainers" target="_blank" rel="noreferrer noopener">Cardtainers</a>.
+If you're looking to avoid installing Python for generating rules, you can use <a href="https://hare.vercel.app/tools/containerise/" rel="noopener noreferrer" target="_blank">Hare's Containerise rule generator</a> or opting for <a href="/resources/guides/cardtainers" target="_blank" rel="noreferrer noopener">Cardtainers</a>.

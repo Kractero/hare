@@ -6,7 +6,7 @@ author: Kractero
 order: 3
 ---
 
-[Cardtainers](https://addons.mozilla.org/en-US/firefox/addon/cardtainers/) is a Firefox extension designed to simplify the management of containers for NationStates.
+[Cardtainers](https://addons.mozilla.org/en-US/firefox/addon/cardtainers/) is a Firefox extension designed to simplify the management of containers specfically for NationStates.
 
 Instead of manually generating container rules every time you create a new puppet, Cardtainers automates this process. It allows you to input a list of puppet names into a textarea when you click the extension icon. The extension then matches the URLs for `/nation=` and `/container=` for each nation, either creating a new container or using an existing one to open the tab.
 
