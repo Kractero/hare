@@ -439,10 +439,7 @@
 />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form
-		on:submit|preventDefault={() => junkDaJunk(main, puppets)}
-		class="mx-auto flex flex-col gap-8"
-	>
+	<form on:submit|preventDefault={() => junkDaJunk(main, puppets)} class="flex flex-col gap-8">
 		<InputCredentials
 			bind:errors
 			bind:main

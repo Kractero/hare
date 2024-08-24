@@ -12,7 +12,7 @@
 	export let stopButton = false
 </script>
 
-<div class="mx-auto flex w-max max-w-lg flex-wrap justify-center gap-2">
+<div class="mx-auto mb-4 flex max-w-lg flex-wrap justify-center gap-x-2 gap-y-4">
 	<Button class="mx-auto w-max" variant="default" type="submit">Start</Button>
 	{#if downloadButton === true}
 		<DownloadButton bind:downloadable bind:content {type} {name} />
