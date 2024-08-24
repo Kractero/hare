@@ -22,7 +22,7 @@
 		{/if}</Label
 	>
 	<Input
-		class={`${rarities.includes(id) ? 'w-20' : 'max-w-min'} text-right text-base`}
+		class={`${rarities.includes(id) ? 'w-20' : 'max-w-max'} text-right text-base`}
 		{id}
 		type={type || 'text'}
 		bind:value={bindValue}
