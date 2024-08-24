@@ -32,7 +32,7 @@
 </div>
 
 {#if errors && errors.length > 0 && errors.find(error => error.field === 'useragent')}
-	<p class="text-sm font-medium text-destructive">
+	<p class="max-w-lg text-sm font-medium text-destructive">
 		{errors.find(error => error.field === 'useragent')?.message}
 	</p>
 {/if}

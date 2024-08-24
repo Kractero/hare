@@ -4,7 +4,7 @@ export const userAgent = z
 	.string()
 	.max(40, 'Nation name must be 40 characters or less')
 	.refine(
-		name => /^[a-zA-Z0-9\s\-]+$/.test(name),
+		name => /^[a-zA-Z0-9\s\-\_]+$/.test(name),
 		'Sorry! Nation names can only contain Latin letters, numbers, spaces, and hyphens.'
 	)
 	.refine(
