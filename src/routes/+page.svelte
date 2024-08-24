@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Footer from '$lib/components/Footer.svelte'
 	import Head from '$lib/components/Head.svelte'
 	import Linkbar from '$lib/components/Linkbar.svelte'
