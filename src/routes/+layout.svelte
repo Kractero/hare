@@ -10,7 +10,7 @@
 
 <ModeWatcher />
 <div
-	class="relative flex max-w-xs flex-col p-8 min-[385px]:max-w-sm min-[385px]:p-4 min-[470px]:max-w-md min-[550px]:max-w-lg sm:max-w-5xl"
+	class="relative flex max-w-xs flex-col min-[385px]:max-w-sm min-[470px]:max-w-md min-[550px]:max-w-lg sm:max-w-5xl"
 >
 	<ViewTransition />
 	<Header />

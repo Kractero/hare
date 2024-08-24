@@ -29,7 +29,7 @@
 		selected={bindValue}
 	>
 		<Select.Trigger
-			class="w-[206px] flex-1 justify-end sm:max-w-[221px] data-[placeholder]:[&>span]:text-textprimary"
+			class="w-[206px] flex-1 justify-end sm:max-w-[221px] data-[placeholder]:[&>span]:text-primary"
 		>
 			<Select.Value class="mr-2" placeholder={bindValue} />
 		</Select.Trigger>

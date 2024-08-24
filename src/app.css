@@ -1,5 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
 
+@font-face {
+  font-family: "Noto Sans";
+  src:
+    url("./noto-sans-latin-ext-400-normal.woff2") format("woff2"),
+}
+
+@font-face {
+  font-family: "Fira Code";
+  src:
+    url("./fira-code-latin-ext-400-normal.woff2") format("woff2"),
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -77,53 +89,4 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-
-@layer base {
-	:root {
-		--color-primary: 255 255 255;
-		--color-secondary: 229 231 235;
-		--color-tertiary: 203 213 225;
-		--text-primary: 30 41 59;
-		--text-content: 71 85 105;
-		--card-text-primary: 15 23 42;
-		--card-text-secondary: 51 65 85;
-		--labels: 0 0 0;
-		--buttons: 255 255 255;
-		--herobuttons: 15 23 42;
-		--herobuttons-hover: 51 65 85;
-	}
-
-	.dark {
-		--color-primary: 16 16 16;
-		--color-secondary: 38 38 38;
-		--color-tertiary: 148 163 184;
-		--text-primary: 255 255 255;
-		--text-content: 214 211 209;
-		--card-text-primary: 255 255 255;
-		--card-text-secondary: 163 163 163;
-		--labels: 0 0 0;
-		--buttons: 255 255 255;
-		--herobuttons: 64 64 64;
-		--herobuttons-hover: 89 89 89;
-	}
-
-}
-
-.clienthide {
-    opacity: 0;
-    transform: translateX(-100%);
-    transition: all 1s;
-}
-
-@media (prefers-reduced-motion) {
-    .clienthide {
-        transition: none;
-    }
-}
-
-.show {
-    opacity: 1;
-    transform: translateX(0);
-    transition: all 1s;
 }

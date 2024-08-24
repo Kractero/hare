@@ -49,7 +49,7 @@
 />
 
 <div class="mb-20">
-	<h2 class="mb-1 text-center text-3xl font-bold text-textprimary">Guides</h2>
+	<h2 class="mb-1 text-center text-3xl font-bold">Guides</h2>
 
 	<p class="mb-16 text-center text-lg lg:w-auto">
 		Various guides for setting up tools and prerequisites.
@@ -66,20 +66,22 @@
 </div>
 
 <div>
-	<h2 class="mb-1 text-center text-3xl font-bold text-textprimary">Resources</h2>
+	<h2 class="mb-1 text-center text-3xl font-bold">Resources</h2>
 
 	<p class="mb-16 text-center text-lg lg:w-auto">
 		Filter and search various NationStates cards tools.
 	</p>
 
-	<ResourceSelect
-		bind:bindValue={sort}
-		label="Sort By"
-		items={['Last Update (asc)', 'Last Update (desc)', 'Creation (asc)', 'Creation (asc)']}
-	/>
+	<div class="flex w-max flex-col items-end gap-3">
+		<ResourceSelect
+			bind:bindValue={sort}
+			label="Sort By"
+			items={['Last Update (asc)', 'Last Update (desc)', 'Creation (asc)', 'Creation (asc)']}
+		/>
 
-	<ResourceSelect bind:bindValue={author} label="Author" items={Array.from(authors)} />
-	<ResourceSelect bind:bindValue={category} label="Categories" items={Array.from(categories)} />
+		<ResourceSelect bind:bindValue={author} label="Author" items={Array.from(authors)} />
+		<ResourceSelect bind:bindValue={category} label="Categories" items={Array.from(categories)} />
+	</div>
 
 	<Filterer />
 

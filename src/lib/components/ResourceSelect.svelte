@@ -16,7 +16,7 @@
 		selected={bindValue}
 	>
 		<Select.Trigger
-			class="min-w-[175px] flex-1 justify-end data-[placeholder]:[&>span]:text-textprimary"
+			class="min-w-[175px] flex-1 justify-end data-[placeholder]:[&>span]:text-primary"
 		>
 			<Select.Value class="mr-2" placeholder={bindValue} />
 		</Select.Trigger>

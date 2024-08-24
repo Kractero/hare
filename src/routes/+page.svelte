@@ -15,7 +15,7 @@
 
 <div class="mb-12 grid grid-cols-12 items-center justify-between md:max-w-5xl lg:w-[1024px]">
 	<div class="col-span-full flex flex-col gap-2 lg:col-span-6">
-		<h1 class="mb-4 text-center text-5xl font-bold tracking-tight text-textprimary lg:text-left">
+		<h1 class="mb-4 text-center text-5xl font-bold tracking-tight lg:text-left">
 			A central location for NationStates scripts.
 		</h1>
 		<p class="text-center font-extralight tracking-tight lg:text-left">
@@ -34,7 +34,7 @@
 	class="mb-16 w-full rounded-md border border-black p-1 text-black dark:border-none dark:bg-neutral-200"
 /> -->
 
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+<div class="mx-auto flex w-full flex-wrap justify-around">
 	{#each tools.filter(project => {
 		if (searchTerm) {
 			return project.description.toLowerCase().includes(searchTerm.toLowerCase()) || project.name
@@ -49,7 +49,7 @@
 </div>
 
 <h2 class="mb-4 text-2xl font-semibold">Non-Scripts</h2>
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+<div class="mx-auto flex w-full flex-wrap justify-around">
 	{#each externalTools.filter(project => {
 		if (searchTerm) {
 			return project.description.toLowerCase().includes(searchTerm.toLowerCase()) || project.name

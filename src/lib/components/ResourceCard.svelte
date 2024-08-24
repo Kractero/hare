@@ -15,8 +15,8 @@
 	export let authorUrl: string
 </script>
 
-<article
-	class="flex max-w-full flex-col gap-4 rounded-xl p-4 hover:shadow-lg dark:bg-neutral-800 md:p-6"
+<div
+	class="flex max-w-full flex-col gap-4 rounded-xl bg-secondary p-4 transition duration-200 hover:scale-105 hover:shadow-lg md:p-6"
 >
 	<p class="-mb-1 flex flex-wrap items-center gap-2">{category}</p>
 	<a href={url} target="_blank">
@@ -41,4 +41,4 @@
 	<div class="flex w-full flex-col justify-between min-[460px]:flex-row sm:items-end sm:gap-6">
 		<p class="text-sm text-muted-foreground">created {timeAgo(created)}</p>
 	</div>
-</article>
+</div>

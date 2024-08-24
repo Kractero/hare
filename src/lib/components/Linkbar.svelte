@@ -2,7 +2,7 @@
 	import Button from './ui/button/button.svelte'
 </script>
 
-<div class="my-4 flex flex-1 flex-wrap items-center gap-1">
+<div class="mx-auto my-4 flex flex-1 flex-wrap items-center gap-1 lg:mx-0">
 	<Button href="/" variant={'secondary'}>
 		<span class="text-base">Home</span>
 	</Button>
