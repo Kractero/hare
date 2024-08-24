@@ -7,7 +7,7 @@
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { nsIterator } from '$lib/helpers/builders'
 	import { pushHistory } from '$lib/helpers/navigation'
-	import { checkUserAgent, validate } from '$lib/helpers/validate'
+	import { checkUserAgent } from '$lib/helpers/validate'
 
 	let progress = ''
 	let content: string

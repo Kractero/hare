@@ -8,7 +8,7 @@ order: 2
 
 Hare is a powerful tool that centralizes many browser-executable scripts, which typically otherwise would require Python installation and some knowledge of running Python scripts. This guide will walk you through setting up Hare and getting started with card farming, especially if you're new to the process.
 
-Before diving into this guide, I recommend reading the [previous article](prerequisites) for a foundational understanding. While there may be some overlap, this guide focuses specifically on how to leverage Hare for efficient farming.
+Before diving into this guide, I recommend reading the [previous article](prereqs) for a foundational understanding. While there may be some overlap, this guide focuses specifically on how to leverage Hare for efficient farming.
 
 ## 1. A Userscript Manager
 
