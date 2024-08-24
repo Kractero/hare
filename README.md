@@ -40,6 +40,8 @@ Hare offers a suite of tools designed to make managing NationStates puppets more
 
 ## Prerequisites
 
+You'd be better off reading [here](https://hare.kractero.com/resources/guides/prereqs) but below is a brief look.
+
 ### Mozilla Firefox
 
 Only Firefox supports containers.
@@ -73,11 +75,11 @@ Many scripts generate an HTML sheet that almost necessitates the use of an autoc
 // @match on enact_dilemma as autoclose does not carry over to the issue answered screen
 // @exclude on show_dilemma since autoclose should not close the new intermediary screen
 
-(function () {
-	'use strict';
-	if (document.querySelector('.deck-loot-box')) return;
-	window.close();
-})();
+;(function () {
+	'use strict'
+	if (document.querySelector('.deck-loot-box')) return
+	window.close()
+})()
 ```
 
 A caveat with any autocloser is that it may interfere with normal gameplay. It's recommended to enable or disable it as needed, or alternatively, use a separate browser profile or browser to avoid disruptions.
