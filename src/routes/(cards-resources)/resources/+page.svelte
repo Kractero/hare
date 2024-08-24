@@ -124,7 +124,7 @@
 					case 'Creation (desc)':
 						return creationB - creationA
 					default:
-						return 0
+						return dateB - dateA
 				}
 			}) as project}
 			<Card

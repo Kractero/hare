@@ -11,7 +11,6 @@
 	import Rarities from '$lib/components/Rarities.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte'
 	import { beforeUnload, pushHistory } from '$lib/helpers/navigation'
 	import { parser, parseXML } from '$lib/helpers/parser'
 	import { checkUserAgent } from '$lib/helpers/validate'
@@ -309,7 +308,7 @@
 							]
 							junkHtml += `<tr><td><p>${nation} | ${i + 1} of ${
 								cards.length
-							} (${currCard})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1">Link to Card</a></p></td></tr>\n`
+							} (${currCard + 1})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1">Link to Card</a></p></td></tr>\n`
 							currCard = currCard + 1
 						} else {
 							if (mode === 'Gift') {
@@ -387,7 +386,7 @@
 									)
 									sellContent += `<tr><td><p>${nation} | ${i + 1} of ${
 										cards.length
-									} (${currSellCard})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero">Link to Card</a></p></td></tr>\n`
+									} (${currSellCard + 1})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero">Link to Card</a></p></td></tr>\n`
 									currSellCard = currSellCard + 1
 								}
 							}

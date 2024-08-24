@@ -127,7 +127,7 @@
 			dir="ltr"
 		>
 			<thead>
-				<tr class="border-b border-black">
+				<tr class="border-b border-border text-muted-foreground">
 					<th>#</th>
 					{#each validHeaders as header}
 						<th class="sort h-12 p-4 font-medium" data-order="none">{header}</th>
@@ -140,7 +140,7 @@
 			{#if ledger}
 				<tbody bind:this={body}>
 					{#each ledger as deck}
-						<tr class="border-b border-black">
+						<tr class="border-b border-border">
 							<td></td>
 							{#each validHeaders as header}
 								<td class="p-4">{deck[header]}</td>
