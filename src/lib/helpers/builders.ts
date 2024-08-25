@@ -20,10 +20,7 @@ function downloadBlob(blob: Blob, fileName: string) {
 }
 
 export async function nsIterator(puppets: string, mode: string, main?: string) {
-	const puppetsList = puppets
-		.split('\n')
-		.map(nation => nation.split(',')[0].trim().toLowerCase().replace(/ /g, '_'))
-
+	const puppetsList = puppets.split('\n')
 	const baseURL = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 
 	const buildTableRow = (index: number, nation: string, path: string, script: string) => `
