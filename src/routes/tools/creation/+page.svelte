@@ -47,7 +47,7 @@
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form on:submit|preventDefault={() => login(puppets)} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
-		<Buttons {downloadable} downloadButton={true} {content} />
+		<Buttons {downloadable} downloadButton={true} {content} name="Creator" />
 	</form>
 	<Terminal bind:progress />
 </div>
