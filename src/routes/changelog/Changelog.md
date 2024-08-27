@@ -1,5 +1,35 @@
 # Changelog
 
+## 2024-8-27
+
+Will include bits from previous days.
+
+### Features
+
+Replaced base svelte error page.
+
+### Adjustments
+
+Reorder some of the tools (finder higher up for example).
+
+1. Download Button is now some shade of green again.
+
+### Fixes
+
+1. CSS fixes to the body.
+
+2. On UA validation, allow underscores.
+
+3. Fix broken image links on the getting started and prerequisites guides.
+
+4. Resources - Duplicate Creation (asc) replaced with Creation (desc).
+
+5. Tiny input on chromium and webkit browsers fixed.
+
+6. Creation downloads with a name.
+
+7. Finder - If finder is provided with multiple entries of the same id but different season, it matched the first id and would usually find the wrong season as a result. It now will iterate over all same id matches.
+
 ## 2024-8-23
 
 Migrates the site to using [shadcn-svelte](https://shadcn-svelte.com/) instead of rolling my own UI components and styling. This makes it more maintainable from a UI standpoint and also opens it up to merging Queries, as Queries using that as its UI framework.
