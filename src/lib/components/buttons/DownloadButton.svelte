@@ -12,7 +12,7 @@
 <Button
 	variant="secondary"
 	type="button"
-	class="mx-auto w-max"
+	class="myx-auto w-max bg-lime-400 text-primary-foreground hover:bg-lime-400/80 disabled:bg-lime-800 disabled:text-secondary-foreground"
 	disabled={!downloadable}
 	on:click={() =>
 		handleDownload(
