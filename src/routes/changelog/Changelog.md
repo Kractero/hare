@@ -1,5 +1,12 @@
 # Changelog
 
+## 2024-8-29
+
+### Adjustments
+
+1. JunkDaJunk / Finder
+   - JunkDaJunk/Finder use their own separate modes rather than sharing one. JDJ will take a new mode and fallback to finder's if not provided.
+
 ## 2024-8-27
 
 Will include bits from previous days.

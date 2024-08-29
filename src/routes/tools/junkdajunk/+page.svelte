@@ -60,7 +60,10 @@
 		puppets = (localStorage.getItem('gotissuesPuppets') as string) || ''
 		password = (localStorage.getItem('password') as string) || ''
 		mode =
-			$page.url.searchParams.get('mode') || (localStorage.getItem('finderMode') as string) || 'Gift'
+			$page.url.searchParams.get('mode') ||
+			(localStorage.getItem('jdjMode') as string) ||
+			(localStorage.getItem('finderMode') as string) ||
+			'Gift'
 		regionalwhitelist =
 			$page.url.searchParams.get('regions')?.replaceAll(',', '\n') ||
 			(localStorage.getItem('junkdajunkRegionalWhitelist') as string) ||

@@ -33,6 +33,7 @@
 		junkdajunkRegionalWhitelist: '',
 		junkdajunkFlagWhitelist: '',
 		junkdajunkFinderList: '',
+		jdjMode: 'Gift',
 		finderMode: 'Gift',
 		junkdajunkRarities: {
 			common: 0.5,
@@ -251,15 +252,14 @@
 			id="transferCard"
 			required={false}
 		/>
-		<h2 class="text-center text-2xl font-bold tracking-tight">JunkDaJunk Finder Shared</h2>
-		<FormSelect
-			id="findermode"
-			label="Behavior"
-			bind:bindValue={localStorageObject.finderMode}
-			items={['Gift', 'Sell', 'Exclude']}
-		/>
 		<FormInput label="Gift To" bind:bindValue={localStorageObject.finderGiftee} id="giftee" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">JunkDaJunk</h2>
+		<FormSelect
+			id="jdjmode"
+			label="Behavior"
+			bind:bindValue={localStorageObject.jdjMode}
+			items={['Gift', 'Sell', 'Exclude']}
+		/>
 		<FormTextArea
 			label="Card ID Whitelist"
 			bind:bindValue={localStorageObject.junkdajunkFinderList}
@@ -305,6 +305,12 @@
 			required={false}
 		/>
 		<h2 class="text-center text-2xl font-bold tracking-tight">Finder</h2>
+		<FormSelect
+			id="findermode"
+			label="Behavior"
+			bind:bindValue={localStorageObject.finderMode}
+			items={['Gift', 'Sell', 'Exclude']}
+		/>
 		<FormTextArea
 			label="Card IDs to Find"
 			bind:bindValue={localStorageObject.finderList}

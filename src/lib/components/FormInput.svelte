@@ -14,7 +14,7 @@
 	const rarities = ['common', 'uncommon', 'rare', 'ultra-rare', 'epic']
 </script>
 
-<div class={`flex max-w-lg items-center justify-between gap-4`}>
+<div class={`flex w-full max-w-lg items-center justify-between gap-4`}>
 	<Label class={'w-24'} for={id}
 		>{label}
 		{#if subTitle}
