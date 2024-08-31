@@ -50,6 +50,7 @@
 		stoppable = true
 		stopped = false
 		progress = `<p class="font-bold">Initiating gotIssues...mode set to ${mode} for ${issueCount} issues</p>`
+		counter = 0
 		openNewLinkArr = []
 		issuesContent = ''
 		let puppetList = puppets.split('\n')
@@ -92,6 +93,7 @@
 						issuesCount++
 					}
 				}
+				console.log(openNewLinkArr)
 				if (mode === 'Both' || mode === 'Packs') {
 					const packs = xmlObj.NATION.PACKS
 					if (packs) {
