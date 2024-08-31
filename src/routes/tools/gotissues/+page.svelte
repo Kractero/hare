@@ -93,7 +93,6 @@
 						issuesCount++
 					}
 				}
-				console.log(openNewLinkArr)
 				if (mode === 'Both' || mode === 'Packs') {
 					const packs = xmlObj.NATION.PACKS
 					if (packs) {
