@@ -8,11 +8,12 @@
 	import FormTextArea from '$lib/components/FormTextArea.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { pushHistory } from '$lib/helpers/navigation'
 	import { parseXML } from '$lib/helpers/parser'
-	import { checkUserAgent } from '$lib/helpers/validate'
+	import { checkUserAgent, pushHistory } from '$lib/helpers/utils'
 
 	const abortController = new AbortController()
+
+	let domain = ''
 	let progress = ''
 	let stoppable = false
 	let stopped = false
@@ -24,16 +25,16 @@
 	let errors: Array<{ field: string | number; message: string }> = []
 
 	onMount(() => {
+		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		top = $page.url.searchParams.get('top') || (localStorage.getItem('rocTop') as string) || '100'
 		days = $page.url.searchParams.get('days') || (localStorage.getItem('rocDays') as string) || '30'
-		mode =
-			$page.url.searchParams.get('mode') || (localStorage.getItem('rocMode') as string) || 'Top'
+		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('rocMode') as string) || 'Top'
 		specific = (localStorage.getItem('rocSpecific') as string) || ''
 	})
 	onDestroy(() => abortController.abort())
 
-	async function rateOfChange(main: string) {
+	async function onSubmit() {
 		pushHistory(`?main=${main}&top=${top}&days=${days}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -49,13 +50,8 @@
 				if (abortController.signal.aborted) {
 					break
 				}
-				const xml = await parseXML(
-					`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?q=censusranks&scale=86&start=${start}`,
-					main
-				)
-				names = names.concat(
-					xml.WORLD.CENSUSRANKS.NATIONS.NATION.map((nation: { NAME: string }) => nation.NAME)
-				)
+				const xml = await parseXML(`${domain}/cgi-bin/api.cgi?q=censusranks&scale=86&start=${start}`, main)
+				names = names.concat(xml.WORLD.CENSUSRANKS.NATIONS.NATION.map((nation: { NAME: string }) => nation.NAME))
 			}
 			names = names.slice(0, Number(top))
 		} else {
@@ -70,7 +66,7 @@
 			}
 			progress += `<p>Evaluating ${nation}, ${j + 1}/${names.length}</p>`
 			const xml = await parseXML(
-				`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?nation=${nation};q=census;scale=86;mode=history;from=${fromTimestamp}`,
+				`${domain}/cgi-bin/api.cgi?nation=${nation};q=census;scale=86;mode=history;from=${fromTimestamp}`,
 				main
 			)
 			const point = xml.NATION.CENSUS.SCALE.POINT
@@ -119,11 +115,10 @@
 	link="https://github.com/Thorn1000/NS-RoC"
 	additional={`<p class="text-xs mb-16">
 	Behavior Specific indicates to search for specific nation's RoC, and is enabled only when top is empty.
-</p>`}
-/>
+</p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={() => rateOfChange(main)} class="flex flex-col gap-8">
+	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		{#if mode === 'Top'}
 			<FormInput label={`Top ${top}`} bind:bindValue={top} id="top" required={true} />

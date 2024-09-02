@@ -8,11 +8,12 @@
 	import FormTextArea from '$lib/components/FormTextArea.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { pushHistory } from '$lib/helpers/navigation'
 	import { parseXML } from '$lib/helpers/parser'
-	import { checkUserAgent } from '$lib/helpers/validate'
+	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 
 	const abortController = new AbortController()
+
+	let domain = ''
 	let progress = ''
 	let stoppable = false
 	let stopped = false
@@ -27,18 +28,16 @@
 	let errors: Array<{ field: string | number; message: string }> = []
 
 	onMount(() => {
+		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		cardIds = (localStorage.getItem('signalCardIds') as string) || ''
 		collectionsOrDecks = (localStorage.getItem('signalCollectionsOrDecks') as string) || ''
 		asksBidsNation = (localStorage.getItem('signalAsksBidsNation') as string) || ''
-		mode =
-			$page.url.searchParams.get('mode') ||
-			(localStorage.getItem('signalMode') as string) ||
-			'Collection'
+		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('signalMode') as string) || 'Collection'
 	})
 	onDestroy(() => abortController.abort())
 
-	async function signal() {
+	async function onSubmit() {
 		pushHistory(`?main=${main}&mode=${mode}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -52,8 +51,8 @@
 			for (let i = 0; i < collectionsOrDecksArr.length; i++) {
 				const endpoint =
 					mode === 'Collection'
-						? `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?q=cards+${`collection;collectionid=${collectionsOrDecksArr[i]}`}`
-						: `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?q=cards+${`deck;nationname=${collectionsOrDecksArr[i]}`}`
+						? `${domain}/cgi-bin/api.cgi?q=cards+${`collection;collectionid=${collectionsOrDecksArr[i]}`}`
+						: `${domain}/cgi-bin/api.cgi?q=cards+${`deck;nationname=${collectionsOrDecksArr[i]}`}`
 				const xml = await parseXML(endpoint, main)
 				if (mode === 'Collection' && !(xml.CARDS.COLLECTION && xml.CARDS.COLLECTION.DECK.CARD)) {
 					progress += `<p class="text-red-400">Something is wrong with ${collectionsOrDecks[i]}!</p>`
@@ -72,10 +71,7 @@
 				}
 			}
 		} else {
-			const xml = await parseXML(
-				`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?q=cards+asksbids;nationname=${asksBidsNation}`,
-				main
-			)
+			const xml = await parseXML(`${domain}/cgi-bin/api.cgi?q=cards+asksbids;nationname=${asksBidsNation}`, main)
 			if (mode.includes('Asks')) {
 				if (!xml.CARDS.ASKS) {
 					progress += `<p class="text-red-400">${asksBidsNation} has no active asks</p>`
@@ -104,7 +100,7 @@
 			noMatch.push(card)
 			content += `<tr><td><p>${
 				cardsCount + 1
-			}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/card=${id}/season=${season}User_agent=${main}/Script=Signal/Generated_by=Signal/Author_discord=scrambleds/Author_main_nation=Kractero/">Link to Card</a></p></td></tr>\n`
+			}</p></td><td><p><a target="_blank" href="${domain}/page=deck/card=${id}/season=${season}?${urlParameters('Signal', main)}">Link to Card</a></p></td></tr>\n`
 			cardsCount++
 			progress += `<p class="text-green-400">Card ${id} from season ${season} not found within the provided parameters.</p>`
 		})
@@ -116,19 +112,17 @@
 
 <ToolContent
 	toolTitle="Signal"
-	caption="Given card ids, provide decks, collections, or check asks for bids for what's missing. Sideroca compatible."
-/>
+	caption="Given card ids, provide decks, collections, or check asks for bids for what's missing. Sideroca compatible." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={() => signal()} class="flex flex-col gap-8">
+	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		<FormTextArea label="Card IDs" bind:bindValue={cardIds} id="cardIds" required />
 		<FormSelect
 			id="mode"
 			label="Behavior"
 			bind:bindValue={mode}
-			items={['Collection', 'Deck', 'Asks', 'Bids', 'Asks and Bids']}
-		/>
+			items={['Collection', 'Deck', 'Asks', 'Bids', 'Asks and Bids']} />
 		{#if mode === 'Asks' || mode === 'Bids' || mode === 'Asks and Bids'}
 			<FormInput label={`Nation`} bind:bindValue={asksBidsNation} id="nation" required={true} />
 		{:else}
@@ -141,8 +135,7 @@
 			downloadButton={true}
 			bind:downloadable
 			bind:content
-			name="Queries"
-		/>
+			name="Queries" />
 	</form>
 	<Terminal bind:progress />
 </div>

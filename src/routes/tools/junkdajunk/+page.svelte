@@ -11,13 +11,13 @@
 	import Rarities from '$lib/components/Rarities.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { beforeUnload, pushHistory } from '$lib/helpers/navigation'
 	import { parser, parseXML } from '$lib/helpers/parser'
-	import { checkUserAgent } from '$lib/helpers/validate'
+	import { beforeUnload, checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 	import type { Card } from '$lib/types'
 
 	const abortController = new AbortController()
 
+	let domain = ''
 	let progress: ''
 	let openNewLinkArr: Array<string> = []
 	let counter = 0
@@ -56,6 +56,7 @@
 	let errors: Array<{ field: string | number; message: string }>
 
 	onMount(() => {
+		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		puppets = (localStorage.getItem('gotissuesPuppets') as string) || ''
 		password = (localStorage.getItem('password') as string) || ''
@@ -76,8 +77,7 @@
 			$page.url.searchParams.get('ids')?.replaceAll(',', '\n') ||
 			(localStorage.getItem('junkdajunkFinderList') as string) ||
 			''
-		giftee =
-			$page.url.searchParams.get('giftee') || (localStorage.getItem('finderGiftee') as string) || ''
+		giftee = $page.url.searchParams.get('giftee') || (localStorage.getItem('finderGiftee') as string) || ''
 		raritiesMV = localStorage.getItem('junkdajunkRarities')
 			? JSON.parse(localStorage.getItem('junkdajunkRarities') as string)
 			: {
@@ -98,14 +98,8 @@
 						'ultra-rare': 1,
 						epic: 1,
 					}
-		owners =
-			$page.url.searchParams.get('owners') ||
-			(localStorage.getItem('junkdajunkOwnerCount') as string) ||
-			''
-		cardcount =
-			$page.url.searchParams.get('cardcount') ||
-			(localStorage.getItem('junkdajunkCardCount') as string) ||
-			''
+		owners = $page.url.searchParams.get('owners') || (localStorage.getItem('junkdajunkOwnerCount') as string) || ''
+		cardcount = $page.url.searchParams.get('cardcount') || (localStorage.getItem('junkdajunkCardCount') as string) || ''
 		skipseason =
 			$page.url.searchParams.get('skipseason') ||
 			(localStorage.getItem('junkdajunkOmittedSeasons') as string) ||
@@ -115,13 +109,11 @@
 			localStorage.getItem('junkdajunkExnation') === 'true' ||
 			false
 		jdjtransfer =
-			$page.url.searchParams.get('jdjtransfer') ||
-			(localStorage.getItem('junkdajunkTransferBank') as string) ||
-			'-1'
+			$page.url.searchParams.get('jdjtransfer') || (localStorage.getItem('junkdajunkTransferBank') as string) || '-1'
 	})
 	onDestroy(() => abortController.abort())
 
-	async function junkDaJunk(main: string, puppets: string) {
+	async function onSubmit() {
 		pushHistory(
 			`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ''}${owners ? `&owners=${owners}` : ''}${cardcount ? `&cardcount=${cardcount}` : ''}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ''}${flagwhitelist ? `&flags=${flagwhitelist.replaceAll('\n', ',')}` : ''}${finderlist ? `&ids=${finderlist.replaceAll('\n', ',')}` : ''}${skipseason ? `&skipseason=${skipseason}` : ''}${skipexnation ? `&skipexnation=${skipexnation}` : ''}`
 		)
@@ -185,10 +177,7 @@
 			nation = nation.toLowerCase().replaceAll(' ', '_')
 			try {
 				progress += `<p class="font-semibold">Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`
-				const xmlDocument = await parseXML(
-					`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck+info`,
-					main
-				)
+				const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck+info`, main)
 				let nationalBank = xmlDocument.CARDS.INFO.BANK
 				if (Number(jdjtransfer) !== -1 && nationalBank >= Number(jdjtransfer)) {
 					progress += `<p>Skipping ${nation} as they exceed <span class="text-blue-400">${jdjtransfer}</span> bank.</p>`
@@ -204,7 +193,7 @@
 							break
 						}
 						const xmlDocument = await parseXML(
-							`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi/?cardid=${id}&season=${season}&q=card+markets+info+owners`,
+							`${domain}/cgi-bin/api.cgi/?cardid=${id}&season=${season}&q=card+markets+info+owners`,
 							main
 						)
 						const card: Card = xmlDocument.CARD
@@ -275,17 +264,11 @@
 							junk = false
 							reason = `<span class="text-blue-400">category set to gift</span>`
 						}
-						if (
-							raritiesMV.hasOwnProperty(category) &&
-							parseFloat(marketValue) >= Number(raritiesMV[category])
-						) {
+						if (raritiesMV.hasOwnProperty(category) && parseFloat(marketValue) >= Number(raritiesMV[category])) {
 							junk = false
 							reason = `<span class="text-blue-400">has mv exceeding threshold</span>`
 						}
-						if (
-							raritiesLowestBid.hasOwnProperty(category) &&
-							highestBid >= Number(raritiesLowestBid[category])
-						) {
+						if (raritiesLowestBid.hasOwnProperty(category) && highestBid >= Number(raritiesLowestBid[category])) {
 							junk = false
 							reason = `<span class="text-blue-400">has high bid</span>`
 						}
@@ -307,11 +290,11 @@
 							} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}</p>`
 							openNewLinkArr = [
 								...openNewLinkArr,
-								`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`,
+								`${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1`,
 							]
 							junkHtml += `<tr><td><p>${nation} | ${i + 1} of ${
 								cards.length
-							} (${currCard + 1})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1">Link to Card</a></p></td></tr>\n`
+							} (${currCard + 1})</p></td><td><p><a target="_blank" href="${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1">Link to Card</a></p></td></tr>\n`
 							currCard = currCard + 1
 						} else {
 							if (mode === 'Gift') {
@@ -328,10 +311,9 @@
 									'User-Agent': main,
 								}
 								if (currentNationXPin) headers['X-Pin'] = currentNationXPin
-								else
-									headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
+								else headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
 								const prepare = await fetch(
-									`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftto}&mode=prepare&c=giftcard`,
+									`${domain}/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftto}&mode=prepare&c=giftcard`,
 									{ headers: headers }
 								)
 								if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || ''
@@ -339,7 +321,7 @@
 								const xml = parser.parse(text)
 								token = xml.NATION.SUCCESS
 								const gift = await fetch(
-									`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftto}&mode=execute&c=giftcard&token=${token}`,
+									`${domain}/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftto}&mode=execute&c=giftcard&token=${token}`,
 									{
 										headers: {
 											'User-Agent': main,
@@ -349,33 +331,25 @@
 								)
 								if (gift.status === 200) {
 									let successfulGift = true
-									const verify = await parseXML(
-										`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`,
-										main
-									)
+									const verify = await parseXML(`${domain}/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main)
 									let verifyCards: Array<Card> = verify.CARDS.DECK.CARD
-									verifyCards = verifyCards
-										? Array.isArray(verifyCards)
-											? verifyCards
-											: [verifyCards]
-										: []
+									verifyCards = verifyCards ? (Array.isArray(verifyCards) ? verifyCards : [verifyCards]) : []
 									if (verifyCards && verifyCards.length > 0) {
 										let ids = verifyCards.map(card => card.CARDID)
 										for (let i = 0; i < ids.length; i++) {
 											if (ids[i] === id) {
 												successfulGift = false
 												interimSells.push(
-													`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftto}`
+													`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/${urlParameters}&giftto=${giftto}`
 												)
-												sellContent += `<tr><td><p>${nation} | ${failedGiftCount + 1} (${currSellCard})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${giftto}">Link to Card</a></p></td></tr>\n`
+												sellContent += `<tr><td><p>${nation} | ${failedGiftCount + 1} (${currSellCard})</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/${urlParameters}&giftto=${giftto}">Link to Card</a></p></td></tr>\n`
 												currSellCard = currSellCard + 1
 												progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftto}`
 												failedGiftCount++
 											}
 										}
 									}
-									if (successfulGift)
-										progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftto}`
+									if (successfulGift) progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftto}`
 								} else {
 									progress += `<p>${i + 1}/${
 										cards.length
@@ -385,11 +359,11 @@
 								progress += `<p>${i + 1}/${cards.length} -> Skipping ${id} - ${reason}!`
 								if (mode === 'Sell') {
 									interimSells.push(
-										`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero`
+										`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters}`
 									)
 									sellContent += `<tr><td><p>${nation} | ${i + 1} of ${
 										cards.length
-									} (${currSellCard + 1})</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}/Script=JunkDaJunk/Generated_by=JunkDaJunk/Author_discord=scrambleds/Author_main_nation=Kractero">Link to Card</a></p></td></tr>\n`
+									} (${currSellCard + 1})</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters}">Link to Card</a></p></td></tr>\n`
 									currSellCard = currSellCard + 1
 								}
 							}
@@ -438,18 +412,11 @@
 </p>
 <h2 class="text-xl mb-16">
 	Hare does not junk cards, it generates a html file of cards to junk.
-</h2>`}
-/>
+</h2>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={() => junkDaJunk(main, puppets)} class="flex flex-col gap-8">
-		<InputCredentials
-			bind:errors
-			bind:main
-			bind:puppets
-			bind:password
-			authenticated={mode === 'Gift' ? true : false}
-		/>
+	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={mode === 'Gift' ? true : false} />
 		{#if mode === 'Gift'}
 			<FormInput label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />
 		{/if}
@@ -470,21 +437,10 @@
 			bind:bindValue={skipseason}
 			id="skipseason"
 			items={["Don't Skip", 'Skip Offseasons', '1', '2']}
-			label="Skip Seasons?"
-		/>
+			label="Skip Seasons?" />
 		<FormCheckbox bind:checked={skipexnation} id="skipexnation" label="Skip Exnation" />
-		<FormInput
-			label={'Maximum Bank Threshold'}
-			bind:bindValue={jdjtransfer}
-			id="jdjtransfer"
-			required={true}
-		/>
-		<FormSelect
-			bind:bindValue={mode}
-			id="mode"
-			items={['Gift', 'Sell', 'Exclude']}
-			label="Behavior"
-		/>
+		<FormInput label={'Maximum Bank Threshold'} bind:bindValue={jdjtransfer} id="jdjtransfer" required={true} />
+		<FormSelect bind:bindValue={mode} id="mode" items={['Gift', 'Sell', 'Exclude']} label="Behavior" />
 		<Buttons
 			stopButton={true}
 			bind:stopped
@@ -492,8 +448,7 @@
 			downloadButton={true}
 			bind:downloadable
 			bind:content={junkHtml}
-			name="junkDaJunk"
-		>
+			name="junkDaJunk">
 			<OpenButton bind:counter bind:progress bind:openNewLinkArr />
 		</Buttons>
 	</form>

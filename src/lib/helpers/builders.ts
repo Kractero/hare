@@ -46,24 +46,14 @@ export async function nsIterator(puppets: string, mode: string, main?: string) {
 		case 'Login Sheet':
 			return puppetsList
 				.map((nation, i) =>
-					buildTableRow(
-						i,
-						nation,
-						`container=${nation}/nation=${nation}/page=upload_flag/test=1`,
-						'Login_Sheet'
-					)
+					buildTableRow(i, nation, `container=${nation}/nation=${nation}/page=upload_flag/test=1`, 'Login_Sheet')
 				)
 				.join('\n')
 
 		case 'Creator':
 			return puppetsList
 				.map((nation, i) =>
-					buildTableRow(
-						i,
-						nation,
-						`container=${nation}/nation=${nation}/page=create_nation`,
-						'Creator'
-					)
+					buildTableRow(i, nation, `container=${nation}/nation=${nation}/page=create_nation`, 'Creator')
 				)
 				.join('\n')
 
@@ -282,35 +272,94 @@ let script = `
       });
   });
   `
-
-export function timeAgo(date: string) {
-	const now = new Date()
-	const createdDate = new Date(date)
-
-	const yearsDiff = now.getFullYear() - createdDate.getFullYear()
-	const monthsDiff = now.getMonth() - createdDate.getMonth()
-	const daysDiff = now.getDate() - createdDate.getDate()
-
-	let years = yearsDiff
-	let months = monthsDiff
-	let days = daysDiff
-
-	if (days < 0) {
-		months -= 1
-		days += new Date(now.getFullYear(), now.getMonth(), 0).getDate()
-	}
-	if (months < 0) {
-		years -= 1
-		months += 12
-	}
-
-	const yearsStr = years > 0 ? `${years} year${years > 1 ? 's' : ''} ` : ''
-	const monthsStr = months > 0 ? `${months} month${months > 1 ? 's' : ''} ` : ''
-	const daysStr = days > 0 ? `${days} day${days > 1 ? 's' : ''} ` : ''
-
-	return `${yearsStr}${monthsStr}${years < 1 && months < 1 ? daysStr : ''} ago`.trim()
-}
-
-export const urlParameters = (tool: string, main: string) => {
-	return `?generated_by=Hare${tool}__author_main_nation_Kractero__usedBy_${main}`
+export const scoreCodes: { [key: string]: string } = {
+	'0': 'Civil Rights',
+	'1': 'Economy',
+	'2': 'Political Freedoms',
+	'3': 'Population',
+	'4': 'Wealth Gaps',
+	'5': 'Death Rate',
+	'6': 'Compassion',
+	'7': 'Eco',
+	'8': 'Social Conservatism',
+	'9': 'Nudity',
+	'10': 'Industry: Automobile Manufacturing',
+	'11': 'Industry: Cheese Exports',
+	'12': 'Industry: Basket Weaving',
+	'13': 'Industry: Informtion Technology',
+	'14': 'Industry: Pizza Delivery',
+	'15': 'Industry: Trout Fishing',
+	'16': 'Industry: Arms Manufacturing',
+	'17': 'Sector: Agriculture',
+	'18': 'Industry: Beverage Sales',
+	'19': 'Industry: Timber Woodchipping',
+	'20': 'Industry: Mining',
+	'21': 'Industry: Insurance',
+	'22': 'Industry: Furniture Restoration',
+	'23': 'Industry: Retail',
+	'24': 'Industry: Book Publishing',
+	'25': 'Industry: Gambling',
+	'26': 'Sector: Manufacturing',
+	'27': 'Government Size',
+	'28': 'Welfare',
+	'29': 'Public Healthcare',
+	'30': 'Law Enforcement',
+	'31': 'Business Subsidization',
+	'32': 'Religiousness',
+	'33': 'Income Equality',
+	'34': 'Niceness',
+	'35': 'Rudeness',
+	'36': 'Intelligence',
+	'37': 'Ignorance',
+	'38': 'Political Apathy',
+	'39': 'Health',
+	'40': 'Cheerfulness',
+	'41': 'Weather',
+	'42': 'Compliance',
+	'43': 'Safety',
+	'44': 'Lifespan',
+	'45': 'Ideological Radicality',
+	'46': 'Defense Forces',
+	'47': 'Pacifism',
+	'48': 'Economic Freedom',
+	'49': 'Taxation',
+	'50': 'Freedom From Taxation',
+	'51': 'Corruption',
+	'52': 'Integrity',
+	'53': 'Authoritarianism',
+	'54': 'Youth Rebelliousness',
+	'55': 'Culture',
+	'56': 'Employment',
+	'57': 'Public Transport',
+	'58': 'Tourism',
+	'59': 'Weaponization',
+	'60': 'Recreational Drug Use',
+	'61': 'Obesity',
+	'62': 'Secularism',
+	'63': 'Environmental Beauty',
+	'64': 'Charmlessness',
+	'65': 'Influence',
+	'66': 'World Assembly Endorsements',
+	'67': 'Averageness',
+	'68': 'Human Development Index',
+	'69': 'Primitiveness',
+	'70': 'Scientific Advancement',
+	'71': 'Inclusiveness',
+	'72': 'Average Income',
+	'73': 'Average Income Of Poor',
+	'74': 'Average Income Of Rich',
+	'75': 'Public Education',
+	'76': 'Economic Output',
+	'77': 'Crime',
+	'78': 'Foreign Aid',
+	'79': 'Black Market',
+	'80': 'Residency',
+	'81': 'Survivors',
+	'82': 'Zombies',
+	'83': 'Dead',
+	'84': 'Percentage Zombies',
+	'85': 'Average Disposable Income',
+	'86': 'International Artwork',
+	'87': 'Patriotism',
+	'88': 'Food Quality',
 }

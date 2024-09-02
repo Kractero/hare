@@ -8,13 +8,13 @@
 	import FormTextArea from '$lib/components/FormTextArea.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { pushHistory } from '$lib/helpers/navigation'
 	import { parser, parseXML } from '$lib/helpers/parser'
-	import { checkUserAgent } from '$lib/helpers/validate'
+	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 	import type { Nation, NSNation, NSRegion } from '$lib/types'
 
 	const abortController = new AbortController()
 
+	let domain = ''
 	let progress = ''
 	let stopped = false
 	let stoppable = false
@@ -26,23 +26,18 @@
 	let errors: Array<{ field: string | number; message: string }> = []
 
 	onMount(() => {
+		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		endotarter =
-			$page.url.searchParams.get('endotarter') ||
-			(localStorage.getItem('endotartEndotarter') as string) ||
-			''
+			$page.url.searchParams.get('endotarter') || (localStorage.getItem('endotartEndotarter') as string) || ''
 		immune = $page.url.searchParams.get('immune')
 			? $page.url.searchParams.get('immune')!.replaceAll(',', '\n')
 			: (localStorage.getItem('endotartImmune') as string) || ''
-		limit =
-			$page.url.searchParams.get('limit') || (localStorage.getItem('endotartLimit') as string) || ''
-		source =
-			$page.url.searchParams.get('source') ||
-			(localStorage.getItem('endotartSource') as string) ||
-			'XML'
+		limit = $page.url.searchParams.get('limit') || (localStorage.getItem('endotartLimit') as string) || ''
+		source = $page.url.searchParams.get('source') || (localStorage.getItem('endotartSource') as string) || 'XML'
 	})
 	onDestroy(() => abortController.abort())
-	async function endotart() {
+	async function onSubmit() {
 		pushHistory(
 			`?main=${main}${limit ? `&limit=${limit}` : ''}&nation=${endotarter}&source=${source}${immune ? `&immune=${immune.replaceAll('\n', ',')}` : ''}`
 		)
@@ -51,14 +46,9 @@
 		progress = '<p>Initiating Endotart...</p>'
 		stoppable = true
 		stopped = false
-		const whiteList = immune
-			? immune.split('\n').map(nation => nation.toLowerCase().replace(' ', '_'))
-			: []
+		const whiteList = immune ? immune.split('\n').map(nation => nation.toLowerCase().replace(' ', '_')) : []
 
-		const regionalXML = await parseXML(
-			`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?nation=${endotarter}&q=endorsements+region+wa`,
-			main
-		)
+		const regionalXML = await parseXML(`${domain}/cgi-bin/api.cgi?nation=${endotarter}&q=endorsements+region+wa`, main)
 		if (!regionalXML.NATION) progress += `<p class="text-red-400">Error finding ${endotarter}!</p>`
 		if ((regionalXML as Nation).NATION.UNSTATUS === 'Non-member') {
 			progress += `<p class="text-red-400">${endotarter} is not in the WA.</p>`
@@ -69,10 +59,7 @@
 		if (whiteList.length > 0) {
 			progress += `<p>Nations immune to endocap: ${whiteList.map(region => region.trim()).join(', ')}</p>`
 		}
-		const wamems = await parseXML(
-			`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?region=${regionalXML.NATION.REGION}&q=wanations`,
-			main
-		)
+		const wamems = await parseXML(`${domain}/cgi-bin/api.cgi?region=${regionalXML.NATION.REGION}&q=wanations`, main)
 		const regionalWA = (wamems.REGION as NSRegion).UNNATIONS.split(',')
 		let xml
 		let NAME
@@ -107,18 +94,14 @@
 			}
 
 			if (source === 'API') {
-				xml = (await parseXML(
-					`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?nation=${regionalWA[i]}&q=endorsements+name`,
-					main
-				)) as Nation
+				xml = (await parseXML(`${domain}/cgi-bin/api.cgi?nation=${regionalWA[i]}&q=endorsements+name`, main)) as Nation
 				NAME = String(xml.NATION.NAME)
 				ENDORSEMENTS = String(xml.NATION.ENDORSEMENTS).includes(',')
 					? xml.NATION.ENDORSEMENTS.split(',')
 					: [xml.NATION.ENDORSEMENTS]
 			} else {
 				const nations = (xml.NATIONS.NATION as Array<NSNation>).filter(
-					nation =>
-						String(nation.NAME).toLowerCase().replace(/ /g, '_') === regionalWA[i].toLowerCase()
+					nation => String(nation.NAME).toLowerCase().replace(/ /g, '_') === regionalWA[i].toLowerCase()
 				)
 				if (nations.length > 0) {
 					;({ NAME, ENDORSEMENTS } = nations[0])
@@ -128,33 +111,30 @@
 			}
 
 			if (NAME && ENDORSEMENTS) {
-				if (
-					endotarter.toLowerCase().replaceAll(' ', '_') ===
-					String(NAME).toLowerCase().replaceAll(' ', '_')
-				) {
-					progress += `<p class="text-yellow-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}/User_agent=${main}/Script=Endotart/Generated_by=Endotart/Author_discord=scrambleds/Author_main_nation=Kractero/"}>${regionalWA[i]}</a> is the endotart nation.</p>`
+				if (endotarter.toLowerCase().replaceAll(' ', '_') === String(NAME).toLowerCase().replaceAll(' ', '_')) {
+					progress += `<p class="text-yellow-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters}"}>${regionalWA[i]}</a> is the endotart nation.</p>`
 				} else if (limit) {
 					if (whiteList.includes(regionalWA[i])) {
-						progress += `<p class="text-yellow-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}/User_agent=${main}/Script=Endotart/Generated_by=Endotart/Author_discord=scrambleds/Author_main_nation=Kractero/"}>${regionalWA[i]}</a> is in your immune nations.</p>`
+						progress += `<p class="text-yellow-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters}"}>${regionalWA[i]}</a> is in your immune nations.</p>`
 					} else if (
 						ENDORSEMENTS.length < Number(limit) &&
 						!ENDORSEMENTS.includes(endotarter.toLowerCase().replaceAll(' ', '_')) &&
 						regionalWA[i] !== endotarter.toLowerCase().replaceAll(' ', '_')
 					) {
-						progress += `<p class="text-green-400">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}/User_agent=${main}/Script=Endotart/Generated_by=Endotart/Author_discord=scrambleds/Author_main_nation=Kractero/"}>${regionalWA[i]}</a> is not being endorsed by ${endotarter}.</p>`
+						progress += `<p class="text-green-400">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters}"}>${regionalWA[i]}</a> is not being endorsed by ${endotarter}.</p>`
 					} else if (ENDORSEMENTS.length > Number(limit)) {
-						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}/User_agent=${main}/Script=Endotart/Generated_by=Endotart/Author_discord=scrambleds/Author_main_nation=Kractero/"}>${regionalWA[i]}</a> has more than ${limit} endorsements.</p>`
+						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters}"}>${regionalWA[i]}</a> has more than ${limit} endorsements.</p>`
 					} else {
-						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}/User_agent=${main}/Script=Endotart/Generated_by=Endotart/Author_discord=scrambleds/Author_main_nation=Kractero/"}>${regionalWA[i]}</a> is already endorsed by ${endotarter}.</p>`
+						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters}"}>${regionalWA[i]}</a> is already endorsed by ${endotarter}.</p>`
 					}
 				} else {
 					if (
 						!ENDORSEMENTS.includes(endotarter.toLowerCase().replaceAll(' ', '_')) &&
 						regionalWA[i] !== endotarter.toLowerCase().replaceAll(' ', '_')
 					) {
-						progress += `<p class="text-green-400">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}/User_agent=${main}/Script=Endotart/Generated_by=Endotart/Author_discord=scrambleds/Author_main_nation=Kractero/"}>${regionalWA[i]}</a> is not being endorsed by ${endotarter}.</p>`
+						progress += `<p class="text-green-400">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters}"}>${regionalWA[i]}</a> is not being endorsed by ${endotarter}.</p>`
 					} else {
-						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}/User_agent=${main}/Script=Endotart/Generated_by=Endotart/Author_discord=scrambleds/Author_main_nation=Kractero/"}>${regionalWA[i]}</a> is already endorsed by ${endotarter}.</p>`
+						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters}"}>${regionalWA[i]}</a> is already endorsed by ${endotarter}.</p>`
 					}
 				}
 			}
@@ -164,20 +144,12 @@
 	}
 </script>
 
-<ToolContent
-	toolTitle="Endotart"
-	caption="Specify a nation and get all the regionmates they are not endorsing."
-/>
+<ToolContent toolTitle="Endotart" caption="Specify a nation and get all the regionmates they are not endorsing." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={endotart} class="flex flex-col gap-8">
+	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:main bind:errors />
-		<FormInput
-			label={'Endotart Nation'}
-			bind:bindValue={endotarter}
-			id="endotarter"
-			required={true}
-		/>
+		<FormInput label={'Endotart Nation'} bind:bindValue={endotarter} id="endotarter" required={true} />
 		<FormInput label={'Endorse Limit'} bind:bindValue={limit} id="limit" required={false} />
 		<FormSelect id="source" label="Source" bind:bindValue={source} items={['XML', 'API']} />
 		<FormTextArea bind:bindValue={immune} id="immune" label="Immune Nations" required={false} />

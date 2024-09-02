@@ -5,10 +5,10 @@
 	import InputCredentials from '$lib/components/InputCredentials.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { pushHistory } from '$lib/helpers/navigation'
 	import { parseXML } from '$lib/helpers/parser'
-	import { checkUserAgent } from '$lib/helpers/validate'
+	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 
+	let domain = ''
 	let progress = ''
 	let puppets = ''
 	let main = ''
@@ -16,24 +16,22 @@
 	let errors: Array<{ field: string | number; message: string }> = []
 
 	onMount(() => {
+		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		puppets = (localStorage.getItem('puppets') as string) || ''
 	})
-	async function findWA(main: string, puppets: string) {
+	async function onSubmit() {
 		pushHistory(`?main=${main}`)
 		errors = checkUserAgent('main')
 		if (errors.length > 0) return
 		progress = ''
 		stoppable = true
 		const puppetsList = puppets.split('\n')
-		const xml = await parseXML(
-			`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?wa=1&q=members`,
-			main
-		)
+		const xml = await parseXML(`${domain}/cgi-bin/api.cgi?wa=1&q=members`, main)
 		const members = xml.WA.MEMBERS.split(',')
 		puppetsList.forEach(puppet => {
 			if (members.includes(puppet.toLowerCase().replace(' ', '_'))) {
-				progress = `<p>I found your WA on <a href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/nation=${puppet}User_agent=${main}/Script=Whereswa/Generated_by=Whereswa/Author_discord=scrambleds/Author_main_nation=Kractero/">${puppet}</a>.</p>`
+				progress = `<p>I found your WA on <a target="_blank" href="${domain}/nation=${puppet}?${urlParameters('Wheres My WA', main)}">${puppet}</a>.</p>`
 			}
 		})
 		stoppable = false
@@ -45,11 +43,10 @@
 	caption="Specify your puppets and this script will find which one is in the WA."
 	author="9003"
 	link="https://github.com/jmikk/WheresMyWA"
-	originalBlurb="rewritten in JS for browser use by Kractero"
-/>
+	originalBlurb="rewritten in JS for browser use by Kractero" />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={() => findWA(main, puppets)} class="flex flex-col gap-8">
+	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
 		<Buttons bind:stoppable />
 	</form>

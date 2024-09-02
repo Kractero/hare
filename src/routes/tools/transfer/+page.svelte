@@ -7,12 +7,13 @@
 	import InputCredentials from '$lib/components/InputCredentials.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { pushHistory } from '$lib/helpers/navigation'
 	import { parseXML } from '$lib/helpers/parser'
-	import { checkUserAgent } from '$lib/helpers/validate'
+	import { checkUserAgent, pushHistory } from '$lib/helpers/utils'
 	import type { Card } from '$lib/types'
 
 	const abortController = new AbortController()
+
+	let domain = ''
 	let progress = ''
 	let downloadable = false
 	let stoppable = false
@@ -26,21 +27,16 @@
 	let errors: Array<{ field: string | number; message: string }> = []
 
 	onMount(() => {
+		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		puppets = (localStorage.getItem('puppets') as string) || ''
-		transfer =
-			$page.url.searchParams.get('transfer') ||
-			(localStorage.getItem('transferBank') as string) ||
-			'10'
-		mode =
-			$page.url.searchParams.get('mode') ||
-			(localStorage.getItem('transferMode') as string) ||
-			'Bank'
+		transfer = $page.url.searchParams.get('transfer') || (localStorage.getItem('transferBank') as string) || '10'
+		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('transferMode') as string) || 'Bank'
 	})
 
 	onDestroy(() => abortController.abort())
 
-	async function goldRetriever() {
+	async function onSubmit() {
 		pushHistory(`?main=${main}&transfer=${transfer}&mode=${mode}`)
 		errors = checkUserAgent('main')
 		if (errors.length > 0) return
@@ -59,12 +55,7 @@
 			}
 			try {
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`
-				const deckInfo = await parseXML(
-					`https://${
-						localStorage.getItem('connectionUrl') || 'www'
-					}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck+info`,
-					main
-				)
+				const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck+info`, main)
 				if (mode === 'Bank') {
 					let nationalBank = deckInfo.CARDS.INFO.BANK
 					if (nationalBank >= Number(transfer)) {
@@ -117,19 +108,13 @@
 
 <ToolContent
 	toolTitle="Transfer"
-	caption="Takes a bank threshold and receive a text file with puppets that have that bank or higher."
-/>
+	caption="Takes a bank threshold and receive a text file with puppets that have that bank or higher." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={() => goldRetriever()} class="flex flex-col gap-8">
+	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
 		<FormSelect id="mode" label="Transfer Value" bind:bindValue={mode} items={['Bank', 'Junk']} />
-		<FormInput
-			label="Transfer Bank Threshold"
-			bind:bindValue={transfer}
-			id="transfer"
-			required={true}
-		/>
+		<FormInput label="Transfer Bank Threshold" bind:bindValue={transfer} id="transfer" required={true} />
 		<Buttons
 			downloadButton={true}
 			bind:downloadable
@@ -138,8 +123,7 @@
 			name="Transfer"
 			stopButton={true}
 			bind:stoppable
-			bind:stopped
-		/>
+			bind:stopped />
 	</form>
 	<Terminal bind:progress />
 </div>

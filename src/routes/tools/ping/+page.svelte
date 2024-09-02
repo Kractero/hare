@@ -5,11 +5,11 @@
 	import InputCredentials from '$lib/components/InputCredentials.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { pushHistory } from '$lib/helpers/navigation'
 	import { sleep } from '$lib/helpers/parser'
-	import { checkUserAgent } from '$lib/helpers/validate'
+	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 
 	const abortController = new AbortController()
+	let domain = ''
 	let progress = ''
 	let stoppable = false
 	let stopped = false
@@ -22,21 +22,19 @@
 	let errors: Array<{ field: string | number; message: string }> = []
 
 	onMount(() => {
+		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		puppets = (localStorage.getItem('puppets') as string) || ''
 		password = (localStorage.getItem('password') as string) || ''
 	})
 	onDestroy(() => abortController.abort())
 	async function checkForExistence(userAgent: string, username: string, password: string) {
-		let res = await fetch(
-			`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?nation=${username}&q=ping`,
-			{
-				headers: {
-					'X-Password': password,
-					'User-Agent': userAgent,
-				},
-			}
-		)
+		let res = await fetch(`${domain}/cgi-bin/api.cgi?nation=${username}&q=ping`, {
+			headers: {
+				'X-Password': password,
+				'User-Agent': userAgent,
+			},
+		})
 		const existence = res.status
 		const ratelimitRemaining = Number(res.headers.get('RateLimit-Remaining'))
 		const ratelimitReset = Number(res.headers.get('RateLimit-Reset'))
@@ -55,7 +53,7 @@
 		}
 		return false
 	}
-	async function ping() {
+	async function onSubmit() {
 		pushHistory(`?main=${main}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -82,7 +80,7 @@
 			if (existence === false) {
 				progress += `<p class="text-red-400">Failed to log into ${nation}, adding to restore sheet...</p>`
 				let nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
-				content += `<tr><td><p>${restoreCount + 1}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=upload_flag/test=1/User_agent=${main}/Script=Pinger/Generated_by=Pinger/Author_discord=scrambleds/Author_main_nation=Kractero/">Link to Restore ${nation}</a></p></td></tr>`
+				content += `<tr><td><p>${restoreCount + 1}</p></td><td><p><a target="_blank" href="${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=upload_flag/test=1${urlParameters('Pinger', main)}">Link to Restore ${nation}</a></p></td></tr>`
 				restoreCount++
 			}
 			if (existence === true) {
@@ -109,11 +107,10 @@
 	<a class="underline" href="https://github.com/Kractero/userscripts/raw/main/container-login/autolog.user.js" target="_blank" rel="noreferrer noopener">
 		autolog
 	</a> are needed which does require configuration which you can read about in the repository.
-</p>`}
-/>
+</p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={async () => await ping()} class="flex flex-col gap-8">
+	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={true} />
 		<Buttons
 			stopButton={true}
@@ -122,8 +119,7 @@
 			downloadButton={true}
 			bind:downloadable
 			bind:content
-			name="restore"
-		/>
+			name="restore" />
 	</form>
 	<Terminal bind:progress />
 </div>

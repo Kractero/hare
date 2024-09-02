@@ -6,13 +6,13 @@
 	import InputCredentials from '$lib/components/InputCredentials.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { pushHistory } from '$lib/helpers/navigation'
+	import { scoreCodes } from '$lib/helpers/builders'
 	import { parseXML } from '$lib/helpers/parser'
-	import { scoreCodes } from '$lib/helpers/scores'
-	import { checkUserAgent } from '$lib/helpers/validate'
+	import { checkUserAgent, pushHistory } from '$lib/helpers/utils'
 
 	const abortController = new AbortController()
 
+	let domain = ''
 	let progress = ''
 	let puppets = ''
 	let main = ''
@@ -22,14 +22,12 @@
 	let errors: Array<{ field: string | number; message: string }> = []
 
 	onMount(() => {
+		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		puppets = (localStorage.getItem('puppets') as string) || ''
-		scales =
-			$page.url.searchParams.get('scale') ||
-			(localStorage.getItem('statisticsScales') as string) ||
-			''
+		scales = $page.url.searchParams.get('scale') || (localStorage.getItem('statisticsScales') as string) || ''
 	})
-	async function findWA(main: string, puppets: string) {
+	async function onSubmit() {
 		pushHistory(`?main=${main}&scale=${scales.replace('\n', ',')}`)
 		errors = checkUserAgent('main')
 		if (errors.length > 0) return
@@ -47,7 +45,7 @@
 				const nation = puppetsList[j]
 				try {
 					const scaler = await parseXML(
-						`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?nation=${nation}&q=census&scale=${scaleList[i]}`,
+						`${domain}/cgi-bin/api.cgi?nation=${nation}&q=census&scale=${scaleList[i]}`,
 						main
 					)
 					scores = [...scores, [scaler.NATION.CENSUS.SCALE.RANK, scaler.NATION.CENSUS.SCALE.SCORE]]
@@ -100,11 +98,10 @@
 	toolTitle="Statistics"
 	caption="Provided WA scales and puppets, get the mean, median, and mode for each scale."
 	author="9003"
-	originalBlurb="rewritten in JS for browser use by Kractero"
-/>
+	originalBlurb="rewritten in JS for browser use by Kractero" />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={() => findWA(main, puppets)} class="flex flex-col gap-8">
+	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
 		<FormTextArea label="Scale" bind:bindValue={scales} id="scale" required={true} />
 		<Buttons stopButton={true} bind:stopped bind:stoppable />

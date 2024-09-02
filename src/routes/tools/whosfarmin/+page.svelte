@@ -5,22 +5,23 @@
 	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { pushHistory } from '$lib/helpers/navigation'
 	import { parseXML } from '$lib/helpers/parser'
-	import { checkUserAgent } from '$lib/helpers/validate'
+	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 
 	const abortController = new AbortController()
+	let domain = ''
 	let progress = ''
 	let main = ''
 	let errors: Array<{ field: string | number; message: string }> = []
 
 	onMount(() => {
+		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 	})
 
 	onDestroy(() => abortController.abort())
 
-	async function detector() {
+	async function onSubmit() {
 		pushHistory(`?main=${main}`)
 		errors = checkUserAgent('main')
 		if (errors.length > 0) return
@@ -35,10 +36,7 @@
 			masterList[puppSplit[0].toLowerCase().replaceAll(' ', '_')] = puppSplit[1]
 		})
 		const ownerList: { [key: string]: string } = {}
-		const currActives = await parseXML(
-			`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?q=happenings;filter=law;limit=200`,
-			main
-		)
+		const currActives = await parseXML(`${domain}/cgi-bin/api.cgi?q=happenings;filter=law;limit=200`, main)
 		currActives.WORLD.HAPPENINGS.EVENT.forEach((event: { TEXT: string }) => {
 			const regex = /@@([\w]+)@@/
 			if (event.TEXT) {
@@ -59,7 +57,7 @@
 		} else {
 			Object.keys(ownerList).forEach(owner => {
 				progress += `<p><a class="underline" target="_blank" rel="noreferrer noopener"
-            href="https://nationstates.net/nation=${owner}/User_agent=${main}/Script=Whosfarmin/Generated_by=Whosfarmin/Author_discord=scrambleds/Author_main_nation=Kractero/">${owner}</a> is currently farming!</p>\n`
+            href="${domain}/nation=${owner}?${urlParameters}">${owner}</a> is currently farming!</p>\n`
 			})
 		}
 	}
@@ -71,11 +69,10 @@
 	additional={`<p class="text-xs mb-16">
 	Puppets are linked to their owners via <a class="underline" target="_blank" rel="noreferrer noopener" href="https://docs.google.com/spreadsheets/d/1MZ-4GLWAZDgB1TDvwtssEcVKHKunOKi3l90Jof1pBB4/">9003's sheet</a>, submit
   yours <a target="_blank" rel="noreferrer noopener" class="underline" href="https://docs.google.com/forms/d/16t4mlYuSU5p0U9hVkvzKMqP1GRnpdDV7nLNLA9WdFTs/viewform">here</a>
-</p>`}
-/>
+</p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={async () => await detector()} class="flex flex-col gap-8">
+	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		<Buttons />
 	</form>

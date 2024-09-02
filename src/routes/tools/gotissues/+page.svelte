@@ -7,12 +7,12 @@
 	import InputCredentials from '$lib/components/InputCredentials.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { pushHistory } from '$lib/helpers/navigation'
 	import { parseXML } from '$lib/helpers/parser'
-	import { checkUserAgent } from '$lib/helpers/validate'
+	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 	import type { Issue } from '$lib/types'
 
 	const abortController = new AbortController()
+	let domain = ''
 	let progress = ''
 	let openNewLinkArr: Array<string> = []
 	let counter = 0
@@ -28,21 +28,16 @@
 	let errors: Array<{ field: string | number; message: string }> = []
 
 	onMount(() => {
+		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		puppets = (localStorage.getItem('gotissuesPuppets') as string) || ''
 		password = (localStorage.getItem('password') as string) || ''
-		mode =
-			$page.url.searchParams.get('mode') ||
-			(localStorage.getItem('gotissuesMode') as string) ||
-			'Both'
-		issueCount =
-			$page.url.searchParams.get('count') ||
-			(localStorage.getItem('gotissuesIssueCount') as string) ||
-			'5'
+		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('gotissuesMode') as string) || 'Both'
+		issueCount = $page.url.searchParams.get('count') || (localStorage.getItem('gotissuesIssueCount') as string) || '5'
 	})
 	onDestroy(() => abortController.abort())
 
-	async function gotIssues() {
+	async function onSubmit() {
 		pushHistory(`?main=${main}&mode=${mode}&count=${issueCount}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -72,7 +67,7 @@
 			try {
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`
 				const xmlObj = await parseXML(
-					`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`,
+					`${domain}/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`,
 					main,
 					nationSpecificPassword ? nationSpecificPassword : password?.replaceAll(' ', '_')
 				)
@@ -85,11 +80,11 @@
 						let issue = issueIds[i]
 						openNewLinkArr = [
 							...openNewLinkArr,
-							`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none/User_agent=${main}/Script=Gotissues/Generated_by=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/`,
+							`${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`,
 						]
 						issuesContent += `<tr><td><p>${
 							issuesCount + 1
-						}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none/User_agent=${main}/Script=Gotissues/Generated_by=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/">Link to Issue</a></p></td></tr>\n`
+						}</p></td><td><p><a target="_blank" href="${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1">Link to Issue</a></p></td></tr>\n`
 						issuesCount++
 					}
 				}
@@ -100,16 +95,16 @@
 							if (mode === 'Packs') {
 								openNewLinkArr = [
 									...openNewLinkArr,
-									`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none/User_agent=${main}/Script=Gotissues/Generated_by=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`,
+									`${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`,
 								]
 							} else {
 								interimPacks.push(
-									`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none/User_agent=${main}/Script=Gotissues/Generated_by=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1`
+									`${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`
 								)
 							}
 							packContent += `<tr><td><p>${
 								packsCount + 1
-							}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none/User_agent=${main}/Script=Gotissues/Generated_by=Gotissues/Author_discord=scrambleds/Author_main_nation=Kractero/autoclose=1">Link to Pack</a></p></td></tr>\n`
+							}</p></td><td><p><a target="_blank" href="${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1">Link to Pack</a></p></td></tr>\n`
 							packsCount++
 						}
 					}
@@ -143,24 +138,13 @@
 </p>
 <p class="text-xs mb-16">
 	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
-</p>`}
-/>
+</p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={() => gotIssues()} class="flex flex-col gap-8">
+	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={true} />
-		<FormSelect
-			id="mode"
-			label="Issues and Packs"
-			bind:bindValue={mode}
-			items={['Both', 'Issues', 'Packs']}
-		/>
-		<FormSelect
-			id="issueCount"
-			label="Issues Count"
-			bind:bindValue={issueCount}
-			items={['1', '2', '3', '4', '5']}
-		/>
+		<FormSelect id="mode" label="Issues and Packs" bind:bindValue={mode} items={['Both', 'Issues', 'Packs']} />
+		<FormSelect id="issueCount" label="Issues Count" bind:bindValue={issueCount} items={['1', '2', '3', '4', '5']} />
 		<Buttons
 			stopButton={true}
 			bind:stopped
@@ -168,8 +152,7 @@
 			downloadButton={true}
 			bind:downloadable
 			bind:content={issuesContent}
-			name="gotIssues"
-		>
+			name="gotIssues">
 			<OpenButton bind:counter bind:progress bind:openNewLinkArr />
 		</Buttons>
 	</form>

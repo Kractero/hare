@@ -6,11 +6,12 @@
 	import FormInput from '$lib/components/FormInput.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { pushHistory } from '$lib/helpers/navigation'
 	import { parseXML } from '$lib/helpers/parser'
-	import { checkUserAgent } from '$lib/helpers/validate'
+	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 
 	const abortController = new AbortController()
+
+	let domain = ''
 	let progress = ''
 	let stoppable = false
 	let stopped = false
@@ -21,14 +22,14 @@
 	let errors: Array<{ field: string | number; message: string }> = []
 	// let collections = '';
 	onMount(() => {
+		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
-		deck =
-			$page.url.searchParams.get('deck') || (localStorage.getItem('orphansDeck') as string) || ''
+		deck = $page.url.searchParams.get('deck') || (localStorage.getItem('orphansDeck') as string) || ''
 		// collections = $page.url.searchParams.get('collections') || localStorage.getItem("orphansCollection") as string || "";
 	})
 	onDestroy(() => abortController.abort())
 
-	async function gotIssues() {
+	async function onSubmit() {
 		// ${collections ? `&collections=${collections}` : ""}
 		pushHistory(`?main=${main}${deck ? `&deck=${deck}` : ''}`)
 		errors = checkUserAgent(main)
@@ -42,7 +43,7 @@
 		// let collectionList = collections.split('\n');
 
 		// if (collectionList[0] === "") {
-		//   const collections = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+collections;nationname=${deckList[0]}`, main)
+		//   const collections = await parseXML(`${domain}/cgi-bin/api.cgi?q=cards+collections;nationname=${deckList[0]}`, main)
 		//   if (collections.CARDS.COLLECTIONS) {
 		//     if (Array.isArray(collections.CARDS.COLLECTIONS.COLLECTION)) {
 		//       collectionList = collections.CARDS.COLLECTIONS.COLLECTION.map((collection: { COLLECTIONID: number; }) => collection.COLLECTIONID)
@@ -53,10 +54,7 @@
 		//   await sleep(600)
 		// }
 
-		const collections = await parseXML(
-			`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+collections;nationname=${deck}`,
-			main
-		)
+		const collections = await parseXML(`${domain}/cgi-bin/api.cgi?q=cards+collections;nationname=${deck}`, main)
 		if (collections.CARDS.COLLECTIONS) {
 			if (Array.isArray(collections.CARDS.COLLECTIONS.COLLECTION)) {
 				collectionList = collections.CARDS.COLLECTIONS.COLLECTION.map(
@@ -71,23 +69,17 @@
 		for (let i = 0; i < collectionList.length; i++) {
 			progress += `<p>Computing collection ${collectionList[i]}</p>`
 			const cards = await parseXML(
-				`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+collection;collectionid=${collectionList[i]}`,
+				`${domain}/cgi-bin/api.cgi?q=cards+collection;collectionid=${collectionList[i]}`,
 				main
 			)
-			if (
-				cards.CARDS &&
-				cards.CARDS.COLLECTION &&
-				cards.CARDS.COLLECTION.DECK &&
-				cards.CARDS.COLLECTION.DECK.CARD
-			) {
+			if (cards.CARDS && cards.CARDS.COLLECTION && cards.CARDS.COLLECTION.DECK && cards.CARDS.COLLECTION.DECK.CARD) {
 				if (Array.isArray(cards.CARDS.COLLECTION.DECK.CARD)) {
 					cards.CARDS.COLLECTION.DECK.CARD.forEach((card: { CARDID: number; SEASON: number }) => {
 						if (
 							card.CARDID &&
 							card.SEASON &&
 							!collectionCards.some(
-								existingCard =>
-									existingCard.CARDID === card.CARDID && existingCard.SEASON === card.SEASON
+								existingCard => existingCard.CARDID === card.CARDID && existingCard.SEASON === card.SEASON
 							)
 						) {
 							collectionCards.push({ CARDID: card.CARDID, SEASON: card.SEASON })
@@ -103,10 +95,7 @@
 		}
 
 		const deckCards: Array<{ CARDID: number; SEASON: number }> = []
-		const cards = await parseXML(
-			`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+deck;nationname=${deck}`,
-			main
-		)
+		const cards = await parseXML(`${domain}/cgi-bin/api.cgi?q=cards+deck;nationname=${deck}`, main)
 		progress += `<p>Computing deck of ${deck}</p>`
 		if (cards.CARDS && cards.CARDS.DECK && cards.CARDS.DECK.CARD) {
 			if (Array.isArray(cards.CARDS.DECK.CARD)) {
@@ -114,10 +103,7 @@
 					if (
 						card.CARDID &&
 						card.SEASON &&
-						!deckCards.some(
-							existingCard =>
-								existingCard.CARDID === card.CARDID && existingCard.SEASON === card.SEASON
-						)
+						!deckCards.some(existingCard => existingCard.CARDID === card.CARDID && existingCard.SEASON === card.SEASON)
 					) {
 						deckCards.push({ CARDID: card.CARDID, SEASON: card.SEASON })
 					}
@@ -132,13 +118,12 @@
 
 		const cardsNotInCollection = deckCards.filter(card => {
 			return !collectionCards.some(
-				collectionCard =>
-					collectionCard.CARDID === card.CARDID && collectionCard.SEASON === card.SEASON
+				collectionCard => collectionCard.CARDID === card.CARDID && collectionCard.SEASON === card.SEASON
 			)
 		})
 
 		cardsNotInCollection.forEach(card => {
-			content += `<tr><td><p>S${card.SEASON} ${card.CARDID}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/card=${card.CARDID}/season=${card.SEASON}/User_agent=${main}/Script=Orphans/Generated_by=Orphans/Author_discord=scrambleds/Author_main_nation=Kractero/">Link to Card</a></p></td></tr>\n`
+			content += `<tr><td><p>S${card.SEASON} ${card.CARDID}</p></td><td><p><a target="_blank" href="${domain}/page=deck/card=${card.CARDID}/season=${card.SEASON}?${urlParameters('Orphans', main)}">Link to Card</a></p></td></tr>\n`
 		})
 
 		progress += `<p>Found ${cardsNotInCollection.length} cards not in a collection</p>`
@@ -150,7 +135,7 @@
 <ToolContent toolTitle="Orphans" caption="Get a list of cards not in any collection." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={() => gotIssues()} class="flex flex-col gap-8">
+	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		<FormInput bind:bindValue={deck} id="deck" label="Deck" required />
 		<!-- <Textarea text="Collections" bind:bindValue={collections} forValue="collections" /> -->
@@ -161,8 +146,7 @@
 			downloadButton={true}
 			bind:downloadable
 			bind:content
-			name="orphans"
-		/>
+			name="orphans" />
 	</form>
 	<Terminal bind:progress />
 </div>

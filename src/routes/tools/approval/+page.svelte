@@ -7,12 +7,12 @@
 	import FormSelect from '$lib/components/FormSelect.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { pushHistory } from '$lib/helpers/navigation'
 	import { parseXML } from '$lib/helpers/parser'
-	import { checkUserAgent } from '$lib/helpers/validate'
+	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 
 	const abortController = new AbortController()
 
+	let domain = ''
 	let progress = ''
 	let content = ''
 	let downloadable = false
@@ -24,19 +24,16 @@
 	let errors: Array<{ field: string | number; message: string }> = []
 
 	onMount(() => {
+		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		council =
-			$page.url.searchParams.get('council') ||
-			(localStorage.getItem('approvalCouncil') as string) ||
-			'General Assembly'
-		proposalid =
-			$page.url.searchParams.get('proposal') ||
-			(localStorage.getItem('approvalProposal') as string) ||
-			''
+			$page.url.searchParams.get('council') || (localStorage.getItem('approvalCouncil') as string) || 'General Assembly'
+		proposalid = $page.url.searchParams.get('proposal') || (localStorage.getItem('approvalProposal') as string) || ''
 	})
 	onDestroy(() => abortController.abort())
-	async function approvals() {
+	async function onSubmit() {
 		pushHistory(`?main=${main}&council=${council}&proposal=${proposalid}`)
+		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		downloadable = false
 		stoppable = true
@@ -44,16 +41,10 @@
 		let councilID = 1
 		if (council === 'Security Council') councilID = 2
 		progress = `<p>Retrieving list of esteemed delegates...</p>`
-		let delegatesXML = await parseXML(
-			`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?wa=1&q=delegates`,
-			main
-		)
+		let delegatesXML = await parseXML(`${domain}/cgi-bin/api.cgi?wa=1&q=delegates`, main)
 		const delegates: Array<string> = delegatesXML.WA.DELEGATES.split(',')
 		progress += `<p>${delegates.length} delegates found.</p>`
-		const proposalXML = await parseXML(
-			`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?wa=${councilID}&q=proposals`,
-			main
-		)
+		const proposalXML = await parseXML(`${domain}/cgi-bin/api.cgi?wa=${councilID}&q=proposals`, main)
 		if (!proposalXML.WA.PROPOSALS.PROPOSAL) {
 			progress += `No proposals currently in the ${council}.`
 			return
@@ -80,13 +71,13 @@
 		})
 		progress += `<p>Finished searching <span class="font-bold">${proposal.NAME}</span> for delegates not approving.</p>`
 		notApproving.forEach((delegate, i) => {
-			progress += `<p class="text-red-400"><a class="underline" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/nation=${delegate}">${delegate}</a> is NOT approving!</p>`
+			progress += `<p class="text-red-400"><a class="underline" href="${domain}/nation=${delegate}${urlParameters('Approvals List', main)}">${delegate}</a> is NOT approving!</p>`
 			content += `<tr><td><p>${
 				i + 1
-			}/${notApproving.length}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/nation=${delegate}//User_agent=${main}/Script=ApprovalListBrowser/Generated_by=ApprovalListBrowser/Author_main_nation=Kractero/">Link to Nation</a></p></td></tr>\n`
+			}/${notApproving.length}</p></td><td><p><a target="_blank" href="${domain}/nation=${delegate}${urlParameters('Approvals List', main)}">Link to Nation</a></p></td></tr>\n`
 		})
 		approving.forEach(delegate => {
-			progress += `<p class="text-green-400"><a class="underline" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/nation=${delegate}">${delegate}</a> is approving!</p>`
+			progress += `<p class="text-green-400"><a class="underline" href="${domain}/nation=${delegate}${urlParameters('Approvals List', main)}">${delegate}</a> is approving!</p>`
 		})
 		downloadable = true
 		stoppable = false
@@ -98,20 +89,16 @@
 	originalBlurb="rewritten in JS for browser use by Kractero"
 	author="9003"
 	link="https://github.com/jmikk/Approval-List"
-	caption="Specify a proposal and get all delegates that are not approving it."
-/>
+	caption="Specify a proposal and get all delegates that are not approving it." />
 
-<div
-	class="flex flex-col justify-between gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row"
->
-	<form on:submit|preventDefault={() => approvals()} class="flex flex-col gap-8">
+<div class="flex flex-col justify-between gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
+	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:main bind:errors />
 		<FormSelect
 			id="council"
 			label="Council"
 			bind:bindValue={council}
-			items={['General Assembly', 'Security Council']}
-		/>
+			items={['General Assembly', 'Security Council']} />
 		<FormInput bind:bindValue={proposalid} id="proposalid" label="Proposal ID" required={true} />
 		<Buttons downloadButton={true} bind:downloadable bind:content type="html" name="Approvals" />
 	</form>

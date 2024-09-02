@@ -5,12 +5,12 @@
 	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { pushHistory } from '$lib/helpers/navigation'
 	import { parser, parseXML } from '$lib/helpers/parser'
-	import { checkUserAgent } from '$lib/helpers/validate'
+	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 	import type { NSRegion } from '$lib/types'
 	import * as ExcelJS from 'exceljs'
 
+	let domain = ''
 	let main = ''
 	let progress = ''
 	let workbook: any
@@ -18,6 +18,7 @@
 	let errors: Array<{ field: string | number; message: string }> = []
 
 	onMount(() => {
+		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 	})
 	function sanitize(string: string) {
@@ -32,23 +33,17 @@
 		}
 	}
 
-	async function glass() {
+	async function onSubmit() {
 		pushHistory(`?main=${main}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		downloadable = false
 		progress += `<p>Gathering founderless regions.</p>`
-		const governorless = await parseXML(
-			`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=governorless`,
-			main
-		)
+		const governorless = await parseXML(`${domain}/cgi-bin/api.cgi?q=regionsbytag;tags=governorless`, main)
 		const governorlessArr = (governorless.WORLD as { REGIONS: string }).REGIONS.split(',')
 
 		progress += `<p>Gathering passwordless regions.</p>`
-		const passwordless = await parseXML(
-			`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi?q=regionsbytag;tags=-password`,
-			main
-		)
+		const passwordless = await parseXML(`${domain}/cgi-bin/api.cgi?q=regionsbytag;tags=-password`, main)
 		const passwordlessArr = (passwordless.WORLD as { REGIONS: string }).REGIONS.split(',')
 
 		const currentDate = new Date()
@@ -56,14 +51,11 @@
 		utcMinus7Date.setDate(utcMinus7Date.getDate() - 1)
 		const date = utcMinus7Date.toISOString().slice(0, 10)
 		progress += `<p>Requesting ${date} regional dump.</p>`
-		let regionRes = await fetch(
-			`https://raw.githubusercontent.com/Kractero/region-xml-dump/main/data/${date}-Regions.xml`,
-			{
-				method: 'GET',
-			}
-		)
+		let regionRes = await fetch(`https://raw.githubusercontent.com/Kractero/himari/main/data/${date}-Regions.xml`, {
+			method: 'GET',
+		})
 		if (regionRes.status === 404)
-			progress += `<p class="text-red-400">The ${date} dump has not been generated yet! The dump generation happens at midnight UTC-7, 1 hour 30 min after major. If by 1 am UTC-7 the dump is still not generated, it needs to be done manually, so TG Kractero.`
+			progress += `<p class="text-red-400">The ${date} dump has not been generated yet! The dump generation happens at 11 pm UTC-7.`
 		const regionText = await regionRes.text()
 		const regionXML = parser.parse(regionText)
 		const regionList: Array<NSRegion> = regionXML.REGIONS.REGION
@@ -89,7 +81,7 @@
 
 			const regionObject: { [key: string]: any } = {
 				Regions: name,
-				'Region Link': `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/region=${name}User_agent=${main}/Script=Spyglass/Generated_by=Spyglass/Author_discord=scrambleds/Author_main_nation=Kractero/`,
+				'Region Link': `${domain}/region=${name}?${urlParameters}`,
 				'# Nations': nationCount,
 				'Tot. Nations': 0,
 				'Minor Upd. (est)': '',
@@ -244,11 +236,10 @@
 	caption="Generate a spreadsheet that includes information on NationStates regions."
 	author="the Spyglass Team"
 	link="https://github.com/Derpseh/Spyglass"
-	originalBlurb="rewritten in JS for browser use by Kractero"
-/>
+	originalBlurb="rewritten in JS for browser use by Kractero" />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={() => glass()} class="flex flex-col gap-8">
+	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		<Buttons>
 			<button
@@ -266,8 +257,7 @@
 					downloadLink.click()
 					URL.revokeObjectURL(blobUrl)
 				}}
-				class="rounded-md bg-green-500 px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500"
-			>
+				class="rounded-md bg-green-500 px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
 				Download
 			</button>
 		</Buttons>

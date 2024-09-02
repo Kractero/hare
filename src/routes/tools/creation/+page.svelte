@@ -6,8 +6,7 @@
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { nsIterator } from '$lib/helpers/builders'
-	import { pushHistory } from '$lib/helpers/navigation'
-	import { checkUserAgent } from '$lib/helpers/validate'
+	import { checkUserAgent, pushHistory } from '$lib/helpers/utils'
 
 	let progress = ''
 	let content: string
@@ -20,7 +19,7 @@
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 	})
 
-	async function login(puppets: string) {
+	async function onSubmit() {
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		pushHistory(`?main=${main}`)
@@ -41,11 +40,10 @@
 	<a class="underline" href="https://github.com/Kractero/userscripts/raw/main/nationCreator.user.js" target="_blank" rel="noreferrer noopener">
 		creator
 	</a> which does require configuration which you can read about in the repository.
-</p>`}
-/>
+	</p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={() => login(puppets)} class="flex flex-col gap-8">
+	<form on:submit|preventDefault={() => onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
 		<Buttons {downloadable} downloadButton={true} {content} name="Creator" />
 	</form>

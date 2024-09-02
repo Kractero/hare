@@ -10,7 +10,7 @@
 	let content: Array<string>
 	let downloadable = false
 
-	async function containerise() {
+	async function onSubmit() {
 		downloadable = false
 		content = (await nsIterator(puppets, 'Containerise')) as Array<string>
 		progress = `<p>Finished processing</p>`
@@ -25,7 +25,7 @@
 <ToolContent toolTitle="Containerise" caption="Generate containerise rules" />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={() => containerise()} class="flex flex-col gap-8">
+	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
 		<Puppets bind:puppets />
 		<Buttons {downloadable} downloadButton={true} {content} type="txt" name="Containerise" />
 	</form>

@@ -10,12 +10,12 @@
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import Button from '$lib/components/ui/button/button.svelte'
-	import { pushHistory } from '$lib/helpers/navigation'
 	import { parser, parseXML } from '$lib/helpers/parser'
-	import { checkUserAgent } from '$lib/helpers/validate'
+	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 	import type { Card } from '$lib/types'
 
 	const abortController = new AbortController()
+	let domain = ''
 	let progress = ''
 	let openNewLinkArr: Array<string> = []
 	let counter = 0
@@ -32,14 +32,13 @@
 	let errors: Array<{ field: string | number; message: string }>
 
 	onMount(() => {
+		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		puppets = (localStorage.getItem('puppets') as string) || ''
 		finderlist = (localStorage.getItem('finderList') as string) || ''
 		password = (localStorage.getItem('password') as string) || ''
-		mode =
-			$page.url.searchParams.get('mode') || (localStorage.getItem('finderMode') as string) || 'Gift'
-		giftee =
-			$page.url.searchParams.get('giftee') || (localStorage.getItem('finderGiftee') as string) || ''
+		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('finderMode') as string) || 'Gift'
+		giftee = $page.url.searchParams.get('giftee') || (localStorage.getItem('finderGiftee') as string) || ''
 	})
 	onDestroy(() => abortController.abort())
 
@@ -74,10 +73,7 @@
 
 			try {
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`
-				const xmlDocument = await parseXML(
-					`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`,
-					main
-				)
+				const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main)
 				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD
 				cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
 				const matches = toFind.map(matcher => matcher.split(','))
@@ -107,13 +103,10 @@
 										const headers: { [key: string]: string } = { 'User-Agent': main }
 
 										if (currentNationXPin) headers['X-Pin'] = currentNationXPin
-										else
-											headers['X-Password'] = nationSpecificPassword
-												? nationSpecificPassword
-												: password
+										else headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
 
 										const prepare = await fetch(
-											`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=prepare&c=giftcard`,
+											`${domain}/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=prepare&c=giftcard`,
 											{ headers: headers }
 										)
 										if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || ''
@@ -123,7 +116,7 @@
 										token = xml.NATION.SUCCESS
 
 										const gift = await fetch(
-											`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=execute&c=giftcard&token=${token}`,
+											`${domain}/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=execute&c=giftcard&token=${token}`,
 											{
 												headers: {
 													'User-Agent': main,
@@ -135,15 +128,11 @@
 										if (gift.status === 200) {
 											let successfulGift = true
 											const verify = await parseXML(
-												`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`,
+												`${domain}/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`,
 												main
 											)
 											let verifyCards: Array<Card> = verify.CARDS.DECK.CARD
-											verifyCards = verifyCards
-												? Array.isArray(verifyCards)
-													? verifyCards
-													: [verifyCards]
-												: []
+											verifyCards = verifyCards ? (Array.isArray(verifyCards) ? verifyCards : [verifyCards]) : []
 
 											if (verifyCards && verifyCards.length > 0) {
 												const verifyCardCounts: { [key: string]: number } = verifyCards.reduce(
@@ -154,18 +143,15 @@
 													{} as { [key: string]: number }
 												)
 
-												if (
-													!(id in verifyCardCounts) ||
-													verifyCardCounts[id] < originalCardCounts[id]
-												) {
+												if (!(id in verifyCardCounts) || verifyCardCounts[id] < originalCardCounts[id]) {
 													successfulGift = true
 												} else {
 													successfulGift = false
 													openNewLinkArr = [
 														...openNewLinkArr,
-														`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}/Script=Finder/Generated_by=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${currGiftee}`,
+														`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters}&giftto=${currGiftee}`,
 													]
-													junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/User_agent=${main}/Script=Finder/Generated_by=Finder/Author_discord=scrambleds/Author_main_nation=Kractero?giftto=${currGiftee}">Link to Card</a></p></td></tr>\n`
+													junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters}&giftto=${currGiftee}">Link to Card</a></p></td></tr>\n`
 													progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${currGiftee}`
 													failedGiftCount++
 												}
@@ -179,9 +165,9 @@
 										progress += `<p class="text-green-400">${nation} owns ${id}!`
 										openNewLinkArr = [
 											...openNewLinkArr,
-											`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}/Script=Finder/Generated_by=Finder/Author_discord=scrambleds/Author_main_nation=Kractero`,
+											`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters}`,
 										]
-										junkHtml += `<tr><td><p>${findCount + 1}</p></td><td><p><a target="_blank" href="https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/User_agent=${main}/Script=Finder/Generated_by=Finder/Author_discord=scrambleds/Author_main_nation=Kractero">Link to Card</a></p></td></tr>\n`
+										junkHtml += `<tr><td><p>${findCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters}">Link to Card</a></p></td></tr>\n`
 									}
 									findCount++
 								}
@@ -227,36 +213,21 @@
 </p>
 <p class="text-xs mb-16">
 	Password input for gifting is optional and will be disabled if the puppet list includes a comma for nation,password.
-</p>`}
-/>
+</p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form on:submit|preventDefault={() => finder(main, puppets)} class="flex flex-col gap-8">
-		<InputCredentials
-			bind:errors
-			bind:main
-			bind:puppets
-			bind:password
-			authenticated={mode === 'Gift' ? true : false}
-		/>
+		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={mode === 'Gift' ? true : false} />
 		{#if mode === 'Gift'}
 			<FormInput label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />
 		{/if}
 		<div class="-mb-6 flex flex-col">
 			<p class="mb-1 text-center font-light text-muted-foreground">Presets</p>
 			<div class="mx-auto">
-				<Button on:click={() => fetchPreset('Fauzjhia')} variant={'outline'} class="mx-auto"
-					>Fauzjhia</Button
-				>
-				<Button on:click={() => fetchPreset('Mikeswill')} variant={'outline'} class="mx-auto"
-					>Mikeswill</Button
-				>
-				<Button on:click={() => fetchPreset('Apexiala')} variant={'outline'} class="mx-auto"
-					>Apexiala</Button
-				>
-				<Button on:click={() => fetchPreset('Dr_Hooves')} variant={'outline'} class="mx-auto"
-					>Dr Hooves</Button
-				>
+				<Button on:click={() => fetchPreset('Fauzjhia')} variant={'outline'} class="mx-auto">Fauzjhia</Button>
+				<Button on:click={() => fetchPreset('Mikeswill')} variant={'outline'} class="mx-auto">Mikeswill</Button>
+				<Button on:click={() => fetchPreset('Apexiala')} variant={'outline'} class="mx-auto">Apexiala</Button>
+				<Button on:click={() => fetchPreset('Dr_Hooves')} variant={'outline'} class="mx-auto">Dr Hooves</Button>
 			</div>
 		</div>
 		<FormTextArea bind:bindValue={finderlist} label={'Cards to Find'} id="finderlist" required />
@@ -270,8 +241,7 @@
 				bind:downloadable
 				bind:content={junkHtml}
 				type="html"
-				name="Finder"
-			>
+				name="Finder">
 				<OpenButton bind:counter bind:progress bind:openNewLinkArr />
 			</Buttons>
 		</div>
