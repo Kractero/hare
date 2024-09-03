@@ -80,11 +80,11 @@
 						let issue = issueIds[i]
 						openNewLinkArr = [
 							...openNewLinkArr,
-							`${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`,
+							`${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}`,
 						]
 						issuesContent += `<tr><td><p>${
 							issuesCount + 1
-						}</p></td><td><p><a target="_blank" href="${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1">Link to Issue</a></p></td></tr>\n`
+						}</p></td><td><p><a target="_blank" href="${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}">Link to Issue</a></p></td></tr>\n`
 						issuesCount++
 					}
 				}
