@@ -18,7 +18,7 @@
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 	})
 	async function onSubmit() {
-		pushHistory(`?main=${main}`)
+		pushHistory(`?main=${main}`, 'Login')
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		downloadable = false
