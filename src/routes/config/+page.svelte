@@ -8,7 +8,6 @@
 	import Rarities from '$lib/components/Rarities.svelte'
 	import Button from '$lib/components/ui/button/button.svelte'
 	import { Toaster } from '$lib/components/ui/sonner'
-	import { resetMode, setMode } from 'mode-watcher'
 	import { toast } from 'svelte-sonner'
 
 	const localStorageObject: { [key: string]: any } = {
@@ -87,9 +86,7 @@
 			localStorageObject.junkdajunkRarities = JSON.parse(localStorageObject.junkdajunkRarities)
 		}
 		if (typeof localStorageObject.junkdajunkRaritiesBid === 'string') {
-			localStorageObject.junkdajunkRaritiesBid = JSON.parse(
-				localStorageObject.junkdajunkRaritiesBid
-			)
+			localStorageObject.junkdajunkRaritiesBid = JSON.parse(localStorageObject.junkdajunkRaritiesBid)
 		}
 
 		// Fallback for junkdajunkRaritiesBid if not defined
@@ -147,36 +144,30 @@
 <h1 class="mb-16 text-center text-4xl">Configure Default Inputs</h1>
 
 <div
-	class="mx-auto flex w-max max-w-xs flex-col justify-center gap-8 sm:max-w-5xl lg:w-[1024px] lg:max-w-5xl lg:flex-row"
->
+	class="mx-auto flex w-max max-w-xs flex-col justify-center gap-8 sm:max-w-5xl lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form on:submit|preventDefault={() => setConfig()} class="flex flex-col gap-8">
 		<h2 class="text-center text-2xl font-bold tracking-tight">General Config</h2>
 		<FormSelect
 			id="connectionsubdomain"
 			label="Connection Subdomain"
 			bind:bindValue={localStorageObject.connectionUrl}
-			items={['www', 'fast']}
-		/>
+			items={['www', 'fast']} />
 		<FormSelect
 			id="theme"
 			label="Theme"
 			bind:bindValue={localStorageObject.theme}
-			items={['system', 'light', 'dark']}
-		/>
+			items={['system', 'light', 'dark']} />
 		<FormInput label="User Agent" bind:bindValue={localStorageObject.main} id="main" />
 		<FormTextArea label="General Puppets" bind:bindValue={localStorageObject.puppets} id="pup" />
 		<p class="text-center text-xs">These puppets do not apply for gotIssues or junkdajunk.</p>
-		<div class="flex max-w-lg justify-between gap-4">
-			<label class="w-24" for="pass">Password</label>
-			<FormInput
-				id="pass"
-				bind:bindValue={localStorageObject.password}
-				label={'Password'}
-				subTitle={localStorageObject.puppets.includes(',')
-					? 'A comma is detected in the puppet list, assuming that format.'
-					: ''}
-			/>
-		</div>
+		<FormInput
+			id="pass"
+			bind:bindValue={localStorageObject.password}
+			type="password"
+			label={'Password'}
+			subTitle={localStorageObject.puppets.includes(',')
+				? 'A comma is detected in the puppet list, assuming that format.'
+				: ''} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">gotIssues and junkDaJunk</h2>
 		<FormTextArea label="Puppets" bind:bindValue={localStorageObject.gotissuesPuppets} id="gipup" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">gotIssues</h2>
@@ -184,162 +175,89 @@
 			id="gimode"
 			label="Behavior"
 			bind:bindValue={localStorageObject.gotissuesMode}
-			items={['Both', 'Issues', 'Packs']}
-		/>
+			items={['Both', 'Issues', 'Packs']} />
 		<FormSelect
 			id="gicount"
 			label="Issues Count"
 			bind:bindValue={localStorageObject.gotissuesIssueCount}
-			items={['1', '2', '3', '4', '5']}
-		/>
+			items={['1', '2', '3', '4', '5']} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Rate of Change</h2>
-		<FormInput
-			label="Top {localStorageObject.rocTop}"
-			bind:bindValue={localStorageObject.rocTop}
-			id="top"
-		/>
-		<FormInput
-			label="Over {localStorageObject.rocDays} Days"
-			bind:bindValue={localStorageObject.rocDays}
-			id="days"
-		/>
-		<FormInput
-			label={`Specific ROC`}
-			bind:bindValue={localStorageObject.rocSpecific}
-			id="specific"
-		/>
-		<FormSelect
-			id="rocmode"
-			label="Behavior"
-			bind:bindValue={localStorageObject.rocMode}
-			items={['Top', 'Specific']}
-		/>
+		<FormInput label="Top {localStorageObject.rocTop}" bind:bindValue={localStorageObject.rocTop} id="top" />
+		<FormInput label="Over {localStorageObject.rocDays} Days" bind:bindValue={localStorageObject.rocDays} id="days" />
+		<FormInput label={`Specific ROC`} bind:bindValue={localStorageObject.rocSpecific} id="specific" />
+		<FormSelect id="rocmode" label="Behavior" bind:bindValue={localStorageObject.rocMode} items={['Top', 'Specific']} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Endotarting</h2>
-		<FormInput
-			label="Endotarting Default"
-			bind:bindValue={localStorageObject.endotartEndotarter}
-			id="Endotarting"
-		/>
+		<FormInput label="Endotarting Default" bind:bindValue={localStorageObject.endotartEndotarter} id="Endotarting" />
 		<FormInput label="Endorse Limit" bind:bindValue={localStorageObject.endotartLimit} id="limit" />
-		<FormTextArea
-			label="Immune Nations"
-			bind:bindValue={localStorageObject.endotartImmune}
-			id="immune"
-		/>
+		<FormTextArea label="Immune Nations" bind:bindValue={localStorageObject.endotartImmune} id="immune" />
 		<FormSelect
 			id="endotartmode"
 			label="Behavior"
 			bind:bindValue={localStorageObject.endotartSource}
-			items={['XML', 'API']}
-		/>
+			items={['XML', 'API']} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Not Endorsing</h2>
-		<FormInput
-			label="Not Endorsing Default"
-			bind:bindValue={localStorageObject.nenNation}
-			id="nen"
-		/>
+		<FormInput label="Not Endorsing Default" bind:bindValue={localStorageObject.nenNation} id="nen" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Gold Retriever</h2>
 		<FormSelect
 			id="grmode"
 			label="Behavior"
 			bind:bindValue={localStorageObject.goldretrieverMode}
-			items={['Include', 'Skip']}
-		/>
+			items={['Include', 'Skip']} />
 		<FormInput
 			label={`Transfer Card`}
 			subTitle="(optional: id,season)"
 			bind:bindValue={localStorageObject.goldretrieverTransferCard}
 			id="transferCard"
-			required={false}
-		/>
+			required={false} />
 		<FormInput label="Gift To" bind:bindValue={localStorageObject.finderGiftee} id="giftee" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">JunkDaJunk</h2>
 		<FormSelect
 			id="jdjmode"
 			label="Behavior"
 			bind:bindValue={localStorageObject.jdjMode}
-			items={['Gift', 'Sell', 'Exclude']}
-		/>
-		<FormTextArea
-			label="Card ID Whitelist"
-			bind:bindValue={localStorageObject.junkdajunkFinderList}
-			id="jdjfind"
-		/>
+			items={['Gift', 'Sell', 'Exclude']} />
+		<FormTextArea label="Card ID Whitelist" bind:bindValue={localStorageObject.junkdajunkFinderList} id="jdjfind" />
 		<FormTextArea
 			label="Regional Whitelist"
 			bind:bindValue={localStorageObject.junkdajunkRegionalWhitelist}
-			id="regions"
-		/>
-		<FormTextArea
-			label="Flag Whitelist"
-			bind:bindValue={localStorageObject.junkdajunkFlagWhitelist}
-			id="flags"
-		/>
-		<FormInput
-			label="Card Count Threshold"
-			bind:bindValue={localStorageObject.junkdajunkCardCount}
-			id="card"
-		/>
-		<FormInput
-			label="Owner Threshold"
-			bind:bindValue={localStorageObject.junkdajunkOwnerCount}
-			id="owner"
-		/>
+			id="regions" />
+		<FormTextArea label="Flag Whitelist" bind:bindValue={localStorageObject.junkdajunkFlagWhitelist} id="flags" />
+		<FormInput label="Card Count Threshold" bind:bindValue={localStorageObject.junkdajunkCardCount} id="card" />
+		<FormInput label="Owner Threshold" bind:bindValue={localStorageObject.junkdajunkOwnerCount} id="owner" />
 		<Rarities bind:rarities={localStorageObject.junkdajunkRarities} />
 		<Rarities bind:rarities={localStorageObject.junkdajunkRaritiesBid} />
 		<FormSelect
 			bind:bindValue={localStorageObject.junkdajunkOmittedSeasons}
 			id="skipseason"
 			items={["Don't Skip", 'Skip Offseasons', '1', '2']}
-			label="Skip Seasons?"
-		/>
-		<FormCheckbox
-			bind:checked={localStorageObject.skipexnation}
-			id="skipexnation"
-			label="Skip Exnation"
-		/>
+			label="Skip Seasons?" />
+		<FormCheckbox bind:checked={localStorageObject.skipexnation} id="skipexnation" label="Skip Exnation" />
 		<FormInput
 			label="Maximum Bank Threshold"
 			bind:bindValue={localStorageObject.junkdajunkTransferBank}
 			id="jdjtransfer"
-			required={false}
-		/>
+			required={false} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Finder</h2>
 		<FormSelect
 			id="findermode"
 			label="Behavior"
 			bind:bindValue={localStorageObject.finderMode}
-			items={['Gift', 'Sell', 'Exclude']}
-		/>
-		<FormTextArea
-			label="Card IDs to Find"
-			bind:bindValue={localStorageObject.finderList}
-			id="find"
-		/>
+			items={['Gift', 'Sell', 'Exclude']} />
+		<FormTextArea label="Card IDs to Find" bind:bindValue={localStorageObject.finderList} id="find" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Approval</h2>
 		<FormSelect
 			id="council"
 			label="Council"
 			bind:bindValue={localStorageObject.approvalCouncil}
-			items={['General Assembly', 'Security Council']}
-		/>
-		<FormInput
-			label="Proposal ID"
-			bind:bindValue={localStorageObject.approvalProposal}
-			id="proposalID"
-		/>
+			items={['General Assembly', 'Security Council']} />
+		<FormInput label="Proposal ID" bind:bindValue={localStorageObject.approvalProposal} id="proposalID" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Flags</h2>
 		<FormSelect
 			id="flagmode"
 			label="Mode"
 			bind:bindValue={localStorageObject.flagmanagerMode}
-			items={['Flags', 'Mottos']}
-		/>
-		<FormTextArea
-			label="Search Flags"
-			bind:bindValue={localStorageObject.flagmanagerFlags}
-			id="flags"
-		/>
+			items={['Flags', 'Mottos']} />
+		<FormTextArea label="Search Flags" bind:bindValue={localStorageObject.flagmanagerFlags} id="flags" />
 		<FormTextArea label="Motto" bind:bindValue={localStorageObject.flagmanagerMottos} id="mottos" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Signal</h2>
 		<FormTextArea label="Card IDs" bind:bindValue={localStorageObject.signalCardIds} id="cardIds" />
@@ -347,18 +265,9 @@
 			id="signalmode"
 			label="Behavior"
 			bind:bindValue={localStorageObject.signalMode}
-			items={['Collection', 'Deck', 'Asks', 'Bids', 'Asks and Bids']}
-		/>
-		<FormInput
-			label={`Nation`}
-			bind:bindValue={localStorageObject.signalAsksBidsNation}
-			id="nation"
-		/>
-		<FormTextArea
-			label={'Coll/Decks'}
-			bind:bindValue={localStorageObject.signalCollectionsOrDecks}
-			id="mode"
-		/>
+			items={['Collection', 'Deck', 'Asks', 'Bids', 'Asks and Bids']} />
+		<FormInput label={`Nation`} bind:bindValue={localStorageObject.signalAsksBidsNation} id="nation" />
+		<FormTextArea label={'Coll/Decks'} bind:bindValue={localStorageObject.signalCollectionsOrDecks} id="mode" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Statistics</h2>
 		<FormTextArea label="Scale" bind:bindValue={localStorageObject.statisticsScales} id="scale" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Deck</h2>
@@ -366,32 +275,24 @@
 			id="deckmode"
 			label="Output Format"
 			bind:bindValue={localStorageObject.deckMode}
-			items={['Signal', 'IDs']}
-		/>
+			items={['Signal', 'IDs']} />
 		<FormSelect
 			id="deckcollmode"
 			label="Mode"
 			bind:bindValue={localStorageObject.deckCollMode}
-			items={['Deck', 'Collection']}
-		/>
+			items={['Deck', 'Collection']} />
 		<FormSelect
 			id="deckduplicates"
 			label="Duplicates"
 			bind:bindValue={localStorageObject.deckDuplicates}
-			items={['Skip', 'Include']}
-		/>
+			items={['Skip', 'Include']} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Transfer</h2>
-		<FormInput
-			label="Transfer Bank Threshold"
-			bind:bindValue={localStorageObject.transferBank}
-			id="transfer"
-		/>
+		<FormInput label="Transfer Bank Threshold" bind:bindValue={localStorageObject.transferBank} id="transfer" />
 		<FormSelect
 			id="transfermode"
 			label="Transfer Bank Mode"
 			bind:bindValue={localStorageObject.transferMode}
-			items={['Bank', 'Junk']}
-		/>
+			items={['Bank', 'Junk']} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Orphans</h2>
 		<FormInput label="Deck" bind:bindValue={localStorageObject.orphansDeck} id="orphansDeck" />
 		<div class="flex max-w-lg justify-center">
