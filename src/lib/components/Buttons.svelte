@@ -13,7 +13,7 @@
 </script>
 
 <div class="mx-auto mb-4 flex max-w-lg flex-wrap justify-center gap-x-2 gap-y-4">
-	<Button class="mx-auto w-max" variant="default" type="submit">Start</Button>
+	<Button disabled={stoppable} class="mx-auto w-max" variant="default" type="submit">Start</Button>
 	{#if downloadButton === true}
 		<DownloadButton bind:downloadable bind:content {type} {name} />
 	{/if}
@@ -28,8 +28,7 @@
 			}}
 			class="mx-auto w-max"
 			variant="destructive"
-			type="button">Stop</Button
-		>
+			type="button">Stop</Button>
 	{/if}
 	<slot />
 </div>
