@@ -72,7 +72,7 @@
 			const date = utcMinus7Date.toISOString().slice(0, 10)
 			progress += `<p>Requesting ${date} national dump.</p>`
 			const nationRes = await fetch(
-				`https://raw.githubusercontent.com/Kractero/region-dump-xml/main/data/${date}-Nations.xml`,
+				`https://raw.githubusercontent.com/Kractero/himari/main/data/${date}-Nations.xml`,
 				{
 					method: 'GET',
 				}
