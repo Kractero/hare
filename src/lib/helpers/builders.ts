@@ -29,11 +29,11 @@ export async function nsIterator(puppets: string, mode: string, main?: string) {
             <td><p><a target="_blank" href="${baseURL}/${path}/User_agent=${main}/Script=${script}/Generated_by=${script}/Author_discord=scrambleds/Author_main_nation=Kractero/${path.includes('create_nation') ? `nation=${nation}` : ''}">Link to Nation</a></p></td>
         </tr>`
 
-	const generateContainerRules = () => {
-		const nationRules = puppetsList
+	const generateContainerRules = (formattedPuppetsList) => {
+		const nationRules = formattedPuppetsList
 			.map(nation => `@^.*\\.nationstates\\.net/(.*/)?nation=${nation}(/.*)?$ , ${nation}`)
 			.join('\n')
-		const containerRules = puppetsList
+		const containerRules = formattedPuppetsList
 			.map(nation => `@^.*\\.nationstates\\.net/(.*/)?container=${nation}(/.*)?$ , ${nation}`)
 			.join('\n')
 		return [nationRules, containerRules]
@@ -41,7 +41,8 @@ export async function nsIterator(puppets: string, mode: string, main?: string) {
 
 	switch (mode) {
 		case 'Containerise':
-			return generateContainerRules()
+			let formattedPuppets = puppetsList.map(nation => nation.toLowerCase().replaceAll(' ', '_'))
+			return generateContainerRules(formattedPuppets)
 
 		case 'Login Sheet':
 			return puppetsList
