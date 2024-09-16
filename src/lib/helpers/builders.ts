@@ -29,7 +29,7 @@ export async function nsIterator(puppets: string, mode: string, main?: string) {
             <td><p><a target="_blank" href="${baseURL}/${path}/User_agent=${main}/Script=${script}/Generated_by=${script}/Author_discord=scrambleds/Author_main_nation=Kractero/${path.includes('create_nation') ? `nation=${nation}` : ''}">Link to Nation</a></p></td>
         </tr>`
 
-	const generateContainerRules = (formattedPuppetsList) => {
+	const generateContainerRules = (formattedPuppetsList: string[]) => {
 		const nationRules = formattedPuppetsList
 			.map(nation => `@^.*\\.nationstates\\.net/(.*/)?nation=${nation}(/.*)?$ , ${nation}`)
 			.join('\n')
@@ -39,22 +39,23 @@ export async function nsIterator(puppets: string, mode: string, main?: string) {
 		return [nationRules, containerRules]
 	}
 
+	let formattedPuppets = puppetsList.map(nation => nation.toLowerCase().replaceAll(' ', '_'))
+
 	switch (mode) {
 		case 'Containerise':
-			let formattedPuppets = puppetsList.map(nation => nation.toLowerCase().replaceAll(' ', '_'))
 			return generateContainerRules(formattedPuppets)
 
 		case 'Login Sheet':
-			return puppetsList
+			return formattedPuppets
 				.map((nation, i) =>
 					buildTableRow(i, nation, `container=${nation}/nation=${nation}/page=upload_flag/test=1`, 'Login_Sheet')
 				)
 				.join('\n')
 
 		case 'Creator':
-			return puppetsList
+			return formattedPuppets
 				.map((nation, i) =>
-					buildTableRow(i, nation, `container=${nation}/nation=${nation}/page=create_nation`, 'Creator')
+					buildTableRow(i, puppetsList[i], `container=${nation}/nation=${nation}/page=create_nation`, 'Creator')
 				)
 				.join('\n')
 
