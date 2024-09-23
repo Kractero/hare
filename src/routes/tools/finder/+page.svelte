@@ -224,6 +224,7 @@
 		<div class="-mb-6 flex flex-col">
 			<p class="mb-1 text-center font-light text-muted-foreground">Presets</p>
 			<div class="mx-auto">
+				<Button on:click={() => fetchPreset('Legendaries')} variant={'outline'} class="mx-auto">Legendaries</Button>
 				<Button on:click={() => fetchPreset('Fauzjhia')} variant={'outline'} class="mx-auto">Fauzjhia</Button>
 				<Button on:click={() => fetchPreset('Mikeswill')} variant={'outline'} class="mx-auto">Mikeswill</Button>
 				<Button on:click={() => fetchPreset('Apexiala')} variant={'outline'} class="mx-auto">Apexiala</Button>

@@ -1,5 +1,52 @@
 # Changelog
 
+## 2024-9-23
+
+### Features
+
+1. Finder
+   - Preset for legendaries
+
+## 2024-9-16
+
+### Adjustments
+
+1. Link to RCES Issue compactor instead of the one in GI.
+
+### Fixes
+
+1. Fix regression where puppet names are no longer canonicalized.
+
+## 2024-9-12
+
+### Fixes
+
+1. Fetch from new repository for endotart.
+
+## 2024-9-11
+
+### Adjustments
+
+1. Start button is disabled when a script is running.
+
+## 2024-9-03
+
+### Adjustments
+
+1. Rewrite url params and reorganize.
+
+### Fixes
+
+1. gotIssues
+   - Fix regression where issue links had autoclose.
+
+## 2024-9-01
+
+### Fixes
+
+1. gotIssues
+   - Open links properly refreshes if GI is paused and restarted.
+
 ## 2024-8-29
 
 ### Adjustments
