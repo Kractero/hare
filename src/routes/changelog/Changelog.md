@@ -7,6 +7,11 @@
 1. Finder
    - Preset for legendaries
 
+### Fixes
+
+1. Nen
+   - Fixed invalid progress string html prevented the not endorsing from showing up as output.
+
 ## 2024-9-16
 
 ### Adjustments

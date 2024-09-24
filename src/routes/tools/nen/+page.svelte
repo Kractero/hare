@@ -31,15 +31,13 @@
 			progress += `<p class="text-red-400">${nennation} is not in the WA.</p>`
 			return
 		}
-		progress += `<p">Searching for the nations in ${xml.NATION.REGION} not endorsing ${nennation}</p>`
+		progress += `<p>Searching for the nations in ${xml.NATION.REGION} not endorsing ${nennation}</p>`
 		const wamems = await parseXML(`${domain}/cgi-bin/api.cgi?region=${xml.NATION.REGION}&q=wanations`, main)
 		const mainEndorsers = xml.NATION.ENDORSEMENTS.split(',')
 		wamems.REGION.UNNATIONS.split(',')
-			.filter(
-				(member: string) => !mainEndorsers.includes(member) && member !== nennation.toLowerCase().replace(' ', '_')
-			)
+			.filter((member: string) => !mainEndorsers.includes(member))
 			.forEach((member: string) => {
-				progress += `<p><a class="underline" href="${domain}/nation=${member}${urlParameters('nen', main)}>${member}</a> is not endorsing ${nennation}.</p>`
+				progress += `<p><a class="underline" href="${domain}/nation=${member}${urlParameters('nen', main)}">${member}</a> is not endorsing ${nennation}.</p>`
 			})
 		progress += `<p>Finished processing</p>`
 	}
