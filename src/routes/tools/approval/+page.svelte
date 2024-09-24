@@ -71,13 +71,13 @@
 		})
 		progress += `<p>Finished searching <span class="font-bold">${proposal.NAME}</span> for delegates not approving.</p>`
 		notApproving.forEach((delegate, i) => {
-			progress += `<p class="text-red-400"><a class="underline" href="${domain}/nation=${delegate}${urlParameters('Approvals List', main)}">${delegate}</a> is NOT approving!</p>`
+			progress += `<p class="text-red-400"><a class="underline" href="${domain}/nation=${delegate}/${urlParameters('Approvals List', main)}">${delegate}</a> is NOT approving!</p>`
 			content += `<tr><td><p>${
 				i + 1
-			}/${notApproving.length}</p></td><td><p><a target="_blank" href="${domain}/nation=${delegate}${urlParameters('Approvals List', main)}">Link to Nation</a></p></td></tr>\n`
+			}/${notApproving.length}</p></td><td><p><a target="_blank" href="${domain}/nation=${delegate}/${urlParameters('Approvals List', main)}">Link to Nation</a></p></td></tr>\n`
 		})
 		approving.forEach(delegate => {
-			progress += `<p class="text-green-400"><a class="underline" href="${domain}/nation=${delegate}${urlParameters('Approvals List', main)}">${delegate}</a> is approving!</p>`
+			progress += `<p class="text-green-400"><a class="underline" href="${domain}/nation=${delegate}/${urlParameters('Approvals List', main)}">${delegate}</a> is approving!</p>`
 		})
 		downloadable = true
 		stoppable = false
