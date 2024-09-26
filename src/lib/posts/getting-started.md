@@ -26,6 +26,10 @@ TamperMonkey will now run the script automatically whenever you visit the specif
 
 ## 2. Containers with Cardtainers
 
+<video width="320" height="320" controls>
+  <source src="/Cardtainers.mp4" type="video/mp4">
+</video>
+
 Containers are crucial for managing multiple accounts simultaneously. Cardtainers is an extension designed to simplify this process.
 
 [Install Cardtainers](https://addons.mozilla.org/en-US/firefox/addon/cardtainers/).
@@ -39,6 +43,10 @@ puppet farmer 1
 ```
 
 ### 3. Login into the Containers
+
+<video width="320" height="320" controls>
+  <source src="/Login.mp4" type="video/mp4">
+</video>
 
 Containers are useless if they are not logged into each nation.
 
