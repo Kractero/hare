@@ -71,6 +71,13 @@
 					main,
 					nationSpecificPassword ? nationSpecificPassword : password?.replaceAll(' ', '_')
 				)
+				const packs = xmlObj.NATION.PACKS
+
+				if (packs >= 9) {
+					progress += `<p class="text-blue-400">${nation} has over 9 packs, skipping</p>`
+					continue
+				}
+
 				if (mode === 'Both' || mode === 'Issues') {
 					const issues: Issue = xmlObj.NATION.ISSUES.ISSUE || []
 					let issueIds: Array<string> = []
@@ -89,7 +96,6 @@
 					}
 				}
 				if (mode === 'Both' || mode === 'Packs') {
-					const packs = xmlObj.NATION.PACKS
 					if (packs) {
 						for (let i = 0; i < packs; i++) {
 							if (mode === 'Packs') {
