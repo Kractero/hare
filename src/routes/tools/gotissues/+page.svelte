@@ -73,7 +73,7 @@
 				)
 				const packs = xmlObj.NATION.PACKS
 
-				if (packs >= 9) {
+				if (packs && packs >= 9) {
 					progress += `<p class="text-blue-400">${nation} has over 9 packs, skipping</p>`
 					continue
 				}
