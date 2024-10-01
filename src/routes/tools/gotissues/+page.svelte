@@ -73,26 +73,25 @@
 				)
 				const packs = xmlObj.NATION.PACKS
 
-				if (packs && packs >= 9) {
-					progress += `<p class="text-blue-400">${nation} has over 9 packs, skipping</p>`
-					continue
-				}
-
 				if (mode === 'Both' || mode === 'Issues') {
-					const issues: Issue = xmlObj.NATION.ISSUES.ISSUE || []
-					let issueIds: Array<string> = []
-					if (!Array.isArray(issues)) issueIds.push(issues['@_id'])
-					else issueIds = issues.map(issue => issue['@_id'])
-					for (let i = 0; i < Math.min(issueIds.length, Number(issueCount)); i++) {
-						let issue = issueIds[i]
-						openNewLinkArr = [
-							...openNewLinkArr,
-							`${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}`,
-						]
-						issuesContent += `<tr><td><p>${
-							issuesCount + 1
-						}</p></td><td><p><a target="_blank" href="${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}">Link to Issue</a></p></td></tr>\n`
-						issuesCount++
+					if (packs && packs >= 3) {
+						progress += `<p class="text-blue-400">${nation} has over 9 packs, skipping issues</p>`
+					} else {
+						const issues: Issue = xmlObj.NATION.ISSUES.ISSUE || []
+						let issueIds: Array<string> = []
+						if (!Array.isArray(issues)) issueIds.push(issues['@_id'])
+						else issueIds = issues.map(issue => issue['@_id'])
+						for (let i = 0; i < Math.min(issueIds.length, Number(issueCount)); i++) {
+							let issue = issueIds[i]
+							openNewLinkArr = [
+								...openNewLinkArr,
+								`${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}`,
+							]
+							issuesContent += `<tr><td><p>${
+								issuesCount + 1
+							}</p></td><td><p><a target="_blank" href="${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}">Link to Issue</a></p></td></tr>\n`
+							issuesCount++
+						}
 					}
 				}
 				if (mode === 'Both' || mode === 'Packs') {
