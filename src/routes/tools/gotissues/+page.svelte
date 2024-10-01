@@ -74,7 +74,7 @@
 				const packs = xmlObj.NATION.PACKS
 
 				if (mode === 'Both' || mode === 'Issues') {
-					if (packs && packs >= 3) {
+					if (packs && packs >= 9) {
 						progress += `<p class="text-blue-400">${nation} has over 9 packs, skipping issues</p>`
 					} else {
 						const issues: Issue = xmlObj.NATION.ISSUES.ISSUE || []
