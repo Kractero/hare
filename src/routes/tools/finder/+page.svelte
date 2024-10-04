@@ -149,9 +149,9 @@
 													successfulGift = false
 													openNewLinkArr = [
 														...openNewLinkArr,
-														`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters}&giftto=${currGiftee}`,
+														`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}`,
 													]
-													junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters}&giftto=${currGiftee}">Link to Card</a></p></td></tr>\n`
+													junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}">Link to Card</a></p></td></tr>\n`
 													progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${currGiftee}`
 													failedGiftCount++
 												}
@@ -165,9 +165,9 @@
 										progress += `<p class="text-green-400">${nation} owns ${id}!`
 										openNewLinkArr = [
 											...openNewLinkArr,
-											`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters}`,
+											`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('Finder', main)}`,
 										]
-										junkHtml += `<tr><td><p>${findCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters}">Link to Card</a></p></td></tr>\n`
+										junkHtml += `<tr><td><p>${findCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('Finder', main)}">Link to Card</a></p></td></tr>\n`
 									}
 									findCount++
 								}

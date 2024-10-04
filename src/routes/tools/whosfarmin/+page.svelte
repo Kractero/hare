@@ -57,7 +57,7 @@
 		} else {
 			Object.keys(ownerList).forEach(owner => {
 				progress += `<p><a class="underline" target="_blank" rel="noreferrer noopener"
-            href="${domain}/nation=${owner}?${urlParameters}">${owner}</a> is currently farming!</p>\n`
+            href="${domain}/nation=${owner}?${urlParameters('Whos Farmin', main)}">${owner}</a> is currently farming!</p>\n`
 			})
 		}
 	}

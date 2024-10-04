@@ -81,7 +81,7 @@
 
 			const regionObject: { [key: string]: any } = {
 				Regions: name,
-				'Region Link': `${domain}/region=${name}?${urlParameters}`,
+				'Region Link': `${domain}/region=${name}?${urlParameters('Spyglass', main)}`,
 				'# Nations': nationCount,
 				'Tot. Nations': 0,
 				'Minor Upd. (est)': '',

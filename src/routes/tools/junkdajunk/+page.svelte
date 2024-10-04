@@ -340,9 +340,9 @@
 											if (ids[i] === id) {
 												successfulGift = false
 												interimSells.push(
-													`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/${urlParameters}&giftto=${giftto}`
+													`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('junkDaJunk', main)}&giftto=${giftto}`
 												)
-												sellContent += `<tr><td><p>${nation} | ${failedGiftCount + 1} (${currSellCard})</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1/${urlParameters}&giftto=${giftto}">Link to Card</a></p></td></tr>\n`
+												sellContent += `<tr><td><p>${nation} | ${failedGiftCount + 1} (${currSellCard})</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('junkDaJunk', main)}&giftto=${giftto}">Link to Card</a></p></td></tr>\n`
 												currSellCard = currSellCard + 1
 												progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftto}`
 												failedGiftCount++
@@ -359,11 +359,11 @@
 								progress += `<p>${i + 1}/${cards.length} -> Skipping ${id} - ${reason}!`
 								if (mode === 'Sell') {
 									interimSells.push(
-										`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters}`
+										`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}`
 									)
 									sellContent += `<tr><td><p>${nation} | ${i + 1} of ${
 										cards.length
-									} (${currSellCard + 1})</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters}">Link to Card</a></p></td></tr>\n`
+									} (${currSellCard + 1})</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}">Link to Card</a></p></td></tr>\n`
 									currSellCard = currSellCard + 1
 								}
 							}
