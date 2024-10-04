@@ -1,5 +1,23 @@
 # Changelog
 
+## 2024-10-04
+
+### Features
+
+1. Endotart
+
+   - Now generates a downloadable sheet pointing to #composebuttons for each nation. A new option has been added to include nations that you already endorse.
+   - Fixed an oversight where nations with zero endorsements were skipped in endotart calculations for the XML sheet.
+
+2. Login Sheet
+   - Split into modes, UploadFlag (default, legacy) and SubmitIssue. A corresponding userscript has been added to SubmitIssue in the description. This will cause login sheet to generate links to either upload_flag or submit_issue. The regular autolog script will continue to work without update and fill, and the autocloser will close the link based on mode. SubmitIssue is probably better but UploadFlag maintains default status.
+
+### Fixes
+
+1. Endotart, Finder (failed gift links), JunkDaJunk (failed gift links, sell links), Spyglass, Whos Farmin were not being assigned a tool name or the user agent. The identifying string was presented as generated_by=Hare_author_main_nation_Kractero without the speciifc tool and user, this has been fixed. Because these links are all publically accessible, this was likely was not a problem.
+
+2. Approvals List, Gold Retriever, Nen were creating a /? path parameter instead of just a normal ? path parameter.
+
 ## 2024-9-23
 
 ### Features

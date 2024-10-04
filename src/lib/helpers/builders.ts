@@ -19,7 +19,7 @@ function downloadBlob(blob: Blob, fileName: string) {
 	URL.revokeObjectURL(url)
 }
 
-export async function nsIterator(puppets: string, mode: string, main?: string) {
+export async function nsIterator(puppets: string, mode: string, main?: string, extra?: string) {
 	const puppetsList = puppets.split('\n')
 	const baseURL = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 
@@ -48,7 +48,12 @@ export async function nsIterator(puppets: string, mode: string, main?: string) {
 		case 'Login Sheet':
 			return formattedPuppets
 				.map((nation, i) =>
-					buildTableRow(i, nation, `container=${nation}/nation=${nation}/page=upload_flag/test=1`, 'Login_Sheet')
+					buildTableRow(
+						i,
+						nation,
+						`container=${nation}/nation=${nation}/page=${extra === 'UploadFlag' ? 'upload_flag' : 'submit_issue'}/test=1`,
+						'Login_Sheet'
+					)
 				)
 				.join('\n')
 

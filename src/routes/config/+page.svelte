@@ -73,6 +73,7 @@
 		transferMode: 'Bank',
 		orphansDeck: '',
 		junkdajunkTransferBank: '-1',
+		loginSheetMode: 'UploadFlag',
 	}
 
 	onMount(() => {
@@ -301,6 +302,12 @@
 			items={['Bank', 'Junk']} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Orphans</h2>
 		<FormInput label="Deck" bind:bindValue={localStorageObject.orphansDeck} id="orphansDeck" />
+		<h2 class="text-center text-2xl font-bold tracking-tight">Login Sheet</h2>
+		<FormSelect
+			id="mode"
+			label="Mode"
+			bind:bindValue={localStorageObject.loginSheetMode}
+			items={['UploadFlag', 'SubmitIssue']} />
 		<div class="flex max-w-lg justify-center">
 			<Button class="mx-auto w-max" variant="default" type="submit">Submit</Button>
 		</div>
