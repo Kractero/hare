@@ -18,6 +18,17 @@
 
 2. Approvals List, Gold Retriever, Nen were creating a /? path parameter instead of just a normal ? path parameter.
 
+## 2024-10-01
+
+### Features
+
+1. gotIssues
+   - Will now skip adding issues to the sheet for nations with 9 packs if mode is both or issues.
+
+## 2024-9-26
+
+Getting Started guide has two videos, one to set up Cardtainers and one for Login SHeet
+
 ## 2024-9-23
 
 ### Features
