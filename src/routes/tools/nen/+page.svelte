@@ -37,7 +37,7 @@
 		wamems.REGION.UNNATIONS.split(',')
 			.filter((member: string) => !mainEndorsers.includes(member))
 			.forEach((member: string) => {
-				progress += `<p><a class="underline" href="${domain}/nation=${member}/${urlParameters('nen', main)}">${member}</a> is not endorsing ${nennation}.</p>`
+				progress += `<p><a class="underline" href="${domain}/nation=${member}?${urlParameters('nen', main)}">${member}</a> is not endorsing ${nennation}.</p>`
 			})
 		progress += `<p>Finished processing</p>`
 	}

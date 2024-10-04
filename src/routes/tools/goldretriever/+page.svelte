@@ -146,7 +146,7 @@
 					}
 
 					<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1/?filter=legendary?${urlParameters('Gold Retriever', main)}'>${categoryCounts.legendary ? Number(categoryCounts.legendary) : 0}</a></p></td>
-					${transferCard && `<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}/card=${transferCard.split(',')[0]}/season=${transferCard.split(',')[1]}/${urlParameters('Gold Retriever', main)}'>Transfer Card</a></p></td>`}
+					${transferCard && `<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}/card=${transferCard.split(',')[0]}/season=${transferCard.split(',')[1]}?${urlParameters('Gold Retriever', main)}'>Transfer Card</a></p></td>`}
 				</tr>\n`
 			} catch (err) {
 				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
