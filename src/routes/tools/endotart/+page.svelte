@@ -24,25 +24,31 @@
 	let immune: string
 	let limit: string
 	let errors: Array<{ field: string | number; message: string }> = []
+	let content: string
+	let downloadable = false
+	let inclusion = 'Unendorsed'
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
-		endotarter =
-			$page.url.searchParams.get('endotarter') || (localStorage.getItem('endotartEndotarter') as string) || ''
+		endotarter = $page.url.searchParams.get('nation') || (localStorage.getItem('endotartEndotarter') as string) || ''
 		immune = $page.url.searchParams.get('immune')
 			? $page.url.searchParams.get('immune')!.replaceAll(',', '\n')
 			: (localStorage.getItem('endotartImmune') as string) || ''
 		limit = $page.url.searchParams.get('limit') || (localStorage.getItem('endotartLimit') as string) || ''
 		source = $page.url.searchParams.get('source') || (localStorage.getItem('endotartSource') as string) || 'XML'
+		inclusion =
+			$page.url.searchParams.get('include') || (localStorage.getItem('endotartInclude') as string) || 'Unendorsed'
 	})
 	onDestroy(() => abortController.abort())
 	async function onSubmit() {
 		pushHistory(
-			`?main=${main}${limit ? `&limit=${limit}` : ''}&nation=${endotarter}&source=${source}${immune ? `&immune=${immune.replaceAll('\n', ',')}` : ''}`
+			`?main=${main}${limit ? `&limit=${limit}` : ''}&nation=${endotarter}&source=${source}${immune ? `&immune=${immune.replaceAll('\n', ',')}` : ''}&include=${inclusion}`
 		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
+		content = ''
+		downloadable = false
 		progress = '<p>Initiating Endotart...</p>'
 		stoppable = true
 		stopped = false
@@ -71,12 +77,9 @@
 			utcMinus7Date.setDate(utcMinus7Date.getDate() - 1)
 			const date = utcMinus7Date.toISOString().slice(0, 10)
 			progress += `<p>Requesting ${date} national dump.</p>`
-			const nationRes = await fetch(
-				`https://raw.githubusercontent.com/Kractero/himari/main/data/${date}-Nations.xml`,
-				{
-					method: 'GET',
-				}
-			)
+			const nationRes = await fetch(`https://raw.githubusercontent.com/Kractero/himari/main/data/${date}-Nations.xml`, {
+				method: 'GET',
+			})
 			if (nationRes.status === 404) {
 				progress += `<p class="text-yellow-400">Could not find ${date} national dump, defaulting to the API.</p>`
 				source = 'API'
@@ -88,6 +91,7 @@
 			}
 		}
 
+		let sheetCounter = 0
 		for (let i = 0; i < regionalWA.length; i++) {
 			if (abortController.signal.aborted || stopped) {
 				break
@@ -101,7 +105,7 @@
 					: [xml.NATION.ENDORSEMENTS]
 			} else {
 				const nations = (xml.NATIONS.NATION as Array<NSNation>).filter(
-					nation => String(nation.NAME).toLowerCase().replace(/ /g, '_') === regionalWA[i].toLowerCase()
+					nation => String(nation.NAME).toLowerCase().replaceAll(' ', '_') === regionalWA[i].toLowerCase()
 				)
 				if (nations.length > 0) {
 					;({ NAME, ENDORSEMENTS } = nations[0])
@@ -109,38 +113,51 @@
 					progress += `<p class="text-yellow-400">${i + 1}/${regionalWA.length} ${regionalWA[i]} not found, likely not in the dump yet`
 				}
 			}
-
-			if (NAME && ENDORSEMENTS) {
+			if (NAME) {
+				if (!ENDORSEMENTS) ENDORSEMENTS = ['']
 				if (endotarter.toLowerCase().replaceAll(' ', '_') === String(NAME).toLowerCase().replaceAll(' ', '_')) {
-					progress += `<p class="text-yellow-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters}"}>${regionalWA[i]}</a> is the endotart nation.</p>`
+					progress += `<p class="text-yellow-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> is the endotart nation.</p>`
 				} else if (limit) {
 					if (whiteList.includes(regionalWA[i])) {
-						progress += `<p class="text-yellow-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters}"}>${regionalWA[i]}</a> is in your immune nations.</p>`
+						progress += `<p class="text-yellow-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> is in your immune nations.</p>`
 					} else if (
 						ENDORSEMENTS.length < Number(limit) &&
 						!ENDORSEMENTS.includes(endotarter.toLowerCase().replaceAll(' ', '_')) &&
 						regionalWA[i] !== endotarter.toLowerCase().replaceAll(' ', '_')
 					) {
-						progress += `<p class="text-green-400">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters}"}>${regionalWA[i]}</a> is not being endorsed by ${endotarter}.</p>`
+						progress += `<p class="text-green-400">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> is not being endorsed by ${endotarter}.</p>`
+						content += `<tr><td><p>${sheetCounter + 1}</p></td><td><p><a target="_blank" href="${domain}/nation=${regionalWA[i]}#composebutton?${urlParameters('Endotart', main)}">Link to ${regionalWA[i]}</a></p></td></tr>\n`
+						sheetCounter++
 					} else if (ENDORSEMENTS.length > Number(limit)) {
-						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters}"}>${regionalWA[i]}</a> has more than ${limit} endorsements.</p>`
+						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> has more than ${limit} endorsements.</p>`
 					} else {
-						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters}"}>${regionalWA[i]}</a> is already endorsed by ${endotarter}.</p>`
+						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> is already endorsed by ${endotarter}.</p>`
+						if (inclusion === 'All') {
+							content += `<tr><td><p>${sheetCounter + 1}</p></td><td><p><a target="_blank" style="color: red;" href="${domain}/nation=${regionalWA[i]}#composebutton?${urlParameters('Endotart', main)}">Link to ${regionalWA[i]}</a></p></td></tr>\n`
+							sheetCounter++
+						}
 					}
 				} else {
 					if (
 						!ENDORSEMENTS.includes(endotarter.toLowerCase().replaceAll(' ', '_')) &&
 						regionalWA[i] !== endotarter.toLowerCase().replaceAll(' ', '_')
 					) {
-						progress += `<p class="text-green-400">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters}"}>${regionalWA[i]}</a> is not being endorsed by ${endotarter}.</p>`
+						progress += `<p class="text-green-400">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> is not being endorsed by ${endotarter}.</p>`
+						content += `<tr><td><p>${sheetCounter + 1}</p></td><td><p><a target="_blank" href="${domain}/nation=${regionalWA[i]}#composebutton?${urlParameters('Endotart', main)}">Link to ${regionalWA[i]}</a></p></td></tr>\n`
+						sheetCounter++
 					} else {
-						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters}"}>${regionalWA[i]}</a> is already endorsed by ${endotarter}.</p>`
+						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> is already endorsed by ${endotarter}.</p>`
+						if (inclusion === 'All') {
+							content += `<tr><td><p>${sheetCounter + 1}</p></td><td><p><a target="_blank" style="color: red;" href="${domain}/nation=${regionalWA[i]}#composebutton?${urlParameters('Endotart', main)}">Link to ${regionalWA[i]}</a></p></td></tr>\n`
+							sheetCounter++
+						}
 					}
 				}
 			}
 		}
 		progress += `<p>Finished searching ${regionalXML.NATION.REGION} for nations not being endorsed by ${endotarter}</p>`
 		stoppable = false
+		downloadable = true
 	}
 </script>
 
@@ -152,8 +169,21 @@
 		<FormInput label={'Endotart Nation'} bind:bindValue={endotarter} id="endotarter" required={true} />
 		<FormInput label={'Endorse Limit'} bind:bindValue={limit} id="limit" required={false} />
 		<FormSelect id="source" label="Source" bind:bindValue={source} items={['XML', 'API']} />
+		<FormSelect
+			subTitle="(Whether to include already endorsed)"
+			id="inclusion"
+			label="Sheet Inclusion"
+			bind:bindValue={inclusion}
+			items={['Unendorsed', 'All']} />
 		<FormTextArea bind:bindValue={immune} id="immune" label="Immune Nations" required={false} />
-		<Buttons stopButton={true} bind:stopped bind:stoppable />
+		<Buttons
+			downloadButton={true}
+			bind:downloadable
+			bind:content
+			name="Endotart"
+			stopButton={true}
+			bind:stopped
+			bind:stoppable />
 	</form>
 	<Terminal bind:progress />
 </div>

@@ -27,6 +27,7 @@
 		endotartLimit: '',
 		endotartImmune: '',
 		endotartSource: 'XML',
+		endotartInclude: 'Unendorsed',
 		nenNation: '',
 		finderList: '',
 		junkdajunkRegionalWhitelist: '',
@@ -189,6 +190,11 @@
 		<h2 class="text-center text-2xl font-bold tracking-tight">Endotarting</h2>
 		<FormInput label="Endotarting Default" bind:bindValue={localStorageObject.endotartEndotarter} id="Endotarting" />
 		<FormInput label="Endorse Limit" bind:bindValue={localStorageObject.endotartLimit} id="limit" />
+		<FormSelect
+			id="inclusion"
+			label="Sheet Inclusion"
+			bind:bindValue={localStorageObject.endotartInclude}
+			items={['Unendorsed', 'All']} />
 		<FormTextArea label="Immune Nations" bind:bindValue={localStorageObject.endotartImmune} id="immune" />
 		<FormSelect
 			id="endotartmode"
