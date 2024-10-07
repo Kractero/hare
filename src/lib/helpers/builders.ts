@@ -152,7 +152,7 @@ export const htmlContent = (content: string, name: string) => {
       </table>
       <script>
       ${
-				name === 'RCES'
+				name === 'RCES' || name === 'Gold Retriever'
 					? script
 					: `
       document.querySelectorAll("td").forEach(function(el) {
