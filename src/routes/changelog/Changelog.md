@@ -1,5 +1,40 @@
 # Changelog
 
+## 2024-10-24
+
+### Features
+
+1. gotIssues
+   - Some conditional logic on when to render issue counts, and a new parameter: Pack Count, which works like issue count to allow you to determine how many packs to open per nation.
+
+## 2024-10-23
+
+### Fixes
+
+1. Finder
+   - Parse nation,password properly.
+
+## 2024-10-21
+
+### Fixes
+
+1. Finder
+   - Use an updated beetles gifting list.
+
+## 2024-10-14
+
+### Fixes
+
+1. gotIssues
+   - Link to the updated compactorrand (it should have auto-updated even on the old one)
+
+## 2024-10-07
+
+### Fixes
+
+1. Gold Retriever
+   - The gold retriever next line script properly traverses to the next line.
+
 ## 2024-10-04
 
 ### Features

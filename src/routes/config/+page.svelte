@@ -19,6 +19,7 @@
 		gotissuesPuppets: '',
 		gotissuesMode: 'Both',
 		gotissuesIssuesCount: '5',
+		gotissuesPackCount: 'All',
 		rocTop: '100',
 		rocDays: '30',
 		rocSpecific: '',
@@ -183,6 +184,11 @@
 			label="Issues Count"
 			bind:bindValue={localStorageObject.gotissuesIssueCount}
 			items={['1', '2', '3', '4', '5']} />
+		<FormSelect
+			id="gipackcount"
+			label="Pack Count"
+			bind:bindValue={localStorageObject.gotissuesPackCount}
+			items={['All', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Rate of Change</h2>
 		<FormInput label="Top {localStorageObject.rocTop}" bind:bindValue={localStorageObject.rocTop} id="top" />
 		<FormInput label="Over {localStorageObject.rocDays} Days" bind:bindValue={localStorageObject.rocDays} id="days" />

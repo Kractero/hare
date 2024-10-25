@@ -25,6 +25,7 @@
 	let password = ''
 	let mode = ''
 	let issueCount = '5'
+	let packCount = 'All'
 	let errors: Array<{ field: string | number; message: string }> = []
 
 	onMount(() => {
@@ -34,17 +35,21 @@
 		password = (localStorage.getItem('password') as string) || ''
 		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('gotissuesMode') as string) || 'Both'
 		issueCount = $page.url.searchParams.get('count') || (localStorage.getItem('gotissuesIssueCount') as string) || '5'
+		packCount =
+			$page.url.searchParams.get('packCount') || (localStorage.getItem('gotissuesPackCount') as string) || 'All'
 	})
 	onDestroy(() => abortController.abort())
 
 	async function onSubmit() {
-		pushHistory(`?main=${main}&mode=${mode}&count=${issueCount}`)
+		pushHistory(
+			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}` : `&count=${issueCount}&packCount=${packCount}`}`
+		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		downloadable = false
 		stoppable = true
 		stopped = false
-		progress = `<p class="font-bold">Initiating gotIssues...mode set to ${mode} for ${issueCount} issues</p>`
+		progress = `<p class="font-bold">Initiating gotIssues...mode set to ${mode} for ${mode === 'Issues' ? `${issueCount} issues` : mode === 'Packs' ? `${packCount} packs` : `${issueCount} issues, ${packCount} packs`}</p>`
 		counter = 0
 		openNewLinkArr = []
 		issuesContent = ''
@@ -96,7 +101,7 @@
 				}
 				if (mode === 'Both' || mode === 'Packs') {
 					if (packs) {
-						for (let i = 0; i < packs; i++) {
+						for (let i = 0; i < Math.min(packs, Number(packCount)); i++) {
 							if (mode === 'Packs') {
 								openNewLinkArr = [
 									...openNewLinkArr,
@@ -149,7 +154,16 @@
 	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={true} />
 		<FormSelect id="mode" label="Issues and Packs" bind:bindValue={mode} items={['Both', 'Issues', 'Packs']} />
-		<FormSelect id="issueCount" label="Issues Count" bind:bindValue={issueCount} items={['1', '2', '3', '4', '5']} />
+		{#if mode === 'Issues' || mode === 'Both'}
+			<FormSelect id="issueCount" label="Issues Count" bind:bindValue={issueCount} items={['1', '2', '3', '4', '5']} />
+		{/if}
+		{#if mode === 'Packs' || mode === 'Both'}
+			<FormSelect
+				id="packCount"
+				label="Pack Count"
+				bind:bindValue={packCount}
+				items={['All', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
+		{/if}
 		<Buttons
 			stopButton={true}
 			bind:stopped
