@@ -101,6 +101,7 @@
 				}
 				if (mode === 'Both' || mode === 'Packs') {
 					if (packs) {
+						packCount = packCount === 'All' ? '9' : packCount
 						for (let i = 0; i < Math.min(packs, Number(packCount)); i++) {
 							if (mode === 'Packs') {
 								openNewLinkArr = [
