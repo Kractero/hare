@@ -26,6 +26,7 @@
 	let mode = ''
 	let issueCount = '5'
 	let packCount = 'All'
+	let minPack = '0'
 	let errors: Array<{ field: string | number; message: string }> = []
 
 	onMount(() => {
@@ -37,12 +38,13 @@
 		issueCount = $page.url.searchParams.get('count') || (localStorage.getItem('gotissuesIssueCount') as string) || '5'
 		packCount =
 			$page.url.searchParams.get('packCount') || (localStorage.getItem('gotissuesPackCount') as string) || 'All'
+		minPack = $page.url.searchParams.get('minPack') || (localStorage.getItem('gotissuesMinPack') as string) || '0'
 	})
 	onDestroy(() => abortController.abort())
 
 	async function onSubmit() {
 		pushHistory(
-			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}` : `&count=${issueCount}&packCount=${packCount}`}`
+			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}&minPack=${minPack}` : `&count=${issueCount}&packCount=${packCount}&minPack=${minPack}`}`
 		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -100,7 +102,7 @@
 					}
 				}
 				if (mode === 'Both' || mode === 'Packs') {
-					if (packs) {
+					if (packs > Number(minPack)) {
 						packCount = packCount === 'All' ? '9' : packCount
 						for (let i = 0; i < Math.min(packs, Number(packCount)); i++) {
 							if (mode === 'Packs') {
@@ -118,6 +120,8 @@
 							}</p></td><td><p><a target="_blank" href="${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1">Link to Pack</a></p></td></tr>\n`
 							packsCount++
 						}
+					} else {
+						progress += `<p class="text-blue-400">${nation} has less packs than ${minPack}, skipping!`
 					}
 				}
 			} catch (err) {
@@ -164,6 +168,14 @@
 				label="Pack Count"
 				bind:bindValue={packCount}
 				items={['All', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
+		{/if}
+		{#if mode === 'Packs' || mode === 'Both'}
+			<FormSelect
+				id="minPack"
+				label="Minimum Pack Count"
+				subTitle={`Open ${packCount} packs if > ${minPack} packs`}
+				bind:bindValue={minPack}
+				items={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
 		{/if}
 		<Buttons
 			stopButton={true}

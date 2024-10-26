@@ -1,5 +1,12 @@
 # Changelog
 
+## 2024-10-26
+
+### Features
+
+1. gotIssues
+   - New parameter: Minimum Pack Count (because I can't name things) - only nations that have more packs than the specified value (default 0) will have packs added to the sheet (the number is based on the value of Pack Count above)
+
 ## 2024-10-24
 
 ### Features
