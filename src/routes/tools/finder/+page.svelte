@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -16,20 +18,20 @@
 
 	const abortController = new AbortController()
 	let domain = ''
-	let progress = ''
-	let openNewLinkArr: Array<string> = []
-	let counter = 0
-	let junkHtml = ''
-	let downloadable = false
-	let stoppable = false
-	let stopped = false
-	let main = ''
-	let puppets = ''
-	let finderlist = ''
-	let mode = 'Gift'
-	let password = ''
-	let giftee = ''
-	let errors: Array<{ field: string | number; message: string }>
+	let progress = $state('')
+	let openNewLinkArr: Array<string> = $state([])
+	let counter = $state(0)
+	let junkHtml = $state('')
+	let downloadable = $state(false)
+	let stoppable = $state(false)
+	let stopped = $state(false)
+	let main = $state('')
+	let puppets = $state('')
+	let finderlist = $state('')
+	let mode = $state('Gift')
+	let password = $state('')
+	let giftee = $state('')
+	let errors: Array<{ field: string | number; message: string }> = $state()
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -216,7 +218,7 @@
 </p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={() => finder(main, puppets)} class="flex flex-col gap-8">
+	<form onsubmit={preventDefault(() => finder(main, puppets))} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={mode === 'Gift' ? true : false} />
 		{#if mode === 'Gift'}
 			<FormInput label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />

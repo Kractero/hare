@@ -2,11 +2,21 @@
 	import Label from './ui/label/label.svelte'
 	import Textarea from './ui/textarea/textarea.svelte'
 
-	export let id: string
-	export let label: string
-	export let bindValue: string | number | undefined
-	export let subTitle: string = ''
-	export let required: boolean = false
+	interface Props {
+		id: string;
+		label: string;
+		bindValue: string | number | undefined;
+		subTitle?: string;
+		required?: boolean;
+	}
+
+	let {
+		id,
+		label,
+		bindValue = $bindable(),
+		subTitle = '',
+		required = false
+	}: Props = $props();
 
 	// export let errors: Array<{ field: string | number; message: string }> = []
 </script>

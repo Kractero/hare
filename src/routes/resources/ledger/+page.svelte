@@ -33,11 +33,11 @@
 		'S3 Epic',
 		'S3 Legendary',
 	]
-	let ledgerTable: HTMLTableElement
-	let ledger: any
-	let body
+	let ledgerTable: HTMLTableElement = $state()
+	let ledger: any = $state()
+	let body = $state()
 	let displayDate: string
-	let error: string = ''
+	let error: string = $state('')
 
 	const utcTime = new Date().getTime() + new Date().getTimezoneOffset() * 6000
 	const maxDate = new Date(utcTime + -7 * 60 * 60000).toISOString().slice(0, 10)
@@ -98,7 +98,7 @@
 		id="dateInput"
 		min="2023-10-05"
 		value={displayDate || maxDate}
-		on:change={async e => {
+		onchange={async e => {
 			const selectedDate = e.currentTarget.value
 			if (selectedDate && selectedDate >= '2023-10-05' && selectedDate <= maxDate) {
 				await fillTable(selectedDate)

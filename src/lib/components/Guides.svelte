@@ -1,7 +1,11 @@
 <script lang="ts">
 	import Post from './Post.svelte'
 
-	export let data: any
+	interface Props {
+		data: any;
+	}
+
+	let { data }: Props = $props();
 	let non_md = [
 		{
 			title: 'Containerise',

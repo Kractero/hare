@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -10,9 +12,9 @@
 
 	const abortController = new AbortController()
 	let domain = ''
-	let progress = ''
-	let main = ''
-	let errors: Array<{ field: string | number; message: string }> = []
+	let progress = $state('')
+	let main = $state('')
+	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -72,7 +74,7 @@
 </p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		<Buttons />
 	</form>

@@ -1,12 +1,23 @@
 <script lang="ts">
 	import Head from './Head.svelte'
 
-	export let toolTitle: string
-	export let author: string = ''
-	export let link: string = ''
-	export let originalBlurb: string = ''
-	export let caption: string
-	export let additional: string = ''
+	interface Props {
+		toolTitle: string;
+		author?: string;
+		link?: string;
+		originalBlurb?: string;
+		caption: string;
+		additional?: string;
+	}
+
+	let {
+		toolTitle,
+		author = '',
+		link = '',
+		originalBlurb = '',
+		caption,
+		additional = ''
+	}: Props = $props();
 </script>
 
 <Head title={`Hare - ${toolTitle}`} description={caption} />

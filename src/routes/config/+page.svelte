@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	import { onMount } from 'svelte'
 	import FormCheckbox from '$lib/components/FormCheckbox.svelte'
 	import FormInput from '$lib/components/FormInput.svelte'
@@ -10,7 +12,7 @@
 	import { Toaster } from '$lib/components/ui/sonner'
 	import { toast } from 'svelte-sonner'
 
-	const localStorageObject: { [key: string]: any } = {
+	const localStorageObject: { [key: string]: any } = $state({
 		connectionUrl: 'www',
 		theme: 'system',
 		puppets: '',
@@ -76,7 +78,7 @@
 		orphansDeck: '',
 		junkdajunkTransferBank: '-1',
 		loginSheetMode: 'UploadFlag',
-	}
+	})
 
 	onMount(() => {
 		Object.keys(localStorageObject).forEach(key => {
@@ -149,7 +151,7 @@
 
 <div
 	class="mx-auto flex w-max max-w-xs flex-col justify-center gap-8 sm:max-w-5xl lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={() => setConfig()} class="flex flex-col gap-8">
+	<form onsubmit={preventDefault(() => setConfig())} class="flex flex-col gap-8">
 		<h2 class="text-center text-2xl font-bold tracking-tight">General Config</h2>
 		<FormSelect
 			id="connectionsubdomain"

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -13,21 +15,21 @@
 
 	const abortController = new AbortController()
 	let domain = ''
-	let progress = ''
-	let openNewLinkArr: Array<string> = []
-	let counter = 0
-	let downloadable = false
-	let issuesContent = ''
-	let stoppable = false
-	let stopped = false
-	let main = ''
-	let puppets = ''
-	let password = ''
-	let mode = ''
-	let issueCount = '5'
-	let packCount = 'All'
-	let minPack = '0'
-	let errors: Array<{ field: string | number; message: string }> = []
+	let progress = $state('')
+	let openNewLinkArr: Array<string> = $state([])
+	let counter = $state(0)
+	let downloadable = $state(false)
+	let issuesContent = $state('')
+	let stoppable = $state(false)
+	let stopped = $state(false)
+	let main = $state('')
+	let puppets = $state('')
+	let password = $state('')
+	let mode = $state('')
+	let issueCount = $state('5')
+	let packCount = $state('All')
+	let minPack = $state('0')
+	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -156,7 +158,7 @@
 </p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={true} />
 		<FormSelect id="mode" label="Issues and Packs" bind:bindValue={mode} items={['Both', 'Issues', 'Packs']} />
 		{#if mode === 'Issues' || mode === 'Both'}

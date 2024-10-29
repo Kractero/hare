@@ -1,8 +1,12 @@
 <script lang="ts">
 	import FormInput from '$lib/components/FormInput.svelte'
 
-	export let main: string
-	export let errors: Array<{ field: string | number; message: string }>
+	interface Props {
+		main: string;
+		errors: Array<{ field: string | number; message: string }>;
+	}
+
+	let { main = $bindable(), errors = $bindable() }: Props = $props();
 </script>
 
 <FormInput

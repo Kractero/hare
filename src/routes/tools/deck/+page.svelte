@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -12,15 +14,15 @@
 	import type { Card } from '$lib/types'
 
 	let domain = ''
-	let progress = ''
-	let main = ''
-	let checkObject = ''
-	let downloadable = false
-	let content = ''
-	let mode = 'Signal'
-	let type = 'Deck'
-	let duplicates = 'Skip'
-	let errors: Array<{ field: string | number; message: string }> = []
+	let progress = $state('')
+	let main = $state('')
+	let checkObject = $state('')
+	let downloadable = $state(false)
+	let content = $state('')
+	let mode = $state('Signal')
+	let type = $state('Deck')
+	let duplicates = $state('Skip')
+	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -73,7 +75,7 @@
 <ToolContent toolTitle="Deck to IDs" caption={'Turn a deck into a text file of card ids, duplicates ignored.'} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
 		<UserAgent bind:main bind:errors />
 		<FormInput
 			label={type.toLowerCase() === 'deck' ? `Nation` : 'Collection'}

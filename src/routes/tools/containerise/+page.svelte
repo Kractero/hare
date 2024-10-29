@@ -1,14 +1,16 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	import Buttons from '$lib/components/Buttons.svelte'
 	import Puppets from '$lib/components/formFields/Puppets.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { nsIterator } from '$lib/helpers/builders'
 
-	let progress = ''
-	let puppets = ''
-	let content: Array<string>
-	let downloadable = false
+	let progress = $state('')
+	let puppets = $state('')
+	let content: Array<string> = $state()
+	let downloadable = $state(false)
 
 	async function onSubmit() {
 		downloadable = false
@@ -25,7 +27,7 @@
 <ToolContent toolTitle="Containerise" caption="Generate containerise rules" />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
 		<Puppets bind:puppets />
 		<Buttons {downloadable} downloadButton={true} {content} type="txt" name="Containerise" />
 	</form>

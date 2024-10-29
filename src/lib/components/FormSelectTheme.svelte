@@ -2,7 +2,11 @@
 	import * as Select from '$lib/components/ui/select'
 	import { setMode } from 'mode-watcher'
 
-	export let item: 'system' | 'light' | 'dark'
+	interface Props {
+		item: 'system' | 'light' | 'dark';
+	}
+
+	let { item = $bindable() }: Props = $props();
 </script>
 
 <Select.Item on:click={() => setMode(item)} bind:value={item}>{item}</Select.Item>

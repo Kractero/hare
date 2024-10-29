@@ -3,7 +3,11 @@
 
 	import type { PageData } from './$types'
 
-	export let data: PageData
+	interface Props {
+		data: PageData;
+	}
+
+	let { data }: Props = $props();
 </script>
 
 <Head title={`Hare - Guides | ${data.post.title}`} description={data.post.description} />
@@ -15,7 +19,7 @@
 			<h4>{data.post.author}</h4>
 		</header>
 		<div class="mt-4">
-			<svelte:component this={data.component} />
+			<data.component />
 		</div>
 	</article>
 </div>

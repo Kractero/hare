@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -9,13 +11,13 @@
 	import { nsIterator } from '$lib/helpers/builders'
 	import { checkUserAgent, pushHistory } from '$lib/helpers/utils'
 
-	let progress = ''
-	let puppets = ''
-	let main = ''
-	let content: string
-	let downloadable = false
-	let errors: Array<{ field: string | number; message: string }> = []
-	let mode = 'UploadFlag'
+	let progress = $state('')
+	let puppets = $state('')
+	let main = $state('')
+	let content: string = $state()
+	let downloadable = $state(false)
+	let errors: Array<{ field: string | number; message: string }> = $state([])
+	let mode = $state('UploadFlag')
 	onMount(() => {
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('loginSheetMode') as string) || 'UploadFlag'
@@ -51,7 +53,7 @@
 </p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
 		<FormSelect
 			subTitle="(Which page to have login sheet fill on)"

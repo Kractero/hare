@@ -4,11 +4,21 @@
 	import FormSelectTheme from './FormSelectTheme.svelte'
 	import Label from './ui/label/label.svelte'
 
-	export let label: string
-	export let subTitle: string = ''
-	export let id: string
-	export let items: string[]
-	export let bindValue: any
+	interface Props {
+		label: string;
+		subTitle?: string;
+		id: string;
+		items: string[];
+		bindValue: any;
+	}
+
+	let {
+		label,
+		subTitle = '',
+		id,
+		items,
+		bindValue = $bindable()
+	}: Props = $props();
 
 	function isTheme(value: string): value is 'system' | 'light' | 'dark' {
 		return ['system', 'light', 'dark'].includes(value)

@@ -1,7 +1,11 @@
 <script lang="ts">
 	import FormInput from '$lib/components/FormInput.svelte'
 
-	export let rarities: any
+	interface Props {
+		rarities: any;
+	}
+
+	let { rarities = $bindable() }: Props = $props();
 </script>
 
 <div class="flex flex-col gap-4">

@@ -1,8 +1,17 @@
 <script lang="ts">
-	export let url: string
-	export let title: string
-	export let author: string
-	export let description: string
+	interface Props {
+		url: string;
+		title: string;
+		author: string;
+		description: string;
+	}
+
+	let {
+		url,
+		title,
+		author,
+		description
+	}: Props = $props();
 </script>
 
 <div class="group relative">

@@ -2,9 +2,13 @@
 	import Label from '$lib/components/ui/label/label.svelte'
 	import * as Select from '$lib/components/ui/select'
 
-	export let bindValue: any
-	export let label: string
-	export let items: string[]
+	interface Props {
+		bindValue: any;
+		label: string;
+		items: string[];
+	}
+
+	let { bindValue = $bindable(), label, items }: Props = $props();
 </script>
 
 <div class={`flex w-max items-center justify-between gap-4`}>

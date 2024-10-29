@@ -9,10 +9,14 @@
 
 	import type { PageData } from './$types'
 
-	export let data: PageData
-	let sort = 'Last Updated (desc)'
-	let author = 'All'
-	let category = 'All'
+	interface Props {
+		data: PageData;
+	}
+
+	let { data }: Props = $props();
+	let sort = $state('Last Updated (desc)')
+	let author = $state('All')
+	let category = $state('All')
 
 	const authorsArray = ['All', ...projects.map(project => project.author).sort()]
 	const authors = new Set(authorsArray)

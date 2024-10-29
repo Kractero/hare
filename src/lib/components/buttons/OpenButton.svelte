@@ -1,9 +1,13 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte'
 
-	export let progress = ''
-	export let counter = 0
-	export let openNewLinkArr: Array<string> = []
+	interface Props {
+		progress?: string;
+		counter?: number;
+		openNewLinkArr?: Array<string>;
+	}
+
+	let { progress = '', counter = $bindable(0), openNewLinkArr = [] }: Props = $props();
 </script>
 
 <Button

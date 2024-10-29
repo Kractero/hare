@@ -3,11 +3,21 @@
 	import UserAgent from './formFields/UserAgent.svelte'
 	import FormInput from './FormInput.svelte'
 
-	export let main: string
-	export let puppets: string
-	export let authenticated: boolean
-	export let password: string = ''
-	export let errors: Array<{ field: string | number; message: string }>
+	interface Props {
+		main: string;
+		puppets: string;
+		authenticated: boolean;
+		password?: string;
+		errors: Array<{ field: string | number; message: string }>;
+	}
+
+	let {
+		main = $bindable(),
+		puppets = $bindable(),
+		authenticated,
+		password = $bindable(''),
+		errors = $bindable()
+	}: Props = $props();
 </script>
 
 <UserAgent bind:main bind:errors />

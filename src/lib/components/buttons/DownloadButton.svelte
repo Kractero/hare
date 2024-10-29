@@ -2,11 +2,20 @@
 	import Button from '$lib/components/ui/button/button.svelte'
 	import { handleDownload, htmlContent } from '$lib/helpers/builders'
 
-	export let downloadable = false
-	export let content: Array<string> | string = ''
 
-	export let type = 'html'
-	export let name
+	interface Props {
+		downloadable?: boolean;
+		content?: Array<string> | string;
+		type?: string;
+		name: any;
+	}
+
+	let {
+		downloadable = false,
+		content = '',
+		type = 'html',
+		name
+	}: Props = $props();
 </script>
 
 <Button

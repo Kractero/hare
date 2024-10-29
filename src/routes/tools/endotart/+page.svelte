@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -15,18 +17,18 @@
 	const abortController = new AbortController()
 
 	let domain = ''
-	let progress = ''
-	let stopped = false
-	let stoppable = false
-	let source: string
-	let main: string
-	let endotarter: string
-	let immune: string
-	let limit: string
-	let errors: Array<{ field: string | number; message: string }> = []
-	let content: string
-	let downloadable = false
-	let inclusion = 'Unendorsed'
+	let progress = $state('')
+	let stopped = $state(false)
+	let stoppable = $state(false)
+	let source: string = $state()
+	let main: string = $state()
+	let endotarter: string = $state()
+	let immune: string = $state()
+	let limit: string = $state()
+	let errors: Array<{ field: string | number; message: string }> = $state([])
+	let content: string = $state()
+	let downloadable = $state(false)
+	let inclusion = $state('Unendorsed')
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -164,7 +166,7 @@
 <ToolContent toolTitle="Endotart" caption="Specify a nation and get all the regionmates they are not endorsing." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
 		<UserAgent bind:main bind:errors />
 		<FormInput label={'Endotart Nation'} bind:bindValue={endotarter} id="endotarter" required={true} />
 		<FormInput label={'Endorse Limit'} bind:bindValue={limit} id="limit" required={false} />
