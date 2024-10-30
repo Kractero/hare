@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -17,13 +15,15 @@
 	let domain = ''
 	let progress = $state('')
 	let downloadable = $state(false)
-	let content = $state(`<tr><th>Nation</th><th class='sort' data-order='none'>Bank</th><th class='sort' data-order='none'>Deck Value</th><th class='sort' data-order='none'>Junk Value</th><th class='sort' data-order='none'>Card Count</th>$</tr>\n`)
+	let content = $state(
+		`<tr><th>Nation</th><th class='sort' data-order='none'>Bank</th><th class='sort' data-order='none'>Deck Value</th><th class='sort' data-order='none'>Junk Value</th><th class='sort' data-order='none'>Card Count</th>$</tr>\n`
+	)
 	let stoppable = $state(false)
 	let stopped = $state(false)
 	let main = $state('')
 	let puppets = $state('')
 	let password = $state('')
-	let mode: string = $state()
+	let mode = $state('')
 	let transferCard = $state('')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
@@ -41,7 +41,8 @@
 
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(`?main=${main}&mode=${mode}${transferCard && `&goldretrieverTransferCard=${transferCard}`}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -168,23 +169,26 @@
 	link="https://forum.nationstates.net/viewtopic.php?f=42&t=476326"
 	additional={`<p class="text-xs mb-16">
 	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
-</p>`} />
+</p>`}
+/>
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials
 			bind:errors
 			bind:main
 			bind:puppets
 			bind:password
-			authenticated={mode === 'Include' ? true : false} />
+			authenticated={mode === 'Include' ? true : false}
+		/>
 		<FormSelect label="Include Packs?" id="mode" bind:bindValue={mode} items={['Include', 'Skip']} />
 		<FormInput
 			label={`Transfer Card`}
 			subTitle="(optional: id,season)"
 			bind:bindValue={transferCard}
 			id="transferCard"
-			required={false} />
+			required={false}
+		/>
 		<Buttons
 			downloadButton={true}
 			bind:downloadable
@@ -193,7 +197,8 @@
 			name="Gold Retriever"
 			stopButton={true}
 			bind:stoppable
-			bind:stopped />
+			bind:stopped
+		/>
 	</form>
 	<Terminal bind:progress />
 </div>

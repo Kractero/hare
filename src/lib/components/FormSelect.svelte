@@ -5,20 +5,14 @@
 	import Label from './ui/label/label.svelte'
 
 	interface Props {
-		label: string;
-		subTitle?: string;
-		id: string;
-		items: string[];
-		bindValue: any;
+		label: string
+		subTitle?: string
+		id: string
+		items: string[]
+		bindValue: any
 	}
 
-	let {
-		label,
-		subTitle = '',
-		id,
-		items,
-		bindValue = $bindable()
-	}: Props = $props();
+	let { label, subTitle = '', id, items, bindValue = $bindable() }: Props = $props()
 
 	function isTheme(value: string): value is 'system' | 'light' | 'dark' {
 		return ['system', 'light', 'dark'].includes(value)
@@ -30,19 +24,20 @@
 		><p>{label}</p>
 		{#if subTitle}
 			<p class="text-xs">{subTitle}</p>
-		{/if}</Label>
+		{/if}</Label
+	>
 	<Select.Root
-		onSelectedChange={v => {
-			bindValue = v && v.value
+		type={'single'}
+		onValueChange={v => {
+			bindValue = v && v
 		}}
-		selected={bindValue}>
-		<Select.Trigger class="w-[206px] flex-1 justify-end sm:max-w-[221px] data-[placeholder]:[&>span]:text-primary">
-			<Select.Value class="mr-2" placeholder={bindValue} />
-		</Select.Trigger>
+		value={bindValue}
+	>
+		<Select.Trigger class="w-[206px] flex-1 justify-end sm:max-w-[221px] data-[placeholder]:[&>span]:text-primary" />
 		<Select.Content class="text-left">
-			{#each items as item}
+			{#each items as item, i}
 				{#if isTheme(item)}
-					<FormSelectTheme bind:item />
+					<FormSelectTheme bind:item={items[i] as 'system' | 'light' | 'dark'} />
 				{:else}
 					<Select.Item value={item}>{item}</Select.Item>
 				{/if}

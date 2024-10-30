@@ -58,7 +58,8 @@
 	originalBlurb="rewritten in Svelte for Hare use by Kractero"
 	author="Kractero"
 	link="https://ledger.kractero.com/legendaries"
-	additional={`<p class="mb-16">As of ${date} (11:30 PM/23:30 UTC-7)</p>`} />
+	additional={`<p class="mb-16">As of ${date} (11:30 PM/23:30 UTC-7)</p>`}
+/>
 
 <div class="mb-4 flex flex-col justify-between gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<div>
@@ -80,7 +81,8 @@
 							class="underline"
 							rel="noreferrer noopener"
 							target="_blank"
-							href={`https://nationstates.net/nation=${change.name}`}>{change.name}</a>
+							href={`https://nationstates.net/nation=${change.name}`}>{change.name}</a
+						>
 						(
 						{#await json.find(nation => nation.name === change.name) then nation}
 							{#if nation && (nation.S1 || nation.S2 || nation.S3)}
@@ -120,11 +122,16 @@
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<table class="w-full table-auto caption-bottom border-collapse whitespace-normal text-left">
 		<thead>
-			<th>#</th>
+			<tr>
+				<th>#</th>
+			</tr>
 			{#each validHeaders as header}
-				<th
-					on:click={() => sort(`${header}`)}
-					class={`h-12 p-2 font-semibold md:p-4 ${header.includes('S') ? 'underline' : ''}`}>{header}</th>
+				<tr>
+					<th
+						on:click={() => sort(`${header}`)}
+						class={`h-12 p-2 font-semibold md:p-4 ${header.includes('S') ? 'underline' : ''}`}>{header}</th
+					>
+				</tr>
 			{/each}
 		</thead>
 		<tbody>
@@ -133,7 +140,8 @@
 					<td class="text-xs">{nation.id}</td>
 					<td class="w-[150px] whitespace-normal break-words break-all p-2 text-xs md:w-auto md:p-4 md:text-base">
 						<a class="underline" rel="noreferrer noopener" target="_blank" href={`${domain}/nation=${nation.name}/`}
-							>{nation.name}</a>
+							>{nation.name}</a
+						>
 					</td>
 					{#each [1, 2, 3] as season}
 						{#if nation[`S${season}`] === true}
@@ -141,7 +149,8 @@
 								<a
 									rel="noreferrer noopener"
 									target="_blank"
-									href={`${domain}/page=deck/card=${nation.id}/season=${season}`}><Check color="green" /></a>
+									href={`${domain}/page=deck/card=${nation.id}/season=${season}`}><Check color="green" /></a
+								>
 							</td>
 						{:else}
 							<td class="p-2 md:p-4"><X color="red" /></td>
@@ -150,7 +159,8 @@
 					{#if nation.exists === true}
 						<td class="p-2 md:p-4"
 							><a rel="noreferrer noopener" target="_blank" href={`${domain}/nation=${nation.name}/`}
-								><Check color="green" /></a>
+								><Check color="green" /></a
+							>
 						</td>
 					{:else}
 						<td class="p-2 md:p-4"><X color="red" /></td>

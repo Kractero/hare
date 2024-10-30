@@ -2,19 +2,19 @@
 	import Button from '$lib/components/ui/button/button.svelte'
 
 	interface Props {
-		progress?: string;
-		counter?: number;
-		openNewLinkArr?: Array<string>;
+		progress?: string
+		counter?: number
+		openNewLinkArr?: Array<string>
 	}
 
-	let { progress = '', counter = $bindable(0), openNewLinkArr = [] }: Props = $props();
+	let { progress = $bindable(''), counter = $bindable(0), openNewLinkArr = $bindable([]) }: Props = $props()
 </script>
 
 <Button
 	disabled={!progress}
 	type="button"
 	variant={'default'}
-	on:click={() => {
+	onclick={() => {
 		if (counter > openNewLinkArr.length - 1) {
 			return
 		}

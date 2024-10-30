@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -31,7 +29,8 @@
 	})
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		// ${collections ? `&collections=${collections}` : ""}
 		pushHistory(`?main=${main}${deck ? `&deck=${deck}` : ''}`)
 		errors = checkUserAgent(main)
@@ -137,7 +136,7 @@
 <ToolContent toolTitle="Orphans" caption="Get a list of cards not in any collection." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		<FormInput bind:bindValue={deck} id="deck" label="Deck" required />
 		<!-- <Textarea text="Collections" bind:bindValue={collections} forValue="collections" /> -->
@@ -148,7 +147,8 @@
 			downloadButton={true}
 			bind:downloadable
 			bind:content
-			name="orphans" />
+			name="orphans"
+		/>
 	</form>
 	<Terminal bind:progress />
 </div>

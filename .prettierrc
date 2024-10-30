@@ -5,7 +5,7 @@
 	"useTabs": true,
 	"singleQuote": true,
 	"trailingComma": "es5",
-	"bracketSameLine": true,
+	"bracketSameLine": false,
 	"printWidth": 120,
 	"semi": false,
 	"plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss", "@ianvs/prettier-plugin-sort-imports"],
@@ -25,11 +25,11 @@
 		"^@/lib/(.*)$",
 		"",
 		"^[./]"
-	  ],
-	  "importOrderSeparation": false,
-	  "importOrderSortSpecifiers": true,
-	  "importOrderBuiltinModulesToTop": true,
-	  "importOrderParserPlugins": ["typescript", "jsx", "decorators-legacy"],
-	  "importOrderMergeDuplicateImports": true,
-	  "importOrderCombineTypeAndValueImports": true
+	],
+	"importOrderSeparation": false,
+	"importOrderSortSpecifiers": true,
+	"importOrderBuiltinModulesToTop": true,
+	"importOrderParserPlugins": ["typescript", "jsx", "decorators-legacy"],
+	"importOrderMergeDuplicateImports": true,
+	"importOrderCombineTypeAndValueImports": true
 }

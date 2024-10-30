@@ -3,20 +3,14 @@
 	import Textarea from './ui/textarea/textarea.svelte'
 
 	interface Props {
-		id: string;
-		label: string;
-		bindValue: string | number | undefined;
-		subTitle?: string;
-		required?: boolean;
+		id: string
+		label: string
+		bindValue: string | number | undefined
+		subTitle?: string
+		required?: boolean
 	}
 
-	let {
-		id,
-		label,
-		bindValue = $bindable(),
-		subTitle = '',
-		required = false
-	}: Props = $props();
+	let { id, label, bindValue = $bindable(), subTitle = '', required = false }: Props = $props()
 
 	// export let errors: Array<{ field: string | number; message: string }> = []
 </script>

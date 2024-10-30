@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -44,7 +42,8 @@
 	})
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(
 			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}&minPack=${minPack}` : `&count=${issueCount}&packCount=${packCount}&minPack=${minPack}`}`
 		)
@@ -155,10 +154,11 @@
 </p>
 <p class="text-xs mb-16">
 	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
-</p>`} />
+</p>`}
+/>
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={true} />
 		<FormSelect id="mode" label="Issues and Packs" bind:bindValue={mode} items={['Both', 'Issues', 'Packs']} />
 		{#if mode === 'Issues' || mode === 'Both'}
@@ -169,7 +169,8 @@
 				id="packCount"
 				label="Pack Count"
 				bind:bindValue={packCount}
-				items={['All', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
+				items={['All', '1', '2', '3', '4', '5', '6', '7', '8', '9']}
+			/>
 		{/if}
 		{#if mode === 'Packs' || mode === 'Both'}
 			<FormSelect
@@ -177,7 +178,8 @@
 				label="Minimum Pack Count"
 				subTitle={`Open ${packCount} packs if > ${minPack} packs`}
 				bind:bindValue={minPack}
-				items={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
+				items={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']}
+			/>
 		{/if}
 		<Buttons
 			stopButton={true}
@@ -186,7 +188,8 @@
 			downloadButton={true}
 			bind:downloadable
 			bind:content={issuesContent}
-			name="gotIssues">
+			name="gotIssues"
+		>
 			<OpenButton bind:counter bind:progress bind:openNewLinkArr />
 		</Buttons>
 	</form>

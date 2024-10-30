@@ -4,28 +4,18 @@
 	import Badge from './ui/badge/badge.svelte'
 
 	interface Props {
-		name: string;
-		author: string;
-		category: string;
-		url: string;
-		description: string;
-		lastUpdate: string;
-		keywords: Array<string>;
-		created: string;
-		authorUrl: string;
+		name: string
+		author: string
+		category: string
+		url: string
+		description: string
+		lastUpdate: string
+		keywords: Array<string>
+		created: string
+		authorUrl: string
 	}
 
-	let {
-		name,
-		author,
-		category,
-		url,
-		description,
-		lastUpdate,
-		keywords,
-		created,
-		authorUrl
-	}: Props = $props();
+	let { name, author, category, url, description, lastUpdate, keywords, created, authorUrl }: Props = $props()
 
 	function timeAgo(date: string) {
 		const now = new Date()
@@ -57,7 +47,8 @@
 </script>
 
 <div
-	class="flex max-w-full flex-col gap-4 rounded-xl bg-secondary p-4 transition duration-200 hover:scale-105 hover:shadow-lg md:p-6">
+	class="flex max-w-full flex-col gap-4 rounded-xl bg-secondary p-4 transition duration-200 hover:scale-105 hover:shadow-lg md:p-6"
+>
 	<p class="-mb-1 flex flex-wrap items-center gap-2">{category}</p>
 	<a href={url} target="_blank">
 		<h2 class="break-words text-3xl font-bold">{name}</h2>

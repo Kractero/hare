@@ -10,10 +10,10 @@
 	import type { PageData } from './$types'
 
 	interface Props {
-		data: PageData;
+		data: PageData
 	}
 
-	let { data }: Props = $props();
+	let { data }: Props = $props()
 	let sort = $state('Last Updated (desc)')
 	let author = $state('All')
 	let category = $state('All')
@@ -24,19 +24,14 @@
 	const categories = new Set(categoriesArray)
 </script>
 
-<Head
-	title={'Hare - Resources'}
-	description={'Hub of NationStates guides and search tools, utilities, and scripts.'}
-/>
+<Head title={'Hare - Resources'} description={'Hub of NationStates guides and search tools, utilities, and scripts.'} />
 
 <Guides {data} />
 
 <div>
 	<h2 class="mb-1 text-center text-3xl font-bold">Resources</h2>
 
-	<p class="mb-16 text-center text-lg lg:w-auto">
-		Filter and search various NationStates cards tools.
-	</p>
+	<p class="mb-16 text-center text-lg lg:w-auto">Filter and search various NationStates cards tools.</p>
 
 	<div class="mx-auto flex w-max flex-col items-end gap-3">
 		<ResourceSelect

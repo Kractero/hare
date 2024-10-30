@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -14,7 +12,7 @@
 	let progress = $state('')
 	let puppets = $state('')
 	let main = $state('')
-	let content: string = $state()
+	let content = $state('')
 	let downloadable = $state(false)
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 	let mode = $state('UploadFlag')
@@ -22,7 +20,8 @@
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('loginSheetMode') as string) || 'UploadFlag'
 	})
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(`?main=${main}&mode=${mode}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -50,17 +49,19 @@
 	<a class="underline" href="https://github.com/Kractero/userscripts/raw/main/container-login/autolog.user.js" target="_blank" rel="noreferrer noopener">
 		autolog
 	</a> which does require configuration which you can read about in the repository.
-</p>`} />
+</p>`}
+/>
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
 		<FormSelect
 			subTitle="(Which page to have login sheet fill on)"
 			id="mode"
 			label="Mode"
 			bind:bindValue={mode}
-			items={['UploadFlag', 'SubmitIssue']} />
+			items={['UploadFlag', 'SubmitIssue']}
+		/>
 		<Buttons downloadButton={true} bind:downloadable bind:content name="Login Sheet" />
 	</form>
 	<Terminal bind:progress />

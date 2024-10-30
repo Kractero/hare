@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -34,7 +32,8 @@
 		type = $page.url.searchParams.get('type') || (localStorage.getItem('deckCollMode') as string) || 'Deck'
 	})
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		downloadable = false
 		pushHistory(`?main=${main}&nation=${checkObject}&mode=${mode}&type=${type}&duplicates=${duplicates}`)
 		errors = checkUserAgent(main)
@@ -75,13 +74,14 @@
 <ToolContent toolTitle="Deck to IDs" caption={'Turn a deck into a text file of card ids, duplicates ignored.'} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:main bind:errors />
 		<FormInput
 			label={type.toLowerCase() === 'deck' ? `Nation` : 'Collection'}
 			bind:bindValue={checkObject}
 			id="checkObject"
-			required={true} />
+			required={true}
+		/>
 		<FormSelect id="type" label="Type" bind:bindValue={type} items={['Deck', 'Collection']} />
 		<FormSelect id="duplicates" label="Duplicates" bind:bindValue={duplicates} items={['Skip', 'Include']} />
 		<FormSelect id="mode" label="Mode" bind:bindValue={mode} items={['Signal', 'IDs']} />

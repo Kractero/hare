@@ -1,13 +1,11 @@
-<script>
-	/**
-	 * @typedef {Object} Props
-	 * @property {string} [slug]
-	 * @property {string} [tool]
-	 * @property {string} [description]
-	 */
+<script lang="ts">
+	interface Props {
+		slug: string
+		tool: string
+		description: string
+	}
 
-	/** @type {Props} */
-	let { slug = '', tool = '', description = '' } = $props();
+	let { slug = '', tool = '', description = '' }: Props = $props()
 </script>
 
 <a

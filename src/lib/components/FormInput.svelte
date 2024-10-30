@@ -2,16 +2,15 @@
 	import Input from './ui/input/input.svelte'
 	import Label from './ui/label/label.svelte'
 
-
 	interface Props {
-		id: string;
-		label: string;
-		bindValue: string | number | undefined;
-		subTitle?: string;
-		required?: boolean;
-		disabled?: boolean;
-		type?: string;
-		errors?: Array<{ field: string | number; message: string }>;
+		id: string
+		label: string
+		bindValue: string | number | undefined
+		subTitle?: string
+		required?: boolean
+		disabled?: boolean
+		type?: string
+		errors?: Array<{ field: string | number; message: string }>
 	}
 
 	let {
@@ -22,8 +21,8 @@
 		required = false,
 		disabled = false,
 		type = '',
-		errors = []
-	}: Props = $props();
+		errors = $bindable([]),
+	}: Props = $props()
 	const rarities = ['common', 'uncommon', 'rare', 'ultra-rare', 'epic']
 </script>
 

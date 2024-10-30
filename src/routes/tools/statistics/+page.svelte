@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -29,7 +27,9 @@
 		puppets = (localStorage.getItem('puppets') as string) || ''
 		scales = $page.url.searchParams.get('scale') || (localStorage.getItem('statisticsScales') as string) || ''
 	})
-	async function onSubmit() {
+
+	async function onSubmit(e: Event) {
+		e.preventDefault
 		pushHistory(`?main=${main}&scale=${scales.replace('\n', ',')}`)
 		errors = checkUserAgent('main')
 		if (errors.length > 0) return
@@ -100,10 +100,11 @@
 	toolTitle="Statistics"
 	caption="Provided WA scales and puppets, get the mean, median, and mode for each scale."
 	author="9003"
-	originalBlurb="rewritten in JS for browser use by Kractero" />
+	originalBlurb="rewritten in JS for browser use by Kractero"
+/>
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
 		<FormTextArea label="Scale" bind:bindValue={scales} id="scale" required={true} />
 		<Buttons stopButton={true} bind:stopped bind:stoppable />

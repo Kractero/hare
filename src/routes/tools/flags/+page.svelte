@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -13,7 +11,6 @@
 	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 
 	const abortController = new AbortController()
-
 	let domain = ''
 	let progress = $state('')
 	let stoppable = $state(false)
@@ -36,9 +33,11 @@
 		flags = (localStorage.getItem('flagmanagerFlags') as string) || ''
 		mottos = (localStorage.getItem('flagmanagerMottos') as string) || ''
 	})
+
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		downloadable = false
 		pushHistory(`?main=${main}&mode=${mode}`)
 		errors = checkUserAgent(main)
@@ -93,10 +92,11 @@
 	toolTitle="Flag Manager"
 	caption="Find which puppets have a specific flag."
 	author="Kractero"
-	link="https://nationstates.net/Kractero" />
+	link="https://nationstates.net/Kractero"
+/>
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
 		<FormSelect id="mode" label="Mode" items={['Flags', 'Mottos']} bind:bindValue={mode} />
 		{#if mode === 'Flags'}
@@ -112,7 +112,8 @@
 			stopButton={true}
 			bind:stopped
 			bind:stoppable
-			name="manager" />
+			name="manager"
+		/>
 	</form>
 	<Terminal bind:progress />
 </div>

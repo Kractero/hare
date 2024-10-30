@@ -1,17 +1,12 @@
 <script lang="ts">
 	interface Props {
-		url: string;
-		title: string;
-		author: string;
-		description: string;
+		url: string
+		title: string
+		author: string
+		description: string
 	}
 
-	let {
-		url,
-		title,
-		author,
-		description
-	}: Props = $props();
+	let { url, title, author, description }: Props = $props()
 </script>
 
 <div class="group relative">

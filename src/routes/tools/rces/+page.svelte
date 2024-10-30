@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -25,7 +23,8 @@
 	})
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(`?main=${main}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -57,10 +56,11 @@
 	caption="Generates a sheet of clickable links pointing to various puppets."
 	additional={`<p class="text-xs mb-16">
 	Is not as configurable as the original, but I think default config had sane defaults.
-</p>`} />
+</p>`}
+/>
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:main bind:puppets authenticated={false} {errors} />
 		<Buttons downloadButton={true} bind:downloadable bind:content type="html" name="RCES" />
 	</form>

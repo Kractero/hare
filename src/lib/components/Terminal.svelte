@@ -1,9 +1,9 @@
 <script lang="ts">
 	interface Props {
-		progress: string | string[];
+		progress: string | string[]
 	}
 
-	let { progress }: Props = $props();
+	let { progress = $bindable() }: Props = $props()
 </script>
 
 <pre

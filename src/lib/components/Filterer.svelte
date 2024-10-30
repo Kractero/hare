@@ -32,8 +32,8 @@
 			}}
 		>
 			All
-		</button></Badge
-	>
+		</button>
+	</Badge>
 	{#each keywords() as keyword}
 		<Badge variant={$filter === keyword.keyword ? 'default' : 'secondary'} class="rounded-md p-2">
 			<button

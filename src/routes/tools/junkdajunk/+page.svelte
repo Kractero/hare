@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -20,7 +18,7 @@
 	const abortController = new AbortController()
 
 	let domain = ''
-	let progress: '' = $state()
+	let progress = $state('')
 	let openNewLinkArr: Array<string> = $state([])
 	let counter = $state(0)
 	let junkHtml = $state('')
@@ -55,7 +53,7 @@
 	let sellContent = ''
 	let finderlist = $state('')
 	let jdjtransfer = $state('-1')
-	let errors: Array<{ field: string | number; message: string }> = $state()
+	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -115,7 +113,8 @@
 	})
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(
 			`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ''}${owners ? `&owners=${owners}` : ''}${cardcount ? `&cardcount=${cardcount}` : ''}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ''}${flagwhitelist ? `&flags=${flagwhitelist.replaceAll('\n', ',')}` : ''}${finderlist ? `&ids=${finderlist.replaceAll('\n', ',')}` : ''}${skipseason ? `&skipseason=${skipseason}` : ''}${skipexnation ? `&skipexnation=${skipexnation}` : ''}`
 		)
@@ -414,10 +413,11 @@
 </p>
 <h2 class="text-xl mb-16">
 	Hare does not junk cards, it generates a html file of cards to junk.
-</h2>`} />
+</h2>`}
+/>
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={mode === 'Gift' ? true : false} />
 		{#if mode === 'Gift'}
 			<FormInput label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />
@@ -439,7 +439,8 @@
 			bind:bindValue={skipseason}
 			id="skipseason"
 			items={["Don't Skip", 'Skip Offseasons', '1', '2']}
-			label="Skip Seasons?" />
+			label="Skip Seasons?"
+		/>
 		<FormCheckbox bind:checked={skipexnation} id="skipexnation" label="Skip Exnation" />
 		<FormInput label={'Maximum Bank Threshold'} bind:bindValue={jdjtransfer} id="jdjtransfer" required={true} />
 		<FormSelect bind:bindValue={mode} id="mode" items={['Gift', 'Sell', 'Exclude']} label="Behavior" />
@@ -450,7 +451,8 @@
 			downloadButton={true}
 			bind:downloadable
 			bind:content={junkHtml}
-			name="junkDaJunk">
+			name="junkDaJunk"
+		>
 			<OpenButton bind:counter bind:progress bind:openNewLinkArr />
 		</Buttons>
 	</form>

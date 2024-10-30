@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -23,7 +21,8 @@
 
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault
 		pushHistory(`?main=${main}`)
 		errors = checkUserAgent('main')
 		if (errors.length > 0) return
@@ -71,10 +70,11 @@
 	additional={`<p class="text-xs mb-16">
 	Puppets are linked to their owners via <a class="underline" target="_blank" rel="noreferrer noopener" href="https://docs.google.com/spreadsheets/d/1MZ-4GLWAZDgB1TDvwtssEcVKHKunOKi3l90Jof1pBB4/">9003's sheet</a>, submit
   yours <a target="_blank" rel="noreferrer noopener" class="underline" href="https://docs.google.com/forms/d/16t4mlYuSU5p0U9hVkvzKMqP1GRnpdDV7nLNLA9WdFTs/viewform">here</a>
-</p>`} />
+</p>`}
+/>
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		<Buttons />
 	</form>

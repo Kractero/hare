@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -23,7 +21,8 @@
 		nennation = $page.url.searchParams.get('nennation') || (localStorage.getItem('nenNation') as string) || ''
 	})
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(`?main=${main}&nennation=${nennation}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -48,7 +47,7 @@
 <ToolContent toolTitle="Not Endorsing" caption={'Specify a nation and get all the regionmates not endorsing them.'} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		<FormInput label={`Nation to Check`} bind:bindValue={nennation} id="nennation" required={true} />
 		<Buttons />

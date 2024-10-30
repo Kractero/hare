@@ -3,18 +3,13 @@
 	import Label from './ui/label/label.svelte'
 
 	interface Props {
-		id: string;
-		label: string;
-		subTitle?: string;
-		checked: boolean;
+		id: string
+		label: string
+		subTitle?: string
+		checked: boolean
 	}
 
-	let {
-		id,
-		label,
-		subTitle = '',
-		checked = $bindable()
-	}: Props = $props();
+	let { id, label, subTitle = '', checked = $bindable() }: Props = $props()
 </script>
 
 <div class={`flex max-w-lg items-center justify-between gap-4`}>

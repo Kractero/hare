@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -15,18 +13,17 @@
 	import type { Nation, NSNation, NSRegion } from '$lib/types'
 
 	const abortController = new AbortController()
-
 	let domain = ''
 	let progress = $state('')
 	let stopped = $state(false)
 	let stoppable = $state(false)
-	let source: string = $state()
-	let main: string = $state()
-	let endotarter: string = $state()
-	let immune: string = $state()
-	let limit: string = $state()
+	let source: string = $state('')
+	let main: string = $state('')
+	let endotarter: string = $state('')
+	let immune: string = $state('')
+	let limit: string = $state('')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
-	let content: string = $state()
+	let content: string = $state('')
 	let downloadable = $state(false)
 	let inclusion = $state('Unendorsed')
 
@@ -42,8 +39,11 @@
 		inclusion =
 			$page.url.searchParams.get('include') || (localStorage.getItem('endotartInclude') as string) || 'Unendorsed'
 	})
+
 	onDestroy(() => abortController.abort())
-	async function onSubmit() {
+
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(
 			`?main=${main}${limit ? `&limit=${limit}` : ''}&nation=${endotarter}&source=${source}${immune ? `&immune=${immune.replaceAll('\n', ',')}` : ''}&include=${inclusion}`
 		)
@@ -166,7 +166,7 @@
 <ToolContent toolTitle="Endotart" caption="Specify a nation and get all the regionmates they are not endorsing." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:main bind:errors />
 		<FormInput label={'Endotart Nation'} bind:bindValue={endotarter} id="endotarter" required={true} />
 		<FormInput label={'Endorse Limit'} bind:bindValue={limit} id="limit" required={false} />
@@ -176,7 +176,8 @@
 			id="inclusion"
 			label="Sheet Inclusion"
 			bind:bindValue={inclusion}
-			items={['Unendorsed', 'All']} />
+			items={['Unendorsed', 'All']}
+		/>
 		<FormTextArea bind:bindValue={immune} id="immune" label="Immune Nations" required={false} />
 		<Buttons
 			downloadButton={true}
@@ -185,7 +186,8 @@
 			name="Endotart"
 			stopButton={true}
 			bind:stopped
-			bind:stoppable />
+			bind:stoppable
+		/>
 	</form>
 	<Terminal bind:progress />
 </div>

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -11,7 +9,7 @@
 	import { checkUserAgent, pushHistory } from '$lib/helpers/utils'
 
 	let progress = $state('')
-	let content: string = $state()
+	let content: string = $state('')
 	let downloadable = $state(false)
 	let puppets = $state('')
 	let main = $state('')
@@ -21,7 +19,8 @@
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 	})
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		pushHistory(`?main=${main}`)
@@ -42,10 +41,11 @@
 	<a class="underline" href="https://github.com/Kractero/userscripts/raw/main/nationCreator.user.js" target="_blank" rel="noreferrer noopener">
 		creator
 	</a> which does require configuration which you can read about in the repository.
-	</p>`} />
+	</p>`}
+/>
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
 		<Buttons {downloadable} downloadButton={true} {content} name="Creator" />
 	</form>

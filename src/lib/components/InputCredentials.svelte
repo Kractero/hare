@@ -4,11 +4,11 @@
 	import FormInput from './FormInput.svelte'
 
 	interface Props {
-		main: string;
-		puppets: string;
-		authenticated: boolean;
-		password?: string;
-		errors: Array<{ field: string | number; message: string }>;
+		main: string
+		puppets: string
+		authenticated: boolean
+		password?: string
+		errors: Array<{ field: string | number; message: string }>
 	}
 
 	let {
@@ -16,8 +16,8 @@
 		puppets = $bindable(),
 		authenticated,
 		password = $bindable(''),
-		errors = $bindable()
-	}: Props = $props();
+		errors = $bindable(),
+	}: Props = $props()
 </script>
 
 <UserAgent bind:main bind:errors />

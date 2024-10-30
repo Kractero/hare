@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -32,8 +30,11 @@
 			$page.url.searchParams.get('council') || (localStorage.getItem('approvalCouncil') as string) || 'General Assembly'
 		proposalid = $page.url.searchParams.get('proposal') || (localStorage.getItem('approvalProposal') as string) || ''
 	})
+
 	onDestroy(() => abortController.abort())
-	async function onSubmit() {
+
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(`?main=${main}&council=${council}&proposal=${proposalid}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -91,16 +92,18 @@
 	originalBlurb="rewritten in JS for browser use by Kractero"
 	author="9003"
 	link="https://github.com/jmikk/Approval-List"
-	caption="Specify a proposal and get all delegates that are not approving it." />
+	caption="Specify a proposal and get all delegates that are not approving it."
+/>
 
 <div class="flex flex-col justify-between gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:main bind:errors />
 		<FormSelect
 			id="council"
 			label="Council"
 			bind:bindValue={council}
-			items={['General Assembly', 'Security Council']} />
+			items={['General Assembly', 'Security Council']}
+		/>
 		<FormInput bind:bindValue={proposalid} id="proposalid" label="Proposal ID" required={true} />
 		<Buttons downloadButton={true} bind:downloadable bind:content type="html" name="Approvals" />
 	</form>

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -34,9 +32,11 @@
 		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('rocMode') as string) || 'Top'
 		specific = (localStorage.getItem('rocSpecific') as string) || ''
 	})
+
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(`?main=${main}&top=${top}&days=${days}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -117,10 +117,11 @@
 	link="https://github.com/Thorn1000/NS-RoC"
 	additional={`<p class="text-xs mb-16">
 	Behavior Specific indicates to search for specific nation's RoC, and is enabled only when top is empty.
-</p>`} />
+</p>`}
+/>
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		{#if mode === 'Top'}
 			<FormInput label={`Top ${top}`} bind:bindValue={top} id="top" required={true} />

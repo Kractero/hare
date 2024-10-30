@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -31,7 +29,7 @@
 	let mode = $state('Gift')
 	let password = $state('')
 	let giftee = $state('')
-	let errors: Array<{ field: string | number; message: string }> = $state()
+	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -44,7 +42,8 @@
 	})
 	onDestroy(() => abortController.abort())
 
-	async function finder(main: string, puppets: string) {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ''}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -215,10 +214,11 @@
 </p>
 <p class="text-xs mb-16">
 	Password input for gifting is optional and will be disabled if the puppet list includes a comma for nation,password.
-</p>`} />
+</p>`}
+/>
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(() => finder(main, puppets))} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={mode === 'Gift' ? true : false} />
 		{#if mode === 'Gift'}
 			<FormInput label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />
@@ -226,11 +226,11 @@
 		<div class="-mb-6 flex flex-col">
 			<p class="mb-1 text-center font-light text-muted-foreground">Presets</p>
 			<div class="mx-auto">
-				<Button on:click={() => fetchPreset('Legendaries')} variant={'outline'} class="mx-auto">Legendaries</Button>
-				<Button on:click={() => fetchPreset('Fauzjhia')} variant={'outline'} class="mx-auto">Fauzjhia</Button>
-				<Button on:click={() => fetchPreset('Mikeswill')} variant={'outline'} class="mx-auto">Mikeswill</Button>
-				<Button on:click={() => fetchPreset('Apexiala')} variant={'outline'} class="mx-auto">Apexiala</Button>
-				<Button on:click={() => fetchPreset('Dr_Hooves')} variant={'outline'} class="mx-auto">Dr Hooves</Button>
+				<Button onclick={() => fetchPreset('Legendaries')} variant={'outline'} class="mx-auto">Legendaries</Button>
+				<Button onclick={() => fetchPreset('Fauzjhia')} variant={'outline'} class="mx-auto">Fauzjhia</Button>
+				<Button onclick={() => fetchPreset('Mikeswill')} variant={'outline'} class="mx-auto">Mikeswill</Button>
+				<Button onclick={() => fetchPreset('Apexiala')} variant={'outline'} class="mx-auto">Apexiala</Button>
+				<Button onclick={() => fetchPreset('Dr_Hooves')} variant={'outline'} class="mx-auto">Dr Hooves</Button>
 			</div>
 		</div>
 		<FormTextArea bind:bindValue={finderlist} label={'Cards to Find'} id="finderlist" required />
@@ -244,7 +244,8 @@
 				bind:downloadable
 				bind:content={junkHtml}
 				type="html"
-				name="Finder">
+				name="Finder"
+			>
 				<OpenButton bind:counter bind:progress bind:openNewLinkArr />
 			</Buttons>
 		</div>

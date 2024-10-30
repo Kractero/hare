@@ -3,10 +3,10 @@
 	import { setMode } from 'mode-watcher'
 
 	interface Props {
-		item: 'system' | 'light' | 'dark';
+		item: 'system' | 'light' | 'dark'
 	}
 
-	let { item = $bindable() }: Props = $props();
+	let { item = $bindable() }: Props = $props()
 </script>
 
-<Select.Item on:click={() => setMode(item)} bind:value={item}>{item}</Select.Item>
+<Select.Item onclick={() => setMode(item)} value={item}>{item}</Select.Item>

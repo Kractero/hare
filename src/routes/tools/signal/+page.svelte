@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -39,7 +37,8 @@
 	})
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(`?main=${main}&mode=${mode}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -114,17 +113,19 @@
 
 <ToolContent
 	toolTitle="Signal"
-	caption="Given card ids, provide decks, collections, or check asks for bids for what's missing. Sideroca compatible." />
+	caption="Given card ids, provide decks, collections, or check asks for bids for what's missing. Sideroca compatible."
+/>
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		<FormTextArea label="Card IDs" bind:bindValue={cardIds} id="cardIds" required />
 		<FormSelect
 			id="mode"
 			label="Behavior"
 			bind:bindValue={mode}
-			items={['Collection', 'Deck', 'Asks', 'Bids', 'Asks and Bids']} />
+			items={['Collection', 'Deck', 'Asks', 'Bids', 'Asks and Bids']}
+		/>
 		{#if mode === 'Asks' || mode === 'Bids' || mode === 'Asks and Bids'}
 			<FormInput label={`Nation`} bind:bindValue={asksBidsNation} id="nation" required={true} />
 		{:else}
@@ -137,7 +138,8 @@
 			downloadButton={true}
 			bind:downloadable
 			bind:content
-			name="Queries" />
+			name="Queries"
+		/>
 	</form>
 	<Terminal bind:progress />
 </div>

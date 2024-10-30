@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/stores'
 	import Buttons from '$lib/components/Buttons.svelte'
@@ -55,7 +53,8 @@
 		}
 		return false
 	}
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(`?main=${main}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -109,10 +108,11 @@
 	<a class="underline" href="https://github.com/Kractero/userscripts/raw/main/container-login/autolog.user.js" target="_blank" rel="noreferrer noopener">
 		autolog
 	</a> are needed which does require configuration which you can read about in the repository.
-</p>`} />
+</p>`}
+/>
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form onsubmit={preventDefault(onSubmit)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={true} />
 		<Buttons
 			stopButton={true}
@@ -121,7 +121,8 @@
 			downloadButton={true}
 			bind:downloadable
 			bind:content
-			name="restore" />
+			name="restore"
+		/>
 	</form>
 	<Terminal bind:progress />
 </div>
