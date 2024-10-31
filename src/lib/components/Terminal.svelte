@@ -1,5 +1,9 @@
 <script lang="ts">
-	export let progress: string | string[]
+	interface Props {
+		progress: string | string[]
+	}
+
+	let { progress = $bindable() }: Props = $props()
 </script>
 
 <pre

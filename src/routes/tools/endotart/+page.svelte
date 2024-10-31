@@ -13,20 +13,19 @@
 	import type { Nation, NSNation, NSRegion } from '$lib/types'
 
 	const abortController = new AbortController()
-
 	let domain = ''
-	let progress = ''
-	let stopped = false
-	let stoppable = false
-	let source: string
-	let main: string
-	let endotarter: string
-	let immune: string
-	let limit: string
-	let errors: Array<{ field: string | number; message: string }> = []
-	let content: string
-	let downloadable = false
-	let inclusion = 'Unendorsed'
+	let progress = $state('')
+	let stopped = $state(false)
+	let stoppable = $state(false)
+	let source: string = $state('')
+	let main: string = $state('')
+	let endotarter: string = $state('')
+	let immune: string = $state('')
+	let limit: string = $state('')
+	let errors: Array<{ field: string | number; message: string }> = $state([])
+	let content: string = $state('')
+	let downloadable = $state(false)
+	let inclusion = $state('Unendorsed')
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -40,8 +39,11 @@
 		inclusion =
 			$page.url.searchParams.get('include') || (localStorage.getItem('endotartInclude') as string) || 'Unendorsed'
 	})
+
 	onDestroy(() => abortController.abort())
-	async function onSubmit() {
+
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(
 			`?main=${main}${limit ? `&limit=${limit}` : ''}&nation=${endotarter}&source=${source}${immune ? `&immune=${immune.replaceAll('\n', ',')}` : ''}&include=${inclusion}`
 		)
@@ -164,7 +166,7 @@
 <ToolContent toolTitle="Endotart" caption="Specify a nation and get all the regionmates they are not endorsing." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:main bind:errors />
 		<FormInput label={'Endotart Nation'} bind:bindValue={endotarter} id="endotarter" required={true} />
 		<FormInput label={'Endorse Limit'} bind:bindValue={limit} id="limit" required={false} />

@@ -9,10 +9,14 @@
 
 	import type { PageData } from './$types'
 
-	export let data: PageData
-	let sort = 'Last Updated (desc)'
-	let author = 'All'
-	let category = 'All'
+	interface Props {
+		data: PageData
+	}
+
+	let { data }: Props = $props()
+	let sort = $state('Last Updated (desc)')
+	let author = $state('All')
+	let category = $state('All')
 
 	const authorsArray = ['All', ...projects.map(project => project.author).sort()]
 	const authors = new Set(authorsArray)
@@ -20,26 +24,20 @@
 	const categories = new Set(categoriesArray)
 </script>
 
-<Head
-	title={'Hare - Resources'}
-	description={'Hub of NationStates guides and search tools, utilities, and scripts.'}
-/>
+<Head title={'Hare - Resources'} description={'Hub of NationStates guides and search tools, utilities, and scripts.'} />
 
 <Guides {data} />
 
 <div>
 	<h2 class="mb-1 text-center text-3xl font-bold">Resources</h2>
 
-	<p class="mb-16 text-center text-lg lg:w-auto">
-		Filter and search various NationStates cards tools.
-	</p>
+	<p class="mb-16 text-center text-lg lg:w-auto">Filter and search various NationStates cards tools.</p>
 
 	<div class="mx-auto flex w-max flex-col items-end gap-3">
 		<ResourceSelect
 			bind:bindValue={sort}
 			label="Sort By"
-			items={['Last Update (asc)', 'Last Update (desc)', 'Creation (asc)', 'Creation (desc)']}
-		/>
+			items={['Last Update (asc)', 'Last Update (desc)', 'Creation (asc)', 'Creation (desc)']} />
 
 		<ResourceSelect bind:bindValue={author} label="Author" items={Array.from(authors)} />
 		<ResourceSelect bind:bindValue={category} label="Categories" items={Array.from(categories)} />
@@ -98,8 +96,7 @@
 				description={project.description}
 				category={project.category}
 				lastUpdate={project.lastUpdate}
-				created={project.created}
-			/>
+				created={project.created} />
 		{/each}
 	</div>
 </div>

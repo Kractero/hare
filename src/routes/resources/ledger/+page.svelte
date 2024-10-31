@@ -33,11 +33,11 @@
 		'S3 Epic',
 		'S3 Legendary',
 	]
-	let ledgerTable: HTMLTableElement
-	let ledger: any
-	let body
+	let ledgerTable: HTMLTableElement | undefined = $state()
+	let ledger: any = $state()
+	let body = $state()
 	let displayDate: string
-	let error: string = ''
+	let error: string = $state('')
 
 	const utcTime = new Date().getTime() + new Date().getTimezoneOffset() * 6000
 	const maxDate = new Date(utcTime + -7 * 60 * 60000).toISOString().slice(0, 10)
@@ -60,7 +60,7 @@
 	}
 	onMount(() => {
 		fillTable()
-		const sortableColumns = ledgerTable.querySelectorAll('.sort')
+		const sortableColumns = ledgerTable!.querySelectorAll('.sort')
 		sortableColumns.forEach(col => {
 			col.addEventListener('click', () => {
 				const columnIndex = Array.from((col.parentNode! as any).cells).indexOf(col)
@@ -93,12 +93,12 @@
 
 <div class="flex flex-col gap-2">
 	<input
-		class="text-primary mx-auto border-none bg-transparent p-2 text-center text-xl"
+		class="mx-auto border-none bg-transparent p-2 text-center text-xl text-primary"
 		type="date"
 		id="dateInput"
 		min="2023-10-05"
 		value={displayDate || maxDate}
-		on:change={async e => {
+		onchange={async e => {
 			const selectedDate = e.currentTarget.value
 			if (selectedDate && selectedDate >= '2023-10-05' && selectedDate <= maxDate) {
 				await fillTable(selectedDate)
@@ -109,8 +109,8 @@
 	{/if}
 	<Button
 		class="mx-auto"
-		on:click={() => {
-			ledgerTable.querySelectorAll('.hideable').forEach(el => el.classList.toggle('hidden'))
+		onclick={() => {
+			ledgerTable!.querySelectorAll('.hideable').forEach(el => el.classList.toggle('hidden'))
 		}}>
 		Toggle Additional Headers
 	</Button>
@@ -120,7 +120,7 @@
 	<div class="rotate-180 overflow-x-scroll" dir="rtl">
 		<table bind:this={ledgerTable} class="min-w-full border-collapse -rotate-180 text-right text-sm" dir="ltr">
 			<thead>
-				<tr class="border-border text-muted-foreground border-b">
+				<tr class="border-b border-border text-muted-foreground">
 					<th>#</th>
 					{#each validHeaders as header}
 						<th class="sort h-12 p-4 font-medium" data-order="none">{header}</th>
@@ -133,7 +133,7 @@
 			{#if ledger}
 				<tbody bind:this={body}>
 					{#each ledger as deck}
-						<tr class="border-border border-b">
+						<tr class="border-b border-border">
 							<td></td>
 							{#each validHeaders as header}
 								<td class="p-4">{deck[header]}</td>

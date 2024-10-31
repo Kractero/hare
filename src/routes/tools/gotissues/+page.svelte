@@ -13,21 +13,21 @@
 
 	const abortController = new AbortController()
 	let domain = ''
-	let progress = ''
-	let openNewLinkArr: Array<string> = []
-	let counter = 0
-	let downloadable = false
-	let issuesContent = ''
-	let stoppable = false
-	let stopped = false
-	let main = ''
-	let puppets = ''
-	let password = ''
-	let mode = ''
-	let issueCount = '5'
-	let packCount = 'All'
-	let minPack = '0'
-	let errors: Array<{ field: string | number; message: string }> = []
+	let progress = $state('')
+	let openNewLinkArr: Array<string> = $state([])
+	let counter = $state(0)
+	let downloadable = $state(false)
+	let issuesContent = $state('')
+	let stoppable = $state(false)
+	let stopped = $state(false)
+	let main = $state('')
+	let puppets = $state('')
+	let password = $state('')
+	let mode = $state('')
+	let issueCount = $state('5')
+	let packCount = $state('All')
+	let minPack = $state('0')
+	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -42,7 +42,8 @@
 	})
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(
 			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}&minPack=${minPack}` : `&count=${issueCount}&packCount=${packCount}&minPack=${minPack}`}`
 		)
@@ -102,9 +103,10 @@
 					}
 				}
 				if (mode === 'Both' || mode === 'Packs') {
-					if (packs > Number(minPack)) {
+					if (packs >= Number(minPack)) {
 						packCount = packCount === 'All' ? '9' : packCount
-						for (let i = 0; i < Math.min(packs, Number(packCount)); i++) {
+						const packsToOpen = Math.min(packs - Number(minPack), Number(packCount))
+						for (let i = 0; i < packsToOpen; i++) {
 							if (mode === 'Packs') {
 								openNewLinkArr = [
 									...openNewLinkArr,
@@ -115,13 +117,11 @@
 									`${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`
 								)
 							}
-							packContent += `<tr><td><p>${
-								packsCount + 1
-							}</p></td><td><p><a target="_blank" href="${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1">Link to Pack</a></p></td></tr>\n`
+							packContent += `<tr><td><p>${packsCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1">Link to Pack</a></p></td></tr>\n`
 							packsCount++
 						}
 					} else {
-						progress += `<p class="text-blue-400">${nation} has less packs than ${minPack}, skipping!`
+						progress += `<p class="text-blue-400">${nation} has less packs than ${minPack}, skipping!</p>`
 					}
 				}
 			} catch (err) {
@@ -156,7 +156,7 @@
 </p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={true} />
 		<FormSelect id="mode" label="Issues and Packs" bind:bindValue={mode} items={['Both', 'Issues', 'Packs']} />
 		{#if mode === 'Issues' || mode === 'Both'}
@@ -172,8 +172,8 @@
 		{#if mode === 'Packs' || mode === 'Both'}
 			<FormSelect
 				id="minPack"
-				label="Minimum Pack Count"
-				subTitle={`Open ${packCount} packs if > ${minPack} packs`}
+				label="Minimum Floor"
+				subTitle={`Open packs on a nation up to the floor of ${minPack} packs. Keep at least ${minPack} packs.`}
 				bind:bindValue={minPack}
 				items={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
 		{/if}

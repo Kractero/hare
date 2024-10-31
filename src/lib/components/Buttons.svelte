@@ -2,14 +2,29 @@
 	import DownloadButton from './buttons/DownloadButton.svelte'
 	import Button from './ui/button/button.svelte'
 
-	export let stoppable: boolean = false
-	export let downloadButton = false
-	export let downloadable = false
-	export let content: Array<string> | string = ''
-	export let type = ''
-	export let name = ''
-	export let stopped = false
-	export let stopButton = false
+	interface Props {
+		stoppable?: boolean
+		downloadButton?: boolean
+		downloadable?: boolean
+		content?: Array<string> | string
+		type?: string
+		name?: string
+		stopped?: boolean
+		stopButton?: boolean
+		children?: import('svelte').Snippet
+	}
+
+	let {
+		stoppable = $bindable(false),
+		downloadButton = false,
+		downloadable = $bindable(false),
+		content = $bindable(''),
+		type = '',
+		name = '',
+		stopped = $bindable(false),
+		stopButton = false,
+		children,
+	}: Props = $props()
 </script>
 
 <div class="mx-auto mb-4 flex max-w-lg flex-wrap justify-center gap-x-2 gap-y-4">
@@ -20,15 +35,13 @@
 	{#if stopButton === true}
 		<Button
 			disabled={!stoppable}
-			on:click={() => {
-				{
-					stoppable = false
-					stopped = true
-				}
+			onclick={() => {
+				stoppable = false
+				stopped = true
 			}}
 			class="mx-auto w-max"
 			variant="destructive"
 			type="button">Stop</Button>
 	{/if}
-	<slot />
+	{@render children?.()}
 </div>

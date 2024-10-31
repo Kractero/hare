@@ -13,14 +13,14 @@
 	const abortController = new AbortController()
 
 	let domain = ''
-	let puppets = ''
-	let main = ''
-	let progress = ''
-	let stoppable = false
-	let stopped = true
-	let mode = 'Puppets'
-	let region = ''
-	let errors: Array<{ field: string | number; message: string }> = []
+	let puppets = $state('')
+	let main = $state('')
+	let progress = $state('')
+	let stoppable = $state(false)
+	let stopped = $state(true)
+	let mode = $state('Puppets')
+	let region = $state('')
+	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -29,9 +29,11 @@
 		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('mode') as string) || 'Puppets'
 		region = $page.url.searchParams.get('region') || (localStorage.getItem('region') as string) || ''
 	})
+
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault
 		pushHistory(`?main=${main}${mode ? `&mode=${mode}` : ''}${region ? `&region=${region}` : ''}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -78,7 +80,7 @@
 <ToolContent toolTitle="Wiz" caption="Query all your nations for their last logged in date." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<FormSelect id="mode" label="Mode" bind:bindValue={mode} items={['Puppets', 'Region']} />
 		{#if mode.toLowerCase() === 'region'}
 			<FormInput bind:errors label={`User Agent`} bind:bindValue={main} id="main" required={true} />

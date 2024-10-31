@@ -1,7 +1,11 @@
 <script lang="ts">
 	import FormInput from '$lib/components/FormInput.svelte'
 
-	export let rarities: any
+	interface Props {
+		rarities: any
+	}
+
+	let { rarities = $bindable() }: Props = $props()
 </script>
 
 <div class="flex flex-col gap-4">
@@ -9,23 +13,13 @@
 		<FormInput label={'Common'} bind:bindValue={rarities.common} id="common" required={true} />
 	</div>
 	<div class="flex max-w-lg items-center justify-between gap-4">
-		<FormInput
-			label={'Uncommon'}
-			bind:bindValue={rarities.uncommon}
-			id="uncommon"
-			required={true}
-		/>
+		<FormInput label={'Uncommon'} bind:bindValue={rarities.uncommon} id="uncommon" required={true} />
 	</div>
 	<div class="flex max-w-lg items-center justify-between gap-4">
 		<FormInput label={'Rare'} bind:bindValue={rarities.rare} id="rare" required={true} />
 	</div>
 	<div class="flex max-w-lg items-center justify-between gap-4">
-		<FormInput
-			label={'Ultra-Rare'}
-			bind:bindValue={rarities['ultra-rare']}
-			id="ultra-rare"
-			required={true}
-		/>
+		<FormInput label={'Ultra-Rare'} bind:bindValue={rarities['ultra-rare']} id="ultra-rare" required={true} />
 	</div>
 	<div class="flex max-w-lg items-center justify-between gap-4">
 		<FormInput label={'Epic'} bind:bindValue={rarities.epic} id="epic" required={true} />

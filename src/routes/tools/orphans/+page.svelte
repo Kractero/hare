@@ -12,14 +12,14 @@
 	const abortController = new AbortController()
 
 	let domain = ''
-	let progress = ''
-	let stoppable = false
-	let stopped = false
-	let downloadable = true
-	let main = ''
-	let deck = ''
-	let content = ''
-	let errors: Array<{ field: string | number; message: string }> = []
+	let progress = $state('')
+	let stoppable = $state(false)
+	let stopped = $state(false)
+	let downloadable = $state(true)
+	let main = $state('')
+	let deck = $state('')
+	let content = $state('')
+	let errors: Array<{ field: string | number; message: string }> = $state([])
 	// let collections = '';
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -29,7 +29,8 @@
 	})
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		// ${collections ? `&collections=${collections}` : ""}
 		pushHistory(`?main=${main}${deck ? `&deck=${deck}` : ''}`)
 		errors = checkUserAgent(main)
@@ -135,7 +136,7 @@
 <ToolContent toolTitle="Orphans" caption="Get a list of cards not in any collection." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		<FormInput bind:bindValue={deck} id="deck" label="Deck" required />
 		<!-- <Textarea text="Collections" bind:bindValue={collections} forValue="collections" /> -->

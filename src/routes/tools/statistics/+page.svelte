@@ -13,13 +13,13 @@
 	const abortController = new AbortController()
 
 	let domain = ''
-	let progress = ''
-	let puppets = ''
-	let main = ''
-	let scales = ''
-	let stoppable = false
-	let stopped = false
-	let errors: Array<{ field: string | number; message: string }> = []
+	let progress = $state('')
+	let puppets = $state('')
+	let main = $state('')
+	let scales = $state('')
+	let stoppable = $state(false)
+	let stopped = $state(false)
+	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -27,7 +27,9 @@
 		puppets = (localStorage.getItem('puppets') as string) || ''
 		scales = $page.url.searchParams.get('scale') || (localStorage.getItem('statisticsScales') as string) || ''
 	})
-	async function onSubmit() {
+
+	async function onSubmit(e: Event) {
+		e.preventDefault
 		pushHistory(`?main=${main}&scale=${scales.replace('\n', ',')}`)
 		errors = checkUserAgent('main')
 		if (errors.length > 0) return
@@ -101,7 +103,7 @@
 	originalBlurb="rewritten in JS for browser use by Kractero" />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
 		<FormTextArea label="Scale" bind:bindValue={scales} id="scale" required={true} />
 		<Buttons stopButton={true} bind:stopped bind:stoppable />

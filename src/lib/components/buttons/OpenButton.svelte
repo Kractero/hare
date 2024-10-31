@@ -1,22 +1,25 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte'
 
-	export let progress = ''
-	export let counter = 0
-	export let openNewLinkArr: Array<string> = []
+	interface Props {
+		progress?: string
+		counter?: number
+		openNewLinkArr?: Array<string>
+	}
+
+	let { progress = $bindable(''), counter = $bindable(0), openNewLinkArr = $bindable([]) }: Props = $props()
 </script>
 
 <Button
 	disabled={!progress}
 	type="button"
 	variant={'default'}
-	on:click={() => {
+	onclick={() => {
 		if (counter > openNewLinkArr.length - 1) {
 			return
 		}
 		window.open(openNewLinkArr[counter], '_blank')
 		counter++
-	}}
->
+	}}>
 	Open Available Link
 </Button>

@@ -11,11 +11,11 @@
 	import * as ExcelJS from 'exceljs'
 
 	let domain = ''
-	let main = ''
-	let progress = ''
-	let workbook: any
-	let downloadable = false
-	let errors: Array<{ field: string | number; message: string }> = []
+	let main = $state('')
+	let progress = $state('')
+	let workbook: any = $state()
+	let downloadable = $state(false)
+	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -33,7 +33,8 @@
 		}
 	}
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(`?main=${main}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -239,13 +240,13 @@
 	originalBlurb="rewritten in JS for browser use by Kractero" />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		<Buttons>
 			<button
 				disabled={!downloadable}
 				type="button"
-				on:click={async () => {
+				onclick={async () => {
 					const buffer = await workbook.xlsx.writeBuffer()
 					const blob = new Blob([buffer], {
 						type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',

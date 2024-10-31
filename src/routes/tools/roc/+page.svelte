@@ -14,15 +14,15 @@
 	const abortController = new AbortController()
 
 	let domain = ''
-	let progress = ''
-	let stoppable = false
-	let stopped = false
-	let main = ''
-	let top = '100'
-	let days = '30'
-	let specific = ''
-	let mode = 'Top'
-	let errors: Array<{ field: string | number; message: string }> = []
+	let progress = $state('')
+	let stoppable = $state(false)
+	let stopped = $state(false)
+	let main = $state('')
+	let top = $state('100')
+	let days = $state('30')
+	let specific = $state('')
+	let mode = $state('Top')
+	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -32,9 +32,11 @@
 		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('rocMode') as string) || 'Top'
 		specific = (localStorage.getItem('rocSpecific') as string) || ''
 	})
+
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(`?main=${main}&top=${top}&days=${days}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -118,7 +120,7 @@
 </p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		{#if mode === 'Top'}
 			<FormInput label={`Top ${top}`} bind:bindValue={top} id="top" required={true} />

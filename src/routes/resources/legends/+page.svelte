@@ -1,3 +1,4 @@
+<!-- @migration-task Error while migrating Svelte code: `<th>` is invalid inside `<table>` -->
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
@@ -118,40 +119,48 @@
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<table class="w-full table-auto caption-bottom border-collapse whitespace-normal text-left">
-		<th>#</th>
-		{#each validHeaders as header}
-			<th
-				on:click={() => sort(`${header}`)}
-				class={`h-12 p-2 font-semibold md:p-4 ${header.includes('S') ? 'underline' : ''}`}>{header}</th>
-		{/each}
-		{#each json as nation}
-			<tr class="border-b-1 border border-black">
-				<td class="text-xs">{nation.id}</td>
-				<td class="w-[150px] whitespace-normal break-words break-all p-2 text-xs md:w-auto md:p-4 md:text-base">
-					<a class="underline" rel="noreferrer noopener" target="_blank" href={`${domain}/nation=${nation.name}/`}
-						>{nation.name}</a>
-				</td>
-				{#each [1, 2, 3] as season}
-					{#if nation[`S${season}`] === true}
-						<td class="p-2 md:p-4">
-							<a
-								rel="noreferrer noopener"
-								target="_blank"
-								href={`${domain}/page=deck/card=${nation.id}/season=${season}`}><Check color="green" /></a>
+		<thead>
+			<tr>
+				<th>#</th>
+			</tr>
+			{#each validHeaders as header}
+				<tr>
+					<th
+						on:click={() => sort(`${header}`)}
+						class={`h-12 p-2 font-semibold md:p-4 ${header.includes('S') ? 'underline' : ''}`}>{header}</th>
+				</tr>
+			{/each}
+		</thead>
+		<tbody>
+			{#each json as nation}
+				<tr class="border-b-1 border border-black">
+					<td class="text-xs">{nation.id}</td>
+					<td class="w-[150px] whitespace-normal break-words break-all p-2 text-xs md:w-auto md:p-4 md:text-base">
+						<a class="underline" rel="noreferrer noopener" target="_blank" href={`${domain}/nation=${nation.name}/`}
+							>{nation.name}</a>
+					</td>
+					{#each [1, 2, 3] as season}
+						{#if nation[`S${season}`] === true}
+							<td class="p-2 md:p-4">
+								<a
+									rel="noreferrer noopener"
+									target="_blank"
+									href={`${domain}/page=deck/card=${nation.id}/season=${season}`}><Check color="green" /></a>
+							</td>
+						{:else}
+							<td class="p-2 md:p-4"><X color="red" /></td>
+						{/if}
+					{/each}
+					{#if nation.exists === true}
+						<td class="p-2 md:p-4"
+							><a rel="noreferrer noopener" target="_blank" href={`${domain}/nation=${nation.name}/`}
+								><Check color="green" /></a>
 						</td>
 					{:else}
 						<td class="p-2 md:p-4"><X color="red" /></td>
 					{/if}
-				{/each}
-				{#if nation.exists === true}
-					<td class="p-2 md:p-4"
-						><a rel="noreferrer noopener" target="_blank" href={`${domain}/nation=${nation.name}/`}
-							><Check color="green" /></a>
-					</td>
-				{:else}
-					<td class="p-2 md:p-4"><X color="red" /></td>
-				{/if}
-			</tr>
-		{/each}
+				</tr>
+			{/each}
+		</tbody>
 	</table>
 </div>

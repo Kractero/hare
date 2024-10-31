@@ -16,20 +16,20 @@
 
 	const abortController = new AbortController()
 	let domain = ''
-	let progress = ''
-	let openNewLinkArr: Array<string> = []
-	let counter = 0
-	let junkHtml = ''
-	let downloadable = false
-	let stoppable = false
-	let stopped = false
-	let main = ''
-	let puppets = ''
-	let finderlist = ''
-	let mode = 'Gift'
-	let password = ''
-	let giftee = ''
-	let errors: Array<{ field: string | number; message: string }>
+	let progress = $state('')
+	let openNewLinkArr: Array<string> = $state([])
+	let counter = $state(0)
+	let junkHtml = $state('')
+	let downloadable = $state(false)
+	let stoppable = $state(false)
+	let stopped = $state(false)
+	let main = $state('')
+	let puppets = $state('')
+	let finderlist = $state('')
+	let mode = $state('Gift')
+	let password = $state('')
+	let giftee = $state('')
+	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -42,7 +42,8 @@
 	})
 	onDestroy(() => abortController.abort())
 
-	async function finder(main: string, puppets: string) {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ''}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -216,7 +217,7 @@
 </p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={() => finder(main, puppets)} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={mode === 'Gift' ? true : false} />
 		{#if mode === 'Gift'}
 			<FormInput label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />
@@ -224,11 +225,11 @@
 		<div class="-mb-6 flex flex-col">
 			<p class="mb-1 text-center font-light text-muted-foreground">Presets</p>
 			<div class="mx-auto">
-				<Button on:click={() => fetchPreset('Legendaries')} variant={'outline'} class="mx-auto">Legendaries</Button>
-				<Button on:click={() => fetchPreset('Fauzjhia')} variant={'outline'} class="mx-auto">Fauzjhia</Button>
-				<Button on:click={() => fetchPreset('Mikeswill')} variant={'outline'} class="mx-auto">Mikeswill</Button>
-				<Button on:click={() => fetchPreset('Apexiala')} variant={'outline'} class="mx-auto">Apexiala</Button>
-				<Button on:click={() => fetchPreset('Dr_Hooves')} variant={'outline'} class="mx-auto">Dr Hooves</Button>
+				<Button onclick={() => fetchPreset('Legendaries')} variant={'outline'} class="mx-auto">Legendaries</Button>
+				<Button onclick={() => fetchPreset('Fauzjhia')} variant={'outline'} class="mx-auto">Fauzjhia</Button>
+				<Button onclick={() => fetchPreset('Mikeswill')} variant={'outline'} class="mx-auto">Mikeswill</Button>
+				<Button onclick={() => fetchPreset('Apexiala')} variant={'outline'} class="mx-auto">Apexiala</Button>
+				<Button onclick={() => fetchPreset('Dr_Hooves')} variant={'outline'} class="mx-auto">Dr Hooves</Button>
 			</div>
 		</div>
 		<FormTextArea bind:bindValue={finderlist} label={'Cards to Find'} id="finderlist" required />

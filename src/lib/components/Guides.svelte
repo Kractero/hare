@@ -1,7 +1,11 @@
 <script lang="ts">
 	import Post from './Post.svelte'
 
-	export let data: any
+	interface Props {
+		data: any
+	}
+
+	let { data }: Props = $props()
 	let non_md = [
 		{
 			title: 'Containerise',
@@ -30,9 +34,7 @@
 <div class="mb-20">
 	<h2 class="mb-1 text-center text-3xl font-bold">Guides</h2>
 
-	<p class="mb-16 text-center text-lg lg:w-auto">
-		Various guides for setting up tools and prerequisites.
-	</p>
+	<p class="mb-16 text-center text-lg lg:w-auto">Various guides for setting up tools and prerequisites.</p>
 
 	<div class="mx-auto grid max-w-lg grid-cols-1 justify-center gap-4 sm:grid-cols-2 lg:max-w-5xl">
 		{#each data.posts as post}

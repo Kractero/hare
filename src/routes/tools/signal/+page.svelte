@@ -14,18 +14,18 @@
 	const abortController = new AbortController()
 
 	let domain = ''
-	let progress = ''
-	let stoppable = false
-	let stopped = false
-	let main = ''
-	let content = ''
-	let cardIds = ''
-	let mode = ''
-	let collectionsOrDecks = ''
-	let asksBidsNation = ''
+	let progress = $state('')
+	let stoppable = $state(false)
+	let stopped = $state(false)
+	let main = $state('')
+	let content = $state('')
+	let cardIds = $state('')
+	let mode = $state('')
+	let collectionsOrDecks = $state('')
+	let asksBidsNation = $state('')
 	let cardsCount = 0
-	let downloadable = false
-	let errors: Array<{ field: string | number; message: string }> = []
+	let downloadable = $state(false)
+	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -37,7 +37,8 @@
 	})
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(`?main=${main}&mode=${mode}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -115,7 +116,7 @@
 	caption="Given card ids, provide decks, collections, or check asks for bids for what's missing. Sideroca compatible." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		<FormTextArea label="Card IDs" bind:bindValue={cardIds} id="cardIds" required />
 		<FormSelect

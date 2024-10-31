@@ -9,12 +9,12 @@
 
 	const abortController = new AbortController()
 	let domain = ''
-	let main = ''
-	let progress = ''
-	let puppets = ''
-	let content = ''
-	let errors: Array<{ field: string | number; message: string }> = []
-	let downloadable = false
+	let main = $state('')
+	let progress = $state('')
+	let puppets = $state('')
+	let content = $state('')
+	let errors: Array<{ field: string | number; message: string }> = $state([])
+	let downloadable = $state(false)
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -23,7 +23,8 @@
 	})
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(`?main=${main}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -58,7 +59,7 @@
 </p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:main bind:puppets authenticated={false} {errors} />
 		<Buttons downloadButton={true} bind:downloadable bind:content type="html" name="RCES" />
 	</form>

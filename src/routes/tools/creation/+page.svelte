@@ -8,18 +8,19 @@
 	import { nsIterator } from '$lib/helpers/builders'
 	import { checkUserAgent, pushHistory } from '$lib/helpers/utils'
 
-	let progress = ''
-	let content: string
-	let downloadable = false
-	let puppets = ''
-	let main = ''
-	let errors: Array<{ field: string | number; message: string }> = []
+	let progress = $state('')
+	let content: string = $state('')
+	let downloadable = $state(false)
+	let puppets = $state('')
+	let main = $state('')
+	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(async () => {
 		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 	})
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		pushHistory(`?main=${main}`)
@@ -43,7 +44,7 @@
 	</p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
 		<Buttons {downloadable} downloadButton={true} {content} name="Creator" />
 	</form>

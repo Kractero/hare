@@ -42,8 +42,7 @@
 	{
 		"name": "Creation Assistant",
 		"slug": "creation",
-		"description":
-			"Generate a sheet that has links for nation creation that works with the provided userscripts."
+		"description": "Generate a sheet that has links for nation creation that works with the provided userscripts."
 	},
 	{
 		"name": "RCES",
@@ -68,8 +67,7 @@
 	{
 		"name": "Transfer",
 		"slug": "transfer",
-		"description":
-			"Takes a bank threshold and receive a text file with puppets that have that bank or higher."
+		"description": "Takes a bank threshold and receive a text file with puppets that have that bank or higher."
 	},
 	{
 		"name": "Containerise",
@@ -89,8 +87,7 @@
 	{
 		"name": "Signal",
 		"slug": "signal",
-		"description":
-			"Given card ids, provide decks, collections, or check asks and bids for what is missing. Sideroca compatible."
+		"description": "Given card ids, provide decks, collections, or check asks and bids for what is missing. Sideroca compatible."
 	},
 	{
 		"name": "Deck to IDs",
@@ -100,8 +97,7 @@
 	{
 		"name": "Statistics",
 		"slug": "statistics",
-		"description":
-			"Provided WA scales and puppets, get the mean, median, and mode for each scale. (WIP)"
+		"description": "Provided WA scales and puppets, get the mean, median, and mode for each scale. (WIP)"
 	},
 	{
 		"name": "Orphans",

@@ -14,17 +14,17 @@
 	const abortController = new AbortController()
 
 	let domain = ''
-	let progress = ''
-	let downloadable = false
-	let stoppable = false
-	let stopped = false
-	let main = ''
-	let puppets = ''
-	let content = ''
-	let transfer = '10'
+	let progress = $state('')
+	let downloadable = $state(false)
+	let stoppable = $state(false)
+	let stopped = $state(false)
+	let main = $state('')
+	let puppets = $state('')
+	let content = $state('')
+	let transfer = $state('10')
 	let transferrable: Array<string> = []
-	let mode = 'Bank'
-	let errors: Array<{ field: string | number; message: string }> = []
+	let mode = $state('Bank')
+	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -36,7 +36,8 @@
 
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault
 		pushHistory(`?main=${main}&transfer=${transfer}&mode=${mode}`)
 		errors = checkUserAgent('main')
 		if (errors.length > 0) return
@@ -111,7 +112,7 @@
 	caption="Takes a bank threshold and receive a text file with puppets that have that bank or higher." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
 		<FormSelect id="mode" label="Transfer Value" bind:bindValue={mode} items={['Bank', 'Junk']} />
 		<FormInput label="Transfer Bank Threshold" bind:bindValue={transfer} id="transfer" required={true} />

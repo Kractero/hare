@@ -18,42 +18,42 @@
 	const abortController = new AbortController()
 
 	let domain = ''
-	let progress: ''
-	let openNewLinkArr: Array<string> = []
-	let counter = 0
-	let junkHtml = ''
-	let stoppable = false
-	let stopped = false
-	let downloadable = false
-	let main = ''
-	let giftee = ''
-	let puppets = ''
-	let regionalwhitelist = ''
-	let flagwhitelist = ''
-	let mode = 'Gift'
-	let password = ''
-	let owners = ''
-	let cardcount = ''
-	let raritiesMV: { [key: string]: number } = {
+	let progress = $state('')
+	let openNewLinkArr: Array<string> = $state([])
+	let counter = $state(0)
+	let junkHtml = $state('')
+	let stoppable = $state(false)
+	let stopped = $state(false)
+	let downloadable = $state(false)
+	let main = $state('')
+	let giftee = $state('')
+	let puppets = $state('')
+	let regionalwhitelist = $state('')
+	let flagwhitelist = $state('')
+	let mode = $state('Gift')
+	let password = $state('')
+	let owners = $state('')
+	let cardcount = $state('')
+	let raritiesMV: { [key: string]: number } = $state({
 		common: 0.5,
 		uncommon: 1,
 		rare: 1,
 		'ultra-rare': 1,
 		epic: 1,
-	}
-	let raritiesLowestBid: { [key: string]: number } = {
+	})
+	let raritiesLowestBid: { [key: string]: number } = $state({
 		common: 1,
 		uncommon: 1,
 		rare: 1,
 		'ultra-rare': 1,
 		epic: 1,
-	}
-	let skipseason = "Don't Skip"
-	let skipexnation = false
+	})
+	let skipseason = $state("Don't Skip")
+	let skipexnation = $state(false)
 	let sellContent = ''
-	let finderlist = ''
-	let jdjtransfer = '-1'
-	let errors: Array<{ field: string | number; message: string }>
+	let finderlist = $state('')
+	let jdjtransfer = $state('-1')
+	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -113,7 +113,8 @@
 	})
 	onDestroy(() => abortController.abort())
 
-	async function onSubmit() {
+	async function onSubmit(e: Event) {
+		e.preventDefault()
 		pushHistory(
 			`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ''}${owners ? `&owners=${owners}` : ''}${cardcount ? `&cardcount=${cardcount}` : ''}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ''}${flagwhitelist ? `&flags=${flagwhitelist.replaceAll('\n', ',')}` : ''}${finderlist ? `&ids=${finderlist.replaceAll('\n', ',')}` : ''}${skipseason ? `&skipseason=${skipseason}` : ''}${skipexnation ? `&skipexnation=${skipexnation}` : ''}`
 		)
@@ -415,7 +416,7 @@
 </h2>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<form on:submit|preventDefault={onSubmit} class="flex flex-col gap-8">
+	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={mode === 'Gift' ? true : false} />
 		{#if mode === 'Gift'}
 			<FormInput label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />

@@ -3,15 +3,19 @@
 
 	import Badge from './ui/badge/badge.svelte'
 
-	export let name: string
-	export let author: string
-	export let category: string
-	export let url: string
-	export let description: string
-	export let lastUpdate: string
-	export let keywords: Array<string>
-	export let created: string
-	export let authorUrl: string
+	interface Props {
+		name: string
+		author: string
+		category: string
+		url: string
+		description: string
+		lastUpdate: string
+		keywords: Array<string>
+		created: string
+		authorUrl: string
+	}
+
+	let { name, author, category, url, description, lastUpdate, keywords, created, authorUrl }: Props = $props()
 
 	function timeAgo(date: string) {
 		const now = new Date()
@@ -57,7 +61,7 @@
 		<div class="flex flex-wrap gap-2">
 			{#each keywords as word}
 				<Badge class="rounded-md">
-					<button on:click={() => filter.set(word)}>{word} </button>
+					<button onclick={() => filter.set(word)}>{word} </button>
 				</Badge>
 			{/each}
 		</div>
