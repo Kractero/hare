@@ -89,8 +89,7 @@
 	originalBlurb="rewritten in Svelte for Hare use by Kractero"
 	author="Kractero"
 	link="https://ledger.kractero.com"
-	additional={`<p class="mb-16">As of ${displayDate || maxDate}</p>`}
-/>
+	additional={`<p class="mb-16">As of ${displayDate || maxDate}</p>`} />
 
 <div class="flex flex-col gap-2">
 	<input
@@ -104,8 +103,7 @@
 			if (selectedDate && selectedDate >= '2023-10-05' && selectedDate <= maxDate) {
 				await fillTable(selectedDate)
 			}
-		}}
-	/>
+		}} />
 	{#if error}
 		<p class="mb-2 text-center">{error}</p>
 	{/if}
@@ -113,8 +111,7 @@
 		class="mx-auto"
 		onclick={() => {
 			ledgerTable!.querySelectorAll('.hideable').forEach(el => el.classList.toggle('hidden'))
-		}}
-	>
+		}}>
 		Toggle Additional Headers
 	</Button>
 </div>
@@ -145,8 +142,7 @@
 								<td class="hideable hidden">
 									{#if deck[header]}<a
 											target="_blank"
-											href={`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/nation=${deck.Nation}/page=deck/?filter=${header.toLowerCase()}`}
-										>
+											href={`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/nation=${deck.Nation}/page=deck/?filter=${header.toLowerCase()}`}>
 											{deck[header]}
 										</a>
 									{/if}

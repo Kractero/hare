@@ -109,8 +109,7 @@
 
 <ToolContent
 	toolTitle="Transfer"
-	caption="Takes a bank threshold and receive a text file with puppets that have that bank or higher."
-/>
+	caption="Takes a bank threshold and receive a text file with puppets that have that bank or higher." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
@@ -125,8 +124,7 @@
 			name="Transfer"
 			stopButton={true}
 			bind:stoppable
-			bind:stopped
-		/>
+			bind:stopped />
 	</form>
 	<Terminal bind:progress />
 </div>

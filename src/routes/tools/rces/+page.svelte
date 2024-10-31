@@ -56,8 +56,7 @@
 	caption="Generates a sheet of clickable links pointing to various puppets."
 	additional={`<p class="text-xs mb-16">
 	Is not as configurable as the original, but I think default config had sane defaults.
-</p>`}
-/>
+</p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">

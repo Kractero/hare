@@ -29,8 +29,7 @@
 		<button
 			onclick={e => {
 				filter.set('All')
-			}}
-		>
+			}}>
 			All
 		</button>
 	</Badge>
@@ -39,8 +38,7 @@
 			<button
 				onclick={e => {
 					filter.set(keyword.keyword)
-				}}
-			>
+				}}>
 				{keyword.keyword} ({keyword.count})
 			</button>
 		</Badge>

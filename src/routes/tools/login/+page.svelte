@@ -49,8 +49,7 @@
 	<a class="underline" href="https://github.com/Kractero/userscripts/raw/main/container-login/autolog.user.js" target="_blank" rel="noreferrer noopener">
 		autolog
 	</a> which does require configuration which you can read about in the repository.
-</p>`}
-/>
+</p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
@@ -60,8 +59,7 @@
 			id="mode"
 			label="Mode"
 			bind:bindValue={mode}
-			items={['UploadFlag', 'SubmitIssue']}
-		/>
+			items={['UploadFlag', 'SubmitIssue']} />
 		<Buttons downloadButton={true} bind:downloadable bind:content name="Login Sheet" />
 	</form>
 	<Terminal bind:progress />

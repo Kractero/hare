@@ -20,8 +20,7 @@
 		>{label}
 		{#if subTitle}
 			<span class="text-xs">{subTitle}</span>
-		{/if}</Label
-	>
+		{/if}</Label>
 	<Textarea class="w-96 text-right text-base" {id} bind:value={bindValue} {required} rows={10} />
 </div>
 

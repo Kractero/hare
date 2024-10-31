@@ -11,8 +11,7 @@
 
 <Head
 	title={'Hare'}
-	description={'Humble Automated Runner for Executing nationstates scripts. A central location to run NationStates scripts.'}
-/>
+	description={'Humble Automated Runner for Executing nationstates scripts. A central location to run NationStates scripts.'} />
 
 <div class="mb-12 grid grid-cols-12 items-center justify-between md:max-w-5xl lg:w-[1024px]">
 	<div class="col-span-full flex flex-col gap-2 lg:col-span-6">
@@ -57,8 +56,7 @@
 		<Tool
 			slug={tool.slug.includes('https') ? tool.slug : `/resources/${tool.slug}`}
 			tool={tool.name}
-			description={tool.description}
-		/>
+			description={tool.description} />
 	{/each}
 </div>
 

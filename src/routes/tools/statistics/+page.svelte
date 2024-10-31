@@ -100,8 +100,7 @@
 	toolTitle="Statistics"
 	caption="Provided WA scales and puppets, get the mean, median, and mode for each scale."
 	author="9003"
-	originalBlurb="rewritten in JS for browser use by Kractero"
-/>
+	originalBlurb="rewritten in JS for browser use by Kractero" />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">

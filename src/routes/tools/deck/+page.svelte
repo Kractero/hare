@@ -80,8 +80,7 @@
 			label={type.toLowerCase() === 'deck' ? `Nation` : 'Collection'}
 			bind:bindValue={checkObject}
 			id="checkObject"
-			required={true}
-		/>
+			required={true} />
 		<FormSelect id="type" label="Type" bind:bindValue={type} items={['Deck', 'Collection']} />
 		<FormSelect id="duplicates" label="Duplicates" bind:bindValue={duplicates} items={['Skip', 'Include']} />
 		<FormSelect id="mode" label="Mode" bind:bindValue={mode} items={['Signal', 'IDs']} />

@@ -29,6 +29,5 @@
 		id="pass"
 		required={true}
 		disabled={puppets.includes(',')}
-		type="password"
-	/>
+		type="password" />
 {/if}

@@ -117,8 +117,7 @@
 	link="https://github.com/Thorn1000/NS-RoC"
 	additional={`<p class="text-xs mb-16">
 	Behavior Specific indicates to search for specific nation's RoC, and is enabled only when top is empty.
-</p>`}
-/>
+</p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">

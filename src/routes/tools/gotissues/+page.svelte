@@ -153,8 +153,7 @@
 </p>
 <p class="text-xs mb-16">
 	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
-</p>`}
-/>
+</p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
@@ -168,8 +167,7 @@
 				id="packCount"
 				label="Pack Count"
 				bind:bindValue={packCount}
-				items={['All', '1', '2', '3', '4', '5', '6', '7', '8', '9']}
-			/>
+				items={['All', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
 		{/if}
 		{#if mode === 'Packs' || mode === 'Both'}
 			<FormSelect
@@ -177,8 +175,7 @@
 				label="Minimum Floor"
 				subTitle={`Open packs on a nation up to the floor of ${minPack} packs. Keep at least ${minPack} packs.`}
 				bind:bindValue={minPack}
-				items={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']}
-			/>
+				items={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
 		{/if}
 		<Buttons
 			stopButton={true}
@@ -187,8 +184,7 @@
 			downloadButton={true}
 			bind:downloadable
 			bind:content={issuesContent}
-			name="gotIssues"
-		>
+			name="gotIssues">
 			<OpenButton bind:counter bind:progress bind:openNewLinkArr />
 		</Buttons>
 	</form>

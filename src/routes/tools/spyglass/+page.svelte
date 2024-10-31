@@ -237,8 +237,7 @@
 	caption="Generate a spreadsheet that includes information on NationStates regions."
 	author="the Spyglass Team"
 	link="https://github.com/Derpseh/Spyglass"
-	originalBlurb="rewritten in JS for browser use by Kractero"
-/>
+	originalBlurb="rewritten in JS for browser use by Kractero" />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
@@ -259,8 +258,7 @@
 					downloadLink.click()
 					URL.revokeObjectURL(blobUrl)
 				}}
-				class="rounded-md bg-green-500 px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500"
-			>
+				class="rounded-md bg-green-500 px-4 py-2 transition duration-300 hover:bg-green-300 disabled:opacity-20 disabled:hover:bg-green-500">
 				Download
 			</button>
 		</Buttons>

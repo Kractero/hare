@@ -147,8 +147,7 @@
 			downloadButton={true}
 			bind:downloadable
 			bind:content
-			name="orphans"
-		/>
+			name="orphans" />
 	</form>
 	<Terminal bind:progress />
 </div>

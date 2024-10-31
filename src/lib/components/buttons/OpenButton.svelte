@@ -20,7 +20,6 @@
 		}
 		window.open(openNewLinkArr[counter], '_blank')
 		counter++
-	}}
->
+	}}>
 	Open Available Link
 </Button>

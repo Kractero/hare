@@ -176,8 +176,7 @@
 			id="inclusion"
 			label="Sheet Inclusion"
 			bind:bindValue={inclusion}
-			items={['Unendorsed', 'All']}
-		/>
+			items={['Unendorsed', 'All']} />
 		<FormTextArea bind:bindValue={immune} id="immune" label="Immune Nations" required={false} />
 		<Buttons
 			downloadButton={true}
@@ -186,8 +185,7 @@
 			name="Endotart"
 			stopButton={true}
 			bind:stopped
-			bind:stoppable
-		/>
+			bind:stoppable />
 	</form>
 	<Terminal bind:progress />
 </div>

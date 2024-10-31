@@ -17,7 +17,6 @@
 		>{label}
 		{#if subTitle}
 			<span class="text-xs">{subTitle}</span>
-		{/if}</Label
-	>
+		{/if}</Label>
 	<Checkbox bind:checked id="1" />
 </div>

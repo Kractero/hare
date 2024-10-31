@@ -169,8 +169,7 @@
 	link="https://forum.nationstates.net/viewtopic.php?f=42&t=476326"
 	additional={`<p class="text-xs mb-16">
 	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
-</p>`}
-/>
+</p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
@@ -179,16 +178,14 @@
 			bind:main
 			bind:puppets
 			bind:password
-			authenticated={mode === 'Include' ? true : false}
-		/>
+			authenticated={mode === 'Include' ? true : false} />
 		<FormSelect label="Include Packs?" id="mode" bind:bindValue={mode} items={['Include', 'Skip']} />
 		<FormInput
 			label={`Transfer Card`}
 			subTitle="(optional: id,season)"
 			bind:bindValue={transferCard}
 			id="transferCard"
-			required={false}
-		/>
+			required={false} />
 		<Buttons
 			downloadButton={true}
 			bind:downloadable
@@ -197,8 +194,7 @@
 			name="Gold Retriever"
 			stopButton={true}
 			bind:stoppable
-			bind:stopped
-		/>
+			bind:stopped />
 	</form>
 	<Terminal bind:progress />
 </div>

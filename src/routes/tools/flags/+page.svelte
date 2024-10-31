@@ -92,8 +92,7 @@
 	toolTitle="Flag Manager"
 	caption="Find which puppets have a specific flag."
 	author="Kractero"
-	link="https://nationstates.net/Kractero"
-/>
+	link="https://nationstates.net/Kractero" />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
@@ -112,8 +111,7 @@
 			stopButton={true}
 			bind:stopped
 			bind:stoppable
-			name="manager"
-		/>
+			name="manager" />
 	</form>
 	<Terminal bind:progress />
 </div>

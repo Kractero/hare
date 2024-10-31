@@ -149,22 +149,19 @@
 <h1 class="mb-16 text-center text-4xl">Configure Default Inputs</h1>
 
 <div
-	class="mx-auto flex w-max max-w-xs flex-col justify-center gap-8 sm:max-w-5xl lg:w-[1024px] lg:max-w-5xl lg:flex-row"
->
+	class="mx-auto flex w-max max-w-xs flex-col justify-center gap-8 sm:max-w-5xl lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<h2 class="text-center text-2xl font-bold tracking-tight">General Config</h2>
 		<FormSelect
 			id="connectionsubdomain"
 			label="Connection Subdomain"
 			bind:bindValue={localStorageObject.connectionUrl}
-			items={['www', 'fast']}
-		/>
+			items={['www', 'fast']} />
 		<FormSelect
 			id="theme"
 			label="Theme"
 			bind:bindValue={localStorageObject.theme}
-			items={['system', 'light', 'dark']}
-		/>
+			items={['system', 'light', 'dark']} />
 		<FormInput label="User Agent" bind:bindValue={localStorageObject.main} id="main" />
 		<FormTextArea label="General Puppets" bind:bindValue={localStorageObject.puppets} id="pup" />
 		<p class="text-center text-xs">These puppets do not apply for gotIssues or junkdajunk.</p>
@@ -175,8 +172,7 @@
 			label={'Password'}
 			subTitle={localStorageObject.puppets.includes(',')
 				? 'A comma is detected in the puppet list, assuming that format.'
-				: ''}
-		/>
+				: ''} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">gotIssues and junkDaJunk</h2>
 		<FormTextArea label="Puppets" bind:bindValue={localStorageObject.gotissuesPuppets} id="gipup" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">gotIssues</h2>
@@ -184,26 +180,22 @@
 			id="gimode"
 			label="Behavior"
 			bind:bindValue={localStorageObject.gotissuesMode}
-			items={['Both', 'Issues', 'Packs']}
-		/>
+			items={['Both', 'Issues', 'Packs']} />
 		<FormSelect
 			id="gicount"
 			label="Issues Count"
 			bind:bindValue={localStorageObject.gotissuesIssueCount}
-			items={['1', '2', '3', '4', '5']}
-		/>
+			items={['1', '2', '3', '4', '5']} />
 		<FormSelect
 			id="gipackcount"
 			label="Pack Count"
 			bind:bindValue={localStorageObject.gotissuesPackCount}
-			items={['All', '1', '2', '3', '4', '5', '6', '7', '8', '9']}
-		/>
+			items={['All', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
 		<FormSelect
 			id="minPack"
 			label="Minimum Pack Count"
 			bind:bindValue={localStorageObject.gotissuesMinPack}
-			items={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']}
-		/>
+			items={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Rate of Change</h2>
 		<FormInput label="Top {localStorageObject.rocTop}" bind:bindValue={localStorageObject.rocTop} id="top" />
 		<FormInput label="Over {localStorageObject.rocDays} Days" bind:bindValue={localStorageObject.rocDays} id="days" />
@@ -216,15 +208,13 @@
 			id="inclusion"
 			label="Sheet Inclusion"
 			bind:bindValue={localStorageObject.endotartInclude}
-			items={['Unendorsed', 'All']}
-		/>
+			items={['Unendorsed', 'All']} />
 		<FormTextArea label="Immune Nations" bind:bindValue={localStorageObject.endotartImmune} id="immune" />
 		<FormSelect
 			id="endotartmode"
 			label="Behavior"
 			bind:bindValue={localStorageObject.endotartSource}
-			items={['XML', 'API']}
-		/>
+			items={['XML', 'API']} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Not Endorsing</h2>
 		<FormInput label="Not Endorsing Default" bind:bindValue={localStorageObject.nenNation} id="nen" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Gold Retriever</h2>
@@ -232,29 +222,25 @@
 			id="grmode"
 			label="Behavior"
 			bind:bindValue={localStorageObject.goldretrieverMode}
-			items={['Include', 'Skip']}
-		/>
+			items={['Include', 'Skip']} />
 		<FormInput
 			label={`Transfer Card`}
 			subTitle="(optional: id,season)"
 			bind:bindValue={localStorageObject.goldretrieverTransferCard}
 			id="transferCard"
-			required={false}
-		/>
+			required={false} />
 		<FormInput label="Gift To" bind:bindValue={localStorageObject.finderGiftee} id="giftee" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">JunkDaJunk</h2>
 		<FormSelect
 			id="jdjmode"
 			label="Behavior"
 			bind:bindValue={localStorageObject.jdjMode}
-			items={['Gift', 'Sell', 'Exclude']}
-		/>
+			items={['Gift', 'Sell', 'Exclude']} />
 		<FormTextArea label="Card ID Whitelist" bind:bindValue={localStorageObject.junkdajunkFinderList} id="jdjfind" />
 		<FormTextArea
 			label="Regional Whitelist"
 			bind:bindValue={localStorageObject.junkdajunkRegionalWhitelist}
-			id="regions"
-		/>
+			id="regions" />
 		<FormTextArea label="Flag Whitelist" bind:bindValue={localStorageObject.junkdajunkFlagWhitelist} id="flags" />
 		<FormInput label="Card Count Threshold" bind:bindValue={localStorageObject.junkdajunkCardCount} id="card" />
 		<FormInput label="Owner Threshold" bind:bindValue={localStorageObject.junkdajunkOwnerCount} id="owner" />
@@ -264,38 +250,33 @@
 			bind:bindValue={localStorageObject.junkdajunkOmittedSeasons}
 			id="skipseason"
 			items={["Don't Skip", 'Skip Offseasons', '1', '2']}
-			label="Skip Seasons?"
-		/>
+			label="Skip Seasons?" />
 		<FormCheckbox bind:checked={localStorageObject.skipexnation} id="skipexnation" label="Skip Exnation" />
 		<FormInput
 			label="Maximum Bank Threshold"
 			bind:bindValue={localStorageObject.junkdajunkTransferBank}
 			id="jdjtransfer"
-			required={false}
-		/>
+			required={false} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Finder</h2>
 		<FormSelect
 			id="findermode"
 			label="Behavior"
 			bind:bindValue={localStorageObject.finderMode}
-			items={['Gift', 'Sell', 'Exclude']}
-		/>
+			items={['Gift', 'Sell', 'Exclude']} />
 		<FormTextArea label="Card IDs to Find" bind:bindValue={localStorageObject.finderList} id="find" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Approval</h2>
 		<FormSelect
 			id="council"
 			label="Council"
 			bind:bindValue={localStorageObject.approvalCouncil}
-			items={['General Assembly', 'Security Council']}
-		/>
+			items={['General Assembly', 'Security Council']} />
 		<FormInput label="Proposal ID" bind:bindValue={localStorageObject.approvalProposal} id="proposalID" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Flags</h2>
 		<FormSelect
 			id="flagmode"
 			label="Mode"
 			bind:bindValue={localStorageObject.flagmanagerMode}
-			items={['Flags', 'Mottos']}
-		/>
+			items={['Flags', 'Mottos']} />
 		<FormTextArea label="Search Flags" bind:bindValue={localStorageObject.flagmanagerFlags} id="flags" />
 		<FormTextArea label="Motto" bind:bindValue={localStorageObject.flagmanagerMottos} id="mottos" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Signal</h2>
@@ -304,8 +285,7 @@
 			id="signalmode"
 			label="Behavior"
 			bind:bindValue={localStorageObject.signalMode}
-			items={['Collection', 'Deck', 'Asks', 'Bids', 'Asks and Bids']}
-		/>
+			items={['Collection', 'Deck', 'Asks', 'Bids', 'Asks and Bids']} />
 		<FormInput label={`Nation`} bind:bindValue={localStorageObject.signalAsksBidsNation} id="nation" />
 		<FormTextArea label={'Coll/Decks'} bind:bindValue={localStorageObject.signalCollectionsOrDecks} id="mode" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Statistics</h2>
@@ -315,28 +295,24 @@
 			id="deckmode"
 			label="Output Format"
 			bind:bindValue={localStorageObject.deckMode}
-			items={['Signal', 'IDs']}
-		/>
+			items={['Signal', 'IDs']} />
 		<FormSelect
 			id="deckcollmode"
 			label="Mode"
 			bind:bindValue={localStorageObject.deckCollMode}
-			items={['Deck', 'Collection']}
-		/>
+			items={['Deck', 'Collection']} />
 		<FormSelect
 			id="deckduplicates"
 			label="Duplicates"
 			bind:bindValue={localStorageObject.deckDuplicates}
-			items={['Skip', 'Include']}
-		/>
+			items={['Skip', 'Include']} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Transfer</h2>
 		<FormInput label="Transfer Bank Threshold" bind:bindValue={localStorageObject.transferBank} id="transfer" />
 		<FormSelect
 			id="transfermode"
 			label="Transfer Bank Mode"
 			bind:bindValue={localStorageObject.transferMode}
-			items={['Bank', 'Junk']}
-		/>
+			items={['Bank', 'Junk']} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Orphans</h2>
 		<FormInput label="Deck" bind:bindValue={localStorageObject.orphansDeck} id="orphansDeck" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Login Sheet</h2>
@@ -344,8 +320,7 @@
 			id="mode"
 			label="Mode"
 			bind:bindValue={localStorageObject.loginSheetMode}
-			items={['UploadFlag', 'SubmitIssue']}
-		/>
+			items={['UploadFlag', 'SubmitIssue']} />
 		<div class="flex max-w-lg justify-center">
 			<Button class="mx-auto w-max" variant="default" type="submit">Submit</Button>
 		</div>

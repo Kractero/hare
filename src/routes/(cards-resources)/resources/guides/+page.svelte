@@ -5,10 +5,10 @@
 	import type { PageData } from './$types'
 
 	interface Props {
-		data: PageData;
+		data: PageData
 	}
 
-	let { data }: Props = $props();
+	let { data }: Props = $props()
 </script>
 
 <Head title={'Hare - Guides'} description={'Various guides for NationStates cards.'} />

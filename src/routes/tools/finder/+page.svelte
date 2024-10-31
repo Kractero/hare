@@ -214,8 +214,7 @@
 </p>
 <p class="text-xs mb-16">
 	Password input for gifting is optional and will be disabled if the puppet list includes a comma for nation,password.
-</p>`}
-/>
+</p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
@@ -244,8 +243,7 @@
 				bind:downloadable
 				bind:content={junkHtml}
 				type="html"
-				name="Finder"
-			>
+				name="Finder">
 				<OpenButton bind:counter bind:progress bind:openNewLinkArr />
 			</Buttons>
 		</div>

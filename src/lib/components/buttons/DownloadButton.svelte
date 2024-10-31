@@ -18,5 +18,4 @@
 	class="myx-auto w-max bg-lime-400 text-primary-foreground hover:bg-lime-400/80 disabled:bg-lime-800 disabled:text-secondary-foreground"
 	disabled={!downloadable}
 	onclick={() => handleDownload(name, type === 'txt' || Array.isArray(content) ? content : htmlContent(content, name))}
-	>Download</Button
->
+	>Download</Button>

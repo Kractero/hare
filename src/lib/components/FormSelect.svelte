@@ -24,15 +24,13 @@
 		><p>{label}</p>
 		{#if subTitle}
 			<p class="text-xs">{subTitle}</p>
-		{/if}</Label
-	>
+		{/if}</Label>
 	<Select.Root
 		type={'single'}
 		onValueChange={v => {
 			bindValue = v && v
 		}}
-		value={bindValue}
-	>
+		value={bindValue}>
 		<Select.Trigger class="w-[206px] flex-1 justify-end sm:max-w-[221px] data-[placeholder]:[&>span]:text-primary">
 			<span class="pr-2">{bindValue}</span>
 		</Select.Trigger>

@@ -113,8 +113,7 @@
 
 <ToolContent
 	toolTitle="Signal"
-	caption="Given card ids, provide decks, collections, or check asks for bids for what's missing. Sideroca compatible."
-/>
+	caption="Given card ids, provide decks, collections, or check asks for bids for what's missing. Sideroca compatible." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
@@ -124,8 +123,7 @@
 			id="mode"
 			label="Behavior"
 			bind:bindValue={mode}
-			items={['Collection', 'Deck', 'Asks', 'Bids', 'Asks and Bids']}
-		/>
+			items={['Collection', 'Deck', 'Asks', 'Bids', 'Asks and Bids']} />
 		{#if mode === 'Asks' || mode === 'Bids' || mode === 'Asks and Bids'}
 			<FormInput label={`Nation`} bind:bindValue={asksBidsNation} id="nation" required={true} />
 		{:else}
@@ -138,8 +136,7 @@
 			downloadButton={true}
 			bind:downloadable
 			bind:content
-			name="Queries"
-		/>
+			name="Queries" />
 	</form>
 	<Terminal bind:progress />
 </div>

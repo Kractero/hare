@@ -41,8 +41,7 @@
 			}}
 			class="mx-auto w-max"
 			variant="destructive"
-			type="button">Stop</Button
-		>
+			type="button">Stop</Button>
 	{/if}
 	{@render children?.()}
 </div>

@@ -413,8 +413,7 @@
 </p>
 <h2 class="text-xl mb-16">
 	Hare does not junk cards, it generates a html file of cards to junk.
-</h2>`}
-/>
+</h2>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
@@ -439,8 +438,7 @@
 			bind:bindValue={skipseason}
 			id="skipseason"
 			items={["Don't Skip", 'Skip Offseasons', '1', '2']}
-			label="Skip Seasons?"
-		/>
+			label="Skip Seasons?" />
 		<FormCheckbox bind:checked={skipexnation} id="skipexnation" label="Skip Exnation" />
 		<FormInput label={'Maximum Bank Threshold'} bind:bindValue={jdjtransfer} id="jdjtransfer" required={true} />
 		<FormSelect bind:bindValue={mode} id="mode" items={['Gift', 'Sell', 'Exclude']} label="Behavior" />
@@ -451,8 +449,7 @@
 			downloadButton={true}
 			bind:downloadable
 			bind:content={junkHtml}
-			name="junkDaJunk"
-		>
+			name="junkDaJunk">
 			<OpenButton bind:counter bind:progress bind:openNewLinkArr />
 		</Buttons>
 	</form>

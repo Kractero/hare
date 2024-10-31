@@ -92,8 +92,7 @@
 	originalBlurb="rewritten in JS for browser use by Kractero"
 	author="9003"
 	link="https://github.com/jmikk/Approval-List"
-	caption="Specify a proposal and get all delegates that are not approving it."
-/>
+	caption="Specify a proposal and get all delegates that are not approving it." />
 
 <div class="flex flex-col justify-between gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
@@ -102,8 +101,7 @@
 			id="council"
 			label="Council"
 			bind:bindValue={council}
-			items={['General Assembly', 'Security Council']}
-		/>
+			items={['General Assembly', 'Security Council']} />
 		<FormInput bind:bindValue={proposalid} id="proposalid" label="Proposal ID" required={true} />
 		<Buttons downloadButton={true} bind:downloadable bind:content type="html" name="Approvals" />
 	</form>
