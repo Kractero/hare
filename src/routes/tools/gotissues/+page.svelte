@@ -173,7 +173,7 @@
 			<FormSelect
 				id="minPack"
 				label="Minimum Floor"
-				subTitle={`Open packs on a nation up to the floor of ${minPack} packs. Keep at least ${minPack} packs.`}
+				subTitle={`Open ${packCount} packs on a nation up to the floor of ${minPack} packs. Always keep at least ${minPack} packs.`}
 				bind:bindValue={minPack}
 				items={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
 		{/if}
