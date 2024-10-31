@@ -103,9 +103,10 @@
 					}
 				}
 				if (mode === 'Both' || mode === 'Packs') {
-					if (packs > Number(minPack)) {
+					if (packs >= Number(minPack)) {
 						packCount = packCount === 'All' ? '9' : packCount
-						for (let i = 0; i < Math.min(packs, Number(packCount)); i++) {
+						const packsToOpen = Math.min(packs - Number(minPack), Number(packCount))
+						for (let i = 0; i < packsToOpen; i++) {
 							if (mode === 'Packs') {
 								openNewLinkArr = [
 									...openNewLinkArr,
@@ -116,13 +117,11 @@
 									`${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`
 								)
 							}
-							packContent += `<tr><td><p>${
-								packsCount + 1
-							}</p></td><td><p><a target="_blank" href="${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1">Link to Pack</a></p></td></tr>\n`
+							packContent += `<tr><td><p>${packsCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1">Link to Pack</a></p></td></tr>\n`
 							packsCount++
 						}
 					} else {
-						progress += `<p class="text-blue-400">${nation} has less packs than ${minPack}, skipping!`
+						progress += `<p class="text-blue-400">${nation} has less packs than ${minPack}, skipping!</p>`
 					}
 				}
 			} catch (err) {
@@ -175,8 +174,8 @@
 		{#if mode === 'Packs' || mode === 'Both'}
 			<FormSelect
 				id="minPack"
-				label="Minimum Pack Count"
-				subTitle={`Open ${packCount} packs if > ${minPack} packs`}
+				label="Minimum Floor"
+				subTitle={`Open packs on a nation up to the floor of ${minPack} packs. Keep at least ${minPack} packs.`}
 				bind:bindValue={minPack}
 				items={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']}
 			/>
