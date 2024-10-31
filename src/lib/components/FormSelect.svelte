@@ -33,7 +33,9 @@
 		}}
 		value={bindValue}
 	>
-		<Select.Trigger class="w-[206px] flex-1 justify-end sm:max-w-[221px] data-[placeholder]:[&>span]:text-primary" />
+		<Select.Trigger class="w-[206px] flex-1 justify-end sm:max-w-[221px] data-[placeholder]:[&>span]:text-primary">
+			<span class="pr-2">{bindValue}</span>
+		</Select.Trigger>
 		<Select.Content class="text-left">
 			{#each items as item, i}
 				{#if isTheme(item)}
