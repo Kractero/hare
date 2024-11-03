@@ -251,7 +251,7 @@
 			id="skipseason"
 			items={["Don't Skip", 'Skip Offseasons', '1', '2']}
 			label="Skip Seasons?" />
-		<FormCheckbox bind:checked={localStorageObject.skipexnation} id="skipexnation" label="Skip Exnation" />
+		<FormCheckbox bind:checked={localStorageObject.junkdajunkExnation} id="skipexnation" label="Skip Exnation" />
 		<FormInput
 			label="Maximum Bank Threshold"
 			bind:bindValue={localStorageObject.junkdajunkTransferBank}
