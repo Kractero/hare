@@ -178,7 +178,7 @@
 			nation = nation.toLowerCase().replaceAll(' ', '_')
 			try {
 				progress += `<p class="font-semibold">Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`
-				const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck+info`, main)
+				const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck+info`, main)
 				let nationalBank = xmlDocument.CARDS.INFO.BANK
 				if (Number(jdjtransfer) !== -1 && nationalBank >= Number(jdjtransfer)) {
 					progress += `<p>Skipping ${nation} as they exceed <span class="text-blue-400">${jdjtransfer}</span> bank.</p>`
@@ -194,7 +194,7 @@
 							break
 						}
 						const xmlDocument = await parseXML(
-							`${domain}/cgi-bin/api.cgi/?cardid=${id}&season=${season}&q=card+markets+info+owners`,
+							`${domain}/cgi-bin/api.cgi?cardid=${id}&season=${season}&q=card+markets+info+owners`,
 							main
 						)
 						const card: Card = xmlDocument.CARD
@@ -314,7 +314,7 @@
 								if (currentNationXPin) headers['X-Pin'] = currentNationXPin
 								else headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
 								const prepare = await fetch(
-									`${domain}/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftto}&mode=prepare&c=giftcard`,
+									`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftto}&mode=prepare&c=giftcard`,
 									{ headers: headers }
 								)
 								if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || ''
@@ -322,7 +322,7 @@
 								const xml = parser.parse(text)
 								token = xml.NATION.SUCCESS
 								const gift = await fetch(
-									`${domain}/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${giftto}&mode=execute&c=giftcard&token=${token}`,
+									`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftto}&mode=execute&c=giftcard&token=${token}`,
 									{
 										headers: {
 											'User-Agent': main,
@@ -332,7 +332,7 @@
 								)
 								if (gift.status === 200) {
 									let successfulGift = true
-									const verify = await parseXML(`${domain}/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main)
+									const verify = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck`, main)
 									let verifyCards: Array<Card> = verify.CARDS.DECK.CARD
 									verifyCards = verifyCards ? (Array.isArray(verifyCards) ? verifyCards : [verifyCards]) : []
 									if (verifyCards && verifyCards.length > 0) {

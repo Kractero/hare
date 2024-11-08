@@ -56,7 +56,7 @@
 			}
 			try {
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`
-				const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck+info`, main)
+				const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck+info`, main)
 				if (mode === 'Bank') {
 					let nationalBank = deckInfo.CARDS.INFO.BANK
 					if (nationalBank >= Number(transfer)) {

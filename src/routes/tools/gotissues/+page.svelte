@@ -75,7 +75,7 @@
 			try {
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`
 				const xmlObj = await parseXML(
-					`${domain}/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`,
+					`${domain}/cgi-bin/api.cgi?nation=${nation}&q=issues+packs`,
 					main,
 					nationSpecificPassword ? nationSpecificPassword : password?.replaceAll(' ', '_')
 				)
@@ -129,6 +129,7 @@
 			}
 		}
 		openNewLinkArr = [...openNewLinkArr, ...interimPacks]
+		console.log(openNewLinkArr)
 		issuesContent = issuesContent += packContent
 		progress += `<p>Finished processing ${puppetList.length} nations, equaling ${issuesCount} issues and ${packsCount} packs!</p>`
 		downloadable = true

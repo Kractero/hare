@@ -74,7 +74,7 @@
 
 			try {
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`
-				const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`, main)
+				const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck`, main)
 				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD
 				cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
 				const matches = toFind.map(matcher => matcher.split(','))
@@ -107,7 +107,7 @@
 										else headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
 
 										const prepare = await fetch(
-											`${domain}/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=prepare&c=giftcard`,
+											`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=prepare&c=giftcard`,
 											{ headers: headers }
 										)
 										if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || ''
@@ -117,7 +117,7 @@
 										token = xml.NATION.SUCCESS
 
 										const gift = await fetch(
-											`${domain}/cgi-bin/api.cgi/?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=execute&c=giftcard&token=${token}`,
+											`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=execute&c=giftcard&token=${token}`,
 											{
 												headers: {
 													'User-Agent': main,
@@ -128,10 +128,7 @@
 
 										if (gift.status === 200) {
 											let successfulGift = true
-											const verify = await parseXML(
-												`${domain}/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck`,
-												main
-											)
+											const verify = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck`, main)
 											let verifyCards: Array<Card> = verify.CARDS.DECK.CARD
 											verifyCards = verifyCards ? (Array.isArray(verifyCards) ? verifyCards : [verifyCards]) : []
 

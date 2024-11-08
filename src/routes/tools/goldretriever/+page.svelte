@@ -73,7 +73,7 @@
 			const nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
 			try {
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`
-				const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi/?nationname=${nation}&q=cards+deck+info`, main)
+				const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck+info`, main)
 				const deck = {
 					nation: nation,
 					bank: 0,
@@ -112,7 +112,7 @@
 
 				if (mode === 'Include') {
 					const issuesAndPacks = await parseXML(
-						`${domain}/cgi-bin/api.cgi/?nation=${nation}&q=issues+packs`,
+						`${domain}/cgi-bin/api.cgi?nation=${nation}&q=issues+packs`,
 						main,
 						nationSpecificPassword ? nationSpecificPassword : password.replaceAll(' ', '_')
 					)
