@@ -129,7 +129,6 @@
 			}
 		}
 		openNewLinkArr = [...openNewLinkArr, ...interimPacks]
-		console.log(openNewLinkArr)
 		issuesContent = issuesContent += packContent
 		progress += `<p>Finished processing ${puppetList.length} nations, equaling ${issuesCount} issues and ${packsCount} packs!</p>`
 		downloadable = true
