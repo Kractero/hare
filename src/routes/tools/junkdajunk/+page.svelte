@@ -11,12 +11,14 @@
 	import Rarities from '$lib/components/Rarities.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
+	import * as AlertDialog from '$lib/components/ui/alert-dialog'
 	import { parser, parseXML } from '$lib/helpers/parser'
 	import { beforeUnload, checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 	import type { Card } from '$lib/types'
 
 	const abortController = new AbortController()
 
+	let dialogOpen = $state(false)
 	let domain = ''
 	let progress = $state('')
 	let openNewLinkArr: Array<string> = $state([])
@@ -114,6 +116,10 @@
 	onDestroy(() => abortController.abort())
 
 	async function onSubmit(e: Event) {
+		if (downloadable) {
+			dialogOpen = true
+			return
+		}
 		e.preventDefault()
 		pushHistory(
 			`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ''}${owners ? `&owners=${owners}` : ''}${cardcount ? `&cardcount=${cardcount}` : ''}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ''}${flagwhitelist ? `&flags=${flagwhitelist.replaceAll('\n', ',')}` : ''}${finderlist ? `&ids=${finderlist.replaceAll('\n', ',')}` : ''}${skipseason ? `&skipseason=${skipseason}` : ''}${skipexnation ? `&skipexnation=${skipexnation}` : ''}`
@@ -143,11 +149,8 @@
 			progress += `<p>Whitelisting cards: ${toFind.map(flag => flag.trim()).join(', ')}</p>`
 		}
 		const findSplit = finderlist.split('\n').map(matcher => matcher.split(','))
-		if (skipseason.length > 0) {
-			progress += `<p>Skipping seasons:`
-			for (let i = 0; i < skipseason.length; i++) {
-				progress += `${i + 1} `
-			}
+		if (skipseason !== "Don't Skip") {
+			progress += `<p>Skipping seasons: ${skipseason}`
 		}
 		if (skipexnation === true) {
 			progress += `<p>Skipping s1 exnations</p>`
@@ -386,6 +389,27 @@
 		window.removeEventListener('beforeunload', beforeUnload)
 	}
 </script>
+
+<AlertDialog.Root bind:open={dialogOpen}>
+	<AlertDialog.Trigger />
+	<AlertDialog.Content>
+		<AlertDialog.Header>
+			<AlertDialog.Title>You have a downloadable junk sheet available.</AlertDialog.Title>
+			<AlertDialog.Description>
+				You have a downloadable junk sheet available and restarting will clear this sheet and restart.
+			</AlertDialog.Description>
+		</AlertDialog.Header>
+		<AlertDialog.Footer>
+			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+			<AlertDialog.Action
+				onclick={e => {
+					downloadable = false
+					dialogOpen = false
+					onSubmit(e)
+				}}>Continue</AlertDialog.Action>
+		</AlertDialog.Footer>
+	</AlertDialog.Content>
+</AlertDialog.Root>
 
 <ToolContent
 	toolTitle="JunkDaJunk"

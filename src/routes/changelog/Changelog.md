@@ -4,8 +4,9 @@
 
 ### Adjustments
 
-1. Finder, gotIssues, junkDaJunk
-   - Open available button moved to be near the start button.
+1. junkDaJunk
+   - Alert if downloadable output is present when clicking start again.
+   - Skip seasons output no longer iterates a string and makes up 10-15 seasons.
 
 ## 2024-10-26
 
