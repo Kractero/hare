@@ -1,5 +1,12 @@
 # Changelog
 
+## 2024-11-16
+
+### Adjustments
+
+1. Finder, gotIssues, junkDaJunk
+   - Open available button moved to be near the start button.
+
 ## 2024-10-26
 
 ### Features

@@ -29,6 +29,7 @@
 
 <div class="mx-auto mb-4 flex max-w-lg flex-wrap justify-center gap-x-2 gap-y-4">
 	<Button disabled={stoppable} class="mx-auto w-max" variant="default" type="submit">Start</Button>
+	{@render children?.()}
 	{#if downloadButton === true}
 		<DownloadButton bind:downloadable bind:content {type} {name} />
 	{/if}
@@ -43,5 +44,4 @@
 			variant="destructive"
 			type="button">Stop</Button>
 	{/if}
-	{@render children?.()}
 </div>
