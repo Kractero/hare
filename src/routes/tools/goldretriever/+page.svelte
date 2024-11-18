@@ -63,7 +63,7 @@
 		for (let i = 0; i < puppetList.length; i++) {
 			let nation = puppetList[i]
 			let nationSpecificPassword = ''
-			if (mode === 'Include' && nation.includes(',')) {
+			if (nation.includes(',')) {
 				nation = puppetList[i].split(',')[0]
 				nationSpecificPassword = puppetList[i].split(',')[1]
 			}

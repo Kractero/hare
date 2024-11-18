@@ -1,5 +1,12 @@
 # Changelog
 
+## 2024-11-18
+
+### Adjustments
+
+1. Gold Retriever
+   - Always split nation names for nation,password format for config storage consistency.
+
 ## 2024-11-16
 
 ### Adjustments
