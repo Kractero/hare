@@ -28,8 +28,8 @@
 				const nation = document.querySelector('body').getAttribute('data-nname')
 				const baseUrl = `https://www.nationstates.net/container=${nation}/nation=${nation}/page=show_dilemma/dilemma=${nextIssue}/template-overall=none`
 				const newUrl = updatedRemainingIssues
-					? `${baseUrl}?remainingIssues=${updatedRemainingIssues}&generated_by=Hare_gotIssues__author_main_nation_${nation}__usedBy_${nation}`
-					: `${baseUrl}?generated_by=Hare_gotIssues__author_main_nation_${nation}__usedBy_${nation}`
+					? `${baseUrl}?remainingIssues=${updatedRemainingIssues}&generated_by=Hare_gotIssues__author_main_nation_Kractero__usedBy_${nation}`
+					: `${baseUrl}?generated_by=Hare_gotIssues__author_main_nation_Kractero__usedBy_${nation}`
 
 				window.location.href = newUrl
 			}
