@@ -28,6 +28,7 @@
 	let packCount = $state('All')
 	let minPack = $state('0')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
+	let testmode: string | null
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -39,10 +40,12 @@
 		packCount =
 			$page.url.searchParams.get('packCount') || (localStorage.getItem('gotissuesPackCount') as string) || 'All'
 		minPack = $page.url.searchParams.get('minPack') || (localStorage.getItem('gotissuesMinPack') as string) || '0'
+		testmode = $page.url.searchParams.get('test')
 	})
 	onDestroy(() => abortController.abort())
 
 	async function onSubmit(e: Event) {
+		if (testmode) console.log(testmode)
 		e.preventDefault()
 		pushHistory(
 			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}&minPack=${minPack}` : `&count=${issueCount}&packCount=${packCount}&minPack=${minPack}`}`
@@ -89,16 +92,34 @@
 						let issueIds: Array<string> = []
 						if (!Array.isArray(issues)) issueIds.push(issues['@_id'])
 						else issueIds = issues.map(issue => issue['@_id'])
-						for (let i = 0; i < Math.min(issueIds.length, Number(issueCount)); i++) {
-							let issue = issueIds[i]
-							openNewLinkArr = [
-								...openNewLinkArr,
-								`${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}`,
-							]
+
+						if (testmode === 'test') {
+							const firstIssue = issueIds[0]
+							const remainingIssues = issueIds.slice(1).join(',')
+
+							const singleLink = `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${firstIssue}/template-overall=none?${
+								remainingIssues ? `remainingIssues=${remainingIssues}&` : ''
+							}${urlParameters('gotIssues', main)}`
+
+							openNewLinkArr = [...openNewLinkArr, singleLink]
+
 							issuesContent += `<tr><td><p>${
 								issuesCount + 1
-							}</p></td><td><p><a target="_blank" href="${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}">Link to Issue</a></p></td></tr>\n`
-							issuesCount++
+							}</p></td><td><p><a target="_blank" href="${singleLink}">Link to Issue</a></p></td></tr>\n`
+
+							issuesCount += issueIds.length
+						} else {
+							for (let i = 0; i < Math.min(issueIds.length, Number(issueCount)); i++) {
+								let issue = issueIds[i]
+								openNewLinkArr = [
+									...openNewLinkArr,
+									`${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}`,
+								]
+								issuesContent += `<tr><td><p>${
+									issuesCount + 1
+								}</p></td><td><p><a target="_blank" href="${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}">Link to Issue</a></p></td></tr>\n`
+								issuesCount++
+							}
 						}
 					}
 				}
@@ -106,19 +127,34 @@
 					if (packs >= Number(minPack)) {
 						packCount = packCount === 'All' ? '9' : packCount
 						const packsToOpen = Math.min(packs - Number(minPack), Number(packCount))
-						for (let i = 0; i < packsToOpen; i++) {
+						if (testmode === 'packtest') {
+							const remainingPacks = packsToOpen - 1
+
+							const singleLink = `${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&${
+								remainingPacks > 0 ? `remainingPacks=${remainingPacks}` : ''
+							}&autoclose=1`
 							if (mode === 'Packs') {
-								openNewLinkArr = [
-									...openNewLinkArr,
-									`${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`,
-								]
+								openNewLinkArr = [...openNewLinkArr, singleLink]
 							} else {
-								interimPacks.push(
-									`${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`
-								)
+								interimPacks.push(singleLink)
 							}
 							packContent += `<tr><td><p>${packsCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1">Link to Pack</a></p></td></tr>\n`
-							packsCount++
+							packsCount += packsToOpen
+						} else {
+							for (let i = 0; i < packsToOpen; i++) {
+								if (mode === 'Packs') {
+									openNewLinkArr = [
+										...openNewLinkArr,
+										`${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`,
+									]
+								} else {
+									interimPacks.push(
+										`${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`
+									)
+								}
+								packContent += `<tr><td><p>${packsCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1">Link to Pack</a></p></td></tr>\n`
+								packsCount++
+							}
 						}
 					} else {
 						progress += `<p class="text-blue-400">${nation} has less packs than ${minPack}, skipping!</p>`
