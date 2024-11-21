@@ -11,8 +11,6 @@
 ;(function () {
 	'use strict'
 
-	if (document.querySelector('.deck-loot-box')) return
-
 	const remainingIssues = localStorage.getItem('ns_remainingIssues')?.split(',') || []
 
 	if (remainingIssues.length > 0) {
