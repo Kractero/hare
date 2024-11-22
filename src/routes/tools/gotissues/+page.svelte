@@ -48,7 +48,7 @@
 		if (testmode) console.log(testmode)
 		e.preventDefault()
 		pushHistory(
-			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}&minPack=${minPack}` : `&count=${issueCount}&packCount=${packCount}&minPack=${minPack}`}${testmode ? `test=${testmode}` : ''}`
+			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}&minPack=${minPack}` : `&count=${issueCount}&packCount=${packCount}&minPack=${minPack}`}${testmode ? `&test=${testmode}` : ''}`
 		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -103,11 +103,11 @@
 
 							openNewLinkArr = [...openNewLinkArr, singleLink]
 
-							issuesCount += issueIds.length
-
 							issuesContent += `<tr><td><p>${
-								issuesCount
+								issuesCount + 1
 							}</p></td><td><p><a target="_blank" href="${singleLink}">Link to Issue</a></p></td></tr>\n`
+
+							issuesCount += issueIds.length
 						} else {
 							for (let i = 0; i < Math.min(issueIds.length, Number(issueCount)); i++) {
 								let issue = issueIds[i]
@@ -127,20 +127,23 @@
 					if (packs >= Number(minPack)) {
 						packCount = packCount === 'All' ? '9' : packCount
 						const packsToOpen = Math.min(packs - Number(minPack), Number(packCount))
+						console.log(packsToOpen)
 						if (testmode === 'packtest') {
-							const remainingPacks = packsToOpen - 1
-							const singleLink = `${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&${
-								remainingPacks > 0 ? `remainingPacks=${remainingPacks}` : ''
-							}&autoclose=1`
-							if (mode === 'Packs') {
-								openNewLinkArr = [...openNewLinkArr, singleLink]
-							} else {
-								interimPacks.push(singleLink)
+							if (packsToOpen > 0) {
+								const remainingPacks = packsToOpen - 1
+								const singleLink = `${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}${
+									remainingPacks > 0 ? `&remainingPacks=${remainingPacks}` : ''
+								}&autoclose=1`
+								if (mode === 'Packs') {
+									openNewLinkArr = [...openNewLinkArr, singleLink]
+								} else {
+									interimPacks.push(singleLink)
+								}
+
+								packContent += `<tr><td><p>${packsCount + 1}</p></td><td><p><a target="_blank" href=${singleLink}>Link to Pack</a></p></td></tr>\n`
+
+								packsCount += packsToOpen
 							}
-
-							packsCount += packsToOpen
-
-							packContent += `<tr><td><p>${packsCount}</p></td><td><p><a target="_blank" href=${singleLink}>Link to Pack</a></p></td></tr>\n`
 						} else {
 							for (let i = 0; i < packsToOpen; i++) {
 								if (mode === 'Packs') {
