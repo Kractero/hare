@@ -137,8 +137,10 @@
 							} else {
 								interimPacks.push(singleLink)
 							}
-							packContent += `<tr><td><p>${packsCount + 1}</p></td><td><p><a target="_blank" href=${singleLink}>Link to Pack</a></p></td></tr>\n`
+
 							packsCount += packsToOpen
+
+							packContent += `<tr><td><p>${packsCount}</p></td><td><p><a target="_blank" href=${singleLink}>Link to Pack</a></p></td></tr>\n`
 						} else {
 							for (let i = 0; i < packsToOpen; i++) {
 								if (mode === 'Packs') {
