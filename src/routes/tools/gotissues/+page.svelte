@@ -48,7 +48,7 @@
 		if (testmode) console.log(testmode)
 		e.preventDefault()
 		pushHistory(
-			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}&minPack=${minPack}` : `&count=${issueCount}&packCount=${packCount}&minPack=${minPack}`}`
+			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}&minPack=${minPack}` : `&count=${issueCount}&packCount=${packCount}&minPack=${minPack}`}${testmode && `test=${testmode}`}`
 		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -129,7 +129,6 @@
 						const packsToOpen = Math.min(packs - Number(minPack), Number(packCount))
 						if (testmode === 'packtest') {
 							const remainingPacks = packsToOpen - 1
-
 							const singleLink = `${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&${
 								remainingPacks > 0 ? `remainingPacks=${remainingPacks}` : ''
 							}&autoclose=1`
@@ -138,7 +137,7 @@
 							} else {
 								interimPacks.push(singleLink)
 							}
-							packContent += `<tr><td><p>${packsCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1">Link to Pack</a></p></td></tr>\n`
+							packContent += `<tr><td><p>${packsCount + 1}</p></td><td><p><a target="_blank" href=${singleLink}>Link to Pack</a></p></td></tr>\n`
 							packsCount += packsToOpen
 						} else {
 							for (let i = 0; i < packsToOpen; i++) {
