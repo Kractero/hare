@@ -48,7 +48,7 @@
 		if (testmode) console.log(testmode)
 		e.preventDefault()
 		pushHistory(
-			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}&minPack=${minPack}` : `&count=${issueCount}&packCount=${packCount}&minPack=${minPack}`}${testmode && `test=${testmode}`}`
+			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}&minPack=${minPack}` : `&count=${issueCount}&packCount=${packCount}&minPack=${minPack}`}${testmode ? `test=${testmode}` : ''}`
 		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -103,11 +103,11 @@
 
 							openNewLinkArr = [...openNewLinkArr, singleLink]
 
-							issuesContent += `<tr><td><p>${
-								issuesCount + 1
-							}</p></td><td><p><a target="_blank" href="${singleLink}">Link to Issue</a></p></td></tr>\n`
-
 							issuesCount += issueIds.length
+
+							issuesContent += `<tr><td><p>${
+								issuesCount
+							}</p></td><td><p><a target="_blank" href="${singleLink}">Link to Issue</a></p></td></tr>\n`
 						} else {
 							for (let i = 0; i < Math.min(issueIds.length, Number(issueCount)); i++) {
 								let issue = issueIds[i]
