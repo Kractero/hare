@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name         test autocloser
-// @version      1.0
+// @version      1.1
+// @author		 Kractero
 // @match        *://*/*autoclose=1
 // @match        https://*.nationstates.net/*page=enact_dilemma*
 // @exclude      https://*.nationstates.net/*page=show_dilemma*
@@ -14,8 +15,11 @@
 	const remainingIssues = localStorage.getItem('ns_remainingIssues')?.split(',') || []
 
 	if (remainingIssues.length > 0) {
-		document.addEventListener('keyup', function (ev) {
+		const handleKeyUp = function (ev) {
 			if (ev.key === 'Enter' && !ev.repeat) {
+				// Remove the event listener after it is triggered
+				document.removeEventListener('keyup', handleKeyUp)
+
 				const nextIssue = remainingIssues.shift()
 				const updatedRemainingIssues = remainingIssues.join(',')
 
@@ -33,7 +37,9 @@
 
 				window.location.href = newUrl
 			}
-		})
+		}
+
+		document.addEventListener('keyup', handleKeyUp)
 	} else {
 		window.close()
 	}
