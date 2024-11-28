@@ -64,6 +64,7 @@
 		let packsCount = 0
 		let packContent = ''
 		const interimPacks = []
+		mode = mode.charAt(0).toUpperCase() + mode.slice(1)
 		for (let i = 0; i < puppetList.length; i++) {
 			let nation = puppetList[i]
 			let nationSpecificPassword = ''
@@ -94,8 +95,9 @@
 						else issueIds = issues.map(issue => issue['@_id'])
 
 						if (testmode === 'test') {
-							const firstIssue = issueIds[0]
-							const remainingIssues = issueIds.slice(1).join(',')
+							const limitedIssues = issueIds.slice(0, Number(issueCount))
+							const firstIssue = limitedIssues[0]
+							const remainingIssues = limitedIssues.slice(1).join(',')
 
 							const singleLink = `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${firstIssue}/template-overall=none?${
 								remainingIssues ? `remainingIssues=${remainingIssues}&` : ''
@@ -107,7 +109,7 @@
 								issuesCount + 1
 							}</p></td><td><p><a target="_blank" href="${singleLink}">Link to Issue</a></p></td></tr>\n`
 
-							issuesCount += issueIds.length
+							issuesCount += limitedIssues.length
 						} else {
 							for (let i = 0; i < Math.min(issueIds.length, Number(issueCount)); i++) {
 								let issue = issueIds[i]
@@ -127,38 +129,19 @@
 					if (packs >= Number(minPack)) {
 						packCount = packCount === 'All' ? '9' : packCount
 						const packsToOpen = Math.min(packs - Number(minPack), Number(packCount))
-						console.log(packsToOpen)
-						if (testmode === 'packtest') {
-							if (packsToOpen > 0) {
-								const remainingPacks = packsToOpen - 1
-								const singleLink = `${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}${
-									remainingPacks > 0 ? `&remainingPacks=${remainingPacks}` : ''
-								}&autoclose=1`
-								if (mode === 'Packs') {
-									openNewLinkArr = [...openNewLinkArr, singleLink]
-								} else {
-									interimPacks.push(singleLink)
-								}
-
-								packContent += `<tr><td><p>${packsCount + 1}</p></td><td><p><a target="_blank" href=${singleLink}>Link to Pack</a></p></td></tr>\n`
-
-								packsCount += packsToOpen
+						for (let i = 0; i < packsToOpen; i++) {
+							if (mode === 'Packs') {
+								openNewLinkArr = [
+									...openNewLinkArr,
+									`${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`,
+								]
+							} else {
+								interimPacks.push(
+									`${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`
+								)
 							}
-						} else {
-							for (let i = 0; i < packsToOpen; i++) {
-								if (mode === 'Packs') {
-									openNewLinkArr = [
-										...openNewLinkArr,
-										`${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`,
-									]
-								} else {
-									interimPacks.push(
-										`${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`
-									)
-								}
-								packContent += `<tr><td><p>${packsCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1">Link to Pack</a></p></td></tr>\n`
-								packsCount++
-							}
+							packContent += `<tr><td><p>${packsCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1">Link to Pack</a></p></td></tr>\n`
+							packsCount++
 						}
 					} else {
 						progress += `<p class="text-blue-400">${nation} has less packs than ${minPack}, skipping!</p>`
