@@ -122,14 +122,12 @@
 		<thead>
 			<tr>
 				<th>#</th>
-			</tr>
-			{#each validHeaders as header}
-				<tr>
+				{#each validHeaders as header}
 					<th
 						on:click={() => sort(`${header}`)}
 						class={`h-12 p-2 font-semibold md:p-4 ${header.includes('S') ? 'underline' : ''}`}>{header}</th>
-				</tr>
-			{/each}
+				{/each}
+			</tr>
 		</thead>
 		<tbody>
 			{#each json as nation}
