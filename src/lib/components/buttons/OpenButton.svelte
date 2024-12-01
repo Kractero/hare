@@ -11,7 +11,7 @@
 </script>
 
 <Button
-	disabled={!progress}
+	disabled={!progress || openNewLinkArr.length === 0}
 	type="button"
 	variant={'default'}
 	onclick={() => {

@@ -97,19 +97,22 @@
 						if (testmode === 'test') {
 							const limitedIssues = issueIds.slice(0, Number(issueCount))
 							const firstIssue = limitedIssues[0]
-							const remainingIssues = limitedIssues.slice(1).join(',')
 
-							const singleLink = `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${firstIssue}/template-overall=none?${
-								remainingIssues ? `remainingIssues=${remainingIssues}&` : ''
-							}${urlParameters('gotIssues', main)}`
+							if (firstIssue) {
+								const remainingIssues = limitedIssues.slice(1).join(',')
 
-							openNewLinkArr = [...openNewLinkArr, singleLink]
+								const singleLink = `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${firstIssue}/template-overall=none?${
+									remainingIssues ? `remainingIssues=${remainingIssues}&` : ''
+								}${urlParameters('gotIssues', main)}`
 
-							issuesContent += `<tr><td><p>${
-								issuesCount + 1
-							}</p></td><td><p><a target="_blank" href="${singleLink}">Link to Issue</a></p></td></tr>\n`
+								openNewLinkArr = [...openNewLinkArr, singleLink]
 
-							issuesCount += limitedIssues.length
+								issuesContent += `<tr><td><p>${
+									issuesCount + 1
+								}</p></td><td><p><a target="_blank" href="${singleLink}">Link to Issue</a></p></td></tr>\n`
+
+								issuesCount += limitedIssues.length
+							}
 						} else {
 							for (let i = 0; i < Math.min(issueIds.length, Number(issueCount)); i++) {
 								let issue = issueIds[i]
