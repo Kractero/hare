@@ -74,6 +74,7 @@
 			try {
 				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`
 				const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck+info`, main)
+
 				const deck = {
 					nation: nation,
 					bank: 0,
@@ -96,6 +97,11 @@
 							categoryCounts[category] = 1
 						}
 					}
+				}
+
+				if (!deckInfo.CARDS.INFO) {
+					progress += `<p class="text-blue-400">Error processing ${nation}, likely not a real nation</p>`
+					continue
 				}
 				deck.bank = deckInfo.CARDS.INFO.BANK
 				deck.deckValue = deckInfo.CARDS.INFO.DECK_VALUE
