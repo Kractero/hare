@@ -190,6 +190,13 @@
 				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD
 				cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
 				if (cards && cards.length > 0 && cards.length > Number(cardcount)) {
+					const originalCardCounts: { [key: string]: number } = cards.reduce(
+						(counts, card) => {
+							counts[card.CARDID] = (counts[card.CARDID] || 0) + 1
+							return counts
+						},
+						{} as { [key: string]: number }
+					)
 					for (let i = 0; i < cards.length; i++) {
 						const id = cards[i].CARDID
 						const season = cards[i].SEASON
@@ -338,29 +345,40 @@
 									const verify = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck`, main)
 									let verifyCards: Array<Card> = verify.CARDS.DECK.CARD
 									verifyCards = verifyCards ? (Array.isArray(verifyCards) ? verifyCards : [verifyCards]) : []
+
 									if (verifyCards && verifyCards.length > 0) {
-										let ids = verifyCards.map(card => card.CARDID)
-										for (let i = 0; i < ids.length; i++) {
-											if (ids[i] === id) {
-												successfulGift = false
-												interimSells.push(
-													`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('junkDaJunk', main)}&giftto=${giftto}`
-												)
-												sellContent += `<tr><td><p>${nation} | ${failedGiftCount + 1} (${currSellCard})</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('junkDaJunk', main)}&giftto=${giftto}">Link to Card</a></p></td></tr>\n`
-												currSellCard = currSellCard + 1
-												progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftto}`
-												failedGiftCount++
-											}
+										const verifyCardCounts: { [key: string]: number } = verifyCards.reduce(
+											(counts, card) => {
+												counts[card.CARDID] = (counts[card.CARDID] || 0) + 1
+												return counts
+											},
+											{} as { [key: string]: number }
+										)
+
+										if (!(id in verifyCardCounts) || verifyCardCounts[id] < originalCardCounts[id]) {
+											successfulGift = true
+										} else {
+											successfulGift = false
+											openNewLinkArr = [
+												...openNewLinkArr,
+												`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}&giftto=${giftto}`,
+											]
+											junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}&giftto=${giftto}">Link to Card</a></p></td></tr>\n`
+											progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftto}`
+											failedGiftCount++
 										}
 									}
-									if (successfulGift) progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftto}`
+									if (successfulGift)
+										progress += `<p>${i + 1}/${
+											cards.length
+										} -> <span class="text-green-400">${nation} gifted ${id} to ${giftto}</span></p>`
 								} else {
 									progress += `<p>${i + 1}/${
 										cards.length
-									} -> <span class="text-red-400">Failed to gift ${id} to ${giftto}</span>`
+									} -> <span class="text-red-400">${nation} failed to gift ${id} to ${giftto}</span></p>`
 								}
 							} else {
-								progress += `<p>${i + 1}/${cards.length} -> Skipping ${id} - ${reason}!`
+								progress += `<p>${i + 1}/${cards.length} -> Skipping ${id} - ${reason}!</p>`
 								if (mode === 'Sell') {
 									interimSells.push(
 										`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}`
@@ -375,8 +393,8 @@
 					}
 				} else {
 					if (cards && cards.length > 0 && cardcount)
-						progress += `<p class="text-blue-400">${nation} has less cards than ${cardcount}, skipping!`
-					else progress += `<p class="text-blue-400">It is likely ${nation} has 0 cards, skipping!`
+						progress += `<p class="text-blue-400">${nation} has less cards than ${cardcount}, skipping!</p>`
+					else progress += `<p class="text-blue-400">It is likely ${nation} has 0 cards, skipping!</p>`
 				}
 			} catch (err) {
 				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
@@ -450,6 +468,13 @@
 		<FormTextArea bind:bindValue={flagwhitelist} label={'Flag Whitelist'} id="flags" />
 		<FormInput label={'Card Count Threshold'} bind:bindValue={cardcount} id="cardcount" />
 		<FormInput label={'Owner Count Threshold'} bind:bindValue={owners} id="owners" />
+		<!-- {#if mode === 'Sell' || mode === 'Exclude'}
+			<FormInput
+				label={'Gift Override'}
+				subTitle="Always gift over this (optional)"
+				bind:bindValue={giftOverride}
+				id="giftoverride" />
+		{/if} -->
 		<div class="flex max-w-lg justify-between gap-4">
 			<p class="w-24">Rarity Market Value Threshold</p>
 			<Rarities bind:rarities={raritiesMV} />
