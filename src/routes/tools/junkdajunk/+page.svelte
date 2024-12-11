@@ -364,7 +364,9 @@
 												`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}&giftto=${giftto}`,
 											]
 											junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}&giftto=${giftto}">Link to Card</a></p></td></tr>\n`
-											progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftto}`
+											progress += `<p>${i + 1}/${
+												cards.length
+											} -> <span class="text-red-400">${nation} failed to gift ${id} to ${giftto}</span></p>`
 											failedGiftCount++
 										}
 									}
