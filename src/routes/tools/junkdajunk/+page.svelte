@@ -283,10 +283,10 @@
 							junk = false
 							reason = `<span class="text-blue-400">has high bid</span>`
 						}
-						if (parseFloat(marketValue) > 10) {
-							junk = false
-							reason = `<span class="text-blue-400">MV over 10</span>`
-						}
+						// if (parseFloat(marketValue) > 10) {
+						// 	junk = false
+						// 	reason = `<span class="text-blue-400">MV over 10</span>`
+						// }
 						if (!region && skipexnation) {
 							junk = false
 							reason = `<span class="text-blue-400">S1 exnation</span>`
@@ -308,6 +308,7 @@
 							} (${currCard + 1})</p></td><td><p><a target="_blank" href="${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1">Link to Card</a></p></td></tr>\n`
 							currCard = currCard + 1
 						} else {
+							progress += `<p>${i + 1}/${cards.length} -> Gifting ${id} - ${reason}!</p>`
 							if (mode === 'Gift') {
 								let giftto = giftee
 								findSplit.forEach(findid => {
