@@ -308,7 +308,6 @@
 							} (${currCard + 1})</p></td><td><p><a target="_blank" href="${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1">Link to Card</a></p></td></tr>\n`
 							currCard = currCard + 1
 						} else {
-							progress += `<p>${i + 1}/${cards.length} -> Gifting ${id} - ${reason}!</p>`
 							if (mode === 'Gift') {
 								let giftto = giftee
 								findSplit.forEach(findid => {
@@ -367,18 +366,18 @@
 											junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}&giftto=${giftto}">Link to Card</a></p></td></tr>\n`
 											progress += `<p>${i + 1}/${
 												cards.length
-											} -> <span class="text-red-400">${nation} failed to gift ${id} to ${giftto}</span></p>`
+											} -> <span class="text-red-400">${nation} failed to gift ${id} to ${giftto} - ${reason}</span></p>`
 											failedGiftCount++
 										}
 									}
 									if (successfulGift)
 										progress += `<p>${i + 1}/${
 											cards.length
-										} -> <span class="text-green-400">${nation} gifted ${id} to ${giftto}</span></p>`
+										} -> <span class="text-green-400">${nation} gifted ${id} to ${giftto} - ${reason}</span></p>`
 								} else {
 									progress += `<p>${i + 1}/${
 										cards.length
-									} -> <span class="text-red-400">${nation} failed to gift ${id} to ${giftto}</span></p>`
+									} -> <span class="text-red-400">${nation} failed to gift ${id} to ${giftto} - ${reason}</span></p>`
 								}
 							} else {
 								progress += `<p>${i + 1}/${cards.length} -> Skipping ${id} - ${reason}!</p>`
