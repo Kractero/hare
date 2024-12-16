@@ -283,10 +283,10 @@
 							junk = false
 							reason = `<span class="text-blue-400">has high bid</span>`
 						}
-						// if (parseFloat(marketValue) > 10) {
-						// 	junk = false
-						// 	reason = `<span class="text-blue-400">MV over 10</span>`
-						// }
+						if (parseFloat(marketValue) > 10) {
+							junk = false
+							reason = `<span class="text-blue-400">MV over 10</span>`
+						}
 						if (!region && skipexnation) {
 							junk = false
 							reason = `<span class="text-blue-400">S1 exnation</span>`
