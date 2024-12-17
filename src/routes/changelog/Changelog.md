@@ -1,5 +1,27 @@
 # Changelog
 
+## 2024-12-16
+
+### Adjustments
+
+1. JunkDaJunk
+   - The removed mv > 10 check on the 12th has been reimplemented as just checking if the card is legendary. The reasoning behind its initial removal was to fallback to the rarity mv and rarity lowest bid thresholds, but I forgot legendaries weren't handled there.
+
+## 2024-12-12
+
+### Adjustments
+
+1. JunkDaJunk
+   - Large changes to the gifting function to match Finder's gifting, which is more up to date.
+   - Properly display the current card / total card when a gift is encountered, and also include the reason.
+
+## 2024-11-29
+
+### Fixes
+
+1. Legendary Tracker
+   - Fix malformed table headers.
+
 ## 2024-11-18
 
 ### Adjustments
