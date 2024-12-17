@@ -2,10 +2,20 @@
 
 ## 2024-12-16
 
+### Removals
+
+Removed Approval List ("Specify a proposal and get all delegates that are not approving it."), Statistics ("Provided WA scales and puppets, get the mean, median, and mode for each scale.), Wiz ("Query all your nations for their last logged in date.).
+
+Nobody ever used them, not worth the scroll space in settings.
+
 ### Adjustments
 
 1. JunkDaJunk
+
    - The removed mv > 10 check on the 12th has been reimplemented as just checking if the card is legendary. The reasoning behind its initial removal was to fallback to the rarity mv and rarity lowest bid thresholds, but I forgot legendaries weren't handled there.
+
+2. Rate of Change
+   - Adjusted ROC output to use spans and brs, so when you copy them it doesn't generate the annoying whitespace.
 
 ## 2024-12-12
 

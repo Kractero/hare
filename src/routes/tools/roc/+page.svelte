@@ -89,20 +89,18 @@
 		const fallers = ratesOfChange.slice().sort((a, b) => a[1] - b[1])
 		const risers = ratesOfChange.slice().sort((a, b) => b[1] - a[1])
 		progress = ''
-		progress += `<p class="font-bold">${specific ? 'Specific nations' : `TOP ${names.length}`} over ${days} days</p>`
+		progress += `<span class="font-bold">${specific ? 'Specific nations' : `TOP ${names.length}`} over ${days} days</span><br>`
 		for (let i = 0; i < ratesOfChange.length; i++) {
-			progress += `<p>${i + 1}/${ratesOfChange.length} ${ratesOfChange[i][0]} | Rate of Change: ${ratesOfChange[i][1]}</p>`
+			progress += `${i + 1}/${ratesOfChange.length} ${ratesOfChange[i][0]} | Rate of Change: ${ratesOfChange[i][1]}<br>`
 		}
-		progress += '\n'
 		if (names.length > 1) {
-			progress += `<p class="font-bold">Fastest growing of the ${specific ? 'specified nations' : `top ${names.length}`}</p>`
+			progress += `<span class="font-bold">Fastest growing of the ${specific ? 'specified nations' : `top ${names.length}`}</span><br>`
 			for (let i = 0; i < risers.length; i++) {
-				progress += `<p>${i + 1}/${risers.length} ${risers[i][0]} | Rate of Change: ${risers[i][1]}</p>`
+				progress += `${i + 1}/${risers.length} ${risers[i][0]} | Rate of Change: ${risers[i][1]}<br>`
 			}
-			progress += '\n'
-			progress += `<p class="font-bold">Slowest growing of the ${specific ? 'specified nations' : `top ${names.length}`}</p>`
+			progress += `<span class="font-bold">Slowest growing of the ${specific ? 'specified nations' : `top ${names.length}`}</span><br>`
 			for (let i = 0; i < fallers.length; i++) {
-				progress += `<p>${i + 1}/${fallers.length} ${fallers[i][0]} | Rate of Change: ${fallers[i][1]}</p>`
+				progress += `${i + 1}/${fallers.length} ${fallers[i][0]} | Rate of Change: ${fallers[i][1]}<br>`
 			}
 		}
 		stoppable = false
