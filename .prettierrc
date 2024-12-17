@@ -8,9 +8,22 @@
 	"bracketSameLine": true,
 	"printWidth": 120,
 	"semi": false,
-	"plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss", "@ianvs/prettier-plugin-sort-imports"],
-	"pluginSearchDirs": ["."],
-	"overrides": [{ "files": "*.svelte", "options": { "parser": "svelte" } }],
+	"plugins": [
+		"prettier-plugin-svelte",
+		"prettier-plugin-tailwindcss",
+		"@ianvs/prettier-plugin-sort-imports"
+	],
+	"pluginSearchDirs": [
+		"."
+	],
+	"overrides": [
+		{
+			"files": "*.svelte",
+			"options": {
+				"parser": "svelte"
+			}
+		}
+	],
 	"importOrder": [
 		"<BUILTIN_MODULES>",
 		"^(svelte/(.*)$)|^(svelte$)",
@@ -29,7 +42,11 @@
 	"importOrderSeparation": false,
 	"importOrderSortSpecifiers": true,
 	"importOrderBuiltinModulesToTop": true,
-	"importOrderParserPlugins": ["typescript", "jsx", "decorators-legacy"],
+	"importOrderParserPlugins": [
+		"typescript",
+		"jsx",
+		"decorators-legacy"
+	],
 	"importOrderMergeDuplicateImports": true,
 	"importOrderCombineTypeAndValueImports": true
 }
