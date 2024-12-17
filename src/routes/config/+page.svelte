@@ -54,8 +54,6 @@
 		finderGiftee: '',
 		junkdajunkOwnerCount: '',
 		junkdajunkCardCount: '',
-		approvalCouncil: 'General Assembly',
-		approvalProposal: '',
 		goldretrieverMode: 'Include',
 		goldretrieverTransferCard: '',
 		junkdajunkOmittedSeasons: '',
@@ -67,7 +65,6 @@
 		signalCollectionsOrDecks: '',
 		signalAsksBidsNation: '',
 		signalMode: 'Collection',
-		statisticsScales: '',
 		deckMode: 'Signal',
 		deckCollMode: 'Deck',
 		deckDuplicates: 'Skip',
@@ -264,13 +261,6 @@
 			bind:bindValue={localStorageObject.finderMode}
 			items={['Gift', 'Sell', 'Exclude']} />
 		<FormTextArea label="Card IDs to Find" bind:bindValue={localStorageObject.finderList} id="find" />
-		<h2 class="text-center text-2xl font-bold tracking-tight">Approval</h2>
-		<FormSelect
-			id="council"
-			label="Council"
-			bind:bindValue={localStorageObject.approvalCouncil}
-			items={['General Assembly', 'Security Council']} />
-		<FormInput label="Proposal ID" bind:bindValue={localStorageObject.approvalProposal} id="proposalID" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Flags</h2>
 		<FormSelect
 			id="flagmode"
@@ -288,8 +278,6 @@
 			items={['Collection', 'Deck', 'Asks', 'Bids', 'Asks and Bids']} />
 		<FormInput label={`Nation`} bind:bindValue={localStorageObject.signalAsksBidsNation} id="nation" />
 		<FormTextArea label={'Coll/Decks'} bind:bindValue={localStorageObject.signalCollectionsOrDecks} id="mode" />
-		<h2 class="text-center text-2xl font-bold tracking-tight">Statistics</h2>
-		<FormTextArea label="Scale" bind:bindValue={localStorageObject.statisticsScales} id="scale" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Deck</h2>
 		<FormSelect
 			id="deckmode"

@@ -75,11 +75,6 @@
 		"description": "Generate container rules for use with Containerise."
 	},
 	{
-		"name": "Approvals List",
-		"slug": "approval",
-		"description": "Specify a proposal and get all delegates that are not approving it."
-	},
-	{
 		"name": "Glasses",
 		"slug": "spyglass",
 		"description": "Generate a spreadsheet containing regional information."
@@ -95,19 +90,9 @@
 		"description": "Turn a deck into a text file of card ids."
 	},
 	{
-		"name": "Statistics",
-		"slug": "statistics",
-		"description": "Provided WA scales and puppets, get the mean, median, and mode for each scale. (WIP)"
-	},
-	{
 		"name": "Orphans",
 		"slug": "orphans",
 		"description": "Get a list of cards not in any collection."
-	},
-	{
-		"name": "Wiz",
-		"slug": "wiz",
-		"description": "Output the last login date of the provided puppet list."
 	},
 	{
 		"name": "Flag Manager",
