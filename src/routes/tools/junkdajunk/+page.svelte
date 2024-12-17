@@ -283,9 +283,9 @@
 							junk = false
 							reason = `<span class="text-blue-400">has high bid</span>`
 						}
-						if (parseFloat(marketValue) > 10) {
+						if (category === 'legendary') {
 							junk = false
-							reason = `<span class="text-blue-400">MV over 10</span>`
+							reason = `<span class="text-blue-400">Legendary card</span>`
 						}
 						if (!region && skipexnation) {
 							junk = false

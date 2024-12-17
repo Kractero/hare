@@ -771,3 +771,151 @@ Home page search bar was removed.
 
 1. All
    - Internal adjustments to tool components.
+
+## 2023-10-30
+
+### Features
+
+1. NEW - Flag Manager
+
+   - Add a new tool that takes a flag file name and finds all the nations with that specified flag.
+
+## 2023-10-27
+
+### Adjustments
+
+1. JunkDaJunk
+   - Improve logging on skips, indicating the reason.
+   - Fix randomly overwriting JDJ with Finder.
+   - Pass the giftee in the url.
+
+## 2023-10-26
+
+### Features
+
+Stop Button added to all tools that can be stoppped.
+
+## 2023-10-20
+
+### Fixes
+
+1. Finder, JunkDaJunk
+   - Fix storage and handling of X-Pin for protected authentication.
+
+## 2023-10-20
+
+### Features
+
+1. NEW - Legendary Tracker
+
+   - Add a new resource to track the cte status of legendaries, converted to Svelte from [Ledger's tracker](https://ledger.kractero.com/legendaries).
+
+## 2023-10-14 - 2023-10-19
+
+A large pull request that involved the move from static website to Vercel and other changes.
+
+Fix various issues with the url on form submission. Fixes to cards-resources.
+
+### Adjustments
+
+1. JunkDaJunk
+
+   - Properly sleep between gifts
+   - Output the count in the outputted html table cells.
+   - Sales should use a different counter.
+   - Allow whitelisting seasons and exnation (S1).
+
+2. JunkDaJunk, Finder
+
+   - Properly handle decks with 0/1 card/cards.
+   - Implement specific gifting to certain nations with ,GIFTTO.
+   - Fix region parsing for whitelist.
+   - Add sale links to the end.
+
+3. Endotart, Spyglass
+   - A message is outputted if the nation being queried is not in the dump yet.
+   - Better handling when nations aren't in the dump.
+
+## 2023-10-11
+
+Merge card-resources into Hare.
+
+## 2023-10-10
+
+### Adjustments
+
+1. Endotart
+
+   - Add an option to use the endotart dumps instead of the API.
+
+2. Rate of Change
+
+   - Allow nations to be put as input.
+
+3. GotIssues
+
+   - Add a mode option to allow processing issues, packs, or both.
+   - Properly handle 1 issue
+
+4. JunkDaJunk
+
+   - Skip empty decks.
+   - Option to check the amount of cards in a deck before deciding to junk or not.
+
+## 2023-10-08
+
+### Features
+
+1. NEW - Spyglass
+
+   - Terrible Hare implementation of Spyglass.
+
+## 2023-10-05
+
+### Features
+
+1. NEW - Approvals
+
+   - Given a piece of WA legislation, get the delegates not approving it yet.
+
+2. NEW - Endotart
+
+   - A endotarter for Hare
+
+3. NEW - Not Endorsing Nation
+
+   - Tool to find nations in a region not endorsing the specified nation.
+
+4. NEW - Wiz
+
+   - Provided nations, log their last login date.
+
+5. NEW - Finder
+
+   - Given nations and a set of ids, gift/add to a sheet the cards if found.
+
+6. NEW - Creator
+
+   - Outputs an html sheet that prefills the create_nation page with the hel pof two userscripts.
+
+7. NEW - Rate of Change
+
+   - Get the rate of change for a specified stat for nations over an amount of time.
+
+## 2023-10-01
+
+### Features
+
+1. NEW - Pinger
+
+2. NEW - Where's My WA
+
+3. NEW - Gold Retriever
+
+4. NEW - Login Sheet
+
+5. NEW - Containerise Rule Generator
+
+## 2023 September and Older
+
+Project created from the archived gi-browser, an older version of Hare that had gotIssues and junkDaJunk support.
