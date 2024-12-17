@@ -45,7 +45,6 @@
 	onDestroy(() => abortController.abort())
 
 	async function onSubmit(e: Event) {
-		if (testmode) console.log(testmode)
 		e.preventDefault()
 		pushHistory(
 			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}&minPack=${minPack}` : `&count=${issueCount}&packCount=${packCount}&minPack=${minPack}`}${testmode ? `&test=${testmode}` : ''}`
