@@ -73,6 +73,10 @@
 		orphansDeck: '',
 		junkdajunkTransferBank: '-1',
 		loginSheetMode: 'UploadFlag',
+		auctionCards: '',
+		auctionMain: '',
+		auctionAmount: '',
+		auctionMode: 'Transfers',
 	})
 
 	onMount(() => {
@@ -309,6 +313,15 @@
 			label="Mode"
 			bind:bindValue={localStorageObject.loginSheetMode}
 			items={['UploadFlag', 'SubmitIssue']} />
+		<h2 class="text-center text-2xl font-bold tracking-tight">Auction</h2>
+		<FormTextArea bind:bindValue={localStorageObject.auctionCards} label={'Cards'} id="auctionCards" />
+		<FormInput label="Auction Main" bind:bindValue={localStorageObject.auctionMain} id="auctionMain" />
+		<FormInput label="Auction Amount" bind:bindValue={localStorageObject.auctionAmount} id="amount" />
+		<FormSelect
+			id="auctionMode"
+			label="Auction Mode"
+			bind:bindValue={localStorageObject.auctionMode}
+			items={['Transfer', 'Bids', 'Asks']} />
 		<div class="flex max-w-lg justify-center">
 			<Button class="mx-auto w-max" variant="default" type="submit">Submit</Button>
 		</div>

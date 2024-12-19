@@ -1,5 +1,19 @@
 # Changelog
 
+## 2024-12-19
+
+### Features
+
+1. NEW - Auctions
+
+   - Given a bunch of cards, puppets, and main, creates a bunch of links to place bids and asks.
+
+### Adjustments
+
+1. Gold Retriever
+   - Force bank and dv to display with two decimal points.
+   - Right align
+
 ## 2024-12-16
 
 ### Removals

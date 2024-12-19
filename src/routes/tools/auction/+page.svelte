@@ -21,31 +21,33 @@
 	let main = $state('')
 	let puppets = $state('')
 	let content = $state('')
-	let transfer = $state('10')
+	let amount = $state('10')
 	let mode = $state('Transfer')
-	let mainTransfer = $state('')
 	let transferCards = $state('')
+	let auctionMain = $state('')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		puppets = (localStorage.getItem('puppets') as string) || ''
-		transfer = page.url.searchParams.get('transfer') || (localStorage.getItem('transferBank') as string) || '10'
-		mode = page.url.searchParams.get('mode') || (localStorage.getItem('transferMode') as string) || 'Transfer'
+		transferCards = (localStorage.getItem('auctionCards') as string) || ''
+		amount = page.url.searchParams.get('amount') || (localStorage.getItem('auctionAmount') as string) || '10'
+		auctionMain = page.url.searchParams.get('auctionMain') || (localStorage.getItem('auctionMain') as string) || ''
+		mode = page.url.searchParams.get('mode') || (localStorage.getItem('auctionMode') as string) || 'Transfer'
 	})
 
 	onDestroy(() => abortController.abort())
 
 	async function onSubmit(e: Event) {
 		e.preventDefault()
-		pushHistory(`?main=${main}&transfer=${transfer}&mode=${mode}`)
+		pushHistory(`?main=${main}&amount=${amount}&mode=${mode}`)
 		errors = checkUserAgent('main')
 		if (errors.length > 0) return
 		downloadable = false
 		stoppable = true
 		stopped = false
-		progress = '<p>Initiating Transfer List...</p>'
+		progress = '<p>Initiating Auction...</p>'
 		let puppetList = puppets.split('\n')
 		let count = 0
 		let bank = 0
@@ -57,7 +59,7 @@
 			let counter = 0
 			for (const card of findSplit) {
 				const [id, season] = card
-				const singleLink = `https://www.nationstates.net/nation=${mainTransfer}/page=deck/card=${id}/season=${season}?mode=${mode === 'Bids' ? 'bid' : 'ask'}&amount=${transfer}`
+				const singleLink = `https://www.nationstates.net/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=${mode === 'Bids' ? 'bid' : 'ask'}&amount=${amount}`
 				counter++
 				content += `<tr><td><p>${counter}</p></td><td><p><a target="_blank" href="${singleLink}">Link to ${mode === 'Bids' ? 'bid' : 'ask'}</a></p></td></tr>\n`
 			}
@@ -66,7 +68,7 @@
 		}
 
 		if (mode === 'Transfer') {
-			const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${mainTransfer}&q=cards+deck+info`, main)
+			const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${auctionMain}&q=cards+deck+info`, main)
 			let cards = deckInfo.CARDS.DECK.CARD
 			cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
 
@@ -85,7 +87,7 @@
 				}
 
 				for (const [id, { count, season }] of Object.entries(transferCounts)) {
-					progress += `<p class="text-blue-400">${mainTransfer} has ${count} copies of card ID ${id}, season ${season}</p>`
+					progress += `<p class="text-blue-400">${auctionMain} has ${count} copies of card ID ${id}, season ${season}</p>`
 				}
 			}
 			let puppetTransfer: { name: string; transfer: number }[] = []
@@ -101,8 +103,8 @@
 					const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck+info`, main)
 					let nationalBank = deckInfo.CARDS.INFO.BANK
 
-					if (nationalBank >= Number(transfer)) {
-						let cardsTransferable = Math.floor(nationalBank / Number(transfer))
+					if (nationalBank >= Number(amount)) {
+						let cardsTransferable = Math.floor(nationalBank / Number(amount))
 						progress += `<p class="text-green-400">${nation} can transfer ${cardsTransferable} cards!</p>`
 						puppetTransfer.push({ name: nation, transfer: cardsTransferable })
 						totalTransferrable += cardsTransferable
@@ -122,7 +124,7 @@
 			for (const { count, id, season } of Object.values(transferCounts)) {
 				while (remainingTransferable > 0 && count > 0) {
 					progress += `<p>${askQuantity + 1} Generated bid link for card ID ${id}, season ${season} to ${name}</p>`
-					const singleLink = `https://www.nationstates.net/nation=${mainTransfer}/page=deck/card=${id}/season=${season}?mode=ask&amount=${transfer}`
+					const singleLink = `https://www.nationstates.net/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=ask&amount=${amount}`
 					askQuantity++
 
 					content += `<tr><td><p>${askQuantity}</p></td><td><p><a target="_blank" href="${singleLink}">Link to Ask</a></p></td></tr>\n`
@@ -158,7 +160,7 @@
 				for (const [id, { count, season }] of Object.entries(transferCounts)) {
 					while (cardsTransferable > 0 && transferCounts[id].count > 0) {
 						progress += `<p>${bidQuantity + 1} Generated bid link for card ID ${id}, season ${season} to ${name}</p>`
-						const singleLink = `https://www.nationstates.net/nation=${name}/page=deck/card=${id}/season=${season}?mode=bid&amount=${transfer}`
+						const singleLink = `https://www.nationstates.net/nation=${name}/page=deck/card=${id}/season=${season}?mode=bid&amount=${amount}`
 						bidQuantity++
 
 						content += `<tr><td><p>${
@@ -210,8 +212,8 @@
 		{/if}
 		<FormTextArea bind:bindValue={transferCards} label={'Cards'} id="transferCards" />
 		<FormSelect id="mode" label="Mode" bind:bindValue={mode} items={['Transfer', 'Bids', 'Asks']} />
-		<FormInput label="Main Nation" bind:bindValue={mainTransfer} id="mainTransfer" required={true} />
-		<FormInput label="Amount" bind:bindValue={transfer} id="amount" required={true} />
+		<FormInput label="Main Nation" bind:bindValue={auctionMain} id="auctionMain" required={true} />
+		<FormInput label="Amount" bind:bindValue={amount} id="amount" required={true} />
 		<Buttons
 			downloadButton={true}
 			bind:downloadable

@@ -65,9 +65,9 @@
 		"description": "Specify a nation and get all the regionmates not endorsing them."
 	},
 	{
-		"name": "Transfer",
-		"slug": "transfer",
-		"description": "Takes a bank threshold and receive a text file with puppets that have that bank or higher."
+		"name": "Auction",
+		"slug": "auction",
+		"description": "Temp name. A testing transfer tool."
 	},
 	{
 		"name": "Containerise",
@@ -98,5 +98,10 @@
 		"name": "Flag Manager",
 		"slug": "flags",
 		"description": "Find which puppets have a specific flag."
+	},
+	{
+		"name": "Transfer",
+		"slug": "transfer",
+		"description": "Takes a bank threshold and receive a text file with puppets that have that bank or higher."
 	}
 ]
