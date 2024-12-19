@@ -121,13 +121,23 @@
 			let askQuantity = 0
 			let remainingTransferable = totalTransferrable
 
-			for (const { count, id, season } of Object.values(transferCounts)) {
-				while (remainingTransferable > 0 && count > 0) {
-					progress += `<p>${askQuantity + 1} Generated bid link for card ID ${id}, season ${season} to ${name}</p>`
+			interface TransferCount {
+				count: number
+				season: number
+			}
+
+			type TransferCounts = Record<string, TransferCount>
+			const askTracker: TransferCounts = JSON.parse(JSON.stringify(transferCounts)) // Deep clone
+
+			for (const [id, { count, season }] of Object.entries(askTracker)) {
+				while (remainingTransferable > 0 && askTracker[id].count > 0) {
+					progress += `<p>${askQuantity + 1} Generated ask link for card ID ${id}, season ${season}</p>`
 					const singleLink = `https://www.nationstates.net/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=ask&amount=${amount}`
 					askQuantity++
 
 					content += `<tr><td><p>${askQuantity}</p></td><td><p><a target="_blank" href="${singleLink}">Link to Ask</a></p></td></tr>\n`
+
+					askTracker[id].count--
 					remainingTransferable--
 				}
 
@@ -136,10 +146,12 @@
 				}
 			}
 
-			let bidQuantity = 0
-			for (let i = 0; i < puppetTransfer.length; i++) {
-				let { name, transfer: cardsTransferable } = puppetTransfer[i]
+			progress += `<p>Total ask links generated: ${askQuantity}</p>`
 
+			let bidQuantity = 0
+
+			for (const puppet of puppetTransfer) {
+				let { name, transfer: cardsTransferable } = puppet
 				// for (const [id, { count, season }] of Object.entries(transferCounts)) {
 				// 	if (cardsTransferable > 0 && transferCounts[id].count > 0) {
 				// 		progress += `<p class="text-gray-400">Generated initial transfer link for card ID ${id}, season ${season} to ${name}</p>`
@@ -156,23 +168,25 @@
 				// 	}
 				// 	if (cardsTransferable <= 0) break
 				// }
-
 				for (const [id, { count, season }] of Object.entries(transferCounts)) {
 					while (cardsTransferable > 0 && transferCounts[id].count > 0) {
 						progress += `<p>${bidQuantity + 1} Generated bid link for card ID ${id}, season ${season} to ${name}</p>`
 						const singleLink = `https://www.nationstates.net/nation=${name}/page=deck/card=${id}/season=${season}?mode=bid&amount=${amount}`
 						bidQuantity++
 
-						content += `<tr><td><p>${
-							bidQuantity
-						}</p></td><td><p><a target="_blank" href="${singleLink}">Link to Bid</a></p></td></tr>\n`
+						content += `<tr><td><p>${bidQuantity}</p></td><td><p><a target="_blank" href="${singleLink}">Link to Bid</a></p></td></tr>\n`
 
 						transferCounts[id].count--
 						cardsTransferable--
 					}
-					if (cardsTransferable <= 0) break
+
+					if (cardsTransferable <= 0) {
+						break
+					}
 				}
 			}
+
+			progress += `<p>Total bid links generated: ${bidQuantity}</p>`
 
 			progress += `${askQuantity} main ask links generated, ${bidQuantity} puppet bid links generated`
 		}
