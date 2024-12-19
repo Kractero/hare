@@ -171,7 +171,7 @@ export const htmlContent = (content: string, name: string) => {
       `
 }
 
-let sort = `
+const sort = `
   const sortableColumns = document.querySelectorAll('.sort');
   sortableColumns.forEach(col => {
       col.addEventListener('click', () => {
@@ -197,7 +197,7 @@ let sort = `
       });
   });
   `
-let style = `
+const style = `
   body {
       font-size: 14px;
       font-family: Arial, sans-serif;
@@ -208,7 +208,6 @@ let style = `
       width: 100%;
       caption-side: bottom;
       font-size: 14px;
-      text-align: left;
       border-collapse: collapse;
   }
 
@@ -231,6 +230,10 @@ let style = `
 
   table td {
       padding: 16px;
+  }
+
+  tr td:not(:first-child) {
+    text-align: right;
   }
 
   table tbody tr {
@@ -260,7 +263,7 @@ let style = `
       }
     }
   `
-let script = `
+const script = `
   document.querySelectorAll("a").forEach(function(el) {
       el.addEventListener("click", function(ev) {
           if (!ev.repeat) {

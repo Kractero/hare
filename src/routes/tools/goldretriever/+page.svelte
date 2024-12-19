@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import FormInput from '$lib/components/FormInput.svelte'
 	import FormSelect from '$lib/components/FormSelect.svelte'
@@ -29,12 +29,12 @@
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
-		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
+		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		puppets = (localStorage.getItem('puppets') as string) || ''
 		password = (localStorage.getItem('password') as string) || ''
-		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('goldretrieverMode') as string) || 'Include'
+		mode = page.url.searchParams.get('mode') || (localStorage.getItem('goldretrieverMode') as string) || 'Include'
 		transferCard =
-			$page.url.searchParams.get('goldretrieverTransferCard') ||
+			page.url.searchParams.get('goldretrieverTransferCard') ||
 			(localStorage.getItem('goldretrieverTransferCard') as string) ||
 			''
 	})
@@ -103,8 +103,8 @@
 					progress += `<p class="text-blue-400">Error processing ${nation}, likely not a real nation</p>`
 					continue
 				}
-				deck.bank = deckInfo.CARDS.INFO.BANK
-				deck.deckValue = deckInfo.CARDS.INFO.DECK_VALUE
+				deck.bank = Number(deckInfo.CARDS.INFO.BANK.toFixed(2))
+				deck.deckValue = Number(deckInfo.CARDS.INFO.DECK_VALUE.toFixed(2))
 				deck.cardCount = deckInfo.CARDS.INFO.NUM_CARDS
 				deck.junkValue = Number(
 					(
