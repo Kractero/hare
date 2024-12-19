@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
@@ -16,13 +16,13 @@
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
-		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
+		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 	})
 
 	onDestroy(() => abortController.abort())
 
 	async function onSubmit(e: Event) {
-		e.preventDefault
+		e.preventDefault()
 		pushHistory(`?main=${main}`)
 		errors = checkUserAgent('main')
 		if (errors.length > 0) return

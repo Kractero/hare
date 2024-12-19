@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import InputCredentials from '$lib/components/InputCredentials.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
@@ -16,7 +16,7 @@
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(async () => {
-		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
+		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 	})
 
 	async function onSubmit(e: Event) {

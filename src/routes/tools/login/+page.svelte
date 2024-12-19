@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import FormSelect from '$lib/components/FormSelect.svelte'
 	import InputCredentials from '$lib/components/InputCredentials.svelte'
@@ -17,8 +17,8 @@
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 	let mode = $state('UploadFlag')
 	onMount(() => {
-		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
-		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('loginSheetMode') as string) || 'UploadFlag'
+		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
+		mode = page.url.searchParams.get('mode') || (localStorage.getItem('loginSheetMode') as string) || 'UploadFlag'
 	})
 	async function onSubmit(e: Event) {
 		e.preventDefault()

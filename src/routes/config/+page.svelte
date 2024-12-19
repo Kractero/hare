@@ -97,7 +97,7 @@
 	})
 
 	async function onSubmit(e: Event) {
-		e.preventDefault
+		e.preventDefault()
 		const changes = []
 		for (const key in localStorageObject) {
 			if (key === 'junkdajunkRarities') {

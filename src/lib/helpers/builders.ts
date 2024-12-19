@@ -39,7 +39,7 @@ export async function nsIterator(puppets: string, mode: string, main?: string, e
 		return [nationRules, containerRules]
 	}
 
-	let formattedPuppets = puppetsList.map(nation => nation.toLowerCase().replaceAll(' ', '_'))
+	const formattedPuppets = puppetsList.map(nation => nation.toLowerCase().replaceAll(' ', '_'))
 
 	switch (mode) {
 		case 'Containerise':

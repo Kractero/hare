@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import OpenButton from '$lib/components/buttons/OpenButton.svelte'
 	import FormInput from '$lib/components/FormInput.svelte'
@@ -33,12 +33,12 @@
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
-		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
+		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		puppets = (localStorage.getItem('puppets') as string) || ''
 		finderlist = (localStorage.getItem('finderList') as string) || ''
 		password = (localStorage.getItem('password') as string) || ''
-		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('finderMode') as string) || 'Gift'
-		giftee = $page.url.searchParams.get('giftee') || (localStorage.getItem('finderGiftee') as string) || ''
+		mode = page.url.searchParams.get('mode') || (localStorage.getItem('finderMode') as string) || 'Gift'
+		giftee = page.url.searchParams.get('giftee') || (localStorage.getItem('finderGiftee') as string) || ''
 	})
 	onDestroy(() => abortController.abort())
 

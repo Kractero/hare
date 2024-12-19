@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
 	import FormInput from '$lib/components/FormInput.svelte'
@@ -26,10 +26,10 @@
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
-		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
-		top = $page.url.searchParams.get('top') || (localStorage.getItem('rocTop') as string) || '100'
-		days = $page.url.searchParams.get('days') || (localStorage.getItem('rocDays') as string) || '30'
-		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('rocMode') as string) || 'Top'
+		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
+		top = page.url.searchParams.get('top') || (localStorage.getItem('rocTop') as string) || '100'
+		days = page.url.searchParams.get('days') || (localStorage.getItem('rocDays') as string) || '30'
+		mode = page.url.searchParams.get('mode') || (localStorage.getItem('rocMode') as string) || 'Top'
 		specific = (localStorage.getItem('rocSpecific') as string) || ''
 	})
 

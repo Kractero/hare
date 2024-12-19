@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import OpenButton from '$lib/components/buttons/OpenButton.svelte'
 	import FormCheckbox from '$lib/components/FormCheckbox.svelte'
@@ -59,27 +59,27 @@
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
-		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
+		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		puppets = (localStorage.getItem('gotissuesPuppets') as string) || ''
 		password = (localStorage.getItem('password') as string) || ''
 		mode =
-			$page.url.searchParams.get('mode') ||
+			page.url.searchParams.get('mode') ||
 			(localStorage.getItem('jdjMode') as string) ||
 			(localStorage.getItem('finderMode') as string) ||
 			'Gift'
 		regionalwhitelist =
-			$page.url.searchParams.get('regions')?.replaceAll(',', '\n') ||
+			page.url.searchParams.get('regions')?.replaceAll(',', '\n') ||
 			(localStorage.getItem('junkdajunkRegionalWhitelist') as string) ||
 			''
 		flagwhitelist =
-			$page.url.searchParams.get('flags')?.replaceAll(',', '\n') ||
+			page.url.searchParams.get('flags')?.replaceAll(',', '\n') ||
 			(localStorage.getItem('junkdajunkFlagWhitelist') as string) ||
 			''
 		finderlist =
-			$page.url.searchParams.get('ids')?.replaceAll(',', '\n') ||
+			page.url.searchParams.get('ids')?.replaceAll(',', '\n') ||
 			(localStorage.getItem('junkdajunkFinderList') as string) ||
 			''
-		giftee = $page.url.searchParams.get('giftee') || (localStorage.getItem('finderGiftee') as string) || ''
+		giftee = page.url.searchParams.get('giftee') || (localStorage.getItem('finderGiftee') as string) || ''
 		raritiesMV = localStorage.getItem('junkdajunkRarities')
 			? JSON.parse(localStorage.getItem('junkdajunkRarities') as string)
 			: {
@@ -100,18 +100,18 @@
 						'ultra-rare': 1,
 						epic: 1,
 					}
-		owners = $page.url.searchParams.get('owners') || (localStorage.getItem('junkdajunkOwnerCount') as string) || ''
-		cardcount = $page.url.searchParams.get('cardcount') || (localStorage.getItem('junkdajunkCardCount') as string) || ''
+		owners = page.url.searchParams.get('owners') || (localStorage.getItem('junkdajunkOwnerCount') as string) || ''
+		cardcount = page.url.searchParams.get('cardcount') || (localStorage.getItem('junkdajunkCardCount') as string) || ''
 		skipseason =
-			$page.url.searchParams.get('skipseason') ||
+			page.url.searchParams.get('skipseason') ||
 			(localStorage.getItem('junkdajunkOmittedSeasons') as string) ||
 			"Don't Skip"
 		skipexnation =
-			$page.url.searchParams.get('skipexnation') === 'true' ||
+			page.url.searchParams.get('skipexnation') === 'true' ||
 			localStorage.getItem('junkdajunkExnation') === 'true' ||
 			false
 		jdjtransfer =
-			$page.url.searchParams.get('jdjtransfer') || (localStorage.getItem('junkdajunkTransferBank') as string) || '-1'
+			page.url.searchParams.get('jdjtransfer') || (localStorage.getItem('junkdajunkTransferBank') as string) || '-1'
 	})
 	onDestroy(() => abortController.abort())
 

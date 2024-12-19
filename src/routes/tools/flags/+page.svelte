@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import FormSelect from '$lib/components/FormSelect.svelte'
 	import FormTextArea from '$lib/components/FormTextArea.svelte'
@@ -27,8 +27,8 @@
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
-		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
-		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('flagmanagerMode') as string) || 'Flags'
+		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
+		mode = page.url.searchParams.get('mode') || (localStorage.getItem('flagmanagerMode') as string) || 'Flags'
 		puppets = (localStorage.getItem('puppets') as string) || ''
 		flags = (localStorage.getItem('flagmanagerFlags') as string) || ''
 		mottos = (localStorage.getItem('flagmanagerMottos') as string) || ''

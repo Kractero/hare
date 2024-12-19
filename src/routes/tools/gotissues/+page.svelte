@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import OpenButton from '$lib/components/buttons/OpenButton.svelte'
 	import FormSelect from '$lib/components/FormSelect.svelte'
@@ -32,15 +32,15 @@
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
-		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
+		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		puppets = (localStorage.getItem('gotissuesPuppets') as string) || ''
 		password = (localStorage.getItem('password') as string) || ''
-		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('gotissuesMode') as string) || 'Both'
-		issueCount = $page.url.searchParams.get('count') || (localStorage.getItem('gotissuesIssueCount') as string) || '5'
+		mode = page.url.searchParams.get('mode') || (localStorage.getItem('gotissuesMode') as string) || 'Both'
+		issueCount = page.url.searchParams.get('count') || (localStorage.getItem('gotissuesIssueCount') as string) || '5'
 		packCount =
-			$page.url.searchParams.get('packCount') || (localStorage.getItem('gotissuesPackCount') as string) || 'All'
-		minPack = $page.url.searchParams.get('minPack') || (localStorage.getItem('gotissuesMinPack') as string) || '0'
-		testmode = $page.url.searchParams.get('test')
+			page.url.searchParams.get('packCount') || (localStorage.getItem('gotissuesPackCount') as string) || 'All'
+		minPack = page.url.searchParams.get('minPack') || (localStorage.getItem('gotissuesMinPack') as string) || '0'
+		testmode = page.url.searchParams.get('test')
 	})
 	onDestroy(() => abortController.abort())
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
 	import FormInput from '$lib/components/FormInput.svelte'
@@ -24,12 +24,11 @@
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
-		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
-		checkObject = $page.url.searchParams.get('nation') || ''
-		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('deckMode') as string) || 'Signal'
-		duplicates =
-			$page.url.searchParams.get('duplicates') || (localStorage.getItem('deckDuplicates') as string) || 'Skip'
-		type = $page.url.searchParams.get('type') || (localStorage.getItem('deckCollMode') as string) || 'Deck'
+		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
+		checkObject = page.url.searchParams.get('nation') || ''
+		mode = page.url.searchParams.get('mode') || (localStorage.getItem('deckMode') as string) || 'Signal'
+		duplicates = page.url.searchParams.get('duplicates') || (localStorage.getItem('deckDuplicates') as string) || 'Skip'
+		type = page.url.searchParams.get('type') || (localStorage.getItem('deckCollMode') as string) || 'Deck'
 	})
 
 	async function onSubmit(e: Event) {

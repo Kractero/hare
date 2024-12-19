@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
 	import FormInput from '$lib/components/FormInput.svelte'
@@ -29,11 +29,11 @@
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
-		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
+		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		cardIds = (localStorage.getItem('signalCardIds') as string) || ''
 		collectionsOrDecks = (localStorage.getItem('signalCollectionsOrDecks') as string) || ''
 		asksBidsNation = (localStorage.getItem('signalAsksBidsNation') as string) || ''
-		mode = $page.url.searchParams.get('mode') || (localStorage.getItem('signalMode') as string) || 'Collection'
+		mode = page.url.searchParams.get('mode') || (localStorage.getItem('signalMode') as string) || 'Collection'
 	})
 	onDestroy(() => abortController.abort())
 

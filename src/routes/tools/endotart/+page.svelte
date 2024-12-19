@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
 	import FormInput from '$lib/components/FormInput.svelte'
@@ -29,15 +29,15 @@
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
-		main = $page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
-		endotarter = $page.url.searchParams.get('nation') || (localStorage.getItem('endotartEndotarter') as string) || ''
-		immune = $page.url.searchParams.get('immune')
-			? $page.url.searchParams.get('immune')!.replaceAll(',', '\n')
+		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
+		endotarter = page.url.searchParams.get('nation') || (localStorage.getItem('endotartEndotarter') as string) || ''
+		immune = page.url.searchParams.get('immune')
+			? page.url.searchParams.get('immune')!.replaceAll(',', '\n')
 			: (localStorage.getItem('endotartImmune') as string) || ''
-		limit = $page.url.searchParams.get('limit') || (localStorage.getItem('endotartLimit') as string) || ''
-		source = $page.url.searchParams.get('source') || (localStorage.getItem('endotartSource') as string) || 'XML'
+		limit = page.url.searchParams.get('limit') || (localStorage.getItem('endotartLimit') as string) || ''
+		source = page.url.searchParams.get('source') || (localStorage.getItem('endotartSource') as string) || 'XML'
 		inclusion =
-			$page.url.searchParams.get('include') || (localStorage.getItem('endotartInclude') as string) || 'Unendorsed'
+			page.url.searchParams.get('include') || (localStorage.getItem('endotartInclude') as string) || 'Unendorsed'
 	})
 
 	onDestroy(() => abortController.abort())
