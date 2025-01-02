@@ -78,8 +78,8 @@
 		window.close()
 	}
 
-	if (document.querySelector('.custombanneruploadbox')) {
-		document.querySelector('.custombanneruploadbox').style.display = 'block'
+	if (document.querySelector('#banner__0 .custombanneruploadbox')) {
+		document.querySelector('#banner__0 .custombanneruploadbox').style.display = 'block'
 		const bannerBlob = await getBanner(bannerURL)
 
 		const file = new File([bannerBlob], 'banner.png', { type: bannerBlob.type })
@@ -90,7 +90,7 @@
 		const fileInput = document.querySelector("input[name='file__0']")
 		fileInput.files = dataTransfer.files
 
-		document.querySelector("button[name='uploadbanner']").focus()
+		document.querySelector("#banner__0 button[name='uploadbanner']").focus()
 	} else {
 		const label = document.querySelector("label[for='banner__0_Primary']")
 		label.click()
