@@ -1,3 +1,5 @@
+import { urlParameters } from './utils'
+
 const textFiles = ['Transfer', 'Deck', 'Containerise']
 
 export function handleDownload(name: string, files: string[] | string) {
@@ -26,7 +28,7 @@ export async function nsIterator(puppets: string, mode: string, main?: string, e
 	const buildTableRow = (index: number, nation: string, path: string, script: string) => `
         <tr>
             <td><p>${index + 1} of ${puppetsList.length}</p></td>
-            <td><p><a target="_blank" href="${baseURL}/${path}/User_agent=${main}/Script=${script}/Generated_by=${script}/Author_discord=scrambleds/Author_main_nation=Kractero/${path.includes('create_nation') ? `nation=${nation}` : ''}">Link to Nation</a></p></td>
+            <td><p><a target="_blank" href="${baseURL}/${path}${path.includes('create_nation') ? `/nation=${nation}` : ''}${mode !== 'Containerise' ? `?${urlParameters(script, main!)}` : ''}}">Link to Nation</a></p></td>
         </tr>`
 
 	const generateContainerRules = (formattedPuppetsList: string[]) => {
@@ -61,6 +63,13 @@ export async function nsIterator(puppets: string, mode: string, main?: string, e
 			return formattedPuppets
 				.map((nation, i) =>
 					buildTableRow(i, puppetsList[i], `container=${nation}/nation=${nation}/page=create_nation`, 'Creator')
+				)
+				.join('\n')
+
+		case 'Inscription':
+			return formattedPuppets
+				.map((nation, i) =>
+					buildTableRow(i, puppetsList[i], `container=${nation}/nation=${nation}/page=banners`, 'Inscription_Assistant')
 				)
 				.join('\n')
 

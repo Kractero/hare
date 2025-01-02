@@ -1,5 +1,23 @@
 # Changelog
 
+## 2025-1-02
+
+### Features
+
+1. NEW - Inscription Assistant
+
+   - Tool with two modes - one to upload banners/set them as primary, and one to click the inscribe button cards.
+
+### Fixes
+
+1. Parameter generation for Creator, Containerise, Login Sheet
+
+   - Updates the parameter generation to match the rest of the tools. This is a breaking change for Creator (theres an update to the userscript)
+
+2. Fixed missing ? before Pinger's url parameters
+
+3. Fixed broken link to Finder's userscript.
+
 ## 2024-12-19
 
 ### Features
