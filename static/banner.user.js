@@ -3,7 +3,7 @@
 // @version      1.0
 // @description  Banner blobbing
 // @author       Kractero
-// @match        https://www.nationstates.net/page=banners*
+// @match        https://*.nationstates.net/*page=banners*
 // @grant        window.close
 // ==/UserScript==
 
