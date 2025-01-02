@@ -60,9 +60,9 @@
 					puppetCounter++
 					openNewLinkArr = [
 						...openNewLinkArr,
-						`https://www.nationstates.net/page=deck/card=${dbid.NATION.DBID}/season=4/?modify_my_card=1`,
+						`https://www.nationstates.net/container=${nation}/nation=${nation}/page=deck/card=${dbid.NATION.DBID}/season=4/?modify_my_card=1`,
 					]
-					content += `<tr><td><p>${puppetCounter}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/page=deck/card=${dbid.NATION.DBID}/season=4/?modify_my_card=1">Link to ${nation}</a></p></td></tr>\n`
+					content += `<tr><td><p>${puppetCounter}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}/page=deck/card=${dbid.NATION.DBID}/season=4/?modify_my_card=1">Link to ${nation}</a></p></td></tr>\n`
 					progress += `<p class="text-green-400">Got ${dbid.NATION.DBID} for ${nation}!</p>`
 				} catch (err) {
 					progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
