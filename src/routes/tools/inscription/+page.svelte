@@ -23,7 +23,6 @@
 	let main = $state('')
 	let mode = $state('Banners')
 	let openNewLinkArr: Array<string> = $state([])
-	openNewLinkArr = []
 	let counter = $state(0)
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
@@ -44,6 +43,8 @@
 		stoppable = true
 		stopped = false
 		counter = 0
+		content = ''
+		openNewLinkArr = []
 		let puppetCounter = 0
 		if (mode == 'Banners') {
 			content = (await nsIterator(puppets, 'Inscription', main)) as string
