@@ -5,15 +5,15 @@
 	import Check from 'lucide-svelte/icons/check'
 	import X from 'lucide-svelte/icons/x'
 
-	let domain = ''
-	let json: Array<{ [key: string]: boolean }> = []
-	let changelog: any[] = []
+	let domain = $state('')
+	let json: Array<{ [key: string]: boolean }> = $state([])
+	let changelog: any[] = $state([])
 	const currentDate = new Date()
 	const utcMinus7Date = new Date(currentDate.getTime() - 7 * 60 * 60 * 1000)
 	utcMinus7Date.setDate(utcMinus7Date.getDate() - 1)
 	const date = utcMinus7Date.toISOString().slice(0, 10)
-	const validHeaders = ['Name', 'S1', 'S2', 'S3', '👍']
-	let counts: string | any[] = []
+	const validHeaders = ['Name', 'S1', 'S2', 'S3', 'S4', '👍']
+	let counts: string | any[] = $state([])
 	onMount(async () => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		const activityRes = await fetch(`https://raw.githubusercontent.com/Kractero/himari/main/files/Legendaries.json`)
@@ -26,6 +26,7 @@
 		let s1s = json.filter(entry => entry.S1 === true)
 		let s2s = json.filter(entry => entry.S2 === true)
 		let s3s = json.filter(entry => entry.S3 === true)
+		let s4s = json.filter(entry => entry.S4 === true)
 		counts = [
 			...counts,
 			{
@@ -40,15 +41,22 @@
 				ratio: `${s3s.filter(entry => entry.exists === true).length}/${s3s.length}`,
 				pctg: ((s3s.filter(entry => entry.exists === true).length / s3s.length) * 100).toFixed(2),
 			},
+			{
+				ratio: `${s4s.filter(entry => entry.exists === true).length}/${s4s.length}`,
+				pctg: ((s4s.filter(entry => entry.exists === true).length / s4s.length) * 100).toFixed(2),
+			},
 		]
 	})
 
+	let sortstatus = $state(false)
 	const sort = (column: string | number) => {
-		let notExistsArray = json
-			.filter(item => item.exists === false)
-			.sort((a, b) => (a[column] < b[column] ? 1 : a[column] > b[column] ? -1 : 0))
-		let existsArray = json.filter(item => item.exists === true)
-		json = notExistsArray.concat(existsArray)
+		if (column === '👍') column = 'exists'
+		sortstatus = !sortstatus
+		json.sort((a, b) => {
+			if (a[column] < b[column]) return sortstatus ? -1 : 1
+			if (a[column] > b[column]) return sortstatus ? 1 : -1
+			return 0
+		})
 	}
 </script>
 
@@ -83,7 +91,7 @@
 							href={`https://nationstates.net/nation=${change.name}`}>{change.name}</a>
 						(
 						{#await json.find(nation => nation.name === change.name) then nation}
-							{#if nation && (nation.S1 || nation.S2 || nation.S3)}
+							{#if nation && (nation.S1 || nation.S2 || nation.S3 || nation.S4)}
 								{#if nation.S1}<a
 										class="mx-0 underline"
 										rel="noreferrer noopener"
@@ -101,6 +109,12 @@
 										rel="noreferrer noopener"
 										target="_blank"
 										href={`https://nationstates.net/page=deck/card=${nation.id}/season=3`}>S3</a
+									>{/if}
+								{#if nation.S4}<a
+										class="mx-0 underline"
+										rel="noreferrer noopener"
+										target="_blank"
+										href={`https://nationstates.net/page=deck/card=${nation.id}/season=3`}>S4</a
 									>{/if}
 							{/if}
 						{/await}
@@ -137,7 +151,7 @@
 						<a class="underline" rel="noreferrer noopener" target="_blank" href={`${domain}/nation=${nation.name}/`}
 							>{nation.name}</a>
 					</td>
-					{#each [1, 2, 3] as season}
+					{#each [1, 2, 3, 4] as season}
 						{#if nation[`S${season}`] === true}
 							<td class="p-2 md:p-4">
 								<a
