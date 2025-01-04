@@ -44,6 +44,7 @@
 		stopped = false
 		counter = 0
 		content = ''
+		progress = ''
 		openNewLinkArr = []
 		let puppetCounter = 0
 		if (mode == 'Banners') {
@@ -70,7 +71,7 @@
 				}
 			}
 		}
-		progress = '<p>Finished processing</p>'
+		progress += '<p>Finished processing</p>'
 		downloadable = true
 		stoppable = false
 	}
