@@ -187,6 +187,7 @@
 								}
 							}
 						}
+						if (giftedCards.size === matches.length) break
 					}
 				} else {
 					progress += `<p class="text-blue-400">It is likely ${nation} has 0 cards, skipping!`
