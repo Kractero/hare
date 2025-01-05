@@ -70,6 +70,10 @@
 		const giftedCards = new Set()
 
 		for (let i = 0; i < puppetList.length; i++) {
+			if (mode === 'Gift One' && giftedCards.size > 0 && toFind.length > 0 && giftedCards.size === toFind.length) {
+				progress += `<p class="text-blue-400">All cards provided have been gifted, skipping remaining puppets`
+				continue
+			}
 			let currentNationXPin = ''
 			let nation = puppetList[i]
 			let nationSpecificPassword = ''
@@ -187,7 +191,6 @@
 								}
 							}
 						}
-						if (giftedCards.size === matches.length) break
 					}
 				} else {
 					progress += `<p class="text-blue-400">It is likely ${nation} has 0 cards, skipping!`
