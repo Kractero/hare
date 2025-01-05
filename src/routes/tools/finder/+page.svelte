@@ -58,6 +58,17 @@
 		let findCount = 0
 		let failedGiftCount = 0
 
+		// TO CONSIDER : mode that checks cards for their owners
+
+		// for (let i = 0; i < matches.length; i++) {
+		// 	const card = matches[i]
+		// 	const matchSeason = card[1]
+		// 	const matchGiftee = card[2]
+		// 	const cardInfo = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?q=card+owners;cardid=${}`)
+		// }
+
+		const giftedCards = new Set()
+
 		for (let i = 0; i < puppetList.length; i++) {
 			let currentNationXPin = ''
 			let nation = puppetList[i]
@@ -90,16 +101,20 @@
 					for (let j = 0; j < cards.length; j++) {
 						const id = cards[j].CARDID
 						const season = cards[j].SEASON
-						const matchingEntries = matches.filter(match => match[0] === String(id))
+						if (giftedCards.has(id) && mode === 'Gift One') {
+							progress += `<p class="text-blue-400">Already gifted ${id}.`
+							continue
+						}
+						let matchingEntries = matches.filter(match => match[0] === String(id))
 						if (matchingEntries.length > 0) {
 							for (let entry of matchingEntries) {
 								const matchSeason = entry[1]
 								const matchGiftee = entry[2]
 								let currGiftee = matchGiftee || giftee
 								if (matchSeason && matchSeason !== String(season)) {
-									progress += `<p>Found ${id} but not right season.`
+									progress += `<p class="text-blue-400">Found ${id} but not right season.`
 								} else {
-									if (mode === 'Gift') {
+									if (mode.includes('Gift')) {
 										let token = ''
 										const headers: { [key: string]: string } = { 'User-Agent': main }
 
@@ -143,6 +158,7 @@
 
 												if (!(id in verifyCardCounts) || verifyCardCounts[id] < originalCardCounts[id]) {
 													successfulGift = true
+													giftedCards.add(id)
 												} else {
 													successfulGift = false
 													openNewLinkArr = [
@@ -200,7 +216,7 @@
 	link="https://github.com/Kractero/cards-utilities/blob/main/finder.py"
 	additional={`<p class="mb-2">
 	You can specify season and nation to gift with CARDID,SEASON,GIFTTO instead of just CARDID on each line.
-	GIFTTO will overrule the Gift To nation if provided.
+	GIFTTO will overrule the Gift To nation if provided. If you are providing GIFTTO, SEASON must be provided.
 </p>
 <p class="mb-2">
 	For optimal use, you should use the
@@ -215,8 +231,13 @@
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
-		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={mode === 'Gift' ? true : false} />
-		{#if mode === 'Gift'}
+		<InputCredentials
+			bind:errors
+			bind:main
+			bind:puppets
+			bind:password
+			authenticated={mode.includes('Gift') ? true : false} />
+		{#if mode.includes('Gift')}
 			<FormInput label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />
 		{/if}
 		<div class="-mb-6 flex flex-col">
@@ -230,7 +251,7 @@
 			</div>
 		</div>
 		<FormTextArea bind:bindValue={finderlist} label={'Cards to Find'} id="finderlist" required />
-		<FormSelect bind:bindValue={mode} id="mode" items={['Gift', 'Sell']} label="Behavior" />
+		<FormSelect bind:bindValue={mode} id="mode" items={['Gift', 'Sell', 'Gift One']} label="Behavior" />
 		<div class="flex max-w-lg justify-center gap-2">
 			<Buttons
 				stopButton={true}
