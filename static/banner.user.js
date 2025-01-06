@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Banner Uploader
-// @version      1.0
+// @version      1.1
 // @description  Banner blobbing
 // @author       Kractero
 // @match        https://*.nationstates.net/*page=banners*
@@ -14,7 +14,7 @@
 
 	const openDatabase = () => {
 		return new Promise((resolve, reject) => {
-			const request = indexedDB.open('HareStorage', 1)
+			const request = indexedDB.open('HareStorage', 2)
 
 			request.onupgradeneeded = e => {
 				const db = e.target.result
