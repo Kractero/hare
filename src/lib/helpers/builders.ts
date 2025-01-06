@@ -25,11 +25,13 @@ export async function nsIterator(puppets: string, mode: string, main?: string, e
 	const puppetsList = puppets.split('\n')
 	const baseURL = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 
-	const buildTableRow = (index: number, nation: string, path: string, script: string) => `
+	const buildTableRow = (index: number, nation: string, path: string, script: string) => {
+		return `
         <tr>
             <td><p>${index + 1} of ${puppetsList.length}</p></td>
-            <td><p><a target="_blank" href="${baseURL}/${path}${path.includes('create_nation') ? `/nation=${nation}` : ''}${mode !== 'Containerise' ? `?${urlParameters(script, main!)}` : ''}}">Link to Nation</a></p></td>
+            <td><p><a target="_blank" href="${baseURL}/${path}${path.includes('create_nation') ? `/nation=${nation}` : ''}${mode !== 'Containerise' ? `?${urlParameters(script, main!)}` : ''}">Link to Nation</a></p></td>
         </tr>`
+	}
 
 	const generateContainerRules = (formattedPuppetsList: string[]) => {
 		const nationRules = formattedPuppetsList
@@ -66,10 +68,27 @@ export async function nsIterator(puppets: string, mode: string, main?: string, e
 				)
 				.join('\n')
 
-		case 'Inscription':
+		case 'Banners':
 			return formattedPuppets
 				.map((nation, i) =>
-					buildTableRow(i, puppetsList[i], `container=${nation}/nation=${nation}/page=banners`, 'Inscription_Assistant')
+					buildTableRow(
+						i,
+						puppetsList[i],
+						`container=${nation}/nation=${nation}/page=banners`,
+						'Inscription_Assistant_Banners'
+					)
+				)
+				.join('\n')
+
+		case 'Flags':
+			return formattedPuppets
+				.map((nation, i) =>
+					buildTableRow(
+						i,
+						puppetsList[i],
+						`container=${nation}/nation=${nation}/page=upload_flag`,
+						'Inscription_Assistant_Flags'
+					)
 				)
 				.join('\n')
 

@@ -48,7 +48,9 @@
 		openNewLinkArr = []
 		let puppetCounter = 0
 		if (mode == 'Banners') {
-			content = (await nsIterator(puppets, 'Inscription', main)) as string
+			content = (await nsIterator(puppets, 'Banners', main)) as string
+		} else if (mode === 'Flags') {
+			content = (await nsIterator(puppets, 'Flags', main)) as string
 		} else {
 			let puppetList = puppets.split('\n')
 			for (let i = 0; i < puppetList.length; i++) {
@@ -60,10 +62,11 @@
 					progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`
 					const dbid = await parseXML(`${domain}/cgi-bin/api.cgi?nation=${nation}&q=dbid`, main)
 					puppetCounter++
-					openNewLinkArr = [
-						...openNewLinkArr,
-						`https://www.nationstates.net/container=${nation}/nation=${nation}/page=deck/card=${dbid.NATION.DBID}/season=4/?modify_my_card=1`,
-					]
+					let addLink = `https://www.nationstates.net/container=${nation}/nation=${nation}/page=deck/card=${dbid.NATION.DBID}/season=4`
+					if (mode === 'Inscribe') {
+						addLink += '/?modify_my_card=1'
+					}
+					openNewLinkArr = [...openNewLinkArr, addLink]
 					content += `<tr><td><p>${puppetCounter}</p></td><td><p><a target="_blank" href="https://www.nationstates.net/container=${nation}/nation=${nation}/page=deck/card=${dbid.NATION.DBID}/season=4/?modify_my_card=1">Link to ${nation}</a></p></td></tr>\n`
 					progress += `<p class="text-green-400">Got ${dbid.NATION.DBID} for ${nation}!</p>`
 				} catch (err) {
@@ -79,20 +82,29 @@
 
 <ToolContent
 	toolTitle="Inscription Assistant"
-	caption="Upload banners or inscribe cards."
-	additional={`<p class="text-xs mb-16">
-	For optimal use, this script is intended to be used with either
+	caption="Upload flags, banners or inscribe/view cards."
+	additional={`<p class="text-xs mb-1">
+	For mode banner, this script needs
 	<a class="underline" href="https://hare.kractero.com/banner.user.js" target="_blank" rel="noreferrer noopener">
 		the banner userscript
-	</a> or <a class="underline" href="https://hare.kractero.com/inscription.user.js" target="_blank" rel="noreferrer noopener">
+	</a>. Set the link to the image in line 13 of the userscript.</p>
+	<p class="text-xs mb-1">
+	 For mode banner, this script needs
+	 <a class="underline" href="https://hare.kractero.com/flag.user.js" target="_blank" rel="noreferrer noopener">
+		the flag userscript
+	</a>. For flags, set the link to the image in line 13 of the userscript.
+	</p>
+	<p class="text-xs mb-16">
+	 For inscribing, you will need
+	 <a class="underline" href="https://hare.kractero.com/inscription.user.js" target="_blank" rel="noreferrer noopener">
 		the inscription userscript
-	</a>. For banner, set the link to the image in line 13 of the userscript.
+	</a>. Viewing needs nothing.
 	</p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
-		<FormSelect id="mode" label="Mode" bind:bindValue={mode} items={['Banners', 'Inscribe']} />
+		<FormSelect id="mode" label="Mode" bind:bindValue={mode} items={['Banners', 'Flags', 'Inscribe', 'View']} />
 		<Buttons
 			downloadButton={true}
 			bind:downloadable
@@ -101,7 +113,7 @@
 			stopButton={true}
 			bind:stoppable
 			bind:stopped>
-			{#if mode === 'Inscribe'}
+			{#if mode === 'Inscribe' || mode === 'View'}
 				<OpenButton bind:counter bind:progress bind:openNewLinkArr />
 			{/if}
 		</Buttons>
