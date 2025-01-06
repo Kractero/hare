@@ -84,15 +84,15 @@
 	toolTitle="Inscription Assistant"
 	caption="Upload flags, banners or inscribe/view cards."
 	additional={`<p class="text-xs mb-1">
-	For mode banner, this script needs
+	For mode banners, this script needs
 	<a class="underline" href="https://hare.kractero.com/banner.user.js" target="_blank" rel="noreferrer noopener">
 		the banner userscript
 	</a>. Set the link to the image in line 13 of the userscript.</p>
 	<p class="text-xs mb-1">
-	 For mode banner, this script needs
+	 For mode flags, this script needs
 	 <a class="underline" href="https://hare.kractero.com/flag.user.js" target="_blank" rel="noreferrer noopener">
 		the flag userscript
-	</a>. For flags, set the link to the image in line 13 of the userscript.
+	</a> and <a class="underline" href="https://hare.kractero.com/flagautocloser.user.js" target="_blank" rel="noreferrer noopener">an autocloser to close the settings page (if its referrer is upload_flag)</a>. For flags, set the link to the image in line 13 of the userscript.
 	</p>
 	<p class="text-xs mb-16">
 	 For inscribing, you will need
