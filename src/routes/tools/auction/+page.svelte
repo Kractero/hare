@@ -58,10 +58,18 @@
 		if (mode === 'Bids' || mode === 'Asks') {
 			let counter = 0
 			for (const card of findSplit) {
-				const [id, season] = card
+				let [id, season, amount] = card
+				if (!season) {
+					progress += `<p class="text-red-400">You did not provide the season.</p>`
+					stoppable = false
+					return
+				}
+				if (!amount) amount = '1'
 				const singleLink = `https://www.nationstates.net/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=${mode === 'Bids' ? 'bid' : 'ask'}&amount=${amount}`
-				counter++
-				content += `<tr><td><p>${counter}</p></td><td><p><a target="_blank" href="${singleLink}">Link to ${mode === 'Bids' ? 'bid' : 'ask'}</a></p></td></tr>\n`
+				for (let i = 0; i < Number(amount); i++) {
+					counter++
+					content += `<tr><td><p>${counter}</p></td><td><p><a target="_blank" href="${singleLink}">Link to ${mode === 'Bids' ? 'bid' : 'ask'}</a></p></td></tr>\n`
+				}
 			}
 
 			progress += `${mode === 'Bids' ? 'Bid' : 'Ask'} links generated`
@@ -130,6 +138,11 @@
 			const askTracker: TransferCounts = JSON.parse(JSON.stringify(transferCounts)) // Deep clone
 
 			for (const [id, { count, season }] of Object.entries(askTracker)) {
+				if (!season) {
+					progress += `<p class="text-red-400">You did not provide the season.</p>`
+					stoppable = false
+					return
+				}
 				while (remainingTransferable > 0 && askTracker[id].count > 0) {
 					progress += `<p>${askQuantity + 1} Generated ask link for card ID ${id}, season ${season}</p>`
 					const singleLink = `https://www.nationstates.net/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=ask&amount=${amount}`
@@ -169,6 +182,11 @@
 				// 	if (cardsTransferable <= 0) break
 				// }
 				for (const [id, { count, season }] of Object.entries(transferCounts)) {
+					if (!season) {
+						progress += `<p class="text-red-400">You did not provide the season.</p>`
+						stoppable = false
+						return
+					}
 					while (cardsTransferable > 0 && transferCounts[id].count > 0) {
 						progress += `<p>${bidQuantity + 1} Generated bid link for card ID ${id}, season ${season} to ${name}</p>`
 						const singleLink = `https://www.nationstates.net/nation=${name}/page=deck/card=${id}/season=${season}?mode=bid&amount=${amount}`
@@ -202,10 +220,11 @@
 	additional={`<p class="mb-2">
 	Mode Transfer will first sum the total amount of transfer cards located on the main nation. It will then figure out how many times
 	the provided puppets can transfer under the amount. It will then generate bid links equal to that amount, then ask links decrementing
-	until all possible transfers have links.
+	until all possible transfers have links. On
 </p>
 <p class="mb-2">
-	Mode Bid/Ask will just place one bid or ask with the amount from the main nation on each card.
+	Mode Bid/Ask will just place one bid or ask with the amount from the main nation on each card. You can place more than one bid
+	if you include the amount, formatted like id,season,amount.
 </p>
 <p class="mb-2">
 	Requires the
@@ -214,8 +233,9 @@
 	</a>
 	to be useful.
 </p>
-<p class="mb-2">
-	Accepts id,season
+<p class="mb-16">
+	Requires id,season
+	On mode bid/ask, accepts the amount
 </p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
