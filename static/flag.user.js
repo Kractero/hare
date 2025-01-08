@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Flag Uploader
-// @version      1.0
+// @version      1.1
 // @description  Flag blobbing
 // @author       Kractero
 // @match        https://*.nationstates.net/*page=upload_flag*
@@ -72,30 +72,22 @@
 		return
 	}
 
-	if (document.querySelector("input[name='file']")) {
-		const flagBlob = await getFlag(flagUrl)
+	const flagBlob = await getFlag(flagUrl)
 
-		const file = new File([flagBlob], 'flag.png', { type: flagBlob.type })
+	const file = new File([flagBlob], 'flag.png', { type: flagBlob.type })
 
-		const dataTransfer = new DataTransfer()
-		dataTransfer.items.add(file)
+	const dataTransfer = new DataTransfer()
+	dataTransfer.items.add(file)
 
-		const fileInput = document.querySelector("input[name='file']")
-		fileInput.files = dataTransfer.files
+	const fileInput = document.querySelector("input[name='file']")
+	fileInput.files = dataTransfer.files
 
-		const reader = new FileReader()
-		reader.onload = function (e) {
-			document.querySelector('#previewimage').src = e.target.result
-			document.querySelector('#previewripple').src = ''
-		}
-		reader.readAsDataURL(flagBlob)
-
-		document.querySelector('.primary').focus()
-	} else {
-		const label = document.querySelector("label[for='banner__0_Primary']")
-		label.click()
-		document.querySelector('#savebannersbuttonfloating').style.display = 'block'
-		const button = document.querySelector("button[name='make_changes2']")
-		button.focus()
+	const reader = new FileReader()
+	reader.onload = function (e) {
+		document.querySelector('#previewimage').src = e.target.result
+		document.querySelector('#previewripple').src = ''
 	}
+	reader.readAsDataURL(flagBlob)
+
+	document.querySelector('.primary').focus()
 })()
