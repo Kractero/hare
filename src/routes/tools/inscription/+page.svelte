@@ -58,6 +58,7 @@
 				if (abortController.signal.aborted || stopped) {
 					break
 				}
+				const nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
 				try {
 					progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`
 					const dbid = await parseXML(`${domain}/cgi-bin/api.cgi?nation=${nation}&q=dbid`, main)
