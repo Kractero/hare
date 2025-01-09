@@ -58,15 +58,15 @@
 		if (mode === 'Bids' || mode === 'Asks') {
 			let counter = 0
 			for (const card of findSplit) {
-				let [id, season, amount] = card
+				let [id, season, bidsToPlace] = card
 				if (!season) {
 					progress += `<p class="text-red-400">You did not provide the season.</p>`
 					stoppable = false
 					return
 				}
-				if (!amount) amount = '1'
+				if (!bidsToPlace) bidsToPlace = '1'
 				const singleLink = `https://www.nationstates.net/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=${mode === 'Bids' ? 'bid' : 'ask'}&amount=${amount}`
-				for (let i = 0; i < Number(amount); i++) {
+				for (let i = 0; i < Number(bidsToPlace); i++) {
 					counter++
 					content += `<tr><td><p>${counter}</p></td><td><p><a target="_blank" href="${singleLink}">Link to ${mode === 'Bids' ? 'bid' : 'ask'}</a></p></td></tr>\n`
 				}
