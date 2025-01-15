@@ -14,7 +14,7 @@
 	disabled={!progress || openNewLinkArr.length === 0}
 	type="button"
 	variant={'default'}
-	onclick={() => {
+	onkeyup={() => {
 		if (counter > openNewLinkArr.length - 1) {
 			return
 		}
