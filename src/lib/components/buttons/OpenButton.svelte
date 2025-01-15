@@ -20,6 +20,15 @@
 		}
 		window.open(openNewLinkArr[counter], '_blank')
 		counter++
+	}}
+	onclick={(e: any) => {
+		if (e.pointerType === 'mouse') {
+			if (counter > openNewLinkArr.length - 1) {
+				return
+			}
+			window.open(openNewLinkArr[counter], '_blank')
+			counter++
+		}
 	}}>
 	Open Available Link
 </Button>
