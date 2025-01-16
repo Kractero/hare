@@ -14,7 +14,8 @@
 	disabled={!progress || openNewLinkArr.length === 0}
 	type="button"
 	variant={'default'}
-	onkeyup={() => {
+	onkeyup={e => {
+		if (e.key !== 'Enter') return
 		if (counter > openNewLinkArr.length - 1) {
 			return
 		}
