@@ -21,7 +21,6 @@
 	let dialogOpen = $state(false)
 	let domain = ''
 	let progress = $state('')
-	let openNewLinkArr: Array<string> = $state([])
 	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let stoppable = $state(false)
 	let stopped = $state(false)
@@ -79,6 +78,7 @@
 			(localStorage.getItem('jdjMode') as string) ||
 			(localStorage.getItem('finderMode') as string) ||
 			'Gift'
+		checkMode = page.url.searchParams.get('mode') || (localStorage.getItem('jdjCheckMode') as string) || 'Advanced'
 		regionalwhitelist =
 			page.url.searchParams.get('regions')?.replaceAll(',', '\n') ||
 			(localStorage.getItem('junkdajunkRegionalWhitelist') as string) ||
@@ -145,7 +145,6 @@
 		progress = ''
 		content = []
 		sellContent = []
-		openNewLinkArr = []
 		const interimSells = []
 		let puppetList = puppets.split('\n')
 		const whiteList = regionalwhitelist ? regionalwhitelist.split('\n') : []
@@ -328,10 +327,6 @@
 							progress += `<p>${i + 1}/${
 								cards.length
 							} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue}</p>`
-							openNewLinkArr = [
-								...openNewLinkArr,
-								`${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1`,
-							]
 							content.push({
 								url: `${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1`,
 								tableText: `Link to Card`,
@@ -389,10 +384,6 @@
 											successfulGift = true
 										} else {
 											successfulGift = false
-											openNewLinkArr = [
-												...openNewLinkArr,
-												`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}&giftto=${giftto}`,
-											]
 											sellContent.push({
 												url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}&giftto=${giftto}`,
 												tableText: `Link to Card`,
@@ -547,7 +538,7 @@
 			bind:downloadable
 			bind:content
 			name="junkDaJunk">
-			<OpenButton bind:progress bind:openNewLinkArr />
+			<OpenButton bind:progress bind:openNewLinkArr={content} />
 		</Buttons>
 	</form>
 	<Terminal bind:progress />

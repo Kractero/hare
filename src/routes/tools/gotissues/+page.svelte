@@ -14,7 +14,6 @@
 	const abortController = new AbortController()
 	let domain = ''
 	let progress = $state('')
-	let openNewLinkArr: Array<string> = $state([])
 	let counter = $state(0)
 	let downloadable = $state(false)
 	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
@@ -56,13 +55,11 @@
 		stopped = false
 		progress = `<p class="font-bold">Initiating gotIssues...mode set to ${mode} for ${mode === 'Issues' ? `${issueCount} issues` : mode === 'Packs' ? `${packCount} packs` : `${issueCount} issues, ${packCount} packs`}</p>`
 		counter = 0
-		openNewLinkArr = []
 		content = []
 		let puppetList = puppets.split('\n')
 		let issuesCount = 0
 		let packsCount = 0
 		let packContent: Array<{ url: string; tableText: string; linkStyle?: string }> = []
-		const interimPacks = []
 		mode = mode.charAt(0).toUpperCase() + mode.slice(1)
 		for (let i = 0; i < puppetList.length; i++) {
 			let nation = puppetList[i]
@@ -104,7 +101,6 @@
 									remainingIssues ? `remainingIssues=${remainingIssues}&` : ''
 								}${urlParameters('gotIssues', main)}`
 
-								openNewLinkArr = [...openNewLinkArr, singleLink]
 								content.push({
 									url: singleLink,
 									tableText: `Link to Issue`,
@@ -114,10 +110,6 @@
 						} else {
 							for (let i = 0; i < Math.min(issueIds.length, Number(issueCount)); i++) {
 								let issue = issueIds[i]
-								openNewLinkArr = [
-									...openNewLinkArr,
-									`${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}`,
-								]
 								content.push({
 									url: `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}`,
 									tableText: `Link to Issue`,
@@ -136,11 +128,6 @@
 					// }
 					for (let i = 0; i < packs; i++) {
 						const packLink = `${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`
-						if (mode === 'Packs') {
-							openNewLinkArr = [...openNewLinkArr, packLink]
-						} else {
-							interimPacks.push(packLink)
-						}
 						packContent.push({
 							url: packLink,
 							tableText: `Link to Pack`,
@@ -152,7 +139,6 @@
 				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
 			}
 		}
-		openNewLinkArr = [...openNewLinkArr, ...interimPacks]
 		content = [...content, ...packContent]
 		progress += `<p>Finished processing ${puppetList.length} nations, equaling ${issuesCount} issues and ${packsCount} packs!</p>`
 		downloadable = true
@@ -209,7 +195,7 @@
 			bind:downloadable
 			bind:content
 			name="gotIssues">
-			<OpenButton bind:progress bind:openNewLinkArr />
+			<OpenButton bind:progress bind:openNewLinkArr={content} />
 		</Buttons>
 	</form>
 	<Terminal bind:progress />

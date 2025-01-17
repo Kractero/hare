@@ -36,6 +36,7 @@
 		junkdajunkFlagWhitelist: '',
 		junkdajunkFinderList: '',
 		jdjMode: 'Gift',
+		jdjCheckMode: 'Advanced',
 		finderMode: 'Gift',
 		junkdajunkRarities: {
 			common: 0.5,
@@ -232,6 +233,11 @@
 			required={false} />
 		<FormInput label="Gift To" bind:bindValue={localStorageObject.finderGiftee} id="giftee" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">JunkDaJunk</h2>
+		<FormSelect
+			bind:bindValue={localStorageObject.jdjCheckMode}
+			id="checkMode"
+			items={['Advanced', 'Simple']}
+			label="Mode" />
 		<FormSelect
 			id="jdjmode"
 			label="Behavior"

@@ -17,7 +17,6 @@
 	const abortController = new AbortController()
 	let domain = ''
 	let progress = $state('')
-	let openNewLinkArr: Array<string> = $state([])
 	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let downloadable = $state(false)
 	let stoppable = $state(false)
@@ -50,7 +49,6 @@
 		stoppable = true
 		stopped = false
 		content = []
-		openNewLinkArr = []
 		let puppetList = puppets.split('\n')
 		progress = '<p>Initiating Finder...</p>'
 		const toFind = finderlist.split('\n')
@@ -165,10 +163,6 @@
 													giftedCards.add(id)
 												} else {
 													successfulGift = false
-													openNewLinkArr = [
-														...openNewLinkArr,
-														`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}`,
-													]
 													content.push({
 														url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}`,
 														tableText: `Link to ${nation}`,
@@ -184,10 +178,6 @@
 										}
 									} else {
 										progress += `<p class="text-green-400">${nation} owns ${id}!`
-										openNewLinkArr = [
-											...openNewLinkArr,
-											`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('Finder', main)}`,
-										]
 										content.push({
 											url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}`,
 											tableText: `Link to ${nation}`,
@@ -272,7 +262,7 @@
 				bind:content
 				type="html"
 				name="Finder">
-				<OpenButton bind:progress bind:openNewLinkArr />
+				<OpenButton bind:progress bind:openNewLinkArr={content} />
 			</Buttons>
 		</div>
 	</form>

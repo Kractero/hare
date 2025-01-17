@@ -1,5 +1,76 @@
 # Changelog
 
+## 2025-1-16
+
+Rework how sheets work.
+
+1. Sheets now have a button that will go through the links in the sheet, while the table is still there but no longer processable with enter. You can still click the links in the sheet one by one.
+
+2. Tools that produce sheets will produce sheets removed of links already opened via Open New Link.
+
+3. Sheets will store the links already opened in local storage, so closing them will automatically remove them from the table/button queue. This might be an issue with large junkDaJunk files.
+
+Prevents illegal behavior (holding down enter and automatically opening links, thereby breaking one click one action), which has been an issue with GI-based sheet openers since at least 2020.
+
+### Features
+
+1. JunkDaJunk
+
+   - A "simple" mode for JDJ, which only checks card IDs, season, rarity, and market value. This is not as complex as the traditional mode but is way faster.
+
+### Adjustments
+
+1. Inscription Assistant
+
+   - Renamed to Decorator. Aspects related to inscribing cards removed (the inscribing part and the userscript, and viewing the card).
+
+2. Flag Manager
+
+   - Renamed to Flag Finder, because the actual flag manager is Decorator.
+
+3. gotIssues
+
+   - Removed pack banking.
+
+## 2025-1-15
+
+Open New Link button now uses keyup to prevent illegal behavior (holding down enter and automatically opening links, thereby breaking one click one action). This was an oversight, it should have been in place since the start.
+
+## 2025-1-06
+
+### Features
+
+1. Inscription Assistant
+
+   - Flag mode, which works like banners, just point to a remote flag and go through the sheet.
+
+### Adjustments
+
+1. Auction
+
+   - Auction now requires season (obviously, why didn't it before) so it knows what card to list. You can know tell the amount of times to list it.
+
+## 2025-1-04
+
+### Features
+
+1. Finder
+
+   - Gift One mode, which will gift one card from the specified IDs in total. For example, if you provide ten puppets and each owns a specified ID, only one copy will be gifted.
+
+### Adjustments
+
+1. Legendary Tracker
+
+   - S4 legendaries added.
+   - Sorting sucks less, as you can know actually reset the sorting instead of being stuck after sorting once.
+
+### Fixes
+
+1. Inscription Assistant
+
+   - Don't clear terminal progress when stopped.
+
 ## 2025-1-02
 
 ### Features

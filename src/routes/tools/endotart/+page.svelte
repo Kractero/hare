@@ -166,7 +166,6 @@
 				}
 			}
 		}
-		console.log(content)
 		progress += `<p>Finished searching ${regionalXML.NATION.REGION} for nations not being endorsed by ${endotarter}</p>`
 		stoppable = false
 		downloadable = true

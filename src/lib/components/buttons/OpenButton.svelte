@@ -3,7 +3,7 @@
 
 	interface Props {
 		progress?: string
-		openNewLinkArr?: Array<string>
+		openNewLinkArr?: Array<{ url: string; tableText: string; linkStyle?: string }>
 	}
 
 	let { progress = $bindable(''), openNewLinkArr = $bindable([]) }: Props = $props()
@@ -18,7 +18,7 @@
 		if (openNewLinkArr.length === 0) {
 			return
 		}
-		window.open(openNewLinkArr[0], '_blank')
+		window.open(openNewLinkArr[0].url, '_blank')
 		openNewLinkArr.splice(0, 1)
 	}}
 	onclick={(e: any) => {
@@ -26,7 +26,7 @@
 			if (openNewLinkArr.length === 0) {
 				return
 			}
-			window.open(openNewLinkArr[0], '_blank')
+			window.open(openNewLinkArr[0].url, '_blank')
 			openNewLinkArr.splice(0, 1)
 		}
 	}}>
