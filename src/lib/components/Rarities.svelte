@@ -2,7 +2,7 @@
 	import FormInput from '$lib/components/FormInput.svelte'
 
 	interface Props {
-		rarities: any
+		rarities: { common: number; uncommon: number; rare: number; 'ultra-rare': number; epic: number }
 	}
 
 	let { rarities = $bindable() }: Props = $props()

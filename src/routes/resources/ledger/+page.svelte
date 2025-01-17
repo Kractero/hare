@@ -34,7 +34,7 @@
 		'S3 Legendary',
 	]
 	let ledgerTable: HTMLTableElement | undefined = $state()
-	let ledger: any = $state()
+	let ledger: [{ [key: string]: number | string }] = $state([{}])
 	let body = $state()
 	let displayDate: string
 	let error: string = $state('')
@@ -63,7 +63,9 @@
 		const sortableColumns = ledgerTable!.querySelectorAll('.sort')
 		sortableColumns.forEach(col => {
 			col.addEventListener('click', () => {
-				const columnIndex = Array.from((col.parentNode! as any).cells).indexOf(col)
+				const columnIndex = Array.from((col.parentNode! as HTMLTableRowElement).cells).indexOf(
+					col as HTMLTableCellElement
+				)
 				const rows = Array.from(ledgerTable!.rows).slice(1)
 				const currentOrder = col.getAttribute('data-order')
 				const newOrder = currentOrder === 'asc' ? 'desc' : 'asc'

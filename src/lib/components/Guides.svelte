@@ -2,7 +2,9 @@
 	import Post from './Post.svelte'
 
 	interface Props {
-		data: any
+		data: {
+			posts: { author: string; description: string; title: string; url: string }[]
+		}
 	}
 
 	let { data }: Props = $props()

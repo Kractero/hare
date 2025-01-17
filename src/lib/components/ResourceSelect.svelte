@@ -3,7 +3,7 @@
 	import * as Select from '$lib/components/ui/select'
 
 	interface Props {
-		bindValue: any
+		bindValue: string
 		label: string
 		items: string[]
 	}

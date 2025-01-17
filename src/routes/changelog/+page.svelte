@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Head from '$lib/components/Head.svelte'
 
-	// @ts-ignore
+	// @ts-expect-error importing changelog markdown
 	import Changelog from './Changelog.md'
 </script>
 

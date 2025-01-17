@@ -27,7 +27,7 @@
 <div class="mx-auto mt-8 flex max-w-lg flex-wrap gap-4 p-4 lg:max-w-5xl">
 	<Badge variant={!$filter || $filter === 'All' ? 'default' : 'secondary'} class="rounded-md p-2">
 		<button
-			onclick={e => {
+			onclick={() => {
 				filter.set('All')
 			}}>
 			All
@@ -36,7 +36,7 @@
 	{#each keywords() as keyword}
 		<Badge variant={$filter === keyword.keyword ? 'default' : 'secondary'} class="rounded-md p-2">
 			<button
-				onclick={e => {
+				onclick={() => {
 					filter.set(keyword.keyword)
 				}}>
 				{keyword.keyword} ({keyword.count})

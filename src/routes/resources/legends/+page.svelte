@@ -80,7 +80,7 @@
 	<div>
 		<h2 class="mb-2 text-lg font-semibold">Changelog (last 5 days)</h2>
 		{#if changelog.length > 0}
-			{#each changelog as log, i}
+			{#each changelog as log}
 				<p class="my-1 font-semibold">{log.date}</p>
 				{#each log.changes as change}
 					<p>
@@ -138,7 +138,7 @@
 				<th>#</th>
 				{#each validHeaders as header}
 					<th
-						on:click={() => sort(`${header}`)}
+						onclick={() => sort(`${header}`)}
 						class={`h-12 p-2 font-semibold md:p-4 ${header.includes('S') ? 'underline' : ''}`}>{header}</th>
 				{/each}
 			</tr>
