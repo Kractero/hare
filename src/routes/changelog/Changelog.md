@@ -8,7 +8,9 @@ Rework how sheets work.
 
 2. Tools that produce sheets will produce sheets removed of links already opened via Open New Link.
 
-3. Sheets will store the links already opened in local storage, so closing them will automatically remove them from the table/button queue. This might be an issue with large junkDaJunk files.
+~~3. Sheets will store the links already opened in local storage, so closing them will automatically remove them from the table/button queue. This might be an issue with large junkDaJunk files.~~
+
+3. You can control the position of the open next link button by clicking a column, which will the next link to the active one in open next link. Clicking a column will remove all preceding rows.
 
 Prevents illegal behavior (holding down enter and automatically opening links, thereby breaking one click one action), which has been an issue with GI-based sheet openers since at least 2020.
 

@@ -64,6 +64,10 @@ export const htmlContent = (
         background-color: lightgrey;
       }
 
+      #openNextLink {
+        margin-bottom: 2rem;
+      }
+
       @media (prefers-color-scheme: dark) {
         html {
           background-color: black;
@@ -89,6 +93,13 @@ export const htmlContent = (
       ${
 				Array.isArray(content)
 					? `      <h2>${name}</h2>
+
+      <p>Click the Open Next Link button to begin processing the sheet.</p>
+      <p>
+        If you closed the page, you can start from a
+        certain point by clicking the appropriate column.
+        Clicking a column will remove all preceding rows.
+      </p>
       <p>Progress: <span id="remaining">1</span>/${content.length}</p>
       <button
         id="openNextLink"
@@ -132,23 +143,12 @@ export const htmlContent = (
 					? script
 					: `
       const button = document.getElementById('openNextLink')
+      button.focus()
       const linkElements = document.querySelectorAll('table tr td a')
 
-      const openedLinks = JSON.parse(localStorage.getItem('openedLinks')) || []
-      let links = Array.from(linkElements)
-        .map(el => el.href)
-        .filter(link => !openedLinks.includes(link))
+      let links = Array.from(linkElements).map(el => el.href)
 
-      linkElements.forEach(link => {
-        if (openedLinks.includes(link.getAttribute('href'))) {
-          const linkElement = document.querySelector(\`a[href='\${link}']\`)
-          if (linkElement) {
-            linkElement.closest('tr').remove()
-          }
-        }
-      })
-
-      let counter = openedLinks.length
+      let counter = 1
 
       const updateProgress = () => {
         document.querySelector('#remaining').textContent = counter
@@ -164,9 +164,7 @@ export const htmlContent = (
 
       button.addEventListener('keyup', e => {
         if (e.key !== 'Enter' || links.length === 0) return
-        const link = links.shift() // Remove the first link
-        openedLinks.push(link) // Track opened link
-        localStorage.setItem('openedLinks', JSON.stringify(openedLinks))
+        const link = links.shift()
         window.open(link, '_blank')
         counter++
         updateProgress()
@@ -180,8 +178,6 @@ export const htmlContent = (
       button.addEventListener('click', e => {
         if (e.pointerType === 'mouse' && links.length > 0) {
           const link = links.shift()
-          openedLinks.push(link)
-          localStorage.setItem('openedLinks', JSON.stringify(openedLinks))
           window.open(link, '_blank')
           counter++
           updateProgress()
@@ -197,10 +193,22 @@ export const htmlContent = (
         el.addEventListener('click', function (e) {
           if (e.pointerType === 'mouse') {
             const row = el.parentNode
+            let allTrs = document.querySelectorAll('tr')
+            let trsBefore = Array.from(allTrs).slice(0, Array.from(allTrs).indexOf(row))
+
             row.parentNode.removeChild(row)
-            openedLinks.push(el.querySelector('a').getAttribute('href'))
-            localStorage.setItem('openedLinks', JSON.stringify(openedLinks))
-            counter++
+
+            let tdsRemoved = 1
+            trsBefore.forEach(tr => {
+              tr.remove()
+              tdsRemoved++
+            })
+
+            links.splice(0, tdsRemoved)
+            counter += tdsRemoved
+
+            button.focus()
+
             updateProgress()
             updateButtonState()
           }
