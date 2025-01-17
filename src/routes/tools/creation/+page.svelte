@@ -5,17 +5,18 @@
 	import InputCredentials from '$lib/components/InputCredentials.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
-	import { nsIterator } from '$lib/helpers/builders'
-	import { checkUserAgent, pushHistory } from '$lib/helpers/utils'
+	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 
+	let domain = $state('')
 	let progress = $state('')
-	let content: string = $state('')
+	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let downloadable = $state(false)
 	let puppets = $state('')
 	let main = $state('')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(async () => {
+		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 	})
 
@@ -25,7 +26,14 @@
 		if (errors.length > 0) return
 		pushHistory(`?main=${main}`)
 		downloadable = false
-		content = (await nsIterator(puppets, 'Creator', main)) as string
+		const puppetList = puppets.split('\n').map(nation => nation.toLowerCase().replaceAll(' ', '_'))
+		for (let i = 0; i < puppetList.length; i++) {
+			const nation = puppetList[i]
+			content.push({
+				url: `${domain}/page=deck/container=${nation}/nation=${nation}/page=create_nation?${urlParameters(`Creator`, main)}`,
+				tableText: `Link to ${puppetList[i]}`,
+			})
+		}
 		progress = '<p>Finished processing</p>'
 		downloadable = true
 	}

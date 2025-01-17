@@ -43,7 +43,7 @@
 			if (event.TEXT) {
 				const nation = event.TEXT.match(regex)
 				if (nation && nation.length > 1 && nation[1]) {
-					if (masterList.hasOwnProperty(nation[1])) {
+					if (masterList[nation[1]]) {
 						if (!ownerList[masterList[nation[1]]]) {
 							ownerList[masterList[nation[1]]] = `${nation[1]}`
 						} else {

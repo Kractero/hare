@@ -1,5 +1,3 @@
-import { urlParameters } from './utils'
-
 const textFiles = ['Transfer', 'Deck', 'Containerise']
 
 export function handleDownload(name: string, files: string[] | string) {
@@ -21,83 +19,203 @@ function downloadBlob(blob: Blob, fileName: string) {
 	URL.revokeObjectURL(url)
 }
 
-export async function nsIterator(puppets: string, mode: string, main?: string, extra?: string) {
-	const puppetsList = puppets.split('\n')
-	const baseURL = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
+export const htmlContent = (
+	content: { url: string; tableText: string; linkStyle?: string }[] | string,
+	name: string
+) => {
+	let counterReset = false
+	return `
+      <html>
+      <head>
+      <style>
+      ${
+				name === 'Gold Retriever'
+					? style
+					: `
+      td.createcol p {
+        padding-left: 10em;
+      }
 
-	const buildTableRow = (index: number, nation: string, path: string, script: string) => {
-		return `
-        <tr>
-            <td><p>${index + 1} of ${puppetsList.length}</p></td>
-            <td><p><a target="_blank" href="${baseURL}/${path}${path.includes('create_nation') ? `/nation=${nation}` : ''}${mode !== 'Containerise' ? `?${urlParameters(script, main!)}` : ''}">Link to Nation</a></p></td>
-        </tr>`
-	}
+      a {
+        text-decoration: none;
+        color: black;
+      }
 
-	const generateContainerRules = (formattedPuppetsList: string[]) => {
-		const nationRules = formattedPuppetsList
-			.map(nation => `@^.*\\.nationstates\\.net/(.*/)?nation=${nation}(/.*)?$ , ${nation}`)
-			.join('\n')
-		const containerRules = formattedPuppetsList
-			.map(nation => `@^.*\\.nationstates\\.net/(.*/)?container=${nation}(/.*)?$ , ${nation}`)
-			.join('\n')
-		return [nationRules, containerRules]
-	}
+      a:visited {
+        color: grey;
+      }
 
-	const formattedPuppets = puppetsList.map(nation => nation.toLowerCase().replaceAll(' ', '_'))
+      table {
+        border-collapse: collapse;
+        display: table-cell;
+        max-width: 100%;
+        border: 1px solid darkorange;
+      }
 
-	switch (mode) {
-		case 'Containerise':
-			return generateContainerRules(formattedPuppets)
+      tr, td {
+        border-bottom: 1px solid darkorange;
+      }
 
-		case 'Login Sheet':
-			return formattedPuppets
-				.map((nation, i) =>
-					buildTableRow(
-						i,
-						nation,
-						`container=${nation}/nation=${nation}/page=${extra === 'UploadFlag' ? 'upload_flag' : 'submit_issue'}/test=1`,
-						'Login_Sheet'
-					)
-				)
-				.join('\n')
+      td p {
+        padding: 0.5em;
+      }
 
-		case 'Creator':
-			return formattedPuppets
-				.map((nation, i) =>
-					buildTableRow(i, puppetsList[i], `container=${nation}/nation=${nation}/page=create_nation`, 'Creator')
-				)
-				.join('\n')
+      tr:hover {
+        background-color: lightgrey;
+      }
 
-		case 'Banners':
-			return formattedPuppets
-				.map((nation, i) =>
-					buildTableRow(
-						i,
-						puppetsList[i],
-						`container=${nation}/nation=${nation}/page=banners`,
-						'Inscription_Assistant_Banners'
-					)
-				)
-				.join('\n')
+      @media (prefers-color-scheme: dark) {
+        html {
+          background-color: black;
+        }
+        h2 {
+          color: rgb(145, 23, 76);
+        }
+        a, p, span {
+          color: rgb(232, 211, 162);
+        }
+        a:visited {
+          color: rgb(145, 23, 76);
+        }
+        table, tr, td {
+          border: 1px solid rgb(51, 0, 111);
+        }
+      }
+      `
+			}
+      </style>
+      </head>
+      <body>
+      ${
+				Array.isArray(content)
+					? `      <h2>${name}</h2>
+      <p>Progress: <span id="remaining">1</span>/${content.length}</p>
+      <button
+        id="openNextLink"
+        type="button"
+        disabled
+        style="cursor: not-allowed;"
+      >
+        Open Next Link
+      </button>`
+					: ''
+			}
 
-		case 'Flags':
-			return formattedPuppets
-				.map((nation, i) =>
-					buildTableRow(
-						i,
-						puppetsList[i],
-						`container=${nation}/nation=${nation}/page=upload_flag`,
-						'Inscription_Assistant_Flags'
-					)
-				)
-				.join('\n')
+      <table>
+      ${
+				Array.isArray(content)
+					? content
+							.map((obj, i) => {
+								let counter = i + 1
+								if (!counterReset) {
+									counter = ['open_loot_box', 'separate', 'jdj=view', 'gift=1'].some(condition =>
+										obj.url.includes(condition)
+									)
+										? 1
+										: i + 1
+									counterReset = true
+								}
+								return `
+                  <tr>
+                    <td><p>${counter}</p></td>
+                    <td><p><a style="${obj.linkStyle ? obj.linkStyle : ''}" target="_blank" href="${obj.url}">${obj.tableText}</a></p></td>
+                  </tr>`
+							})
+							.join('')
+					: content
+			}
 
-		default:
-			return ''
-	}
+      </table>
+      <script>
+      ${
+				name === 'RCES' || name === 'Gold Retriever'
+					? script
+					: `
+      const button = document.getElementById('openNextLink')
+      const linkElements = document.querySelectorAll('table tr td a')
+
+      const openedLinks = JSON.parse(localStorage.getItem('openedLinks')) || []
+      let links = Array.from(linkElements)
+        .map(el => el.href)
+        .filter(link => !openedLinks.includes(link))
+
+      linkElements.forEach(link => {
+        if (openedLinks.includes(link.getAttribute('href'))) {
+          const linkElement = document.querySelector(\`a[href='\${link}']\`)
+          if (linkElement) {
+            linkElement.closest('tr').remove()
+          }
+        }
+      })
+
+      let counter = openedLinks.length
+
+      const updateProgress = () => {
+        document.querySelector('#remaining').textContent = counter
+      }
+
+      const updateButtonState = () => {
+        button.disabled = links.length === 0
+        button.style.cursor = links.length === 0 ? 'not-allowed' : 'pointer'
+      }
+
+      updateProgress()
+      updateButtonState()
+
+      button.addEventListener('keyup', e => {
+        if (e.key !== 'Enter' || links.length === 0) return
+        const link = links.shift() // Remove the first link
+        openedLinks.push(link) // Track opened link
+        localStorage.setItem('openedLinks', JSON.stringify(openedLinks))
+        window.open(link, '_blank')
+        counter++
+        updateProgress()
+        updateButtonState()
+        const linkElement = document.querySelector(\`a[href='\${link}']\`)
+        if (linkElement) {
+          linkElement.closest('tr').remove()
+        }
+      })
+
+      button.addEventListener('click', e => {
+        if (e.pointerType === 'mouse' && links.length > 0) {
+          const link = links.shift()
+          openedLinks.push(link)
+          localStorage.setItem('openedLinks', JSON.stringify(openedLinks))
+          window.open(link, '_blank')
+          counter++
+          updateProgress()
+          updateButtonState()
+          const linkElement = document.querySelector(\`a[href='\${link}']\`)
+          if (linkElement) {
+            linkElement.closest('tr').remove()
+          }
+        }
+      })
+
+      document.querySelectorAll('td').forEach(function (el) {
+        el.addEventListener('click', function (e) {
+          if (e.pointerType === 'mouse') {
+            const row = el.parentNode
+            row.parentNode.removeChild(row)
+            openedLinks.push(el.querySelector('a').getAttribute('href'))
+            localStorage.setItem('openedLinks', JSON.stringify(openedLinks))
+            counter++
+            updateProgress()
+            updateButtonState()
+          }
+        })
+      })
+        `
+			}
+      ${name === 'Gold Retriever' ? sort : ''}
+      </script>
+      </body>
+      </html>
+      `
 }
 
-export const htmlContent = (content: string, name: string) => {
+export const racContent = (content: string, name: string) => {
 	return `
       <html>
       <head>
@@ -159,39 +277,9 @@ export const htmlContent = (content: string, name: string) => {
       <body>
       <table>
       ${content}
-      ${
-				name !== 'Gold Retriever'
-					? `
-        <tr>
-          <td>
-            <p>
-              <a target="_blank" href="https://this-page-intentionally-left-blank.org/">Done!</a>
-            </p>
-          </td>
-          <td>
-            <p>
-              <a target="_blank" href="https://this-page-intentionally-left-blank.org/">Done!</a>
-            </p>
-          </td>
-        </tr>
-      `
-					: ''
-			}
       </table>
       <script>
-      ${
-				name === 'RCES' || name === 'Gold Retriever'
-					? script
-					: `
-      document.querySelectorAll("td").forEach(function(el) {
-        el.addEventListener("click", function() {
-          const row = el.parentNode;
-          row.nextElementSibling.querySelector("a").focus();
-          row.parentNode.removeChild(row);
-        });
-      });
-     `
-			}
+      ${script}
       ${name === 'Gold Retriever' ? sort : ''}
       </script>
       </body>

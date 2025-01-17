@@ -9,7 +9,7 @@
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { parseXML } from '$lib/helpers/parser'
-	import { checkUserAgent, pushHistory } from '$lib/helpers/utils'
+	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 
 	const abortController = new AbortController()
 
@@ -20,7 +20,7 @@
 	let stopped = $state(false)
 	let main = $state('')
 	let puppets = $state('')
-	let content = $state('')
+	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let amount = $state('10')
 	let mode = $state('Transfer')
 	let transferCards = $state('')
@@ -51,9 +51,9 @@
 		let puppetList = puppets.split('\n')
 		let count = 0
 		let bank = 0
-		content = ''
+		content = []
 		const findSplit = transferCards.split('\n').map(matcher => matcher.split(','))
-		const transferCounts: { [key: string]: any } = {}
+		const transferCounts: { [key: string]: { count: number; season: string; id: string } } = {}
 
 		if (mode === 'Bids' || mode === 'Asks') {
 			let counter = 0
@@ -65,10 +65,13 @@
 					return
 				}
 				if (!bidsToPlace) bidsToPlace = '1'
-				const singleLink = `https://www.nationstates.net/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=${mode === 'Bids' ? 'bid' : 'ask'}&amount=${amount}`
+				const singleLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=${mode === 'Bids' ? 'bid' : 'ask'}&amount=${amount}?${urlParameters('Auction', main)}`
 				for (let i = 0; i < Number(bidsToPlace); i++) {
 					counter++
-					content += `<tr><td><p>${counter}</p></td><td><p><a target="_blank" href="${singleLink}">Link to ${mode === 'Bids' ? 'bid' : 'ask'}</a></p></td></tr>\n`
+					content.push({
+						url: singleLink,
+						tableText: `Link to ${mode === 'Bids' ? 'bid' : 'ask'}`,
+					})
 				}
 			}
 
@@ -145,10 +148,12 @@
 				}
 				while (remainingTransferable > 0 && askTracker[id].count > 0) {
 					progress += `<p>${askQuantity + 1} Generated ask link for card ID ${id}, season ${season}</p>`
-					const singleLink = `https://www.nationstates.net/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=ask&amount=${amount}`
+					const singleLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=ask&amount=${amount}/mode=separate?${urlParameters('Auction', main)}`
 					askQuantity++
-
-					content += `<tr><td><p>${askQuantity}</p></td><td><p><a target="_blank" href="${singleLink}">Link to Ask</a></p></td></tr>\n`
+					content.push({
+						url: singleLink,
+						tableText: `Link to Ask`,
+					})
 
 					askTracker[id].count--
 					remainingTransferable--
@@ -189,10 +194,12 @@
 					}
 					while (cardsTransferable > 0 && transferCounts[id].count > 0) {
 						progress += `<p>${bidQuantity + 1} Generated bid link for card ID ${id}, season ${season} to ${name}</p>`
-						const singleLink = `https://www.nationstates.net/nation=${name}/page=deck/card=${id}/season=${season}?mode=bid&amount=${amount}`
+						const singleLink = `${domain}/container=${name}/nation=${name}/page=deck/card=${id}/season=${season}?mode=bid&amount=${amount}/mode=separate?${urlParameters('Auction', main)}`
 						bidQuantity++
-
-						content += `<tr><td><p>${bidQuantity}</p></td><td><p><a target="_blank" href="${singleLink}">Link to Bid</a></p></td></tr>\n`
+						content.push({
+							url: singleLink,
+							tableText: `Link to Bid on ${name}`,
+						})
 
 						transferCounts[id].count--
 						cardsTransferable--

@@ -42,7 +42,7 @@
 		if (errors.length > 0) return
 		stopped = false
 		stoppable = true
-		let names: any[] = []
+		let names: string[] = []
 		type rocTuple = [string, number]
 		let ratesOfChange: Array<rocTuple> = []
 		progress = ''

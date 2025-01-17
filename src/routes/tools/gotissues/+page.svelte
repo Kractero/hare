@@ -17,7 +17,7 @@
 	let openNewLinkArr: Array<string> = $state([])
 	let counter = $state(0)
 	let downloadable = $state(false)
-	let issuesContent = $state('')
+	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let stoppable = $state(false)
 	let stopped = $state(false)
 	let main = $state('')
@@ -57,11 +57,11 @@
 		progress = `<p class="font-bold">Initiating gotIssues...mode set to ${mode} for ${mode === 'Issues' ? `${issueCount} issues` : mode === 'Packs' ? `${packCount} packs` : `${issueCount} issues, ${packCount} packs`}</p>`
 		counter = 0
 		openNewLinkArr = []
-		issuesContent = ''
+		content = []
 		let puppetList = puppets.split('\n')
 		let issuesCount = 0
 		let packsCount = 0
-		let packContent = ''
+		let packContent: Array<{ url: string; tableText: string; linkStyle?: string }> = []
 		const interimPacks = []
 		mode = mode.charAt(0).toUpperCase() + mode.slice(1)
 		for (let i = 0; i < puppetList.length; i++) {
@@ -105,11 +105,10 @@
 								}${urlParameters('gotIssues', main)}`
 
 								openNewLinkArr = [...openNewLinkArr, singleLink]
-
-								issuesContent += `<tr><td><p>${
-									issuesCount + 1
-								}</p></td><td><p><a target="_blank" href="${singleLink}">Link to Issue</a></p></td></tr>\n`
-
+								content.push({
+									url: singleLink,
+									tableText: `Link to Issue`,
+								})
 								issuesCount += limitedIssues.length
 							}
 						} else {
@@ -119,34 +118,34 @@
 									...openNewLinkArr,
 									`${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}`,
 								]
-								issuesContent += `<tr><td><p>${
-									issuesCount + 1
-								}</p></td><td><p><a target="_blank" href="${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}">Link to Issue</a></p></td></tr>\n`
+								content.push({
+									url: `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=show_dilemma/dilemma=${issue}/template-overall=none?${urlParameters('gotIssues', main)}`,
+									tableText: `Link to Issue`,
+								})
 								issuesCount++
 							}
 						}
 					}
 				}
 				if (mode === 'Both' || mode === 'Packs') {
-					if (packs >= Number(minPack)) {
-						packCount = packCount === 'All' ? '9' : packCount
-						const packsToOpen = Math.min(packs - Number(minPack), Number(packCount))
-						for (let i = 0; i < packsToOpen; i++) {
-							if (mode === 'Packs') {
-								openNewLinkArr = [
-									...openNewLinkArr,
-									`${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`,
-								]
-							} else {
-								interimPacks.push(
-									`${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`
-								)
-							}
-							packContent += `<tr><td><p>${packsCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1">Link to Pack</a></p></td></tr>\n`
-							packsCount++
+					// if (packs >= Number(minPack)) {
+					// 	packCount = packCount === 'All' ? '9' : packCount
+					// 	const packsToOpen = Math.min(packs - Number(minPack), Number(packCount))
+					// } else {
+					// 	progress += `<p class="text-blue-400">${nation} has less packs than ${minPack}, skipping!</p>`
+					// }
+					for (let i = 0; i < packs; i++) {
+						const packLink = `${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`
+						if (mode === 'Packs') {
+							openNewLinkArr = [...openNewLinkArr, packLink]
+						} else {
+							interimPacks.push(packLink)
 						}
-					} else {
-						progress += `<p class="text-blue-400">${nation} has less packs than ${minPack}, skipping!</p>`
+						packContent.push({
+							url: packLink,
+							tableText: `Link to Pack`,
+						})
+						packsCount++
 					}
 				}
 			} catch (err) {
@@ -154,7 +153,7 @@
 			}
 		}
 		openNewLinkArr = [...openNewLinkArr, ...interimPacks]
-		issuesContent = issuesContent += packContent
+		content = [...content, ...packContent]
 		progress += `<p>Finished processing ${puppetList.length} nations, equaling ${issuesCount} issues and ${packsCount} packs!</p>`
 		downloadable = true
 		stoppable = false
@@ -187,30 +186,30 @@
 		{#if mode === 'Issues' || mode === 'Both'}
 			<FormSelect id="issueCount" label="Issues Count" bind:bindValue={issueCount} items={['1', '2', '3', '4', '5']} />
 		{/if}
-		{#if mode === 'Packs' || mode === 'Both'}
+		<!-- {#if mode === 'Packs' || mode === 'Both'}
 			<FormSelect
 				id="packCount"
 				label="Pack Count"
 				bind:bindValue={packCount}
 				items={['All', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
-		{/if}
-		{#if mode === 'Packs' || mode === 'Both'}
+		{/if} -->
+		<!-- {#if mode === 'Packs' || mode === 'Both'}
 			<FormSelect
 				id="minPack"
 				label="Minimum Floor"
 				subTitle={`Open ${packCount} packs on a nation up to the floor of ${minPack} packs. Always keep at least ${minPack} packs.`}
 				bind:bindValue={minPack}
 				items={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
-		{/if}
+		{/if} -->
 		<Buttons
 			stopButton={true}
 			bind:stopped
 			bind:stoppable
 			downloadButton={true}
 			bind:downloadable
-			bind:content={issuesContent}
+			bind:content
 			name="gotIssues">
-			<OpenButton bind:counter bind:progress bind:openNewLinkArr />
+			<OpenButton bind:progress bind:openNewLinkArr />
 		</Buttons>
 	</form>
 	<Terminal bind:progress />

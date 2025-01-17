@@ -3,11 +3,10 @@
 
 	interface Props {
 		progress?: string
-		counter?: number
 		openNewLinkArr?: Array<string>
 	}
 
-	let { progress = $bindable(''), counter = $bindable(0), openNewLinkArr = $bindable([]) }: Props = $props()
+	let { progress = $bindable(''), openNewLinkArr = $bindable([]) }: Props = $props()
 </script>
 
 <Button
@@ -16,19 +15,19 @@
 	variant={'default'}
 	onkeyup={e => {
 		if (e.key !== 'Enter') return
-		if (counter > openNewLinkArr.length - 1) {
+		if (openNewLinkArr.length === 0) {
 			return
 		}
-		window.open(openNewLinkArr[counter], '_blank')
-		counter++
+		window.open(openNewLinkArr[0], '_blank')
+		openNewLinkArr.splice(0, 1)
 	}}
 	onclick={(e: any) => {
 		if (e.pointerType === 'mouse') {
-			if (counter > openNewLinkArr.length - 1) {
+			if (openNewLinkArr.length === 0) {
 				return
 			}
-			window.open(openNewLinkArr[counter], '_blank')
-			counter++
+			window.open(openNewLinkArr[0], '_blank')
+			openNewLinkArr.splice(0, 1)
 		}
 	}}>
 	Open Available Link

@@ -18,7 +18,7 @@
 	let downloadable = $state(true)
 	let main = $state('')
 	let deck = $state('')
-	let content = $state('')
+	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 	// let collections = '';
 	onMount(() => {
@@ -38,7 +38,7 @@
 		stoppable = true
 		stopped = false
 		downloadable = false
-		content = ''
+		content = []
 		progress = `<p class="font-bold">Initiating Orphans...</p>`
 		let collectionList: string[] = []
 		// let collectionList = collections.split('\n');
@@ -124,7 +124,10 @@
 		})
 
 		cardsNotInCollection.forEach(card => {
-			content += `<tr><td><p>S${card.SEASON} ${card.CARDID}</p></td><td><p><a target="_blank" href="${domain}/page=deck/card=${card.CARDID}/season=${card.SEASON}?${urlParameters('Orphans', main)}">Link to Card</a></p></td></tr>\n`
+			content.push({
+				url: `${domain}/page=deck/card=${card.CARDID}/season=${card.SEASON}?${urlParameters('Orphans', main)}`,
+				tableText: `Link to S${card.SEASON} ${card.CARDID}`,
+			})
 		})
 
 		progress += `<p>Found ${cardsNotInCollection.length} cards not in a collection</p>`

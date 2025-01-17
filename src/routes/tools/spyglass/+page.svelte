@@ -28,7 +28,7 @@
 			} else {
 				return string
 			}
-		} catch (error) {
+		} catch {
 			return null
 		}
 	}
@@ -80,7 +80,7 @@
 			const wfe = sanitize(wfelist[i])
 			const embassiesList = embassies[name]
 
-			const regionObject: { [key: string]: any } = {
+			const regionObject = {
 				Regions: name,
 				'Region Link': `${domain}/region=${name}?${urlParameters('Spyglass', main)}`,
 				'# Nations': nationCount,

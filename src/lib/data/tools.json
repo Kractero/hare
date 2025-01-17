@@ -70,9 +70,9 @@
 		"description": "Temp name. A testing transfer tool."
 	},
 	{
-		"name": "Inscription Assistant",
+		"name": "Decorator",
 		"slug": "inscription",
-		"description": "Upload flags, banners and inscribe/view cards."
+		"description": "Upload flags and banners."
 	},
 	{
 		"name": "Containerise",
@@ -100,7 +100,7 @@
 		"description": "Get a list of cards not in any collection."
 	},
 	{
-		"name": "Flag Manager",
+		"name": "Flag Finder",
 		"slug": "flags",
 		"description": "Find which puppets have a specific flag."
 	},

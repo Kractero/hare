@@ -23,7 +23,7 @@
 	let immune: string = $state('')
 	let limit: string = $state('')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
-	let content: string = $state('')
+	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let downloadable = $state(false)
 	let inclusion = $state('Unendorsed')
 
@@ -49,7 +49,7 @@
 		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
-		content = ''
+		content = []
 		downloadable = false
 		progress = '<p>Initiating Endotart...</p>'
 		stoppable = true
@@ -93,7 +93,6 @@
 			}
 		}
 
-		let sheetCounter = 0
 		for (let i = 0; i < regionalWA.length; i++) {
 			if (abortController.signal.aborted || stopped) {
 				break
@@ -128,15 +127,20 @@
 						regionalWA[i] !== endotarter.toLowerCase().replaceAll(' ', '_')
 					) {
 						progress += `<p class="text-green-400">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> is not being endorsed by ${endotarter}.</p>`
-						content += `<tr><td><p>${sheetCounter + 1}</p></td><td><p><a target="_blank" href="${domain}/nation=${regionalWA[i]}#composebutton?${urlParameters('Endotart', main)}">Link to ${regionalWA[i]}</a></p></td></tr>\n`
-						sheetCounter++
+						content.push({
+							url: `${domain}/nation=${regionalWA[i]}#composebutton?${urlParameters('Endotart', main)}`,
+							tableText: `Link to ${regionalWA[i]}`,
+						})
 					} else if (ENDORSEMENTS.length > Number(limit)) {
 						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> has more than ${limit} endorsements.</p>`
 					} else {
 						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> is already endorsed by ${endotarter}.</p>`
 						if (inclusion === 'All') {
-							content += `<tr><td><p>${sheetCounter + 1}</p></td><td><p><a target="_blank" style="color: red;" href="${domain}/nation=${regionalWA[i]}#composebutton?${urlParameters('Endotart', main)}">Link to ${regionalWA[i]}</a></p></td></tr>\n`
-							sheetCounter++
+							content.push({
+								url: `${domain}/nation=${regionalWA[i]}#composebutton?${urlParameters('Endotart', main)}`,
+								tableText: `Link to ${regionalWA[i]}`,
+								linkStyle: 'color: red;',
+							})
 						}
 					}
 				} else {
@@ -145,18 +149,24 @@
 						regionalWA[i] !== endotarter.toLowerCase().replaceAll(' ', '_')
 					) {
 						progress += `<p class="text-green-400">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> is not being endorsed by ${endotarter}.</p>`
-						content += `<tr><td><p>${sheetCounter + 1}</p></td><td><p><a target="_blank" href="${domain}/nation=${regionalWA[i]}#composebutton?${urlParameters('Endotart', main)}">Link to ${regionalWA[i]}</a></p></td></tr>\n`
-						sheetCounter++
+						content.push({
+							url: `${domain}/nation=${regionalWA[i]}#composebutton?${urlParameters('Endotart', main)}`,
+							tableText: `Link to ${regionalWA[i]}`,
+						})
 					} else {
 						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> is already endorsed by ${endotarter}.</p>`
 						if (inclusion === 'All') {
-							content += `<tr><td><p>${sheetCounter + 1}</p></td><td><p><a target="_blank" style="color: red;" href="${domain}/nation=${regionalWA[i]}#composebutton?${urlParameters('Endotart', main)}">Link to ${regionalWA[i]}</a></p></td></tr>\n`
-							sheetCounter++
+							content.push({
+								url: `${domain}/nation=${regionalWA[i]}#composebutton?${urlParameters('Endotart', main)}`,
+								tableText: `Link to ${regionalWA[i]}`,
+								linkStyle: 'color: red;',
+							})
 						}
 					}
 				}
 			}
 		}
+		console.log(content)
 		progress += `<p>Finished searching ${regionalXML.NATION.REGION} for nations not being endorsed by ${endotarter}</p>`
 		stoppable = false
 		downloadable = true

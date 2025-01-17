@@ -18,7 +18,7 @@
 	let stoppable = $state(false)
 	let stopped = $state(false)
 	let main = $state('')
-	let content = $state('')
+	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let cardIds = $state('')
 	let mode = $state('')
 	let collectionsOrDecks = $state('')
@@ -99,9 +99,10 @@
 				if (iteratorCard.SEASON === Number(season) && iteratorCard.CARDID === Number(id)) return
 			}
 			noMatch.push(card)
-			content += `<tr><td><p>${
-				cardsCount + 1
-			}</p></td><td><p><a target="_blank" href="${domain}/page=deck/card=${id}/season=${season}?${urlParameters('Signal', main)}">Link to Card</a></p></td></tr>\n`
+			content.push({
+				url: `${domain}/page=deck/card=${id}/season=${season}?${urlParameters('Signal', main)}`,
+				tableText: `Link to Card ${id} Season ${season}`,
+			})
 			cardsCount++
 			progress += `<p class="text-green-400">Card ${id} from season ${season} not found within the provided parameters.</p>`
 		})
@@ -113,7 +114,7 @@
 
 <ToolContent
 	toolTitle="Signal"
-	caption="Given card ids, provide decks, collections, or check asks for bids for what's missing. Sideroca compatible." />
+	caption="Given card ids, provide decks, collections, or check asks for bids for what's missing." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">

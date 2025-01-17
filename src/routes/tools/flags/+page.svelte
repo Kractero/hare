@@ -19,8 +19,7 @@
 	let main = $state('')
 	let flags = $state('')
 	let downloadable = $state(false)
-	let content = $state('')
-	let count = 0
+	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let mode = $state('Flags')
 	let mottos = $state('')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
@@ -44,12 +43,14 @@
 		if (errors.length > 0) return
 		stoppable = true
 		stopped = false
-		progress = '<p>Initiating Flag Manager...</p>'
+		content = []
+		progress = '<p>Initiating Flag Finder...</p>'
 		let flagsList = flags.split('\n')
 		let mottosList = mottos.split('\n')
 		let puppetsList = puppets.split('\n')
 		for (let i = 0; i < puppetsList.length; i++) {
 			let nation = puppetsList[i]
+			nation = nation.toLowerCase().replaceAll(' ', '_')
 			try {
 				if (abortController.signal.aborted || stopped) {
 					break
@@ -59,22 +60,22 @@
 					const response = await parseXML(`${domain}/cgi-bin/api.cgi?nation=${nation}&q=flag`, main)
 					for (const flag of flagsList) {
 						if (response.NATION.FLAG.includes(flag)) {
-							progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="${domain}/nation=${nation}?${urlParameters('Flag Manager', main)}" class="underline">${nation}</a> has flag containing ${flag}!</p>`
-							content += `<tr><td><p>${
-								count + 1
-							}</p></td><td><p><a target="_blank" href="${domain}/nation=${nation}?${urlParameters('Flag Manager', main)}">Link to Nation</a></p></td></tr>`
-							count++
+							progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="${domain}/nation=${nation}?${urlParameters('Flag_Manager', main)}" class="underline">${nation}</a> has flag containing ${flag}!</p>`
+							content.push({
+								url: `${domain}/nation=${nation}?${urlParameters('Flag_Finder', main)}`,
+								tableText: `Link to ${nation}`,
+							})
 						}
 					}
 				} else {
 					const response = await parseXML(`${domain}/cgi-bin/api.cgi?nation=${nation}&q=motto`, main)
 					for (const motto of mottosList) {
 						if (response.NATION.MOTTO.includes(motto)) {
-							progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="${domain}/nation=${nation}?${urlParameters('Flag Manager', main)}" class="underline">${nation}</a> has motto that includes '${motto}'!</p>`
-							content += `<tr><td><p>${
-								count + 1
-							}</p></td><td><p><a target="_blank" href="${domain}/nation=${nation}?${urlParameters('Flag Manager', main)}">Link to Nation</a></p></td></tr>`
-							count++
+							progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="${domain}/nation=${nation}?${urlParameters('Flag_Manager', main)}" class="underline">${nation}</a> has motto that includes '${motto}'!</p>`
+							content.push({
+								url: `${domain}/nation=${nation}?${urlParameters('Flag_Finder', main)}`,
+								tableText: `Link to ${nation}`,
+							})
 						}
 					}
 				}
@@ -82,14 +83,14 @@
 				progress += `<p class="text-red-400">Error occured on ${nation}: ${err}`
 			}
 		}
-		progress += `Flag manager finished searching!`
+		progress += `Flag finder finished searching!`
 		stoppable = false
 		downloadable = true
 	}
 </script>
 
 <ToolContent
-	toolTitle="Flag Manager"
+	toolTitle="Flag Finder"
 	caption="Find which puppets have a specific flag."
 	author="Kractero"
 	link="https://nationstates.net/Kractero" />

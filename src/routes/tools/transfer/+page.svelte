@@ -37,7 +37,7 @@
 	onDestroy(() => abortController.abort())
 
 	async function onSubmit(e: Event) {
-		e.preventDefault
+		e.preventDefault()
 		pushHistory(`?main=${main}&transfer=${transfer}&mode=${mode}`)
 		errors = checkUserAgent('main')
 		if (errors.length > 0) return

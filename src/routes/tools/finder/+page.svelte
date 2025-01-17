@@ -18,8 +18,7 @@
 	let domain = ''
 	let progress = $state('')
 	let openNewLinkArr: Array<string> = $state([])
-	let counter = $state(0)
-	let junkHtml = $state('')
+	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let downloadable = $state(false)
 	let stoppable = $state(false)
 	let stopped = $state(false)
@@ -50,6 +49,7 @@
 		downloadable = false
 		stoppable = true
 		stopped = false
+		content = []
 		openNewLinkArr = []
 		let puppetList = puppets.split('\n')
 		progress = '<p>Initiating Finder...</p>'
@@ -169,7 +169,10 @@
 														...openNewLinkArr,
 														`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}`,
 													]
-													junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}">Link to Card</a></p></td></tr>\n`
+													content.push({
+														url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}`,
+														tableText: `Link to ${nation}`,
+													})
 													progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${currGiftee}`
 													failedGiftCount++
 												}
@@ -185,7 +188,10 @@
 											...openNewLinkArr,
 											`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('Finder', main)}`,
 										]
-										junkHtml += `<tr><td><p>${findCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('Finder', main)}">Link to Card</a></p></td></tr>\n`
+										content.push({
+											url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}`,
+											tableText: `Link to ${nation}`,
+										})
 									}
 									findCount++
 								}
@@ -263,10 +269,10 @@
 				bind:stoppable
 				downloadButton={true}
 				bind:downloadable
-				bind:content={junkHtml}
+				bind:content
 				type="html"
 				name="Finder">
-				<OpenButton bind:counter bind:progress bind:openNewLinkArr />
+				<OpenButton bind:progress bind:openNewLinkArr />
 			</Buttons>
 		</div>
 	</form>

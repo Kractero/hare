@@ -6,7 +6,7 @@
 		stoppable?: boolean
 		downloadButton?: boolean
 		downloadable?: boolean
-		content?: Array<string> | string
+		content?: Array<{ url: string; tableText: string; linkStyle?: string } | string> | string
 		type?: string
 		name?: string
 		stopped?: boolean
@@ -18,7 +18,7 @@
 		stoppable = $bindable(false),
 		downloadButton = false,
 		downloadable = $bindable(false),
-		content = $bindable(''),
+		content = $bindable([]),
 		type = '',
 		name = '',
 		stopped = $bindable(false),

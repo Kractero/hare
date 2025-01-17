@@ -16,7 +16,7 @@
 	let puppets = $state('')
 	let main = $state('')
 	let password = $state('')
-	let content = $state('')
+	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let restoreCount = 0
 	let downloadable = $state(false)
 	let errors: Array<{ field: string | number; message: string }> = $state([])
@@ -62,6 +62,7 @@
 		stoppable = true
 		stopped = false
 		progress = ''
+		content = []
 		let puppetList = puppets.split('\n')
 		for (let i = 0; i < puppetList.length; i++) {
 			let nation = puppetList[i]
@@ -81,7 +82,10 @@
 			if (existence === false) {
 				progress += `<p class="text-red-400">Failed to log into ${nation}, adding to restore sheet...</p>`
 				let nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
-				content += `<tr><td><p>${restoreCount + 1}</p></td><td><p><a target="_blank" href="${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=upload_flag/test=1?${urlParameters('Pinger', main)}">Link to Restore ${nation}</a></p></td></tr>`
+				content.push({
+					url: `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=upload_flag/test=1?${urlParameters('Pinger', main)}`,
+					tableText: `Link to Restore ${nation}`,
+				})
 				restoreCount++
 			}
 			if (existence === true) {

@@ -22,8 +22,7 @@
 	let domain = ''
 	let progress = $state('')
 	let openNewLinkArr: Array<string> = $state([])
-	let counter = $state(0)
-	let junkHtml = $state('')
+	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let stoppable = $state(false)
 	let stopped = $state(false)
 	let downloadable = $state(false)
@@ -36,14 +35,27 @@
 	let password = $state('')
 	let owners = $state('')
 	let cardcount = $state('')
-	let raritiesMV: { [key: string]: number } = $state({
+	let checkMode = $state('Advanced')
+	let raritiesMV: {
+		common: number
+		uncommon: number
+		rare: number
+		'ultra-rare': number
+		epic: number
+	} = $state({
 		common: 0.5,
 		uncommon: 1,
 		rare: 1,
 		'ultra-rare': 1,
 		epic: 1,
 	})
-	let raritiesLowestBid: { [key: string]: number } = $state({
+	let raritiesLowestBid: {
+		common: number
+		uncommon: number
+		rare: number
+		'ultra-rare': number
+		epic: number
+	} = $state({
 		common: 1,
 		uncommon: 1,
 		rare: 1,
@@ -52,7 +64,7 @@
 	})
 	let skipseason = $state("Don't Skip")
 	let skipexnation = $state(false)
-	let sellContent = ''
+	let sellContent: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let finderlist = $state('')
 	let jdjtransfer = $state('-1')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
@@ -131,11 +143,11 @@
 		stoppable = true
 		stopped = false
 		progress = ''
-		junkHtml = ''
-		sellContent = ''
+		content = []
+		sellContent = []
+		openNewLinkArr = []
 		const interimSells = []
 		let puppetList = puppets.split('\n')
-		let failedGiftCount = 0
 		const whiteList = regionalwhitelist ? regionalwhitelist.split('\n') : []
 		if (whiteList.length > 0) {
 			progress += `<p>Whitelisting regions: ${whiteList.map(region => region.trim()).join(', ')}</p>`
@@ -155,9 +167,8 @@
 		if (skipexnation === true) {
 			progress += `<p>Skipping s1 exnations</p>`
 		}
-		const rarityArr = Object.entries(raritiesMV)
-		for (let i = 0; i < rarityArr.length; i++) {
-			progress += `<p>${rarityArr[i][0]} junk threshold at ${rarityArr[i][1]}</p>`
+		for (let i = 0; i < Object.entries(raritiesMV).length; i++) {
+			progress += `<p>${Object.entries(raritiesMV)[i][0]} junk threshold at ${Object.entries(raritiesMV)[i][1]}</p>`
 		}
 		const rarityLowestBidArr = Object.entries(raritiesLowestBid)
 		for (let i = 0; i < rarityLowestBidArr.length; i++) {
@@ -200,49 +211,75 @@
 					for (let i = 0; i < cards.length; i++) {
 						const id = cards[i].CARDID
 						const season = cards[i].SEASON
+						const marketValue = cards[i].MARKET_VALUE
+						const category = cards[i].CATEGORY
 						if (abortController.signal.aborted || stopped) {
 							break
-						}
-						const xmlDocument = await parseXML(
-							`${domain}/cgi-bin/api.cgi?cardid=${id}&season=${season}&q=card+markets+info+owners`,
-							main
-						)
-						const card: Card = xmlDocument.CARD
-						const cardOwners = Array.isArray(card.OWNERS.OWNER)
-							? new Set(card.OWNERS.OWNER)
-							: new Set([card.OWNERS.OWNER])
-						const category = card.CATEGORY
-						const marketValue = card.MARKET_VALUE
-						const region = String(card.REGION)
-						const flag = String(card.FLAG)
-						let highestBid = 0
-						const markets = card.MARKETS ? card.MARKETS.MARKET : []
-						if (Array.isArray(markets)) {
-							markets.forEach(market => {
-								if (market.TYPE === 'bid') {
-									const price = parseFloat(market.PRICE)
-									if (price > highestBid) {
-										highestBid = price
-									}
-								}
-							})
-						} else {
-							if (markets.TYPE === 'bid') {
-								const price = parseFloat(markets.PRICE)
-								if (price > highestBid) {
-									highestBid = price
-								}
-							}
 						}
 
 						let junk = true
 						let reason = ''
-						fwhiteList.forEach(whitelistedFlag => {
-							if (flag.includes(whitelistedFlag)) {
-								junk = false
-								reason = `<span class="text-blue-400">Flag is whitelisted ${flag}</span>`
+
+						if (checkMode === 'Advanced') {
+							const xmlDocument = await parseXML(
+								`${domain}/cgi-bin/api.cgi?cardid=${id}&season=${season}&q=card+markets+info+owners`,
+								main
+							)
+							const card: Card = xmlDocument.CARD
+							const cardOwners = Array.isArray(card.OWNERS.OWNER)
+								? new Set(card.OWNERS.OWNER)
+								: new Set([card.OWNERS.OWNER])
+							const region = String(card.REGION)
+							const flag = String(card.FLAG)
+							let highestBid = 0
+							const markets = card.MARKETS ? card.MARKETS.MARKET : []
+							if (Array.isArray(markets)) {
+								markets.forEach(market => {
+									if (market.TYPE === 'bid') {
+										const price = parseFloat(market.PRICE)
+										if (price > highestBid) {
+											highestBid = price
+										}
+									}
+								})
+							} else {
+								if (markets.TYPE === 'bid') {
+									const price = parseFloat(markets.PRICE)
+									if (price > highestBid) {
+										highestBid = price
+									}
+								}
 							}
-						})
+
+							fwhiteList.forEach(whitelistedFlag => {
+								if (flag.includes(whitelistedFlag)) {
+									junk = false
+									reason = `<span class="text-blue-400">Flag is whitelisted ${flag}</span>`
+								}
+							})
+							if (owners && Number(owners) > cardOwners.size) {
+								junk = false
+								reason = `<span class="text-blue-400">has less owners than ${owners}</span>`
+							}
+							if (
+								category !== 'legendary' &&
+								raritiesLowestBid[category] &&
+								highestBid >= Number(raritiesLowestBid[category])
+							) {
+								junk = false
+								reason = `<span class="text-blue-400">has high bid</span>`
+							}
+							if (!region && skipexnation) {
+								junk = false
+								reason = `<span class="text-blue-400">S1 exnation</span>`
+							}
+
+							if (region && whiteList.includes(region)) {
+								junk = false
+								reason = `<span class="text-blue-400">is in whitelisted ${region}</span>`
+							}
+						}
+
 						findSplit.forEach(findid => {
 							const matchSeason = findid[1]
 							if (findid[0] === String(id)) {
@@ -259,53 +296,46 @@
 						})
 
 						if (
-							(skipseason === 'Skip Offseasons' && [1, 2].includes(Number(season))) ||
+							(skipseason === 'Skip Offseasons' && [1, 2, 3].includes(Number(season))) ||
 							(skipseason === '1' && Number(season) === 1) ||
-							(skipseason === '2' && Number(season) === 2)
+							(skipseason === '2' && Number(season) === 2) ||
+							(skipseason === '3' && Number(season) === 3) ||
+							(skipseason === '4' && Number(season) === 4)
 						) {
 							junk = false
 							reason = `<span class="text-blue-400">is ignored season ${season}</span>`
 						}
 
-						if (owners && Number(owners) > cardOwners.size) {
-							junk = false
-							reason = `<span class="text-blue-400">has less owners than ${owners}</span>`
-						}
-						if (raritiesMV.hasOwnProperty(category) && Number(raritiesMV[category]) === -1) {
+						if (category !== 'legendary' && raritiesMV[category] && Number(raritiesMV[category]) === -1) {
 							junk = false
 							reason = `<span class="text-blue-400">category set to gift</span>`
 						}
-						if (raritiesMV.hasOwnProperty(category) && parseFloat(marketValue) >= Number(raritiesMV[category])) {
+						if (
+							category !== 'legendary' &&
+							raritiesMV[category] &&
+							parseFloat(marketValue) >= Number(raritiesMV[category])
+						) {
 							junk = false
 							reason = `<span class="text-blue-400">has mv exceeding threshold</span>`
 						}
-						if (raritiesLowestBid.hasOwnProperty(category) && highestBid >= Number(raritiesLowestBid[category])) {
-							junk = false
-							reason = `<span class="text-blue-400">has high bid</span>`
-						}
+
 						if (category === 'legendary') {
 							junk = false
 							reason = `<span class="text-blue-400">Legendary card</span>`
 						}
-						if (!region && skipexnation) {
-							junk = false
-							reason = `<span class="text-blue-400">S1 exnation</span>`
-						}
-						if (region && whiteList.includes(region)) {
-							junk = false
-							reason = `<span class="text-blue-400">is in whitelisted ${region}</span>`
-						}
+
 						if (junk) {
 							progress += `<p>${i + 1}/${
 								cards.length
-							} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} and highest bid ${highestBid}</p>`
+							} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue}</p>`
 							openNewLinkArr = [
 								...openNewLinkArr,
 								`${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1`,
 							]
-							junkHtml += `<tr><td><p>${nation} | ${i + 1} of ${
-								cards.length
-							} (${currCard + 1})</p></td><td><p><a target="_blank" href="${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1">Link to Card</a></p></td></tr>\n`
+							content.push({
+								url: `${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1`,
+								tableText: `Link to Card`,
+							})
 							currCard = currCard + 1
 						} else {
 							if (mode === 'Gift') {
@@ -363,11 +393,14 @@
 												...openNewLinkArr,
 												`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}&giftto=${giftto}`,
 											]
-											junkHtml += `<tr><td><p>${failedGiftCount + 1}</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}&giftto=${giftto}">Link to Card</a></p></td></tr>\n`
+											sellContent.push({
+												url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}&giftto=${giftto}`,
+												tableText: `Link to Card`,
+											})
 											progress += `<p>${i + 1}/${
 												cards.length
 											} -> <span class="text-red-400">${nation} failed to gift ${id} to ${giftto} - ${reason}</span></p>`
-											failedGiftCount++
+											currSellCard = currSellCard + 1
 										}
 									}
 									if (successfulGift)
@@ -385,9 +418,10 @@
 									interimSells.push(
 										`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}`
 									)
-									sellContent += `<tr><td><p>${nation} | ${i + 1} of ${
-										cards.length
-									} (${currSellCard + 1})</p></td><td><p><a target="_blank" href="${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}">Link to Card</a></p></td></tr>\n`
+									sellContent.push({
+										url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/jdj=view?${urlParameters('junkDaJunk', main)}`,
+										tableText: `Link to Card`,
+									})
 									currSellCard = currSellCard + 1
 								}
 							}
@@ -402,7 +436,7 @@
 				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
 			}
 		}
-		junkHtml = junkHtml + sellContent
+		content = [...content, ...sellContent]
 		progress += `<p>Finished processing ${puppetList.length} nations, adding ${currCard + currSellCard} to sheet.</p>`
 		downloadable = true
 		stoppable = false
@@ -437,27 +471,30 @@
 	author="9003"
 	originalBlurb="rewritten in JS for browser use by Kractero"
 	link="https://github.com/jmikk/Card-Proccessor"
-	additional={`<p class="text-xs mb-4">
-	The card id whitelist can specify season as well with CARDID,SEASON,GIFTTO instead of just CARDID on each line.
-	GIFTTO will overrule the Gift To nation if provided but to providee GIFTTO a season must be provided.
-	The regional whitelist indicates regions to skip when deciding to junk cards. The card count threshold only runs Junking
-	analyzing on specified nations that have over a certain amount of cards. The owner count threshold will indicate cards to skip
-	that have less than the specified amount. The rarity threshold dictates when to skip based on the card's rarity and market value.
-	The maximum bank threshold tells JDJ to skip the nation if it exceeds a certain bank amount (-1 means don't skip at any amount).
-</p>
-<p class="mb-2">
-	For optimal use, you should use the
-	<a class="underline" href="https://github.com/Kractero/userscripts/blob/main/finderJDJDefault.user.js" target="_blank" rel="noreferrer noopener">
-		finder gift default
-	</a>
-	userscript when gifting.
-</p>
-<p class="text-xs mb-2">
-	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
-</p>
-<h2 class="text-xl mb-16">
-	Hare does not junk cards, it generates a html file of cards to junk.
-</h2>`} />
+	additional={`
+		<p class="text-xs mb-4">
+			The <span class="bold">Advanced</span> mode is what you are used to, and can check flags, regions, owner count, bids, exnation status (for s1s).
+			<span class="bold">Simple</span> skips all of those and only checks ids, rarity, mv, and seasons. Simple is faster while advanced is more targeted.
+		</p>
+		<p class="text-xs mb-4">
+			The card id whitelist can specify season as well with CARDID,SEASON,GIFTTO instead of just CARDID on each line.
+			GIFTTO will overrule the Gift To nation if provided but to providee GIFTTO a season must be provided.
+			The regional whitelist indicates regions to skip when deciding to junk cards. The card count threshold only runs Junking
+			analyzing on specified nations that have over a certain amount of cards. The owner count threshold will indicate cards to skip
+			that have less than the specified amount. The rarity threshold dictates when to skip based on the card's rarity and market value.
+			The maximum bank threshold tells JDJ to skip the nation if it exceeds a certain bank amount (-1 means don't skip at any amount).
+		</p>
+		<p class="mb-2">
+			For optimal use, you should use the
+			<a class="underline" href="https://github.com/Kractero/userscripts/blob/main/finderJDJDefault.user.js" target="_blank" rel="noreferrer noopener">
+				finder gift default
+			</a>
+			userscript when gifting. When gifting, password input is optional and will be disabled if the puppet list includes a comma for nation,password.
+		</p>
+		<h2 class="text-xl mb-16">
+			Hare does not junk cards, it generates a html file of cards to junk.
+		</h2>
+	`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
@@ -465,11 +502,16 @@
 		{#if mode === 'Gift'}
 			<FormInput label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />
 		{/if}
+		<FormSelect bind:bindValue={checkMode} id="checkMode" items={['Advanced', 'Simple']} label="Mode" />
 		<FormTextArea bind:bindValue={finderlist} label={'Card ID Whitelist'} id="finderlist" />
-		<FormTextArea bind:bindValue={regionalwhitelist} label={'Regional Whitelist'} id="regions" />
-		<FormTextArea bind:bindValue={flagwhitelist} label={'Flag Whitelist'} id="flags" />
+		{#if checkMode === 'Advanced'}
+			<FormTextArea bind:bindValue={regionalwhitelist} label={'Regional Whitelist'} id="regions" />
+			<FormTextArea bind:bindValue={flagwhitelist} label={'Flag Whitelist'} id="flags" />
+		{/if}
 		<FormInput label={'Card Count Threshold'} bind:bindValue={cardcount} id="cardcount" />
-		<FormInput label={'Owner Count Threshold'} bind:bindValue={owners} id="owners" />
+		{#if checkMode === 'Advanced'}
+			<FormInput label={'Owner Count Threshold'} bind:bindValue={owners} id="owners" />
+		{/if}
 		<!-- {#if mode === 'Sell' || mode === 'Exclude'}
 			<FormInput
 				label={'Gift Override'}
@@ -481,16 +523,20 @@
 			<p class="w-24">Rarity Market Value Threshold</p>
 			<Rarities bind:rarities={raritiesMV} />
 		</div>
-		<div class="flex max-w-lg justify-between gap-4">
-			<p class="w-24">Rarity Lowest Bid Value Threshold</p>
-			<Rarities bind:rarities={raritiesLowestBid} />
-		</div>
+		{#if checkMode === 'Advanced'}
+			<div class="flex max-w-lg justify-between gap-4">
+				<p class="w-24">Rarity Lowest Bid Value Threshold</p>
+				<Rarities bind:rarities={raritiesLowestBid} />
+			</div>
+		{/if}
 		<FormSelect
 			bind:bindValue={skipseason}
 			id="skipseason"
-			items={["Don't Skip", 'Skip Offseasons', '1', '2']}
+			items={["Don't Skip", 'Skip Offseasons', '1', '2', '3', '4']}
 			label="Skip Seasons?" />
-		<FormCheckbox bind:checked={skipexnation} id="skipexnation" label="Skip Exnation" />
+		{#if checkMode === 'Advanced'}
+			<FormCheckbox bind:checked={skipexnation} id="skipexnation" label="Skip Exnation" />
+		{/if}
 		<FormInput label={'Maximum Bank Threshold'} bind:bindValue={jdjtransfer} id="jdjtransfer" required={true} />
 		<FormSelect bind:bindValue={mode} id="mode" items={['Gift', 'Sell', 'Exclude']} label="Behavior" />
 		<Buttons
@@ -499,9 +545,9 @@
 			bind:stoppable
 			downloadButton={true}
 			bind:downloadable
-			bind:content={junkHtml}
+			bind:content
 			name="junkDaJunk">
-			<OpenButton bind:counter bind:progress bind:openNewLinkArr />
+			<OpenButton bind:progress bind:openNewLinkArr />
 		</Buttons>
 	</form>
 	<Terminal bind:progress />
