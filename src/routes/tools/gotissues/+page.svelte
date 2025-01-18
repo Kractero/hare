@@ -46,14 +46,14 @@
 	async function onSubmit(e: Event) {
 		e.preventDefault()
 		pushHistory(
-			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}&minPack=${minPack}` : `&count=${issueCount}&packCount=${packCount}&minPack=${minPack}`}${testmode ? `&test=${testmode}` : ''}`
+			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : `&count=${issueCount}`}${testmode ? `&test=${testmode}` : ''}`
 		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		downloadable = false
 		stoppable = true
 		stopped = false
-		progress = `<p class="font-bold">Initiating gotIssues...mode set to ${mode} for ${mode === 'Issues' ? `${issueCount} issues` : mode === 'Packs' ? `${packCount} packs` : `${issueCount} issues, ${packCount} packs`}</p>`
+		progress = `<p class="font-bold">Initiating gotIssues...mode set to ${mode} for ${mode === 'Issues' ? `${issueCount} issues` : `${issueCount} issues`}</p>`
 		counter = 0
 		content = []
 		let puppetList = puppets.split('\n')
@@ -128,10 +128,17 @@
 					// }
 					for (let i = 0; i < packs; i++) {
 						const packLink = `${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`
-						packContent.push({
-							url: packLink,
-							tableText: `Link to Pack`,
-						})
+						if (mode === 'Both') {
+							packContent.push({
+								url: packLink,
+								tableText: `Link to Pack`,
+							})
+						} else {
+							content.push({
+								url: packLink,
+								tableText: `Link to Pack`,
+							})
+						}
 						packsCount++
 					}
 				}
