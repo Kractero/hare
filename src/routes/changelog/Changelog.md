@@ -12,9 +12,19 @@ If something is wrong with the index, the clear progress will reset the progress
 
 1. JunkDaJunk
 
+   - Changed season whitelisting to a multiple select. Don't Skip and Skip Offseasons are retired. Don't skip is possible by having nothing checked, skip offseasons by checking 1, 2, and 3.
+
    - Moved the logic around, so simple's parameters (id, season, rarity, market value) are checked first. This should save time as if a card is marked as junk it will no longer send an additional request for the advanced parameters.
 
    - The links to junk now say Link to Junk.
+
+2. Finder
+
+   - Finder now performs on two different modes. If the amount of cards exceeds the amount of puppets, it will go through the cards and check their owners and perform finder tasks off that. if the amount of puppets exceeds the amount of cards, it will do the normal finder process. This should save time on tasks like gifting legendaries.
+
+   - S4 legendaries added to legendary preset.
+
+   - Gifting properly follows rate limit using the helper function.
 
 ### Fixes
 

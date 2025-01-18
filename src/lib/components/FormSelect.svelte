@@ -10,9 +10,10 @@
 		id: string
 		items: string[]
 		bindValue: any
+		type?: 'single' | 'multiple'
 	}
 
-	let { label, subTitle = '', id, items, bindValue = $bindable() }: Props = $props()
+	let { label, subTitle = '', id, items, bindValue = $bindable(), type = 'single' }: Props = $props()
 
 	function isTheme(value: string): value is 'system' | 'light' | 'dark' {
 		return ['system', 'light', 'dark'].includes(value)
@@ -26,8 +27,8 @@
 			<p class="text-xs">{subTitle}</p>
 		{/if}</Label>
 	<Select.Root
-		type={'single'}
-		onValueChange={v => {
+		{type}
+		onValueChange={(v: any) => {
 			bindValue = v && v
 		}}
 		value={bindValue}>

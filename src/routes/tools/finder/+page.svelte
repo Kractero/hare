@@ -49,150 +49,186 @@
 		stoppable = true
 		stopped = false
 		content = []
-		let puppetList = puppets.split('\n')
+		let puppetList = puppets.split('\n').map(puppet => puppet.toLowerCase().replaceAll(' ', '_'))
 		progress = '<p>Initiating Finder...</p>'
 		const toFind = finderlist.split('\n')
+		const matches = toFind.map(matcher => matcher.split(','))
 		progress += `<p>Finding -> ${toFind.map(card => card.trim()).join(', ')}</p>`
 		let findCount = 0
 		let failedGiftCount = 0
 
-		// TO CONSIDER : mode that checks cards for their owners
-
-		// for (let i = 0; i < matches.length; i++) {
-		// 	const card = matches[i]
-		// 	const matchSeason = card[1]
-		// 	const matchGiftee = card[2]
-		// 	const cardInfo = await parseXML(`https://www.nationstates.net/cgi-bin/api.cgi?q=card+owners;cardid=${}`)
-		// }
-
 		const giftedCards = new Set()
 
-		for (let i = 0; i < puppetList.length; i++) {
-			if (mode === 'Gift One' && giftedCards.size > 0 && toFind.length > 0 && giftedCards.size === toFind.length) {
-				progress += `<p class="text-blue-400">All cards provided have been gifted, skipping remaining puppets`
-				continue
-			}
-			let currentNationXPin = ''
-			let nation = puppetList[i]
-			let nationSpecificPassword = ''
+		async function processGift(
+			nation: string,
+			cardId: string,
+			season: string,
+			giftee: string,
+			currentNationXPin: string,
+			nationSpecificPassword: string
+		) {
+			let token = ''
+			const headers: { [key: string]: string } = { 'User-Agent': main }
 
-			if (nation.includes(',')) {
-				nation = puppetList[i].split(',')[0]
-				nationSpecificPassword = puppetList[i].split(',')[1]
-			}
-			if (abortController.signal.aborted || stopped) {
-				break
-			}
-			nation = nation.toLowerCase().replaceAll(' ', '_')
+			if (currentNationXPin) headers['X-Pin'] = currentNationXPin
+			else headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
 
-			try {
-				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`
-				const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck`, main)
-				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD
-				cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
-				const matches = toFind.map(matcher => matcher.split(','))
-				if (cards && cards.length > 0) {
-					const originalCardCounts: { [key: string]: number } = cards.reduce(
-						(counts, card) => {
-							counts[card.CARDID] = (counts[card.CARDID] || 0) + 1
-							return counts
-						},
-						{} as { [key: string]: number }
-					)
+			const prepare = await fetch(
+				`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${cardId}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
+				{ headers: headers }
+			)
+			if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || ''
 
-					for (let j = 0; j < cards.length; j++) {
-						const id = cards[j].CARDID
-						const season = cards[j].SEASON
-						if (giftedCards.has(id) && mode === 'Gift One') {
-							progress += `<p class="text-blue-400">Already gifted ${id}.`
-							continue
+			const text = await prepare.text()
+			const xml = parser.parse(text)
+			token = xml.NATION.SUCCESS
+
+			const gift = await parseXML(
+				`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${cardId}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
+				main,
+				'',
+				currentNationXPin
+			)
+
+			if (gift.NATION && gift.NATION.ERROR) {
+				progress += `<p class="text-red-400">${nation} failed to gift ${cardId} to ${giftee}</p>`
+				failedGiftCount++
+			} else {
+				progress += `<p class="text-green-400">${nation} gifted ${cardId} to ${giftee}</p>`
+				giftedCards.add(cardId)
+			}
+		}
+
+		if (matches.length < puppetList.length) {
+			progress += `<p>More puppets than cards, proceeding...</p>`
+			for (let i = 0; i < matches.length; i++) {
+				if (mode === 'Gift One' && giftedCards.size > 0 && toFind.length > 0 && giftedCards.size === toFind.length) {
+					progress += `<p class="text-blue-400">All cards provided have been gifted, skipping remaining puppets`
+					break
+				}
+				if (abortController.signal.aborted || stopped) {
+					break
+				}
+				const card = matches[i]
+				const matchSeason = card[1]
+				const matchGiftee = card[2]
+				const cardInfo = await parseXML(
+					`https://www.nationstates.net/cgi-bin/api.cgi?q=card+owners;cardid=${card[0]};season=${matchSeason}`,
+					'Card Info'
+				)
+				const owners = cardInfo.CARD.OWNERS
+				const id = cardInfo.CARD.CARDID
+				const season = cardInfo.CARD.SEASON
+
+				if (!owners) continue
+
+				let ownerArr: string[] = Array.isArray(owners.OWNER) ? owners.OWNER : [owners.OWNER]
+				let matchedOwners = new Map()
+
+				ownerArr.forEach(owner => {
+					if (puppetList.includes(owner)) {
+						if (matchedOwners.has(owner)) {
+							matchedOwners.set(owner, matchedOwners.get(owner) + 1)
+						} else {
+							matchedOwners.set(owner, 1)
 						}
-						let matchingEntries = matches.filter(match => match[0] === String(id))
-						if (matchingEntries.length > 0) {
-							for (let entry of matchingEntries) {
-								const matchSeason = entry[1]
-								const matchGiftee = entry[2]
-								let currGiftee = matchGiftee || giftee
-								if (matchSeason && matchSeason !== String(season)) {
-									progress += `<p class="text-blue-400">Found ${id} but not right season.`
-								} else {
-									if (mode.includes('Gift')) {
-										let token = ''
-										const headers: { [key: string]: string } = { 'User-Agent': main }
+					}
+				})
 
-										if (currentNationXPin) headers['X-Pin'] = currentNationXPin
-										else headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
+				for (const [name, frequency] of matchedOwners.entries()) {
+					if (giftedCards.has(id) && mode === 'Gift One') {
+						progress += `<p class="text-blue-400">Already gifted ${id}.`
+						continue
+					}
+					let currentNationXPin = ''
+					let nationSpecificPassword = ''
+					let nation = name
+					const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck`, main)
+					let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD
+					cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
 
-										const prepare = await fetch(
-											`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=prepare&c=giftcard`,
-											{ headers: headers }
-										)
-										if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || ''
+					for (let i = 0; i < frequency; i++) {
+						let currGiftee = matchGiftee || giftee
+						if (matchSeason && matchSeason !== String(season)) {
+							progress += `<p class="text-blue-400">Found ${id} but not right season.`
+						} else {
+							if (mode.includes('Gift')) {
+								await processGift(nation, id, season, currGiftee, currentNationXPin, nationSpecificPassword)
+							} else {
+								progress += `<p class="text-green-400">${nation} owns ${id}!`
+								content.push({
+									url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}`,
+									tableText: `Link to ${nation}`,
+								})
+							}
+							findCount++
+						}
+					}
+				}
+			}
+		} else {
+			progress += `<p>More cards than puppets, proceeding...</p>`
+			for (let i = 0; i < puppetList.length; i++) {
+				if (mode === 'Gift One' && giftedCards.size > 0 && toFind.length > 0 && giftedCards.size === toFind.length) {
+					progress += `<p class="text-blue-400">All cards provided have been gifted, skipping remaining puppets`
+					continue
+				}
+				let currentNationXPin = ''
+				let nation = puppetList[i]
+				let nationSpecificPassword = ''
 
-										const text = await prepare.text()
-										const xml = parser.parse(text)
-										token = xml.NATION.SUCCESS
+				if (nation.includes(',')) {
+					nation = puppetList[i].split(',')[0]
+					nationSpecificPassword = puppetList[i].split(',')[1]
+				}
+				if (abortController.signal.aborted || stopped) {
+					break
+				}
+				nation = nation.toLowerCase().replaceAll(' ', '_')
 
-										const gift = await fetch(
-											`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${currGiftee}&mode=execute&c=giftcard&token=${token}`,
-											{
-												headers: {
-													'User-Agent': main,
-													'X-Pin': currentNationXPin,
-												},
-											}
-										)
-
-										if (gift.status === 200) {
-											let successfulGift = true
-											const verify = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck`, main)
-											let verifyCards: Array<Card> = verify.CARDS.DECK.CARD
-											verifyCards = verifyCards ? (Array.isArray(verifyCards) ? verifyCards : [verifyCards]) : []
-
-											if (verifyCards && verifyCards.length > 0) {
-												const verifyCardCounts: { [key: string]: number } = verifyCards.reduce(
-													(counts, card) => {
-														counts[card.CARDID] = (counts[card.CARDID] || 0) + 1
-														return counts
-													},
-													{} as { [key: string]: number }
-												)
-
-												if (!(id in verifyCardCounts) || verifyCardCounts[id] < originalCardCounts[id]) {
-													successfulGift = true
-													giftedCards.add(id)
-												} else {
-													successfulGift = false
-													content.push({
-														url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}`,
-														tableText: `Link to ${nation}`,
-													})
-													progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${currGiftee}`
-													failedGiftCount++
-												}
-											}
-											if (successfulGift)
-												progress += `<p class="text-green-400">${nation} gifted ${id} to ${currGiftee}`
-										} else {
-											progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${currGiftee}`
-										}
+				try {
+					progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`
+					const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck`, main)
+					let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD
+					cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
+					const matches = toFind.map(matcher => matcher.split(','))
+					if (cards && cards.length > 0) {
+						for (let j = 0; j < cards.length; j++) {
+							const id = cards[j].CARDID
+							const season = cards[j].SEASON
+							if (giftedCards.has(id) && mode === 'Gift One') {
+								progress += `<p class="text-blue-400">Already gifted ${id}.`
+								continue
+							}
+							let matchingEntries = matches.filter(match => match[0] === String(id))
+							if (matchingEntries.length > 0) {
+								for (let entry of matchingEntries) {
+									const matchSeason = entry[1]
+									const matchGiftee = entry[2]
+									let currGiftee = matchGiftee || giftee
+									if (matchSeason && matchSeason !== String(season)) {
+										progress += `<p class="text-blue-400">Found ${id} but not right season.`
 									} else {
-										progress += `<p class="text-green-400">${nation} owns ${id}!`
-										content.push({
-											url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}`,
-											tableText: `Link to ${nation}`,
-										})
+										if (mode.includes('Gift')) {
+											await processGift(nation, id, season, currGiftee, currentNationXPin, nationSpecificPassword)
+										} else {
+											progress += `<p class="text-green-400">${nation} owns ${id}!`
+											content.push({
+												url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}`,
+												tableText: `Link to ${nation}`,
+											})
+										}
+										findCount++
 									}
-									findCount++
 								}
 							}
 						}
+					} else {
+						progress += `<p class="text-blue-400">It is likely ${nation} has 0 cards, skipping!`
 					}
-				} else {
-					progress += `<p class="text-blue-400">It is likely ${nation} has 0 cards, skipping!`
+				} catch (err) {
+					progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
 				}
-			} catch (err) {
-				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
 			}
 		}
 		progress += `<p>Finished processing, found ${findCount} uniques, ${mode === 'Gift' ? `with ${failedGiftCount} failed gifts` : `on mode ${mode}.`}</p>`

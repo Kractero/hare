@@ -61,7 +61,7 @@
 		'ultra-rare': 1,
 		epic: 1,
 	})
-	let skipseason = $state("Don't Skip")
+	let skipseason: string[] = $state([])
 	let skipexnation = $state(false)
 	let sellContent: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let finderlist = $state('')
@@ -114,10 +114,29 @@
 					}
 		owners = page.url.searchParams.get('owners') || (localStorage.getItem('junkdajunkOwnerCount') as string) || ''
 		cardcount = page.url.searchParams.get('cardcount') || (localStorage.getItem('junkdajunkCardCount') as string) || ''
-		skipseason =
-			page.url.searchParams.get('skipseason') ||
-			(localStorage.getItem('junkdajunkOmittedSeasons') as string) ||
-			"Don't Skip"
+		if (page.url.searchParams.get('skipseason') !== null) {
+			if (
+				(page.url.searchParams.get('skipseason') as string) === "Don't Skip" ||
+				(page.url.searchParams.get('skipseason') as string) === 'Skip Offseasons'
+			) {
+				alert(`${page.url.searchParams.get('skipseason')} is no longer in use, please change it`)
+				skipseason = []
+			} else {
+				skipseason = [page.url.searchParams.get('skipseason') as string]
+			}
+		} else if (localStorage.getItem('junkdajunkOmittedSeasons')) {
+			if (
+				localStorage.getItem('junkdajunkOmittedSeasons') === "Don't Skip" ||
+				localStorage.getItem('junkdajunkOmittedSeasons') === 'Skip Offseasons'
+			) {
+				alert(`${localStorage.getItem('junkdajunkOmittedSeasons')} is no longer in use, please change it`)
+				skipseason = []
+			} else {
+				skipseason = [page.url.searchParams.get('skipseason') as string]
+			}
+		} else {
+			skipseason = []
+		}
 		skipexnation =
 			page.url.searchParams.get('skipexnation') === 'true' ||
 			localStorage.getItem('junkdajunkExnation') === 'true' ||
@@ -159,7 +178,7 @@
 			progress += `<p>Whitelisting cards: ${toFind.map(flag => flag.trim()).join(', ')}</p>`
 		}
 		const findSplit = finderlist.split('\n').map(matcher => matcher.split(','))
-		if (skipseason !== "Don't Skip") {
+		if (skipseason) {
 			progress += `<p>Skipping seasons: ${skipseason}`
 		}
 		if (skipexnation === true) {
@@ -218,13 +237,7 @@
 						let junk = true
 						let reason = ''
 
-						if (
-							(skipseason === 'Skip Offseasons' && [1, 2, 3].includes(Number(season))) ||
-							(skipseason === '1' && Number(season) === 1) ||
-							(skipseason === '2' && Number(season) === 2) ||
-							(skipseason === '3' && Number(season) === 3) ||
-							(skipseason === '4' && Number(season) === 4)
-						) {
+						if (skipseason.includes(String(season))) {
 							junk = false
 							reason = `<span class="text-blue-400">is ignored season ${season}</span>`
 						}
@@ -517,9 +530,10 @@
 			</div>
 		{/if}
 		<FormSelect
+			type="multiple"
 			bind:bindValue={skipseason}
 			id="skipseason"
-			items={["Don't Skip", 'Skip Offseasons', '1', '2', '3', '4']}
+			items={['1', '2', '3', '4']}
 			label="Skip Seasons?" />
 		{#if checkMode === 'Advanced'}
 			<FormCheckbox bind:checked={skipexnation} id="skipexnation" label="Skip Exnation" />
