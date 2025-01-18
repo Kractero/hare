@@ -219,7 +219,36 @@
 						let junk = true
 						let reason = ''
 
-						if (checkMode === 'Advanced') {
+						if (
+							(skipseason === 'Skip Offseasons' && [1, 2, 3].includes(Number(season))) ||
+							(skipseason === '1' && Number(season) === 1) ||
+							(skipseason === '2' && Number(season) === 2) ||
+							(skipseason === '3' && Number(season) === 3) ||
+							(skipseason === '4' && Number(season) === 4)
+						) {
+							junk = false
+							reason = `<span class="text-blue-400">is ignored season ${season}</span>`
+						}
+
+						if (category !== 'legendary' && raritiesMV[category] && Number(raritiesMV[category]) === -1) {
+							junk = false
+							reason = `<span class="text-blue-400">category set to gift</span>`
+						}
+						if (
+							category !== 'legendary' &&
+							raritiesMV[category] &&
+							parseFloat(marketValue) >= Number(raritiesMV[category])
+						) {
+							junk = false
+							reason = `<span class="text-blue-400">has mv exceeding threshold</span>`
+						}
+
+						if (category === 'legendary') {
+							junk = false
+							reason = `<span class="text-blue-400">Legendary card</span>`
+						}
+
+						if (junk === false && checkMode === 'Advanced') {
 							const xmlDocument = await parseXML(
 								`${domain}/cgi-bin/api.cgi?cardid=${id}&season=${season}&q=card+markets+info+owners`,
 								main
@@ -293,35 +322,6 @@
 								}
 							}
 						})
-
-						if (
-							(skipseason === 'Skip Offseasons' && [1, 2, 3].includes(Number(season))) ||
-							(skipseason === '1' && Number(season) === 1) ||
-							(skipseason === '2' && Number(season) === 2) ||
-							(skipseason === '3' && Number(season) === 3) ||
-							(skipseason === '4' && Number(season) === 4)
-						) {
-							junk = false
-							reason = `<span class="text-blue-400">is ignored season ${season}</span>`
-						}
-
-						if (category !== 'legendary' && raritiesMV[category] && Number(raritiesMV[category]) === -1) {
-							junk = false
-							reason = `<span class="text-blue-400">category set to gift</span>`
-						}
-						if (
-							category !== 'legendary' &&
-							raritiesMV[category] &&
-							parseFloat(marketValue) >= Number(raritiesMV[category])
-						) {
-							junk = false
-							reason = `<span class="text-blue-400">has mv exceeding threshold</span>`
-						}
-
-						if (category === 'legendary') {
-							junk = false
-							reason = `<span class="text-blue-400">Legendary card</span>`
-						}
 
 						if (junk) {
 							progress += `<p>${i + 1}/${
