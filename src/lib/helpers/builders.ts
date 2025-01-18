@@ -66,6 +66,7 @@ export const htmlContent = (
 
       #openNextLink {
         margin-bottom: 2rem;
+        margin-right: 2rem;
       }
 
       @media (prefers-color-scheme: dark) {
@@ -96,19 +97,14 @@ export const htmlContent = (
 
       <p>Click the Open Next Link button to begin processing the sheet.</p>
       <p>
-        If you closed the page, you can start from a
-        certain point by clicking the appropriate column.
-        Clicking a column will remove all preceding rows.
+        Whenever a link is processed its current index will be stored so when you reopen it will resume.
+        Clicking links will remove them from the table, but this progress is not stored.
       </p>
-      <p>Progress: <span id="remaining">1</span>/${content.length}</p>
-      <button
-        id="openNextLink"
-        type="button"
-        disabled
-        style="cursor: not-allowed;"
-      >
+      <p>Progress: <span id="remaining">0</span>/${content.length}</p>
+      <button id="openNextLink" type="button" disabled style="cursor: not-allowed;">
         Open Next Link
-      </button>`
+      </button>
+      <button id="clearStorage" type="button">Clear Progress</button>`
 					: ''
 			}
 
@@ -142,24 +138,36 @@ export const htmlContent = (
 				name === 'RCES' || name === 'Gold Retriever'
 					? script
 					: `
-      const button = document.getElementById('openNextLink')
-      button.focus()
-      const linkElements = document.querySelectorAll('table tr td a')
+      const button = document.getElementById('openNextLink');
+      const clearStorageButton = document.getElementById('clearStorage');
+      button.focus();
+      const linkElements = document.querySelectorAll('table tr td a');
 
-      let links = Array.from(linkElements).map(el => el.href)
+      let links = Array.from(linkElements).map((el) => el.href);
 
-      let counter = 1
+      let counter = 0;
 
       const updateProgress = () => {
-        document.querySelector('#remaining').textContent = counter
-      }
+        document.querySelector('#remaining').textContent = counter;
+      };
 
       const updateButtonState = () => {
-        button.disabled = links.length === 0
-        button.style.cursor = links.length === 0 ? 'not-allowed' : 'pointer'
-      }
+        button.disabled = links.length === 0;
+        button.style.cursor = links.length === 0 ? 'not-allowed' : 'pointer';
+      };
 
       updateProgress()
+
+      const storedIndex = parseInt(localStorage.getItem('removedRowsIndex') || '0', 10)
+      if (!isNaN(storedIndex) && storedIndex > 0) {
+        document.querySelector('#remaining').textContent = String(storedIndex)
+        for (let i = 0; i < storedIndex; i++) {
+          const row = document.querySelector('table tr')
+          if (row) row.remove()
+        }
+        links = links.slice(storedIndex)
+      }
+
       updateButtonState()
 
       button.addEventListener('keyup', e => {
@@ -172,6 +180,7 @@ export const htmlContent = (
         const linkElement = document.querySelector(\`a[href='\${link}']\`)
         if (linkElement) {
           linkElement.closest('tr').remove()
+          localStorage.setItem('removedRowsIndex', counter)
         }
       })
 
@@ -185,14 +194,22 @@ export const htmlContent = (
           const linkElement = document.querySelector(\`a[href='\${link}']\`)
           if (linkElement) {
             linkElement.closest('tr').remove()
+            localStorage.setItem('removedRowsIndex', counter)
           }
         }
       })
+
+      clearStorageButton.addEventListener('click', () => {
+        localStorage.removeItem('removedRowsIndex');
+        location.reload();
+      });
 
       document.querySelectorAll('td').forEach(function (el) {
         el.addEventListener('click', function (e) {
           if (e.pointerType === 'mouse') {
             const row = el.parentNode
+            const index = Number(el.closest('td').previousElementSibling.textContent)
+
             let allTrs = document.querySelectorAll('tr')
             let trsBefore = Array.from(allTrs).slice(0, Array.from(allTrs).indexOf(row))
 
@@ -211,6 +228,7 @@ export const htmlContent = (
 
             updateProgress()
             updateButtonState()
+            localStorage.setItem('removedRowsIndex', index)
           }
         })
       })

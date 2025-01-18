@@ -1,5 +1,25 @@
 # Changelog
 
+## 2025-1-17
+
+### Adjustments
+
+Sheet progress is tracked by a number stored in local storage equal to a counter value that starts at zero and increments as you go down the sheet. When the page is reopened it will dump all links prior to the counter and update the progress.
+
+Clicking on a link in the table still controls the position of the open next link button and clicking a column will remove all preceding rows.
+
+If something is wrong with the index, the clear progress will reset the progress.
+
+1. JunkDaJunk
+
+   - Moved the logic around, so simple's parameters (id, season, rarity, market value) are checked first. This should save time as if a card is marked as junk it will no longer send an additional request for the advanced parameters.
+
+### Fixes
+
+1. gotIssues
+
+   - Pack only mode links now get added to right link queue for opening on Hare.
+
 ## 2025-1-16
 
 Rework how sheets work.
