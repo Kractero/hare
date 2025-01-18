@@ -247,7 +247,7 @@
 							reason = `<span class="text-blue-400">Legendary card</span>`
 						}
 
-						if (junk === false && checkMode === 'Advanced') {
+						if (junk === true && checkMode === 'Advanced') {
 							const xmlDocument = await parseXML(
 								`${domain}/cgi-bin/api.cgi?cardid=${id}&season=${season}&q=card+markets+info+owners`,
 								main
