@@ -14,7 +14,11 @@ If something is wrong with the index, the clear progress will reset the progress
 
    - Moved the logic around, so simple's parameters (id, season, rarity, market value) are checked first. This should save time as if a card is marked as junk it will no longer send an additional request for the advanced parameters.
 
+   - The links to junk now say Link to Junk.
+
 ### Fixes
+
+Links that should reset their count to indicate a change (issues to packs, junk to sale) now reset to 1 properly.
 
 1. gotIssues
 

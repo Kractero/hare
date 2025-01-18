@@ -145,7 +145,6 @@
 		progress = ''
 		content = []
 		sellContent = []
-		const interimSells = []
 		let puppetList = puppets.split('\n')
 		const whiteList = regionalwhitelist ? regionalwhitelist.split('\n') : []
 		if (whiteList.length > 0) {
@@ -329,7 +328,7 @@
 							} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue}</p>`
 							content.push({
 								url: `${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1`,
-								tableText: `Link to Card`,
+								tableText: `Link to Junk`,
 							})
 							currCard = currCard + 1
 						} else {
@@ -406,9 +405,6 @@
 							} else {
 								progress += `<p>${i + 1}/${cards.length} -> Skipping ${id} - ${reason}!</p>`
 								if (mode === 'Sell') {
-									interimSells.push(
-										`${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}`
-									)
 									sellContent.push({
 										url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/jdj=view?${urlParameters('junkDaJunk', main)}`,
 										tableText: `Link to Card`,

@@ -23,7 +23,32 @@ export const htmlContent = (
 	content: { url: string; tableText: string; linkStyle?: string }[] | string,
 	name: string
 ) => {
+	let counter = 1
 	let counterReset = false
+
+	const tableRows = Array.isArray(content)
+		? content
+				.map((obj, i) => {
+					if (
+						!counterReset &&
+						['open_loot_box', 'separate', 'jdj=view', 'gift=1'].some(condition => obj.url.includes(condition))
+					) {
+						counter = 1
+						counterReset = true
+					} else if (counterReset) {
+						counter++
+					} else {
+						counter = i + 1
+					}
+					return `
+          <tr>
+            <td><p>${counter}</p></td>
+            <td><p><a style="${obj.linkStyle ? obj.linkStyle : ''}" target="_blank" href="${obj.url}">${obj.tableText}</a></p></td>
+          </tr>`
+				})
+				.join('')
+		: content
+
 	return `
       <html>
       <head>
@@ -109,29 +134,7 @@ export const htmlContent = (
 			}
 
       <table>
-      ${
-				Array.isArray(content)
-					? content
-							.map((obj, i) => {
-								let counter = i + 1
-								if (!counterReset) {
-									counter = ['open_loot_box', 'separate', 'jdj=view', 'gift=1'].some(condition =>
-										obj.url.includes(condition)
-									)
-										? 1
-										: i + 1
-									counterReset = true
-								}
-								return `
-                  <tr>
-                    <td><p>${counter}</p></td>
-                    <td><p><a style="${obj.linkStyle ? obj.linkStyle : ''}" target="_blank" href="${obj.url}">${obj.tableText}</a></p></td>
-                  </tr>`
-							})
-							.join('')
-					: content
-			}
-
+      ${tableRows}
       </table>
       <script>
       ${
