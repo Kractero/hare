@@ -18,7 +18,7 @@
 	}
 
 	const uuurl = new URL(window.location.href)
-	const amount = uuurl.searchParams.get('amount')
+	const amount = uuurl.searchParams.get('amount').split('?')[0]
 	const mode = uuurl.searchParams.get('mode')
 
 	if (mode === 'ask') {

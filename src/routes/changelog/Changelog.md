@@ -20,6 +20,10 @@ If something is wrong with the index, the clear progress will reset the progress
 
    - Pack only mode links now get added to right link queue for opening on Hare.
 
+2. Auction
+
+   - Auction userscript splits at the query parameters.
+
 ## 2025-1-16
 
 Rework how sheets work.
