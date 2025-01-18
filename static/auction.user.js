@@ -3,7 +3,7 @@
 // @namespace   Kractero
 // @match       https://www.nationstates.net/*page=deck/card=*/season=*
 // @grant       window.close
-// @version     1.0
+// @version     1.1
 // @author      Kractero
 // ==/UserScript==
 
