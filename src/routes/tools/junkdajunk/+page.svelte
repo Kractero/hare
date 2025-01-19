@@ -353,67 +353,38 @@
 										if (matchGiftee) giftto = matchGiftee
 									}
 								})
-
 								let token = ''
-								const headers: { [key: string]: string } = {
-									'User-Agent': main,
-								}
-								if (currentNationXPin) headers['X-Pin'] = currentNationXPin
-								else headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
-								const prepare = await fetch(
-									`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftto}&mode=prepare&c=giftcard`,
-									{ headers: headers }
+								const prepare = await parseXML(
+									`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
+									main,
+									currentNationXPin ? '' : (nationSpecificPassword ? nationSpecificPassword : password),
+									currentNationXPin || ''
 								)
-								if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || ''
-								const text = await prepare.text()
-								const xml = parser.parse(text)
-								token = xml.NATION.SUCCESS
-								const gift = await fetch(
-									`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftto}&mode=execute&c=giftcard&token=${token}`,
-									{
-										headers: {
-											'User-Agent': main,
-											'X-Pin': currentNationXPin,
-										},
-									}
+
+								if (!currentNationXPin) currentNationXPin = prepare['x-pin'] || ''
+
+								token = prepare.NATION.SUCCESS
+
+								const gift = await parseXML(
+									`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
+									main,
+									'',
+									currentNationXPin
 								)
-								if (gift.status === 200) {
-									let successfulGift = true
-									const verify = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck`, main)
-									let verifyCards: Array<Card> = verify.CARDS.DECK.CARD
-									verifyCards = verifyCards ? (Array.isArray(verifyCards) ? verifyCards : [verifyCards]) : []
 
-									if (verifyCards && verifyCards.length > 0) {
-										const verifyCardCounts: { [key: string]: number } = verifyCards.reduce(
-											(counts, card) => {
-												counts[card.CARDID] = (counts[card.CARDID] || 0) + 1
-												return counts
-											},
-											{} as { [key: string]: number }
-										)
-
-										if (!(id in verifyCardCounts) || verifyCardCounts[id] < originalCardCounts[id]) {
-											successfulGift = true
-										} else {
-											successfulGift = false
-											sellContent.push({
-												url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}&giftto=${giftto}`,
-												tableText: `Link to Card`,
-											})
-											progress += `<p>${i + 1}/${
-												cards.length
-											} -> <span class="text-red-400">${nation} failed to gift ${id} to ${giftto} - ${reason}</span></p>`
-											currSellCard = currSellCard + 1
-										}
-									}
-									if (successfulGift)
-										progress += `<p>${i + 1}/${
-											cards.length
-										} -> <span class="text-green-400">${nation} gifted ${id} to ${giftto} - ${reason}</span></p>`
-								} else {
+								if (gift.NATION && gift.NATION.ERROR) {
+									sellContent.push({
+										url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}&giftto=${giftto}`,
+										tableText: `Link to Card`,
+									})
 									progress += `<p>${i + 1}/${
 										cards.length
 									} -> <span class="text-red-400">${nation} failed to gift ${id} to ${giftto} - ${reason}</span></p>`
+									currSellCard = currSellCard + 1
+								} else {
+									progress += `<p>${i + 1}/${
+										cards.length
+									} -> <span class="text-green-400">${nation} gifted ${id} to ${giftto} - ${reason}</span></p>`
 								}
 							} else {
 								progress += `<p>${i + 1}/${cards.length} -> Skipping ${id} - ${reason}!</p>`

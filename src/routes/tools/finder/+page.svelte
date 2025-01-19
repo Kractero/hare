@@ -62,6 +62,7 @@
 		if (matches.length < puppetList.length) {
 			progress += `<p>More puppets than cards, proceeding...</p>`
 			for (let i = 0; i < matches.length; i++) {
+				progress += `<p>Processing card ${i + 1}/${matches.length} cards</p>`
 				if (mode === 'Gift One' && giftedCards.size > 0 && toFind.length > 0 && giftedCards.size === toFind.length) {
 					progress += `<p class="text-blue-400">All cards provided have been gifted, skipping remaining puppets`
 					break
@@ -120,11 +121,10 @@
 									currentNationXPin ? '' : (nationSpecificPassword ? nationSpecificPassword : password),
 									currentNationXPin || ''
 								)
-								if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || ''
 
-								const text = await prepare.text()
-								const xml = parser.parse(text)
-								token = xml.NATION.SUCCESS
+								if (!currentNationXPin) currentNationXPin = prepare['x-pin'] || ''
+
+								token = prepare.NATION.SUCCESS
 
 								const gift = await parseXML(
 									`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
@@ -203,11 +203,10 @@
 												currentNationXPin ? '' : (nationSpecificPassword ? nationSpecificPassword : password),
 												currentNationXPin || ''
 											)
-											if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || ''
 
-											const text = await prepare.text()
-											const xml = parser.parse(text)
-											token = xml.NATION.SUCCESS
+											if (!currentNationXPin) currentNationXPin = prepare['x-pin'] || ''
+
+											token = prepare.NATION.SUCCESS
 
 											const gift = await parseXML(
 												`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,

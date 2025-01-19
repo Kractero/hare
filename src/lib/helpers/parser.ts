@@ -50,5 +50,6 @@ export async function parseXML(url: string, userAgent: string, password?: string
 
 	const xml = await response.text()
 	const xmlObj = parser.parse(xml)
+	if (response.headers.get('x-pin')) xmlObj["x-pin"] = response.headers.get('x-pin') || ''
 	return xmlObj
 }
