@@ -68,14 +68,11 @@
 			nationSpecificPassword: string
 		) {
 			let token = ''
-			const headers: { [key: string]: string } = { 'User-Agent': main }
 
-			if (currentNationXPin) headers['X-Pin'] = currentNationXPin
-			else headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
-
-			const prepare = await fetch(
+			const prepare = await parseXML(
 				`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${cardId}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
-				{ headers: headers }
+				main,
+				nationSpecificPassword ? nationSpecificPassword : password
 			)
 			if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || ''
 
