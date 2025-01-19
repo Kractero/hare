@@ -59,46 +59,6 @@
 
 		const giftedCards = new Set()
 
-		async function processGift(
-			nation: string,
-			cardId: string,
-			season: string,
-			giftee: string,
-			currentNationXPin: string,
-			nationSpecificPassword: string
-		) {
-			let token = ''
-
-			if (currentNationXPin) headers['X-Pin'] = currentNationXPin
-			else headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
-			const prepare = await parseXML(
-				 `${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${cardId}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
-				main,
-				currentNationXPin ? '' : (nationSpecificPassword ? nationSpecificPassword : password),
-				currentNationXPin || ''  // If currentNationXPin exists, pass it; otherwise, pass an empty string.
-			)
-			if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || ''
-
-			const text = await prepare.text()
-			const xml = parser.parse(text)
-			token = xml.NATION.SUCCESS
-
-			const gift = await parseXML(
-				`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${cardId}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
-				main,
-				'',
-				currentNationXPin
-			)
-
-			if (gift.NATION && gift.NATION.ERROR) {
-				progress += `<p class="text-red-400">${nation} failed to gift ${cardId} to ${giftee}</p>`
-				failedGiftCount++
-			} else {
-				progress += `<p class="text-green-400">${nation} gifted ${cardId} to ${giftee}</p>`
-				giftedCards.add(cardId)
-			}
-		}
-
 		if (matches.length < puppetList.length) {
 			progress += `<p>More puppets than cards, proceeding...</p>`
 			for (let i = 0; i < matches.length; i++) {
@@ -153,7 +113,33 @@
 							progress += `<p class="text-blue-400">Found ${id} but not right season.`
 						} else {
 							if (mode.includes('Gift')) {
-								await processGift(nation, id, season, currGiftee, currentNationXPin, nationSpecificPassword)
+								let token = ''
+								const prepare = await parseXML(
+									`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
+									main,
+									currentNationXPin ? '' : (nationSpecificPassword ? nationSpecificPassword : password),
+									currentNationXPin || ''
+								)
+								if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || ''
+
+								const text = await prepare.text()
+								const xml = parser.parse(text)
+								token = xml.NATION.SUCCESS
+
+								const gift = await parseXML(
+									`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
+									main,
+									'',
+									currentNationXPin
+								)
+
+								if (gift.NATION && gift.NATION.ERROR) {
+									progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}</p>`
+									failedGiftCount++
+								} else {
+									progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftee}</p>`
+									giftedCards.add(id)
+								}
 							} else {
 								progress += `<p class="text-green-400">${nation} owns ${id}!`
 								content.push({
@@ -210,7 +196,33 @@
 										progress += `<p class="text-blue-400">Found ${id} but not right season.`
 									} else {
 										if (mode.includes('Gift')) {
-											await processGift(nation, id, season, currGiftee, currentNationXPin, nationSpecificPassword)
+											let token = ''
+											const prepare = await parseXML(
+												`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
+												main,
+												currentNationXPin ? '' : (nationSpecificPassword ? nationSpecificPassword : password),
+												currentNationXPin || ''
+											)
+											if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || ''
+
+											const text = await prepare.text()
+											const xml = parser.parse(text)
+											token = xml.NATION.SUCCESS
+
+											const gift = await parseXML(
+												`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
+												main,
+												'',
+												currentNationXPin
+											)
+
+											if (gift.NATION && gift.NATION.ERROR) {
+												progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}</p>`
+												failedGiftCount++
+											} else {
+												progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftee}</p>`
+												giftedCards.add(id)
+											}
 										} else {
 											progress += `<p class="text-green-400">${nation} owns ${id}!`
 											content.push({
