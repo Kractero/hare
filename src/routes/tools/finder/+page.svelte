@@ -69,10 +69,13 @@
 		) {
 			let token = ''
 
+			if (currentNationXPin) headers['X-Pin'] = currentNationXPin
+			else headers['X-Password'] = nationSpecificPassword ? nationSpecificPassword : password
 			const prepare = await parseXML(
-				`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${cardId}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
+				 `${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${cardId}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
 				main,
-				nationSpecificPassword ? nationSpecificPassword : password
+				currentNationXPin ? '' : (nationSpecificPassword ? nationSpecificPassword : password),
+				currentNationXPin || ''  // If currentNationXPin exists, pass it; otherwise, pass an empty string.
 			)
 			if (!currentNationXPin) currentNationXPin = prepare.headers.get('x-pin') || ''
 
