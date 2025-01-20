@@ -148,7 +148,7 @@
 				}
 				while (remainingTransferable > 0 && askTracker[id].count > 0) {
 					progress += `<p>${askQuantity + 1} Generated ask link for card ID ${id}, season ${season}</p>`
-					const singleLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=ask&amount=${amount}/mode=separate?${urlParameters('Auction', main)}`
+					const singleLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=ask&amount=${amount}?${urlParameters('Auction-Transfer', main)}`
 					askQuantity++
 					content.push({
 						url: singleLink,

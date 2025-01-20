@@ -218,13 +218,6 @@
 				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD
 				cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
 				if (cards && cards.length > 0 && cards.length > Number(cardcount)) {
-					const originalCardCounts: { [key: string]: number } = cards.reduce(
-						(counts, card) => {
-							counts[card.CARDID] = (counts[card.CARDID] || 0) + 1
-							return counts
-						},
-						{} as { [key: string]: number }
-					)
 					for (let i = 0; i < cards.length; i++) {
 						const id = cards[i].CARDID
 						const season = cards[i].SEASON
@@ -355,9 +348,9 @@
 								})
 								let token = ''
 								const prepare = await parseXML(
-									`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
+									`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftto}&mode=prepare&c=giftcard`,
 									main,
-									currentNationXPin ? '' : (nationSpecificPassword ? nationSpecificPassword : password),
+									currentNationXPin ? '' : nationSpecificPassword ? nationSpecificPassword : password,
 									currentNationXPin || ''
 								)
 
@@ -366,7 +359,7 @@
 								token = prepare.NATION.SUCCESS
 
 								const gift = await parseXML(
-									`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=execute&c=giftcard&token=${token}`,
+									`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftto}&mode=execute&c=giftcard&token=${token}`,
 									main,
 									'',
 									currentNationXPin

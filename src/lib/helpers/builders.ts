@@ -31,7 +31,7 @@ export const htmlContent = (
 				.map((obj, i) => {
 					if (
 						!counterReset &&
-						['open_loot_box', 'separate', 'jdj=view', 'gift=1'].some(condition => obj.url.includes(condition))
+						['open_loot_box', '-Transfer', 'jdj=view', 'gift=1'].some(condition => obj.url.includes(condition))
 					) {
 						counter = 1
 						counterReset = true
@@ -89,7 +89,7 @@ export const htmlContent = (
         background-color: lightgrey;
       }
 
-      #openNextLink {
+      #openNextLink, #clearStorage {
         margin-bottom: 2rem;
         margin-right: 2rem;
       }
@@ -123,13 +123,16 @@ export const htmlContent = (
       <p>Click the Open Next Link button to begin processing the sheet.</p>
       <p>
         Whenever a link is processed its current index will be stored so when you reopen it will resume.
-        Clicking links will remove them from the table, but this progress is not stored.
+        Clicking links will remove them from the table and set the current index to that, like you had processed to that point.
+        You can also put it in the input.
       </p>
       <p>Progress: <span id="remaining">0</span>/${content.length}</p>
       <button id="openNextLink" type="button" disabled style="cursor: not-allowed;">
         Open Next Link
       </button>
-      <button id="clearStorage" type="button">Clear Progress</button>`
+      <button id="clearStorage" type="button">Clear Progress</button>
+      <input type="number" id="setIndex" placeholder="Set progress index" min="0" max="${content.length}" />
+      <button id="setIndexButton">Set Index</button>`
 					: ''
 			}
 
@@ -143,6 +146,8 @@ export const htmlContent = (
 					: `
       const button = document.getElementById('openNextLink');
       const clearStorageButton = document.getElementById('clearStorage');
+      const setIndexButton = document.getElementById('setIndexButton');
+      const setIndexInput = document.getElementById('setIndex');
       button.focus();
       const linkElements = document.querySelectorAll('table tr td a');
 
@@ -199,6 +204,29 @@ export const htmlContent = (
             linkElement.closest('tr').remove()
             localStorage.setItem('removedRowsIndex', counter)
           }
+        }
+      })
+
+      setIndexButton.addEventListener('click', () => {
+        const index = parseInt(setIndexInput.value, 10)
+        console.log(links.length)
+        if (!isNaN(index) && index >= 0 && index <= links.length) {
+          links = links.slice(index)
+          counter = index
+          let allTrs = document.querySelectorAll('tr')
+          let trsBefore = Array.from(allTrs).slice(0, Array.from(allTrs).indexOf(counter))
+          trsBefore.forEach(tr => {
+            tr.remove()
+          })
+
+          button.focus()
+
+          updateProgress()
+          updateButtonState()
+
+          localStorage.setItem('removedRowsIndex', index)
+        } else {
+          alert('Invalid index!')
         }
       })
 

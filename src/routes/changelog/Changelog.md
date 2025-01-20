@@ -1,5 +1,19 @@
 # Changelog
 
+## 2025-1-20
+
+### Adjustments
+
+Input on sheets to control the placement if you know where you left off.
+
+1. GotIssues
+
+   - Pack count is back. New setting to determine whether to autoclose.
+
+2. Auction
+
+   - Auction Transfer no longer generates /mode=separate to separate the sheet, it just changes the tool name to Auction-Transfer.
+
 ## 2025-1-17
 
 ### Adjustments

@@ -3,6 +3,7 @@
 	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import OpenButton from '$lib/components/buttons/OpenButton.svelte'
+	import FormCheckbox from '$lib/components/FormCheckbox.svelte'
 	import FormSelect from '$lib/components/FormSelect.svelte'
 	import InputCredentials from '$lib/components/InputCredentials.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
@@ -25,7 +26,8 @@
 	let mode = $state('')
 	let issueCount = $state('5')
 	let packCount = $state('All')
-	let minPack = $state('0')
+	// let minPack = $state('0')
+	let autoclosepacks = $state(true)
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 	let testmode: string | null
 
@@ -38,15 +40,18 @@
 		issueCount = page.url.searchParams.get('count') || (localStorage.getItem('gotissuesIssueCount') as string) || '5'
 		packCount =
 			page.url.searchParams.get('packCount') || (localStorage.getItem('gotissuesPackCount') as string) || 'All'
-		minPack = page.url.searchParams.get('minPack') || (localStorage.getItem('gotissuesMinPack') as string) || '0'
+		// minPack = page.url.searchParams.get('minPack') || (localStorage.getItem('gotissuesMinPack') as string) || '0'
 		testmode = page.url.searchParams.get('test')
+		autoclosepacks = Boolean(
+			page.url.searchParams.get('autoclosepacks') || localStorage.getItem('gotissuesPackCount') || true
+		)
 	})
 	onDestroy(() => abortController.abort())
 
 	async function onSubmit(e: Event) {
 		e.preventDefault()
 		pushHistory(
-			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : `&count=${issueCount}`}${testmode ? `&test=${testmode}` : ''}`
+			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}` : `&count=${issueCount}&packCount=${packCount}`}${testmode ? `&test=${testmode}` : ''}`
 		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -126,8 +131,9 @@
 					// } else {
 					// 	progress += `<p class="text-blue-400">${nation} has less packs than ${minPack}, skipping!</p>`
 					// }
-					for (let i = 0; i < packs; i++) {
-						const packLink = `${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}&autoclose=1`
+					packCount = packCount === 'All' ? '9' : packCount
+					for (let i = 0; i < Number(packCount); i++) {
+						const packLink = `${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}${autoclosepacks ? '&autoclose=1' : ''}`
 						if (mode === 'Both') {
 							packContent.push({
 								url: packLink,
@@ -179,13 +185,14 @@
 		{#if mode === 'Issues' || mode === 'Both'}
 			<FormSelect id="issueCount" label="Issues Count" bind:bindValue={issueCount} items={['1', '2', '3', '4', '5']} />
 		{/if}
-		<!-- {#if mode === 'Packs' || mode === 'Both'}
+		{#if mode === 'Packs' || mode === 'Both'}
 			<FormSelect
 				id="packCount"
 				label="Pack Count"
 				bind:bindValue={packCount}
 				items={['All', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
-		{/if} -->
+			<FormCheckbox bind:checked={autoclosepacks} id="autoclosepacks" label="Autoclose Packs" />
+		{/if}
 		<!-- {#if mode === 'Packs' || mode === 'Both'}
 			<FormSelect
 				id="minPack"
