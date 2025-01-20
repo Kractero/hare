@@ -132,7 +132,8 @@
 					// 	progress += `<p class="text-blue-400">${nation} has less packs than ${minPack}, skipping!</p>`
 					// }
 					packCount = packCount === 'All' ? '9' : packCount
-					for (let i = 0; i < Number(packCount); i++) {
+					const packsToOpen = Math.min(packs, Number(packCount))
+					for (let i = 0; i < packsToOpen; i++) {
 						const packLink = `${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}${autoclosepacks ? '&autoclose=1' : ''}`
 						if (mode === 'Both') {
 							packContent.push({
