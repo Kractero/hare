@@ -194,7 +194,7 @@
 					}
 					while (cardsTransferable > 0 && transferCounts[id].count > 0) {
 						progress += `<p>${bidQuantity + 1} Generated bid link for card ID ${id}, season ${season} to ${name}</p>`
-						const singleLink = `${domain}/container=${name}/nation=${name}/page=deck/card=${id}/season=${season}?mode=bid&amount=${amount}/mode=separate?${urlParameters('Auction', main)}`
+						const singleLink = `${domain}/container=${name}/nation=${name}/page=deck/card=${id}/season=${season}?mode=bid&amount=${amount}?${urlParameters('Auction-Transfer', main)}`
 						bidQuantity++
 						content.push({
 							url: singleLink,
