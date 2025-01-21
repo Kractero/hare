@@ -21,6 +21,7 @@
 		gotissuesIssuesCount: '5',
 		gotissuesPackCount: 'All',
 		gotissuesMinPack: '0',
+		gotissuesAutoclosePacks: true,
 		rocTop: '100',
 		rocDays: '30',
 		rocSpecific: '',
@@ -95,7 +96,6 @@
 			localStorageObject.junkdajunkRaritiesBid = JSON.parse(localStorageObject.junkdajunkRaritiesBid)
 		}
 
-		// Fallback for junkdajunkRaritiesBid if not defined
 		if (!localStorage.getItem('junkdajunkRaritiesBid')) {
 			localStorageObject.junkdajunkRaritiesBid = localStorageObject.junkdajunkRarities
 		}
@@ -118,7 +118,6 @@
 				const curr = rarities ? JSON.parse(rarities) : {}
 				const conf = localStorageObject.junkdajunkRaritiesBid
 
-				// Use rarities from junkdajunkRarities if not set
 				Object.keys(conf).forEach(rarity => {
 					if (!curr[rarity]) {
 						curr[rarity] = localStorageObject.junkdajunkRarities[rarity]
@@ -198,6 +197,10 @@
 			label="Minimum Pack Count"
 			bind:bindValue={localStorageObject.gotissuesMinPack}
 			items={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
+		<FormCheckbox
+			bind:checked={localStorageObject.gotissuesAutoclosePacks}
+			id="autoclosepacks"
+			label="Autoclose Packs" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Rate of Change</h2>
 		<FormInput label="Top {localStorageObject.rocTop}" bind:bindValue={localStorageObject.rocTop} id="top" />
 		<FormInput label="Over {localStorageObject.rocDays} Days" bind:bindValue={localStorageObject.rocDays} id="days" />

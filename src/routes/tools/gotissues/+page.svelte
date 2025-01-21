@@ -26,7 +26,7 @@
 	let mode = $state('')
 	let issueCount = $state('5')
 	let packCount = $state('All')
-	// let minPack = $state('0')
+	let minPack = $state('0')
 	let autoclosepacks = $state(true)
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 	let testmode: string | null
@@ -40,10 +40,10 @@
 		issueCount = page.url.searchParams.get('count') || (localStorage.getItem('gotissuesIssueCount') as string) || '5'
 		packCount =
 			page.url.searchParams.get('packCount') || (localStorage.getItem('gotissuesPackCount') as string) || 'All'
-		// minPack = page.url.searchParams.get('minPack') || (localStorage.getItem('gotissuesMinPack') as string) || '0'
+		minPack = page.url.searchParams.get('minPack') || (localStorage.getItem('gotissuesMinPack') as string) || '0'
 		testmode = page.url.searchParams.get('test')
 		autoclosepacks = Boolean(
-			page.url.searchParams.get('autoclosepacks') || localStorage.getItem('gotissuesPackCount') || true
+			page.url.searchParams.get('autoclosepacks') || localStorage.getItem('gotissuesAutoclosePacks') || true
 		)
 	})
 	onDestroy(() => abortController.abort())
@@ -51,14 +51,14 @@
 	async function onSubmit(e: Event) {
 		e.preventDefault()
 		pushHistory(
-			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}` : `&count=${issueCount}&packCount=${packCount}`}${testmode ? `&test=${testmode}` : ''}`
+			`?main=${main}&mode=${mode}${mode === 'Issues' ? `&count=${issueCount}` : mode === 'Packs' ? `&packCount=${packCount}&minPack=${minPack}` : `&count=${issueCount}&packCount=${packCount}&minPack=${minPack}&autoclose=${autoclosepacks}`}${testmode ? `&test=${testmode}` : ''}`
 		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		downloadable = false
 		stoppable = true
 		stopped = false
-		progress = `<p class="font-bold">Initiating gotIssues...mode set to ${mode} for ${mode === 'Issues' ? `${issueCount} issues` : `${issueCount} issues`}</p>`
+		progress = `<p class="font-bold">Initiating gotIssues...mode set to ${mode} for ${mode === 'Issues' ? `${issueCount} issues` : `${packCount} packs`}</p>`
 		counter = 0
 		content = []
 		let puppetList = puppets.split('\n')
@@ -125,28 +125,26 @@
 					}
 				}
 				if (mode === 'Both' || mode === 'Packs') {
-					// if (packs >= Number(minPack)) {
-					// 	packCount = packCount === 'All' ? '9' : packCount
-					// 	const packsToOpen = Math.min(packs - Number(minPack), Number(packCount))
-					// } else {
-					// 	progress += `<p class="text-blue-400">${nation} has less packs than ${minPack}, skipping!</p>`
-					// }
 					packCount = packCount === 'All' ? '9' : packCount
-					const packsToOpen = Math.min(packs, Number(packCount))
-					for (let i = 0; i < packsToOpen; i++) {
-						const packLink = `${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}${autoclosepacks ? '&autoclose=1' : ''}`
-						if (mode === 'Both') {
-							packContent.push({
-								url: packLink,
-								tableText: `Link to Pack`,
-							})
-						} else {
-							content.push({
-								url: packLink,
-								tableText: `Link to Pack`,
-							})
+					const packsToOpen = Math.min(packs - Number(minPack), Number(packCount))
+					if (packsToOpen > 0) {
+						for (let i = 0; i < packsToOpen; i++) {
+							const packLink = `${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}${autoclosepacks ? '&autoclose=1' : ''}`
+							if (mode === 'Both') {
+								packContent.push({
+									url: packLink,
+									tableText: `Link to Pack`,
+								})
+							} else {
+								content.push({
+									url: packLink,
+									tableText: `Link to Pack`,
+								})
+							}
+							packsCount++
 						}
-						packsCount++
+					} else {
+						progress += `<p class="text-blue-400">${nation} has less packs than ${minPack}, skipping!</p>`
 					}
 				}
 			} catch (err) {
@@ -192,16 +190,14 @@
 				label="Pack Count"
 				bind:bindValue={packCount}
 				items={['All', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
-			<FormCheckbox bind:checked={autoclosepacks} id="autoclosepacks" label="Autoclose Packs" />
-		{/if}
-		<!-- {#if mode === 'Packs' || mode === 'Both'}
 			<FormSelect
 				id="minPack"
 				label="Minimum Floor"
 				subTitle={`Open ${packCount} packs on a nation up to the floor of ${minPack} packs. Always keep at least ${minPack} packs.`}
 				bind:bindValue={minPack}
 				items={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']} />
-		{/if} -->
+			<FormCheckbox bind:checked={autoclosepacks} id="autoclosepacks" label="Autoclose Packs" />
+		{/if}
 		<Buttons
 			stopButton={true}
 			bind:stopped
