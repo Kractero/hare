@@ -104,6 +104,10 @@
 					let currentNationXPin = ''
 					let nationSpecificPassword = ''
 					let nation = name
+					if (nation.includes(',')) {
+						nation = puppetList[i].split(',')[0]
+						nationSpecificPassword = puppetList[i].split(',')[1]
+					}
 					const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck`, main)
 					let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD
 					cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
@@ -118,7 +122,7 @@
 								const prepare = await parseXML(
 									`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
 									main,
-									currentNationXPin ? '' : (nationSpecificPassword ? nationSpecificPassword : password),
+									currentNationXPin ? '' : nationSpecificPassword ? nationSpecificPassword : password,
 									currentNationXPin || ''
 								)
 
@@ -200,7 +204,7 @@
 											const prepare = await parseXML(
 												`${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftee}&mode=prepare&c=giftcard`,
 												main,
-												currentNationXPin ? '' : (nationSpecificPassword ? nationSpecificPassword : password),
+												currentNationXPin ? '' : nationSpecificPassword ? nationSpecificPassword : password,
 												currentNationXPin || ''
 											)
 
