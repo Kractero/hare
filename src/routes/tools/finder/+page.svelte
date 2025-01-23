@@ -10,7 +10,7 @@
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import Button from '$lib/components/ui/button/button.svelte'
-	import { parser, parseXML } from '$lib/helpers/parser'
+	import { parseXML } from '$lib/helpers/parser'
 	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 	import type { Card } from '$lib/types'
 
@@ -49,7 +49,17 @@
 		stoppable = true
 		stopped = false
 		content = []
-		let puppetList = puppets.split('\n').map(puppet => puppet.toLowerCase().replaceAll(' ', '_'))
+		const puppetList = puppets.split('\n').map(puppet => {
+			if (puppet.includes(',')) {
+				const [nation, nationSpecificPassword] = puppet.split(',')
+				return {
+					nation: nation.toLowerCase().replaceAll(' ', '_'),
+					nationSpecificPassword: nationSpecificPassword,
+				}
+			} else {
+				return { nation: puppet.toLowerCase().replaceAll(' ', '_') }
+			}
+		})
 		progress = '<p>Initiating Finder...</p>'
 		const toFind = finderlist.split('\n')
 		const matches = toFind.map(matcher => matcher.split(','))
@@ -87,7 +97,8 @@
 				let matchedOwners = new Map()
 
 				ownerArr.forEach(owner => {
-					if (puppetList.includes(owner)) {
+					const matchedPuppet = puppetList.find(puppet => puppet.nation === owner.toLowerCase().replaceAll(' ', '_'))
+					if (matchedPuppet) {
 						if (matchedOwners.has(owner)) {
 							matchedOwners.set(owner, matchedOwners.get(owner) + 1)
 						} else {
@@ -102,12 +113,9 @@
 						continue
 					}
 					let currentNationXPin = ''
-					let nationSpecificPassword = ''
-					let nation = name
-					if (nation.includes(',')) {
-						nation = puppetList[i].split(',')[0]
-						nationSpecificPassword = puppetList[i].split(',')[1]
-					}
+					const { nation, nationSpecificPassword } = puppetList.find(
+						puppet => puppet.nation === name.toLowerCase().replaceAll(' ', '_')
+					)!
 					const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck`, main)
 					let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD
 					cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
@@ -164,17 +172,11 @@
 					continue
 				}
 				let currentNationXPin = ''
-				let nation = puppetList[i]
-				let nationSpecificPassword = ''
+				const { nation, nationSpecificPassword } = puppetList[i]
 
-				if (nation.includes(',')) {
-					nation = puppetList[i].split(',')[0]
-					nationSpecificPassword = puppetList[i].split(',')[1]
-				}
 				if (abortController.signal.aborted || stopped) {
 					break
 				}
-				nation = nation.toLowerCase().replaceAll(' ', '_')
 
 				try {
 					progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`
