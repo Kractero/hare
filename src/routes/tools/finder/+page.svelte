@@ -97,7 +97,7 @@
 				let matchedOwners = new Map()
 
 				ownerArr.forEach(owner => {
-					const matchedPuppet = puppetList.find(puppet => puppet.nation === owner.toLowerCase().replaceAll(' ', '_'))
+					const matchedPuppet = puppetList.find(puppet => puppet.nation === owner)
 					if (matchedPuppet) {
 						if (matchedOwners.has(owner)) {
 							matchedOwners.set(owner, matchedOwners.get(owner) + 1)
@@ -113,9 +113,7 @@
 						continue
 					}
 					let currentNationXPin = ''
-					const { nation, nationSpecificPassword } = puppetList.find(
-						puppet => puppet.nation === name.toLowerCase().replaceAll(' ', '_')
-					)!
+					const { nation, nationSpecificPassword } = puppetList.find(puppet => puppet.nation === name)!
 					const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck`, main)
 					let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD
 					cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
