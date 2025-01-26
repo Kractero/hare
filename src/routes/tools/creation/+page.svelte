@@ -26,11 +26,11 @@
 		if (errors.length > 0) return
 		pushHistory(`?main=${main}`)
 		downloadable = false
-		const puppetList = puppets.split('\n').map(nation => nation.toLowerCase().replaceAll(' ', '_'))
+		const puppetList = puppets.split('\n')
 		for (let i = 0; i < puppetList.length; i++) {
-			const nation = puppetList[i]
+			const nation = puppetList[i].toLowerCase().replaceAll(' ', '_')
 			content.push({
-				url: `${domain}/page=deck/container=${nation}/nation=${nation}/page=create_nation?${urlParameters(`Creator`, main)}`,
+				url: `${domain}/page=deck/container=${nation}/nation=${nation}/page=create_nation/nation=${puppetList[i]}?${urlParameters(`Creator`, main)}`,
 				tableText: `Link to ${puppetList[i]}`,
 			})
 		}
