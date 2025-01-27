@@ -108,5 +108,10 @@
 		"name": "Transfer",
 		"slug": "transfer",
 		"description": "Takes a bank threshold and receive a text file with puppets that have that bank or higher."
+	},
+	{
+		"name": "Sheetify",
+		"slug": "sheetify",
+		"description": "Make a click sheet out of a bunch of links."
 	}
 ]

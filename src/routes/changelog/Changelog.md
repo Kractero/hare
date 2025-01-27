@@ -1,5 +1,31 @@
 # Changelog
 
+## 2025-1-27
+
+### Features
+
+1. NEW - Sheetify
+
+   - Pass any series of links in, get a click sheet.
+
+### Adjustments
+
+Nation specific password logic changed, only for Finder.
+
+1. GotIssues
+
+   - Output message on nations that have zero packs.
+
+2. Config
+
+   - JDJ skip season will match jdj settings.
+
+### Fixes
+
+1. Creator
+
+   - Fix creator url on new tab sheet generation.
+
 ## 2025-1-20
 
 ### Adjustments

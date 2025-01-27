@@ -12,7 +12,7 @@
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import * as AlertDialog from '$lib/components/ui/alert-dialog'
-	import { parser, parseXML } from '$lib/helpers/parser'
+	import { parseXML } from '$lib/helpers/parser'
 	import { beforeUnload, checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 	import type { Card } from '$lib/types'
 

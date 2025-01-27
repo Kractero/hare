@@ -257,9 +257,10 @@
 		<Rarities bind:rarities={localStorageObject.junkdajunkRarities} />
 		<Rarities bind:rarities={localStorageObject.junkdajunkRaritiesBid} />
 		<FormSelect
+			type="multiple"
 			bind:bindValue={localStorageObject.junkdajunkOmittedSeasons}
 			id="skipseason"
-			items={["Don't Skip", 'Skip Offseasons', '1', '2']}
+			items={['1', '2', '3', '4']}
 			label="Skip Seasons?" />
 		<FormCheckbox bind:checked={localStorageObject.junkdajunkExnation} id="skipexnation" label="Skip Exnation" />
 		<FormInput
