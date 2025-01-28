@@ -144,6 +144,10 @@
 
 									if (gift.NATION && gift.NATION.ERROR) {
 										progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}</p>`
+										content.push({
+											url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}`,
+											tableText: `Link to ${nation}`,
+										})
 										failedGiftCount++
 									} else {
 										progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftee}</p>`
@@ -224,6 +228,10 @@
 
 											if (gift.NATION && gift.NATION.ERROR) {
 												progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}</p>`
+												content.push({
+													url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}`,
+													tableText: `Link to ${nation}`,
+												})
 												failedGiftCount++
 											} else {
 												progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftee}</p>`
