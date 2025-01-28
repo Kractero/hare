@@ -145,7 +145,7 @@
 									if (gift.NATION && gift.NATION.ERROR) {
 										progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}</p>`
 										content.push({
-											url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}`,
+											url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee.toLowerCase().replaceAll(' ', '_')}`,
 											tableText: `Link to ${nation}`,
 										})
 										failedGiftCount++
@@ -159,7 +159,7 @@
 										url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters(
 											'Finder',
 											main
-										)}&giftto=${currGiftee}`,
+										)}&giftto=${currGiftee.toLowerCase().replaceAll(' ', '_')}`,
 										tableText: `Link to ${nation}`,
 									})
 								}

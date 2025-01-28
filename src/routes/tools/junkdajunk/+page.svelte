@@ -367,7 +367,7 @@
 
 								if (gift.NATION && gift.NATION.ERROR) {
 									sellContent.push({
-										url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}&giftto=${giftto}`,
+										url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}&giftto=${giftto.toLowerCase().replaceAll(' ', '_')}`,
 										tableText: `Link to Card`,
 									})
 									progress += `<p>${i + 1}/${
