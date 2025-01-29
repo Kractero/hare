@@ -2,6 +2,7 @@
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
+	import OpenButton from '$lib/components/buttons/OpenButton.svelte'
 	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
 	import FormInput from '$lib/components/FormInput.svelte'
 	import FormSelect from '$lib/components/FormSelect.svelte'
@@ -80,7 +81,13 @@
 
 		if (mode === 'Transfer') {
 			const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${auctionMain}&q=cards+deck+info`, main)
+			const askBids = await parseXML(
+				`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+asksbids;nationname=${auctionMain}`,
+				main
+			)
 			let cards = deckInfo.CARDS.DECK.CARD
+			let auction = askBids.CARDS.ASKS.ASK
+			auction = auction ? (Array.isArray(auction) ? auction : [auction]) : []
 			cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
 
 			if (cards.length > 0) {
@@ -101,9 +108,32 @@
 					progress += `<p class="text-blue-400">${auctionMain} has ${count} copies of card ID ${id}, season ${season}</p>`
 				}
 			}
-			let puppetTransfer: { name: string; transfer: number }[] = []
-			let totalTransferrable = 0
 
+			const auctionCounts: { [key: string]: { count: number; season: string; id: string } } = {}
+
+			for (const bid of auction) {
+				const id = bid.CARDID
+				const season = bid.SEASON
+
+				if (!auctionCounts[id]) {
+					auctionCounts[id] = { count: 0, season, id }
+				}
+				auctionCounts[id].count++
+			}
+
+			for (const [id, auctionData] of Object.entries(auctionCounts)) {
+				if (transferCounts[id] && transferCounts[id].season === auctionData.season) {
+					transferCounts[id].count = Math.max(0, transferCounts[id].count - auctionData.count)
+				}
+			}
+
+			for (const [id, { count, season }] of Object.entries(transferCounts)) {
+				progress += `<p class="text-blue-400">${auctionMain} now has ${count} copies of card ID ${id}, season ${season} after auction adjustments</p>`
+			}
+
+			let currIndex = 0
+			let count = 0
+			const transferableIDs = Object.keys(transferCounts).filter(id => transferCounts[id].count > 0)
 			for (let i = 0; i < puppetList.length; i++) {
 				let nation = puppetList[i]
 				if (abortController.signal.aborted || stopped) {
@@ -117,8 +147,46 @@
 					if (nationalBank >= Number(amount)) {
 						let cardsTransferable = Math.floor(nationalBank / Number(amount))
 						progress += `<p class="text-green-400">${nation} can transfer ${cardsTransferable} cards!</p>`
-						puppetTransfer.push({ name: nation, transfer: cardsTransferable })
-						totalTransferrable += cardsTransferable
+						while (cardsTransferable > 0 && transferableIDs.length > 0) {
+							let id = transferableIDs[currIndex]
+							let { count, season } = transferCounts[id]
+
+							if (!season) {
+								progress += `<p class="text-red-400">You did not provide the season.</p>`
+								stoppable = false
+								return
+							}
+
+							if (count > 0 && transferCounts[id].count > 0) {
+								progress += `<p>${i + 1} Generated ask link for card ID ${id}, season ${season}</p>`
+								const singleAskLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=ask&amount=${amount}?${urlParameters('Auction-Transfer', main)}`
+								content.push({
+									url: singleAskLink,
+									tableText: `Link to Ask`,
+								})
+								progress += `<p>${i + 1} Generated bid link for card ID ${id}, season ${season} to ${nation.toLowerCase().replaceAll(' ', '_')}</p>`
+
+								const singleBidLink = `${domain}/container=${nation.toLowerCase().replaceAll(' ', '_')}/nation=${nation.toLowerCase().replaceAll(' ', '_')}/page=deck/card=${id}/season=${season}?mode=bid&amount=${amount}?${urlParameters('Auction-Transfer', main)}`
+
+								content.push({
+									url: singleBidLink,
+									tableText: `Link to Bid on ${nation.toLowerCase().replaceAll(' ', '_')}`,
+								})
+
+								transferCounts[id].count--
+								cardsTransferable--
+
+								if (transferCounts[id].count === 0) {
+									transferableIDs.splice(currIndex, 1)
+
+									currIndex--
+								}
+
+								count++
+							}
+
+							currIndex = (currIndex + 1) % transferableIDs.length
+						}
 						count++
 						bank += nationalBank
 					} else {
@@ -129,91 +197,7 @@
 				}
 			}
 
-			let askQuantity = 0
-			let remainingTransferable = totalTransferrable
-
-			interface TransferCount {
-				count: number
-				season: number
-			}
-
-			type TransferCounts = Record<string, TransferCount>
-			const askTracker: TransferCounts = JSON.parse(JSON.stringify(transferCounts)) // Deep clone
-
-			for (const [id, { count, season }] of Object.entries(askTracker)) {
-				if (!season) {
-					progress += `<p class="text-red-400">You did not provide the season.</p>`
-					stoppable = false
-					return
-				}
-				while (remainingTransferable > 0 && askTracker[id].count > 0) {
-					progress += `<p>${askQuantity + 1} Generated ask link for card ID ${id}, season ${season}</p>`
-					const singleLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=ask&amount=${amount}?${urlParameters('Auction-Transfer', main)}`
-					askQuantity++
-					content.push({
-						url: singleLink,
-						tableText: `Link to Ask`,
-					})
-
-					askTracker[id].count--
-					remainingTransferable--
-				}
-
-				if (remainingTransferable <= 0) {
-					break
-				}
-			}
-
-			progress += `<p>Total ask links generated: ${askQuantity}</p>`
-
-			let bidQuantity = 0
-
-			for (const puppet of puppetTransfer) {
-				let { name, transfer: cardsTransferable } = puppet
-				// for (const [id, { count, season }] of Object.entries(transferCounts)) {
-				// 	if (cardsTransferable > 0 && transferCounts[id].count > 0) {
-				// 		progress += `<p class="text-gray-400">Generated initial transfer link for card ID ${id}, season ${season} to ${name}</p>`
-				// 		const singleLink = `https://www.nationstates.net/nation=${name}/page=deck/card=${id}/season=${season}?mode=bid&amount=${transfer}`
-				// 		openNewLinkArr = [...openNewLinkArr, singleLink]
-
-				// 		content += `<tr><td><p>${
-				// 			bidQuantity + 1
-				// 		}</p></td><td><p><a target="_blank" href="${singleLink}">Link to Issue</a></p></td></tr>\n`
-
-				// 		bidQuantity = bidQuantity + 1
-				// 		transferCounts[id].count--
-				// 		cardsTransferable--
-				// 	}
-				// 	if (cardsTransferable <= 0) break
-				// }
-				for (const [id, { count, season }] of Object.entries(transferCounts)) {
-					if (!season) {
-						progress += `<p class="text-red-400">You did not provide the season.</p>`
-						stoppable = false
-						return
-					}
-					while (cardsTransferable > 0 && transferCounts[id].count > 0) {
-						progress += `<p>${bidQuantity + 1} Generated bid link for card ID ${id}, season ${season} to ${name}</p>`
-						const singleLink = `${domain}/container=${name}/nation=${name}/page=deck/card=${id}/season=${season}?mode=bid&amount=${amount}?${urlParameters('Auction-Transfer', main)}`
-						bidQuantity++
-						content.push({
-							url: singleLink,
-							tableText: `Link to Bid on ${name}`,
-						})
-
-						transferCounts[id].count--
-						cardsTransferable--
-					}
-
-					if (cardsTransferable <= 0) {
-						break
-					}
-				}
-			}
-
-			progress += `<p>Total bid links generated: ${bidQuantity}</p>`
-
-			progress += `${askQuantity} main ask links generated, ${bidQuantity} puppet bid links generated`
+			progress += `${count} main ask links generated, ${count} puppet bid links generated`
 		}
 
 		downloadable = true
@@ -263,6 +247,7 @@
 			stopButton={true}
 			bind:stoppable
 			bind:stopped>
+			<OpenButton bind:progress bind:openNewLinkArr={content} />
 		</Buttons>
 	</form>
 	<Terminal bind:progress />
