@@ -37,7 +37,7 @@
 	--radius-sm: calc(var(--radius) - 4px);
 
 	--font-sans: 'Noto Sans', sans-serif;
-	--font-mono: 'Fira Code', ui-monospace;
+	--font-mono: 'Fira Code', monospace;
 }
 
 @utility container {
