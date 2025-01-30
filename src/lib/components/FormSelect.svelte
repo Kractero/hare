@@ -32,7 +32,7 @@
 			bindValue = v && v
 		}}
 		value={bindValue}>
-		<Select.Trigger class="w-[206px] flex-1 justify-end sm:max-w-[221px] data-[placeholder]:[&>span]:text-primary">
+		<Select.Trigger class="data-placeholder:[&>span]:text-primary w-[206px] flex-1 justify-end sm:max-w-[221px]">
 			<span class="pr-2">{bindValue}</span>
 		</Select.Trigger>
 		<Select.Content class="text-left">

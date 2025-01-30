@@ -19,7 +19,7 @@
 			bindValue = v && v
 		}}
 		value={bindValue}>
-		<Select.Trigger class="min-w-[175px] flex-1 justify-end data-[placeholder]:[&>span]:text-primary" />
+		<Select.Trigger class="min-w-[175px] flex-1 justify-end data-placeholder:[&>span]:text-primary" />
 		<Select.Content class="text-left">
 			{#each Array.from(items) as item}
 				<Select.Item value={item}>{item}</Select.Item>
