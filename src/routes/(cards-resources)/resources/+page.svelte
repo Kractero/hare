@@ -33,17 +33,18 @@
 
 	<p class="mb-16 text-center text-lg lg:w-auto">Filter and search various NationStates cards tools.</p>
 
-	<div class="mx-auto flex w-max flex-col items-end gap-3">
-		<ResourceSelect
-			bind:bindValue={sort}
-			label="Sort By"
-			items={['Last Update (asc)', 'Last Update (desc)', 'Creation (asc)', 'Creation (desc)']} />
+	<div class="flex items-center">
+		<Filterer />
+		<div class="max-h-3xl mx-auto flex w-max flex-col items-end gap-4">
+			<ResourceSelect
+				bind:bindValue={sort}
+				label="Sort By"
+				items={['Last Update (asc)', 'Last Update (desc)', 'Creation (asc)', 'Creation (desc)']} />
 
-		<ResourceSelect bind:bindValue={author} label="Author" items={Array.from(authors)} />
-		<ResourceSelect bind:bindValue={category} label="Categories" items={Array.from(categories)} />
+			<ResourceSelect bind:bindValue={author} label="Author" items={Array.from(authors)} />
+			<ResourceSelect bind:bindValue={category} label="Categories" items={Array.from(categories)} />
+		</div>
 	</div>
-
-	<Filterer />
 
 	<div class="my-8 grid max-w-5xl grid-cols-1 justify-center gap-4 sm:grid-cols-2 lg:grid-cols-3">
 		{#each projects

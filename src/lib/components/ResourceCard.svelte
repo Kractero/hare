@@ -47,13 +47,13 @@
 </script>
 
 <div
-	class="flex max-w-full flex-col gap-4 rounded-xl bg-secondary p-4 transition duration-200 hover:scale-105 hover:shadow-lg md:p-6">
+	class="bg-secondary flex max-w-full flex-col gap-4 rounded-xl p-4 transition duration-200 hover:scale-105 hover:shadow-lg md:p-6">
 	<p class="-mb-1 flex flex-wrap items-center gap-2">{category}</p>
 	<a href={url} target="_blank">
-		<h2 class="break-words text-3xl font-bold">{name}</h2>
+		<h2 class="text-3xl font-bold break-words">{name}</h2>
 	</a>
-	<a class="text-base font-light text-secondary-foreground" href={authorUrl} target="_blank">{author} </a>
-	<p class="text-sm text-muted-foreground">last updated {timeAgo(lastUpdate)}</p>
+	<a class="text-secondary-foreground text-base font-light" href={authorUrl} target="_blank">{author} </a>
+	<p class="text-muted-foreground text-sm">last updated {timeAgo(lastUpdate)}</p>
 	<p class="break-words">
 		{description}
 	</p>
@@ -67,6 +67,6 @@
 		</div>
 	</div>
 	<div class="flex w-full flex-col justify-between min-[460px]:flex-row sm:items-end sm:gap-6">
-		<p class="text-sm text-muted-foreground">created {timeAgo(created)}</p>
+		<p class="text-muted-foreground text-sm">created {timeAgo(created)}</p>
 	</div>
 </div>
