@@ -2,6 +2,9 @@ import { writable } from 'svelte/store'
 import { pushState } from '$app/navigation'
 import { z } from 'zod'
 
+export const semverVersion = '5.4.2'
+export const calverVersion = '2024.01.31'
+
 export const domain = writable()
 
 export const pushHistory = (params: string) => {
@@ -18,7 +21,7 @@ export const beforeUnload = (e: any) => {
 }
 
 export const urlParameters = (tool: string, main: string) => {
-	return `generated_by=Hare_${tool}__author_main_nation_Kractero__usedBy_${main}`
+	return `generated_by=Hare__v${calverVersion}_${tool}__author_main_nation_Kractero__usedBy_${main}`
 }
 
 export const userAgent = z
@@ -45,3 +48,5 @@ export function checkUserAgent(ua: string) {
 	}
 	return []
 }
+
+// export const canonicalize = (str: string) => str.toLowerCase().replace(' ', '_')

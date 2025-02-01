@@ -1,5 +1,7 @@
 import { XMLParser } from 'fast-xml-parser'
 
+import { calverVersion } from './utils'
+
 export const parser = new XMLParser({ ignoreAttributes: false })
 
 export function sleep(ms: number) {
@@ -8,7 +10,7 @@ export function sleep(ms: number) {
 
 export async function parseXML(url: string, userAgent: string, password?: string, xpin?: string) {
 	const headers: Record<string, string> = {
-		'User-Agent': `Used by ${userAgent} with Hare, written by Kractero`,
+		'User-Agent': `Used by ${userAgent} with Hare v${calverVersion}, written by Kractero`,
 	}
 
 	if (password) {
@@ -50,6 +52,6 @@ export async function parseXML(url: string, userAgent: string, password?: string
 
 	const xml = await response.text()
 	const xmlObj = parser.parse(xml)
-	if (response.headers.get('x-pin')) xmlObj["x-pin"] = response.headers.get('x-pin') || ''
+	if (response.headers.get('x-pin')) xmlObj['x-pin'] = response.headers.get('x-pin') || ''
 	return xmlObj
 }
