@@ -99,7 +99,7 @@
 				for (let i = 0; i < ownerArr.length; i++) {
 					const owner = ownerArr[i]
 					if (processedOwners.has(owner)) continue
-					const matchedPuppet = puppetList.find(puppet => puppet.nation === owner)
+					const matchedPuppet = puppetList.find(puppet => puppet.nation === String(owner))
 					if (matchedPuppet) {
 						let frequency = ownerArr.filter(o => o === owner).length
 						processedOwners.add(owner)
@@ -303,7 +303,7 @@
 			<FormInput label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />
 		{/if}
 		<div class="-mb-6 flex flex-col">
-			<p class="mb-1 text-center font-light text-muted-foreground">Presets</p>
+			<p class="text-muted-foreground mb-1 text-center font-light">Presets</p>
 			<div class="mx-auto">
 				<Button onclick={() => fetchPreset('Legendaries')} variant={'outline'} class="mx-auto">Legendaries</Button>
 				<Button onclick={() => fetchPreset('Fauzjhia')} variant={'outline'} class="mx-auto">Fauzjhia</Button>

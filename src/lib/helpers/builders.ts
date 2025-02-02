@@ -209,7 +209,6 @@ export const htmlContent = (
 
       setIndexButton.addEventListener('click', () => {
         const index = parseInt(setIndexInput.value, 10)
-        console.log(links.length)
         if (!isNaN(index) && index >= 0 && index <= links.length) {
           links = links.slice(index)
           counter = index

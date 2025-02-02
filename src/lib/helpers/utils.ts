@@ -2,8 +2,8 @@ import { writable } from 'svelte/store'
 import { pushState } from '$app/navigation'
 import { z } from 'zod'
 
-export const semverVersion = '5.4.2'
-export const calverVersion = '2024.01.31'
+export const semverVersion = '5.4.3'
+export const calverVersion = '2024.02.02'
 
 export const domain = writable()
 
