@@ -191,6 +191,9 @@
 					const matches = toFind.map(matcher => matcher.split(','))
 					if (cards && cards.length > 0) {
 						for (let j = 0; j < cards.length; j++) {
+							if (abortController.signal.aborted || stopped) {
+								break
+							}
 							const id = cards[j].CARDID
 							const season = cards[j].SEASON
 							if (giftedCards.has(id) && mode === 'Gift One') {
