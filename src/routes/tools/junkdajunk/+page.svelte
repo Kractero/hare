@@ -132,7 +132,7 @@
 				alert(`${localStorage.getItem('junkdajunkOmittedSeasons')} is no longer in use, please change it`)
 				skipseason = []
 			} else {
-				skipseason = [page.url.searchParams.get('skipseason') as string]
+				skipseason = [localStorage.getItem('junkdajunkOmittedSeasons') as string]
 			}
 		} else {
 			skipseason = []

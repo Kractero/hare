@@ -1,5 +1,23 @@
 # Changelog
 
+## 2025-2-06
+
+### Fixes
+
+1. JDJ
+
+   - If pulling from local storage, use the right name for the local storage variable, instead of forgetting to change it from the url param after copy pasting.
+
+## 2025-2-02
+
+### Fixes
+
+1. Finder
+
+   - Convert owners to string.
+
+   - Add new line character to improperly formatted line in legendary preset.
+
 ## 2025-1-27
 
 ### Features
