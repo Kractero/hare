@@ -81,13 +81,13 @@
 
 		if (mode === 'Transfer') {
 			const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${auctionMain}&q=cards+deck+info`, main)
-			const askBids = await parseXML(
-				`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+asksbids;nationname=${auctionMain}`,
-				main
-			)
+			// const askBids = await parseXML(
+			// 	`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+asksbids;nationname=${auctionMain}`,
+			// 	main
+			// )
 			let cards = deckInfo.CARDS.DECK.CARD
-			let auction = askBids.CARDS.ASKS.ASK
-			auction = auction ? (Array.isArray(auction) ? auction : [auction]) : []
+			// let auction = askBids.CARDS.ASKS.ASK
+			// auction = auction ? (Array.isArray(auction) ? auction : [auction]) : []
 			cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
 
 			if (cards.length > 0) {
@@ -109,27 +109,27 @@
 				}
 			}
 
-			const auctionCounts: { [key: string]: { count: number; season: string; id: string } } = {}
+			// const auctionCounts: { [key: string]: { count: number; season: string; id: string } } = {}
 
-			for (const bid of auction) {
-				const id = bid.CARDID
-				const season = bid.SEASON
+			// for (const bid of auction) {
+			// 	const id = bid.CARDID
+			// 	const season = bid.SEASON
 
-				if (!auctionCounts[id]) {
-					auctionCounts[id] = { count: 0, season, id }
-				}
-				auctionCounts[id].count++
-			}
+			// 	if (!auctionCounts[id]) {
+			// 		auctionCounts[id] = { count: 0, season, id }
+			// 	}
+			// 	auctionCounts[id].count++
+			// }
 
-			for (const [id, auctionData] of Object.entries(auctionCounts)) {
-				if (transferCounts[id] && transferCounts[id].season === auctionData.season) {
-					transferCounts[id].count = Math.max(0, transferCounts[id].count - auctionData.count)
-				}
-			}
+			// for (const [id, auctionData] of Object.entries(auctionCounts)) {
+			// 	if (transferCounts[id] && transferCounts[id].season === auctionData.season) {
+			// 		transferCounts[id].count = Math.max(0, transferCounts[id].count - auctionData.count)
+			// 	}
+			// }
 
-			for (const [id, { count, season }] of Object.entries(transferCounts)) {
-				progress += `<p class="text-blue-400">${auctionMain} now has ${count} copies of card ID ${id}, season ${season} after auction adjustments</p>`
-			}
+			// for (const [id, { count, season }] of Object.entries(transferCounts)) {
+			// 	progress += `<p class="text-blue-400">${auctionMain} now has ${count} copies of card ID ${id}, season ${season} after auction adjustments</p>`
+			// }
 
 			let currIndex = 0
 			let count = 0
