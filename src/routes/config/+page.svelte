@@ -38,6 +38,10 @@
 		junkdajunkFinderList: '',
 		jdjMode: 'Gift',
 		jdjCheckMode: 'Advanced',
+		findMode: 'Specific Cards',
+		giftLegendaries: true,
+		giftOverMV: true,
+		giftOverMVValue: 10,
 		finderMode: 'Gift',
 		junkdajunkRarities: {
 			common: 0.5,
@@ -269,6 +273,14 @@
 			id="jdjtransfer"
 			required={false} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Finder</h2>
+		<FormSelect
+			bind:bindValue={localStorageObject.findMode}
+			id="findMode"
+			items={['Specific Cards', 'General']}
+			label="Behavior" />
+		<FormCheckbox bind:checked={localStorageObject.giftLegendaries} id="giftlegendaries" label="Gift Legends" />
+		<FormCheckbox bind:checked={localStorageObject.giftOverMV} id="giftOverMV" label="Gift over MV" />
+		<FormInput bind:bindValue={localStorageObject.giftOverMVValue} id="giftOverMVValue" label="MV" />
 		<FormSelect
 			id="findermode"
 			label="Behavior"

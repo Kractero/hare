@@ -1,5 +1,15 @@
 # Changelog
 
+## 2025-2-11
+
+### Features
+
+1. Finder
+
+   - New mode for Finder to gift legendaries and cards over a certain market value. The current Finder (passing in id,season) is defaulted as findMode "Specific Cards". The legendaries and mv gifting is under the mode General.
+
+     The existence of a separate mode as opposed to just lumping the logic into the existing functionality is because it is easier this way. If there are more puppets than cards, the logic is thrown out the window. When there are more puppets than cards, each card is searched for matching owners, as opposed to each owner being searched for cards, which defeats the purpose of the new options.
+
 ## 2025-2-06
 
 ### Fixes
