@@ -40,7 +40,6 @@
 		jdjCheckMode: 'Advanced',
 		findMode: 'Specific Cards',
 		giftLegendaries: true,
-		giftOverMV: true,
 		giftOverMVValue: 10,
 		finderMode: 'Gift',
 		junkdajunkRarities: {
@@ -279,7 +278,6 @@
 			items={['Specific Cards', 'General']}
 			label="Behavior" />
 		<FormCheckbox bind:checked={localStorageObject.giftLegendaries} id="giftlegendaries" label="Gift Legends" />
-		<FormCheckbox bind:checked={localStorageObject.giftOverMV} id="giftOverMV" label="Gift over MV" />
 		<FormInput bind:bindValue={localStorageObject.giftOverMVValue} id="giftOverMVValue" label="MV" />
 		<FormSelect
 			id="findermode"

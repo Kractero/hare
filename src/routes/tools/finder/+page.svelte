@@ -30,7 +30,6 @@
 	let giftee = $state('')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 	let giftLegendaries = $state(true)
-	let giftOverMV = $state(true)
 	let giftOverMVValue = $state(10)
 	let findMode = $state('Specific Cards')
 
@@ -48,11 +47,6 @@
 				? localStorage.getItem('giftLegendaries') === 'true'
 				: true
 
-		giftOverMV = page.url.searchParams.has('giftOverMV')
-			? page.url.searchParams.get('giftOverMV') === 'true'
-			: localStorage.getItem('giftOverMV') !== null
-				? localStorage.getItem('giftOverMV') === 'true'
-				: true
 		giftOverMVValue = parseFloat(
 			page.url.searchParams.get('giftOverMVValue') || localStorage.getItem('giftOverMVValue') || '10'
 		)
@@ -63,7 +57,7 @@
 	async function onSubmit(e: Event) {
 		e.preventDefault()
 		pushHistory(
-			`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ''}&findMode=${findMode}${findMode === 'General' ? `&giftLegendaries=${giftLegendaries}&giftOverMV=${giftOverMV}&giftOverMVValue=${giftOverMVValue}` : ''}`
+			`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ''}&findMode=${findMode}${findMode === 'General' ? `&giftLegendaries=${giftLegendaries}&giftOverMVValue=${giftOverMVValue}` : ''}`
 		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -270,7 +264,7 @@
 		} else if (findMode === 'General') {
 			let conditions = []
 			if (giftLegendaries) conditions.push('legendaries')
-			if (giftOverMV) conditions.push(`cards over ${giftOverMVValue} MV`)
+			if (giftOverMVValue) conditions.push(`cards over ${giftOverMVValue} MV`)
 			progress += `<p>Finding ${conditions.join(', ')}</p>`
 			for (let i = 0; i < puppetList.length; i++) {
 				let currentNationXPin = ''
@@ -292,12 +286,10 @@
 							filteredCards = [...filteredCards, ...cards.filter(card => card.CATEGORY === 'legendary')]
 						}
 
-						if (giftOverMV) {
-							filteredCards = [
-								...filteredCards,
-								...cards.filter(card => parseFloat(card.MARKET_VALUE) >= giftOverMVValue),
-							]
-						}
+						filteredCards = [
+							...filteredCards,
+							...cards.filter(card => parseFloat(card.MARKET_VALUE) >= giftOverMVValue),
+						]
 
 						for (let j = 0; j < filteredCards.length; j++) {
 							if (abortController.signal.aborted || stopped) {
@@ -388,8 +380,7 @@
 			<FormTextArea bind:bindValue={finderlist} label={'Cards to Find'} id="finderlist" required />
 		{:else if findMode === 'General'}
 			<FormCheckbox bind:checked={giftLegendaries} id="giftlegendaries" label="Gift Legends" />
-			<FormCheckbox bind:checked={giftOverMV} id="giftOverMV" label="Gift over MV" />
-			<FormInput bind:bindValue={giftOverMVValue} id="giftOverMVValue" label="MV" />
+			<FormInput bind:bindValue={giftOverMVValue} id="giftOverMVValue" label="Gift Over MV" />
 		{/if}
 		<FormSelect
 			bind:bindValue={mode}
