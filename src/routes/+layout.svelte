@@ -1,6 +1,4 @@
 <script>
-	import ViewTransition from './navigation.svelte'
-
 	import '../app.css'
 
 	import Header from '$lib/components/Header.svelte'
