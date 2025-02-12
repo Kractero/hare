@@ -16,7 +16,6 @@
 <ModeWatcher />
 <div
 	class="relative mx-auto flex max-w-xs flex-col p-4 min-[385px]:max-w-sm min-[450px]:max-w-md min-[500px]:max-w-lg sm:max-w-5xl">
-	<ViewTransition />
 	<Header />
 	{@render children?.()}
 </div>
