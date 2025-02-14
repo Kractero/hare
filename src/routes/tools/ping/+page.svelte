@@ -83,7 +83,7 @@
 				progress += `<p class="text-red-400">Failed to log into ${nation}, adding to restore sheet...</p>`
 				let nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
 				content.push({
-					url: `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=upload_flag/test=1?${urlParameters('Pinger', main)}`,
+					url: `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=login/test=1?${urlParameters('Pinger', main)}`,
 					tableText: `Link to Restore ${nation}`,
 				})
 				restoreCount++

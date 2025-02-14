@@ -66,7 +66,7 @@
 					return
 				}
 				if (!bidsToPlace) bidsToPlace = '1'
-				const singleLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=${mode === 'Bids' ? 'bid' : 'ask'}&amount=${amount}?${urlParameters('Auction', main)}`
+				const singleLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=${mode === 'Bids' ? 'bid' : 'ask'}&amount=${amount}&${urlParameters('Auction', main)}`
 				for (let i = 0; i < Number(bidsToPlace); i++) {
 					counter++
 					content.push({
@@ -136,6 +136,7 @@
 			const transferableIDs = Object.keys(transferCounts).filter(id => transferCounts[id].count > 0)
 			for (let i = 0; i < puppetList.length; i++) {
 				let nation = puppetList[i]
+				const nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
 				if (abortController.signal.aborted || stopped) {
 					break
 				}
@@ -159,18 +160,18 @@
 
 							if (count > 0 && transferCounts[id].count > 0) {
 								progress += `<p>${i + 1} Generated ask link for card ID ${id}, season ${season}</p>`
-								const singleAskLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=ask&amount=${amount}?${urlParameters('Auction-Transfer', main)}`
+								const singleAskLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=ask&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
 								content.push({
 									url: singleAskLink,
 									tableText: `Link to Ask`,
 								})
-								progress += `<p>${i + 1} Generated bid link for card ID ${id}, season ${season} to ${nation.toLowerCase().replaceAll(' ', '_')}</p>`
+								progress += `<p>${i + 1} Generated bid link for card ID ${id}, season ${season} to ${nation_formatted}</p>`
 
-								const singleBidLink = `${domain}/container=${nation.toLowerCase().replaceAll(' ', '_')}/nation=${nation.toLowerCase().replaceAll(' ', '_')}/page=deck/card=${id}/season=${season}?mode=bid&amount=${amount}?${urlParameters('Auction-Transfer', main)}`
+								const singleBidLink = `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=deck/card=${id}/season=${season}?mode=bid&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
 
 								content.push({
 									url: singleBidLink,
-									tableText: `Link to Bid on ${nation.toLowerCase().replaceAll(' ', '_')}`,
+									tableText: `Link to Bid on ${nation_formatted}`,
 								})
 
 								transferCounts[id].count--

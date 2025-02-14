@@ -28,9 +28,9 @@
 		downloadable = false
 		const puppetList = puppets.split('\n')
 		for (let i = 0; i < puppetList.length; i++) {
-			const nation = puppetList[i].toLowerCase().replaceAll(' ', '_')
+			const nation_formatted = puppetList[i].toLowerCase().replaceAll(' ', '_')
 			content.push({
-				url: `${domain}/page=deck/container=${nation}/nation=${nation}/page=create_nation/nation=${puppetList[i]}?${urlParameters(`Creator`, main)}`,
+				url: `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=create_nation/nation=${puppetList[i]}?${urlParameters(`Creator`, main)}`,
 				tableText: `Link to ${puppetList[i]}`,
 			})
 		}

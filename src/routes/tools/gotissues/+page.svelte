@@ -133,7 +133,7 @@
 					}
 					if (packs >= Number(minPack)) {
 						for (let i = 0; i < packsToOpen; i++) {
-							const packLink = `${domain}/page=deck/nation=${nation_formatted}/container=${nation_formatted}/?open_loot_box=1/template-overall=none?${urlParameters('gotIssues', main)}${autoclosepacks ? '&autoclose=1' : ''}`
+							const packLink = `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=deck/?open_loot_box=1&${urlParameters('gotIssues', main)}`
 							if (mode === 'Both') {
 								packContent.push({
 									url: packLink,
