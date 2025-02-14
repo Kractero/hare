@@ -2,7 +2,7 @@
 // @name        Simple Card Switcher
 // @match       https://*.nationstates.net/*generated_by=Hare*
 // @grant       window.close
-// @version     1.2
+// @version     1.3
 // @author      Kractero
 // @description Kill me
 // ==/UserScript==
@@ -43,6 +43,8 @@ function handler() {
 		// This will assume the second, switch
 		if (url.href.toLowerCase().includes('junkdajunk') && Number(document.body.textContent) === 0) {
 			switchNation = true
+		} else if (url.href.toLowerCase().includes('junkdajunk')) {
+			window.close()
 		}
 
 		if (switchNation === true) {
