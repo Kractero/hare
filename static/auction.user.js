@@ -3,12 +3,14 @@
 // @namespace   Kractero
 // @match       https://www.nationstates.net/*page=deck/card=*/season=*
 // @grant       window.close
-// @version     1.1
+// @version     1.2
 // @author      Kractero
 // ==/UserScript==
 
 ;(function () {
 	'use strict'
+
+	if (document.getElementById('switchButton')) return
 
 	const referrer = document.referrer ? new URL(document.referrer) : null
 	const referrerMode = referrer ? referrer.searchParams.get('mode') : null
@@ -17,9 +19,10 @@
 			window.close()
 	}
 
-	const uuurl = new URL(window.location.href)
-	const amount = uuurl.searchParams.get('amount').split('?')[0]
-	const mode = uuurl.searchParams.get('mode')
+	const searchParams = new URLSearchParams(window.location.search)
+	if (!searchParams.get('amount')) return
+	const amount = searchParams.get('amount').split('?')[0]
+	const mode = searchParams.get('mode')
 
 	if (mode === 'ask') {
 		document.querySelector('#cardauctionoffertable').classList.add('mode-sell')

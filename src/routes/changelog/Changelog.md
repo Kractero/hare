@@ -1,5 +1,27 @@
 # Changelog
 
+## 2025-2-14
+
+Host the containerless userscript.
+
+### Fixes
+
+1. Auction, Creation, gotIssues
+
+   - Minor changes reordering some query parameters (extra ?, weirdly placed) and consistently doing container=/nation=.
+
+2. Ping
+
+   - Use page=login instead of page=upload_flag for reviving nations.
+
+3. Inscription
+
+   - Remove commented out inscription code.
+
+4. Auction's Userscript
+
+   - Logic to not focus when working with SCS, some conditionals to prevent errors.
+
 ## 2025-2-11
 
 ### Features
