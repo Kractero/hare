@@ -2,7 +2,7 @@
 // @name        Simple Card Switcher
 // @match       https://*.nationstates.net/*generated_by=Hare*
 // @grant       window.close
-// @version     1.3
+// @version     1.4
 // @author      Kractero
 // @description Kill me
 // ==/UserScript==
@@ -34,7 +34,7 @@ function handler() {
 			}
 		}
 		// if the url contains gotIssues (for gotIssues) and no issue, switch
-		if (url.href.includes('gotIssues') && !document.querySelector('.dilemmapaper')) {
+		if (url.href.includes('gotIssues') && url.href.includes('dilemma') && !document.querySelector('.dilemmapaper')) {
 			switchNation = true
 		}
 		// if the url contains junkdajunk and junk value is zero, there are two reasons:
