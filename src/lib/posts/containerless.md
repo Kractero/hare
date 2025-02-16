@@ -10,7 +10,9 @@ With the recent implementation of Cloudflare verification checks (referred to as
 
 ### Farming Containerless
 
-Containers have been recommended as the main way of farming since Racoda popularized them and are useful for allowing you to access any nation in its own container. With containerless, you are always logged into one nation and have to switch to the others, kind of similar to r/d switching. Containerless also allows you to use any browser that supports userscripts (although why would you, Firefox works fine)
+For years, containers have been the standard farming method, popularized by Racoda, as they allow each nation to be accessed separately in its own container. However, with containerless, you remain logged into one nation at a time and switch between them similar to how R/D switching works (I don't R/D so this may be a lie).
+
+Containerless farming also offers more flexibility, as it can be used in any browser that supports userscripts (although why would you, Firefox works fine)
 
 To do this:
 
