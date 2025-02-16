@@ -24,7 +24,7 @@ To do this:
 
 **Is containerless slower or faster?**
 
-Despite an extra click per puppet (to switch, which ironically actually sends more requests to NationStates), some have noticed that containerless may actually be faster - here are some reasons that may be the case.
+Your mileage may vary, and it's still too early to say for sure. Despite an extra click per puppet to switch (which ironically actually sends more requests to NationStates), some have noticed that containerless may actually be faster - here are some reasons that may be the case.
 
 1. The nature of containers is that they are isolated. The cookies, cache, browser storage are all isolated and must be loaded and dumped whenever a container is opened and closed. This can lead to a decrease in performance.
 
@@ -34,7 +34,7 @@ Despite an extra click per puppet (to switch, which ironically actually sends mo
 
 **Why were containers used?**
 
-1. Containers are powerful and let you manage multiple nations at once without needing to switch. You can have multiple nations open in the same instance, each logged in.
+Containers are powerful and let you manage multiple nations at once without needing to switch. You can have multiple nations open in the same instance, each logged in.
 
 **What steps are now dead in containerless?**
 
