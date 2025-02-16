@@ -16,7 +16,7 @@ To do this:
 
 1. Install https://raw.githubusercontent.com/Kractero/hare/refs/heads/main/static/scs.user.js, likely the permanent link, watch for updates (shouldnt be too frequent after the initial bit)
 
-2. On ines ten and eleven, set your main nation and password. Multi-password setups (where puppets have different passwords) are not supported at the moment.
+2. On lines ten and eleven, set your main nation and password. Multi-password setups (where puppets have different passwords) are not supported at the moment.
 
 3. Disable containers if using firefox (visit the url about:addons, flip the toggle for containerise/cardtainers), or use a browser that doesn't have containers.
 

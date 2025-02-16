@@ -62,6 +62,8 @@ For those who prefer open-source alternatives or are interested in exploring oth
 
 ### <a name="containers">Containers</a>
 
+> UPDATE: You may not need containers at all, [read here](/resources/guides/containerless)
+
 Containers aren't strictly necessary for farming, as you can use any puppet manager that lets you switch accounts. However, they can make the process much easier.
 
 Containers are essentially isolated browser instances that retain their own cookies and sessions. This allows you to be logged in to multiple accounts at once.
@@ -94,7 +96,7 @@ You have two main choices for containers:
 
 For most card tools that require command line execution, Python is the primary language you'll encounter.
 
-For Hare, you will not need Python.
+> For Hare, you will not need Python.
 
 There are a few traps you can run into while downloading Python, especially on Windows (which itself is a trap). One of the most common issues is not adding Python to your PATH.
 
