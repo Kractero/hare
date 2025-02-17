@@ -2,23 +2,25 @@
 	import { onMount } from 'svelte'
 	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
-	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
-	import FormTextArea from '$lib/components/FormTextArea.svelte'
+	import FormInput from '$lib/components/FormInput.svelte'
+	import InputCredentials from '$lib/components/InputCredentials.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 
 	let domain = $state('')
+	let puppets = $state('')
 	let progress = $state('')
 	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let downloadable = $state(false)
-	let links = $state('')
+	let link = $state('')
 	let main = $state('')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(async () => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
+		puppets = (localStorage.getItem('puppets') as string) || ''
 	})
 
 	async function onSubmit(e: Event) {
@@ -27,10 +29,23 @@
 		if (errors.length > 0) return
 		pushHistory(`?main=${main}`)
 		downloadable = false
-		const linkList = links.split('\n')
-		for (let i = 0; i < linkList.length; i++) {
+		const regexContainer = /container=[^/&]+/
+		const regexNation = /nation=[^/&]+/
+
+		const puppetsList = puppets.split('\n')
+
+		for (let i = 0; i < puppetsList.length; i++) {
+			const nation_formatted = puppetsList[i].toLowerCase().replaceAll(' ', '_')
+			let modifiedLink = link
+
+			if (regexContainer.test(link)) {
+				modifiedLink = modifiedLink.replace(regexContainer, `container=${nation_formatted}`)
+			} else if (regexNation.test(link)) {
+				modifiedLink = modifiedLink.replace(regexNation, `nation=${nation_formatted}`)
+			}
+
 			content.push({
-				url: `${linkList[i]}?${urlParameters(`Sheetify`, main)}`,
+				url: `${modifiedLink}?${urlParameters(`Sheetify`, main)}`,
 				tableText: `Link ${i}`,
 			})
 		}
@@ -43,8 +58,8 @@
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
-		<UserAgent bind:main bind:errors />
-		<FormTextArea bind:bindValue={links} label={'Links'} id="links" />
+		<InputCredentials bind:main bind:puppets authenticated={false} {errors} />
+		<FormInput label={'NS Link'} bind:bindValue={link} id="link" />
 		<Buttons {downloadable} downloadButton={true} {content} name="Sheetify" />
 	</form>
 	<Terminal bind:progress />

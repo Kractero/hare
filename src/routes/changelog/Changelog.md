@@ -1,5 +1,13 @@
 # Changelog
 
+## 2025-2-16
+
+### Adjustments
+
+1. Sheetify
+
+   - Change how Sheetify works. It now uses a puppet list and now takes a link and if the link contains container= or nation=, it will replace whatever is currently there with the puppet name and make a sheet out of it.
+
 ## 2025-2-14
 
 Host the containerless userscript.
