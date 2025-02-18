@@ -85,7 +85,7 @@ function handler() {
 					window.close()
 				}
 
-        document.addEventListener('keydown', (event) => {
+        document.addEventListener('keyup', (event) => {
           if (event.key === "Enter") {
             window.location.href = redirStrippedUrl
           }
