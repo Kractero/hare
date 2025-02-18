@@ -2,7 +2,7 @@
 // @name        Simple Card Switcher
 // @match       https://*.nationstates.net/*generated_by=Hare*
 // @grant       window.close
-// @version     1.4
+// @version     1.5
 // @author      Kractero
 // @description Kill me
 // ==/UserScript==
@@ -60,7 +60,6 @@ function handler() {
 					`${strippedUrl}?nation=${nation}&password=${password}&logging_in=1&script=Shitty_Card_Switcher__by_Kractero__usedBy_${ua}&userclick=${Date.now()}`,
 					{
 						method: 'GET',
-						redirect: 'follow',
 						credentials: 'include',
 					}
 				)
@@ -82,7 +81,14 @@ function handler() {
 				if (redirStrippedUrl.includes('junkcard')) {
 					window.close()
 				}
-				window.location.href = redirStrippedUrl
+
+			        document.addEventListener('keydown', (event) => {
+			          if (event.key === "Enter") {
+			            window.location.href = redirStrippedUrl
+			          }
+			        })
+				// below is probably illegal after some observation
+				// window.location.href = redirStrippedUrl
 			})
 			switchButton.focus()
 			document.body.prepend(switchButton)
