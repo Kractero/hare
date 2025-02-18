@@ -19,8 +19,6 @@ const match = url.pathname.match(regex)
 
 const nation = match ? match[1] || match[2] : null
 
-handler()
-
 function handler() {
 	let switchNation = false
 
@@ -56,13 +54,18 @@ function handler() {
 
 			switchButton.addEventListener('keyup', async () => {
 				switchButton.disabled = true
-				const response = await fetch(
-					`${strippedUrl}?nation=${nation}&password=${password}&logging_in=1&script=Shitty_Card_Switcher__by_Kractero__usedBy_${ua}&userclick=${Date.now()}`,
-					{
-						method: 'GET',
-						credentials: 'include',
-					}
-				)
+        const formData = new FormData();
+        formData.append('nation', nation);
+        formData.append('password', password);
+        formData.append('logging_in', '1');
+        formData.append('script', `Shitty_Card_Switcher__by_Kractero__usedBy_${ua}`);
+        formData.append('userclick', Date.now().toString());
+
+        const response = await fetch(strippedUrl, {
+          method: 'POST',
+          body: formData,
+          credentials: 'include',
+        });
 
 				const redirUrl = new URL(response.url)
 				let redirStrippedUrl = redirUrl.origin + redirUrl.pathname
@@ -82,11 +85,11 @@ function handler() {
 					window.close()
 				}
 
-			        document.addEventListener('keydown', (event) => {
-			          if (event.key === "Enter") {
-			            window.location.href = redirStrippedUrl
-			          }
-			        })
+        document.addEventListener('keydown', (event) => {
+          if (event.key === "Enter") {
+            window.location.href = redirStrippedUrl
+          }
+        })
 				// below is probably illegal after some observation
 				// window.location.href = redirStrippedUrl
 			})
