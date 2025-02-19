@@ -57,7 +57,7 @@ function handler() {
 			const notice = document.createElement('div')
 			notice.id = 'switching'
 			notice.style.display = 'none'
-			document.appendChild(notice)
+			document.body.appendChild(notice)
 
 			if (document.getElementById('loginbox')) {
 				document.querySelector('#loginbox').style.display = 'block'
