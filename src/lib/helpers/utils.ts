@@ -2,8 +2,8 @@ import { writable } from 'svelte/store'
 import { pushState } from '$app/navigation'
 import { z } from 'zod'
 
-export const semverVersion = '5.5.3'
-export const calverVersion = '2024.02.16'
+export const semverVersion = '5.5.4'
+export const calverVersion = '2024.02.18'
 
 export const domain = writable()
 
@@ -49,4 +49,4 @@ export function checkUserAgent(ua: string) {
 	return []
 }
 
-// export const canonicalize = (str: string) => str.toLowerCase().replace(' ', '_')
+export const canonicalize = (str: string) => str.toLowerCase().replace(' ', '_')

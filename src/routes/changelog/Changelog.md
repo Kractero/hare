@@ -1,5 +1,13 @@
 # Changelog
 
+## 2025-2-18
+
+### Adjustments
+
+1. Auction
+
+   - On Transfer, Auction places all the asks with the main before proceeding to bids. This allows it to work better with containerless so all bids on the same nation occur next to each other.
+
 ## 2025-2-16
 
 ### Adjustments

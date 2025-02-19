@@ -10,7 +10,7 @@
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { parseXML } from '$lib/helpers/parser'
-	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
+	import { canonicalize, checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 
 	const abortController = new AbortController()
 
@@ -133,10 +133,11 @@
 
 			let currIndex = 0
 			let count = 0
+			let bids = []
+
 			const transferableIDs = Object.keys(transferCounts).filter(id => transferCounts[id].count > 0)
 			for (let i = 0; i < puppetList.length; i++) {
 				let nation = puppetList[i]
-				const nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
 				if (abortController.signal.aborted || stopped) {
 					break
 				}
@@ -160,18 +161,18 @@
 
 							if (count > 0 && transferCounts[id].count > 0) {
 								progress += `<p>${i + 1} Generated ask link for card ID ${id}, season ${season}</p>`
-								const singleAskLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}/season=${season}?mode=ask&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
+								const singleAskLink = `${domain}/container=${canonicalize(auctionMain)}/nation=${canonicalize(auctionMain)}/page=deck/card=${id}/season=${season}?mode=ask&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
 								content.push({
 									url: singleAskLink,
 									tableText: `Link to Ask`,
 								})
-								progress += `<p>${i + 1} Generated bid link for card ID ${id}, season ${season} to ${nation_formatted}</p>`
+								progress += `<p>${i + 1} Generated bid link for card ID ${id}, season ${season} to ${canonicalize(nation)}</p>`
 
-								const singleBidLink = `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=deck/card=${id}/season=${season}?mode=bid&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
+								const singleBidLink = `${domain}/container=${canonicalize(nation)}/nation=${canonicalize(nation)}/page=deck/card=${id}/season=${season}?mode=bid&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
 
-								content.push({
+								bids.push({
 									url: singleBidLink,
-									tableText: `Link to Bid on ${nation_formatted}`,
+									tableText: `Link to Bid on ${canonicalize(nation)}`,
 								})
 
 								transferCounts[id].count--
@@ -197,6 +198,8 @@
 					progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
 				}
 			}
+
+			content = [...content, ...bids]
 
 			progress += `${count} main ask links generated, ${count} puppet bid links generated`
 		}
@@ -236,7 +239,7 @@
 		{#if mode === 'Transfer'}
 			<FormTextArea bind:bindValue={puppets} id="puppets" label="Puppets" required={false} />
 		{/if}
-		<FormTextArea bind:bindValue={transferCards} label={'Cards'} id="transferCards" />
+		<FormTextArea bind:bindValue={transferCards} label={'Cards'} id="transferCards" required />
 		<FormSelect id="mode" label="Mode" bind:bindValue={mode} items={['Transfer', 'Bids', 'Asks']} />
 		<FormInput label="Main Nation" bind:bindValue={auctionMain} id="auctionMain" required={true} />
 		<FormInput label="Amount" bind:bindValue={amount} id="amount" required={true} />
