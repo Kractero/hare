@@ -1,16 +1,16 @@
 // ==UserScript==
 // @name        Hare Auction
 // @namespace   Kractero
-// @match       https://www.nationstates.net/*page=deck/card=*/season=*
+// @match       https://*.nationstates.net/*Auction*
 // @grant       window.close
-// @version     1.2
+// @version     1.3
 // @author      Kractero
 // ==/UserScript==
 
 ;(function () {
 	'use strict'
 
-	if (document.getElementById('switchButton')) return
+	if (document.getElementById('switching')) return
 
 	const referrer = document.referrer ? new URL(document.referrer) : null
 	const referrerMode = referrer ? referrer.searchParams.get('mode') : null
