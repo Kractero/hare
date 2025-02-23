@@ -1,5 +1,13 @@
 # Changelog
 
+## 2025-2-22
+
+### Fixes
+
+1. Auction
+
+   - Fix broken canonicalization.
+
 ## 2025-2-18
 
 ### Adjustments

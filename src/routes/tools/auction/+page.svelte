@@ -183,13 +183,10 @@
 
 									currIndex--
 								}
-
-								count++
 							}
 
 							currIndex = (currIndex + 1) % transferableIDs.length
 						}
-						count++
 						bank += nationalBank
 					} else {
 						progress += `<p class="text-yellow-400">${nation} cannot afford any cards (Bank: ${nationalBank}).</p>`
@@ -201,7 +198,7 @@
 
 			content = [...content, ...bids]
 
-			progress += `${count} main ask links generated, ${count} puppet bid links generated`
+			progress += `Auction links generated`
 		}
 
 		downloadable = true
@@ -251,7 +248,6 @@
 			stopButton={true}
 			bind:stoppable
 			bind:stopped>
-			<OpenButton bind:progress bind:openNewLinkArr={content} />
 		</Buttons>
 	</form>
 	<Terminal bind:progress />
