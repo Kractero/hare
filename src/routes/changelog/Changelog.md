@@ -1,5 +1,11 @@
 # Changelog
 
+## 2025-2-24
+
+### Fixes
+
+Setting index in downloaded sheets should work.
+
 ## 2025-2-22
 
 ### Fixes

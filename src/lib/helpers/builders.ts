@@ -208,24 +208,25 @@ export const htmlContent = (
       })
 
       setIndexButton.addEventListener('click', () => {
-        const index = parseInt(setIndexInput.value, 10)
-        if (!isNaN(index) && index >= 0 && index <= links.length) {
-          links = links.slice(index)
-          counter = index
-          let allTrs = document.querySelectorAll('tr')
-          let trsBefore = Array.from(allTrs).slice(0, Array.from(allTrs).indexOf(counter))
-          trsBefore.forEach(tr => {
-            tr.remove()
-          })
+        const index = parseInt(setIndexInput.value, 10);
 
-          button.focus()
+        if (!isNaN(index) && index >= 0 && index < links.length) {
+          const row = Array.from(document.querySelectorAll('table tr td:first-child')).find(td =>
+            Number(td.textContent) === index
+          );
 
-          updateProgress()
-          updateButtonState()
+          if (row) {
+            let allTrs = document.querySelectorAll('tr');
+            let trsBefore = Array.from(allTrs).slice(0, index);
+            trsBefore.forEach(tr => tr.remove());
 
-          localStorage.setItem('removedRowsIndex', index)
+            button.focus();
+            updateProgress();
+            updateButtonState();
+            localStorage.setItem('removedRowsIndex', index);
+          }
         } else {
-          alert('Invalid index!')
+          alert('Invalid index!');
         }
       })
 
