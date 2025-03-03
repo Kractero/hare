@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name        Hare Auction
 // @namespace   Kractero
-// @match       https://*.nationstates.net/*Auction*
+// @match       https://*.nationstates.net/*page=deck/card=*
 // @grant       window.close
-// @version     1.3
+// @version     1.4
 // @author      Kractero
 // ==/UserScript==
 
