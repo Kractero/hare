@@ -30,7 +30,7 @@
 	<Label class={'w-24'} for={id}
 		>{label}
 		{#if subTitle}
-			<span class="text-xs">{subTitle}</span>
+			<p class="mt-1 text-xs">{subTitle}</p>
 		{/if}</Label>
 	<Input
 		class={`${rarities.includes(id) ? 'w-20' : 'max-w-max'} text-right text-base`}
@@ -42,7 +42,7 @@
 </div>
 
 {#if errors && errors.length > 0 && errors.find(error => error.field === 'useragent')}
-	<p class="max-w-lg text-sm font-medium text-destructive">
+	<p class="text-destructive max-w-lg text-sm font-medium">
 		{errors.find(error => error.field === 'useragent')?.message}
 	</p>
 {/if}

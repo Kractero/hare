@@ -24,7 +24,7 @@
 	<Label class={'w-[66px] sm:w-24'} for={id}
 		><p>{label}</p>
 		{#if subTitle}
-			<p class="text-xs">{subTitle}</p>
+			<p class="mt-1 text-xs">{subTitle}</p>
 		{/if}</Label>
 	<Select.Root
 		{type}

@@ -26,6 +26,7 @@
 	let mode = $state('Transfer')
 	let transferCards = $state('')
 	let auctionMain = $state('')
+	let skip = $state('-1')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
@@ -36,6 +37,7 @@
 		amount = page.url.searchParams.get('amount') || (localStorage.getItem('auctionAmount') as string) || '10'
 		auctionMain = page.url.searchParams.get('auctionMain') || (localStorage.getItem('auctionMain') as string) || ''
 		mode = page.url.searchParams.get('mode') || (localStorage.getItem('auctionMode') as string) || 'Transfer'
+		skip = page.url.searchParams.get('skip') || (localStorage.getItem('auctionSkip') as string) || '-1'
 	})
 
 	onDestroy(() => abortController.abort())
@@ -146,7 +148,7 @@
 					const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck+info`, main)
 					let nationalBank = deckInfo.CARDS.INFO.BANK
 
-					if (nationalBank >= Number(amount)) {
+					if (nationalBank > Number(amount) && (Number(skip) < 0 || nationalBank < Number(skip))) {
 						let cardsTransferable = Math.floor(nationalBank / Number(amount))
 						progress += `<p class="text-green-400">${nation} can transfer ${cardsTransferable} cards!</p>`
 						while (cardsTransferable > 0 && transferableIDs.length > 0) {
@@ -189,7 +191,11 @@
 						}
 						bank += nationalBank
 					} else {
-						progress += `<p class="text-yellow-400">${nation} cannot afford any cards (Bank: ${nationalBank}).</p>`
+						if (nationalBank < Number(amount)) {
+							progress += `<p class="text-yellow-400">${nation} cannot afford any cards (Bank: ${nationalBank}).</p>`
+						} else {
+							progress += `<p class="text-yellow-400">${nation}'s bank ${nationalBank} exceeds the skip threshold of ${skip}.</p>`
+						}
 					}
 				} catch (err) {
 					progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
@@ -208,7 +214,7 @@
 
 <ToolContent
 	toolTitle="Auction"
-	caption="Temp name. A testing transfer tool."
+	caption="A transfer tool."
 	additional={`<p class="mb-2">
 	Mode Transfer will first sum the total amount of transfer cards located on the main nation. It will then figure out how many times
 	the provided puppets can transfer under the amount. It will then generate bid links equal to that amount, then ask links decrementing
@@ -240,6 +246,7 @@
 		<FormSelect id="mode" label="Mode" bind:bindValue={mode} items={['Transfer', 'Bids', 'Asks']} />
 		<FormInput label="Main Nation" bind:bindValue={auctionMain} id="auctionMain" required={true} />
 		<FormInput label="Amount" bind:bindValue={amount} id="amount" required={true} />
+		<FormInput label="Skip Threshold" subTitle="-1 means don't skip" bind:bindValue={skip} id="skip" />
 		<Buttons
 			downloadButton={true}
 			bind:downloadable

@@ -67,7 +67,7 @@
 	{
 		"name": "Auction",
 		"slug": "auction",
-		"description": "Temp name. A testing transfer tool."
+		"description": "A transfer tool."
 	},
 	{
 		"name": "Decorator",

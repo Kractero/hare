@@ -1,5 +1,13 @@
 # Changelog
 
+## 2025-3-05
+
+### Adjustments
+
+1. Auction
+
+   - Setting for a skip threshold to skip puppets that have greater than that amount of bank.
+
 ## 2025-2-24
 
 ### Fixes

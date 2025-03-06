@@ -82,6 +82,7 @@
 		auctionMain: '',
 		auctionAmount: '',
 		auctionMode: 'Transfers',
+		auctionSkip: '-1',
 	})
 
 	onMount(() => {
@@ -342,6 +343,11 @@
 			label="Auction Mode"
 			bind:bindValue={localStorageObject.auctionMode}
 			items={['Transfer', 'Bids', 'Asks']} />
+		<FormInput
+			label="Skip Threshold"
+			subTitle="-1 means don't skip"
+			bind:bindValue={localStorageObject.auctionSkip}
+			id="skip" />
 		<div class="flex max-w-lg justify-center">
 			<Button class="mx-auto w-max" variant="default" type="submit">Submit</Button>
 		</div>

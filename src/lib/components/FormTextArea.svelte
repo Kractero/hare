@@ -19,7 +19,7 @@
 	<Label class={'w-24'} for={id}
 		>{label}
 		{#if subTitle}
-			<span class="text-xs">{subTitle}</span>
+			<p class="mt-1 text-xs">{subTitle}</p>
 		{/if}</Label>
 	<Textarea class="w-96 text-right text-base" {id} bind:value={bindValue} {required} rows={10} />
 </div>
