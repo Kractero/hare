@@ -12,8 +12,18 @@ const config = {
 	],
 
 	kit: {
-		adapter: adapter()
-	}
+		adapter: adapter({
+			pages: 'build',
+			assets: 'build',
+			fallback: undefined,
+			precompress: false,
+			strict: true,
+		}),
+
+		prerender: {
+			entries: ["/", "/config", "/disclaimer", "/resources", "/resources/ledger", "/resources/guides", "/guides", "/guides/[slug]"]
+		}
+	},
 };
 
 export default config;
