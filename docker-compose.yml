@@ -1,0 +1,11 @@
+services:
+  hare:
+    build:
+      context: .
+    container_name: hare
+    restart: always
+    networks:
+      - caddy
+networks:
+  caddy:
+    external: true
