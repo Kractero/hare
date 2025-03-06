@@ -11,6 +11,7 @@ export const pushHistory = (params: string) => {
 	const currentURL = window.location.href
 	const baseURL = currentURL.split('?')[0]
 	pushState(`${baseURL}${params}`, `${baseURL}${params}`)
+	log('tool')
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -50,3 +51,27 @@ export function checkUserAgent(ua: string) {
 }
 
 export const canonicalize = (str: string) => str.toLowerCase().replaceAll(' ', '_')
+
+export async function log(trigger?: string, errorMessage?: string) {
+	const data: {
+		url: URL
+		referrer: string
+		siteVersion: string
+		trigger: string
+		timestamp: string
+		errorMessage?: string
+	} = {
+		url: new URL(window.location.href),
+		referrer: document.referrer || 'hare',
+		siteVersion: calverVersion,
+		trigger: trigger || 'navigation',
+		timestamp: new Date().toISOString(),
+	}
+
+	if (errorMessage) data.errorMessage = errorMessage || ''
+
+	await fetch('/api/athena', {
+		method: 'POST',
+		body: JSON.stringify(data),
+	})
+}

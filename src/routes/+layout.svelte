@@ -1,8 +1,15 @@
 <script>
 	import '../app.css'
 
+	import { onMount } from 'svelte'
 	import Header from '$lib/components/Header.svelte'
+	import { log } from '$lib/helpers/utils'
 	import { ModeWatcher } from 'mode-watcher'
+
+	onMount(() => {
+		log()
+		window.addEventListener('sveltekit:navigation-end', () => log())
+	})
 
 	/**
 	 * @typedef {Object} Props
