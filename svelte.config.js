@@ -12,13 +12,14 @@ const config = {
 	],
 
 	kit: {
-		adapter: adapter({
-			pages: 'build',
-			assets: 'build',
-			fallback: undefined,
-			precompress: false,
-			strict: true,
-		}),
+		// adapter: adapter({
+		// 	pages: 'build',
+		// 	assets: 'build',
+		// 	fallback: undefined,
+		// 	precompress: true,
+		// 	strict: true,
+		// }),
+		adapter: adapter(),
 
 		prerender: {
 			entries: ["/", "/config", "/disclaimer", "/resources", "/resources/ledger", "/resources/guides", "/guides", "/guides/[slug]"]
