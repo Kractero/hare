@@ -21,6 +21,6 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd docker/hare
-            git pull origin main
+            git pull origin vps-docker
             git status
             docker compose up -d --build
