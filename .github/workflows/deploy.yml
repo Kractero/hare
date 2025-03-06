@@ -2,9 +2,9 @@ name: Deploy
 
 on:
   push:
-    branches: [main]
+    branches: [vps-docker]
   pull_request:
-    branches: [main]
+    branches: [vps-docker]
 
 jobs:
   build:
