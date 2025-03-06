@@ -15,6 +15,7 @@ If you'd like to suggest a script for inclusion, feel free to join the Discord a
 Let's be honest—Hare isn't a backronym. It doesn't stand for **H**umble **A**utomated **R**unner for **E**xecuting NationStates Scripts or whatever mumbo jumbo I had previously. The project is named after Omagari Hare from Blue Archive.
 
 If this tool has helped you, consider starring the repo or [gifting me a leg](https://www.nationstates.net/nation=kractero) (just kidding unless...).
+T
 
 ## Prerequisites
 
