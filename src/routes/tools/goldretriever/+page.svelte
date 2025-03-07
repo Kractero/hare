@@ -169,6 +169,7 @@
 
 <ToolContent
 	toolTitle="Gold Retriever"
+	icon="💸"
 	originalBlurb="rewritten in JS for browser use by Kractero"
 	caption="Get deck value, junk value, and more of all your puppets."
 	author="ValentineZ"

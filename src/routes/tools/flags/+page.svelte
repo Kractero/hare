@@ -91,6 +91,7 @@
 
 <ToolContent
 	toolTitle="Flag Finder"
+	icon="🏁"
 	caption="Find which puppets have a specific flag."
 	author="Kractero"
 	link="https://nationstates.net/Kractero" />

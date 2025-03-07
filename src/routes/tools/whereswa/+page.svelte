@@ -42,6 +42,7 @@
 
 <ToolContent
 	toolTitle="Where's My WA"
+	icon="🗺️"
 	caption="Specify your puppets and this script will find which one is in the WA."
 	author="9003"
 	link="https://github.com/jmikk/WheresMyWA"

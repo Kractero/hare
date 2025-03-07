@@ -431,6 +431,7 @@
 
 <ToolContent
 	toolTitle="JunkDaJunk"
+	icon="🗑️"
 	caption={'An even faster way to junk cards with JavaScript.'}
 	author="9003"
 	originalBlurb="rewritten in JS for browser use by Kractero"

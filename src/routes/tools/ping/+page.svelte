@@ -100,6 +100,7 @@
 
 <ToolContent
 	toolTitle="Pinger"
+	icon="🏓"
 	caption="Ping your puppets to prevent ctes, or bring them back from the dead."
 	additional={`<p class="text-xs mb-4">
 	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.

@@ -44,7 +44,10 @@
 	}
 </script>
 
-<ToolContent toolTitle="Not Endorsing" caption={'Specify a nation and get all the regionmates not endorsing them.'} />
+<ToolContent
+	toolTitle="Not Endorsing"
+	icon="🚓"
+	caption={'Specify a nation and get all the regionmates not endorsing them.'} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">

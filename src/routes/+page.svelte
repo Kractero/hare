@@ -18,9 +18,7 @@
 		<h1 class="mb-4 text-center text-5xl font-bold tracking-tight lg:text-left">
 			A central location for NationStates scripts.
 		</h1>
-		<p class="text-center font-extralight tracking-tight lg:text-left">
-			The sweetest soda is the drink of intellectuals.
-		</p>
+		<p class="text-center font-light tracking-tight lg:text-left">Caffeine... I need more caffeine...</p>
 		<Linkbar />
 	</div>
 	<div class="col-span-full mx-auto max-lg:hidden lg:col-span-6">
@@ -38,7 +36,7 @@
 			return project
 		}
 	}) as tool}
-		<Tool slug={`/tools/${tool.slug}`} tool={tool.name} description={tool.description} />
+		<Tool slug={`/tools/${tool.slug}`} tool={tool.name} description={tool.description} image={tool.image} />
 	{/each}
 </div>
 
@@ -56,7 +54,8 @@
 		<Tool
 			slug={tool.slug.includes('https') ? tool.slug : `/resources/${tool.slug}`}
 			tool={tool.name}
-			description={tool.description} />
+			description={tool.description}
+			image={tool.image} />
 	{/each}
 </div>
 

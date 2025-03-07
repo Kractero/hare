@@ -2,7 +2,7 @@
 // @name        Simple Card Switcher
 // @match       https://*.nationstates.net/*generated_by=Hare*
 // @grant       window.close
-// @version     1.81
+// @version     1.9
 // @author      Kractero
 // @description Kill me
 // ==/UserScript==
@@ -34,7 +34,7 @@ function handler() {
 		// but the nation doesn't match the one in the url, switch
 		if (document.querySelector('#loggedin')) {
 			const loggedNation = document.body.getAttribute('data-nname')
-			if (loggedNation !== nation.replace(' ', '_').toLowerCase()) {
+			if (loggedNation !== nation.replaceAll(' ', '_').toLowerCase()) {
 				switchNation = true
 			}
 		}
@@ -48,7 +48,7 @@ function handler() {
 		// This will assume the second, switch
 		if (url.href.toLowerCase().includes('junkdajunk') && Number(document.body.textContent) === 0) {
 			switchNation = true
-		} else if (url.href.toLowerCase().includes('junkdajunk')) {
+		} else if (url.href.toLowerCase().includes('junkdajunk') && !url.href.toLowerCase().includes('jdj=view')) {
 			window.close()
 		}
 

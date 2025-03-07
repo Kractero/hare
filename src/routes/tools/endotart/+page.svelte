@@ -172,7 +172,10 @@
 	}
 </script>
 
-<ToolContent toolTitle="Endotart" caption="Specify a nation and get all the regionmates they are not endorsing." />
+<ToolContent
+	toolTitle="Endotart"
+	icon="🤝"
+	caption="Specify a nation and get all the regionmates they are not endorsing." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
