@@ -234,6 +234,7 @@
 
 <ToolContent
 	toolTitle="Glasses"
+	icon="🕵️"
 	caption="Generate a spreadsheet that includes information on NationStates regions."
 	author="the Spyglass Team"
 	link="https://github.com/Derpseh/Spyglass"

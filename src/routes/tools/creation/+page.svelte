@@ -41,6 +41,7 @@
 
 <ToolContent
 	toolTitle="Creation Assistant"
+	icon="🧫"
 	author="Kractero"
 	link="https://github.com/Kractero/cards-utilities/tree/main/creation_assistant"
 	caption="Generate a sheet that has links for nation creation that works with the provided userscripts."

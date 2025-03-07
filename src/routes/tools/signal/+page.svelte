@@ -114,6 +114,7 @@
 
 <ToolContent
 	toolTitle="Signal"
+	icon="📶"
 	caption="Given card ids, provide decks, collections, or check asks for bids for what's missing." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">

@@ -2,116 +2,139 @@
 	{
 		"name": "gotIssues",
 		"slug": "gotissues",
-		"description": "An even faster way to answer issues with JavaScript."
+		"description": "An even faster way to answer issues with JavaScript.",
+		"image": "🗒️"
 	},
 	{
 		"name": "JunkDaJunk",
 		"slug": "junkdajunk",
-		"description": "An even faster way to junk cards with JavaScript, with configurable rules."
+		"description": "An even faster way to junk cards with JavaScript, with configurable rules.",
+		"image": "🗑️"
 	},
 	{
 		"name": "Gold Retriever",
 		"slug": "goldretriever",
-		"description": "Check the card count, bank, deck value, and junk value of all your puppets."
+		"description": "Check the card count, bank, deck value, and junk value of all your puppets.",
+		"image": "💸"
 	},
 	{
 		"name": "Finder",
 		"slug": "finder",
-		"description": "Find which of the specified nations have which of the specified cards."
+		"description": "Find which of the specified nations have which of the specified cards.",
+		"image": "🔎"
 	},
 	{
 		"name": "Login Sheet",
 		"slug": "login",
-		"description": "Generate a login sheet for quickly logging into expired containers."
+		"description": "Generate a login sheet for quickly logging into expired containers.",
+		"image": "➡️"
 	},
 	{
 		"name": "Pinger",
 		"slug": "ping",
-		"description": "Ping all your nations, delaying their impending doom."
+		"description": "Ping all your nations, delaying their impending doom.",
+		"image": "🏓"
 	},
 	{
 		"name": "Whos Farmin",
 		"slug": "whosfarmin",
-		"description": "Scan the last 200 happenings and see who is farming."
+		"description": "Scan the last 200 happenings and see who is farming.",
+		"image": "🚜"
 	},
 	{
 		"name": "Endotart",
 		"slug": "endotart",
-		"description": "Specify a nation and get all the regionmates they are not endorsing."
+		"description": "Specify a nation and get all the regionmates they are not endorsing.",
+		"image": "🤝"
 	},
 	{
 		"name": "Creation Assistant",
 		"slug": "creation",
-		"description": "Generate a sheet that has links for nation creation that works with the provided userscripts."
+		"description": "Generate a sheet that has links for nation creation that works with the provided userscripts.",
+		"image": "🧫"
 	},
 	{
 		"name": "RCES",
 		"slug": "rces",
-		"description": "Generate a sheet of clickable links pointing to various puppets."
+		"description": "Generate a sheet of clickable links pointing to various puppets.",
+		"image": "📝"
 	},
 	{
 		"name": "Where's My WA",
 		"slug": "whereswa",
-		"description": "Locate which of your puppets is your current WA member."
+		"description": "Locate which of your puppets is your current WA member.",
+		"image": "🗺️"
 	},
 	{
 		"name": "Rate of Change",
 		"slug": "roc",
-		"description": "Calculate the rate of change for an amount of nations over an amount of days."
+		"description": "Calculate the rate of change for an amount of nations over an amount of days.",
+		"image": "📈"
 	},
 	{
 		"name": "Not Endorsing",
 		"slug": "nen",
-		"description": "Specify a nation and get all the regionmates not endorsing them."
+		"description": "Specify a nation and get all the regionmates not endorsing them.",
+		"image": "🚓"
 	},
 	{
 		"name": "Auction",
 		"slug": "auction",
-		"description": "A transfer tool."
+		"description": "A transfer tool.",
+		"image": "🏛️"
 	},
 	{
 		"name": "Decorator",
 		"slug": "inscription",
-		"description": "Upload flags and banners."
+		"description": "Upload flags and banners.",
+		"image": "🎨"
 	},
 	{
 		"name": "Containerise",
 		"slug": "containerise",
-		"description": "Generate container rules for use with Containerise."
+		"description": "Generate container rules for use with Containerise.",
+		"image": "🫙"
 	},
 	{
 		"name": "Glasses",
 		"slug": "spyglass",
-		"description": "Generate a spreadsheet containing regional information."
+		"description": "Generate a spreadsheet containing regional information.",
+		"image": "🕵️"
 	},
 	{
 		"name": "Signal",
 		"slug": "signal",
-		"description": "Given card ids, provide decks, collections, or check asks and bids for what is missing. Sideroca compatible."
+		"description": "Given card ids, provide decks, collections, or check asks and bids for what is missing.",
+		"image": "📶"
 	},
 	{
 		"name": "Deck to IDs",
 		"slug": "deck",
-		"description": "Turn a deck into a text file of card ids."
+		"description": "Turn a deck into a text file of card ids.",
+		"image": "🃏"
 	},
 	{
 		"name": "Orphans",
 		"slug": "orphans",
-		"description": "Get a list of cards not in any collection."
+		"description": "Get a list of cards not in any collection.",
+		"image": "🔍"
 	},
 	{
 		"name": "Flag Finder",
 		"slug": "flags",
-		"description": "Find which puppets have a specific flag."
+		"description": "Find which puppets have a specific flag.",
+		"image": "🏁"
 	},
 	{
 		"name": "Transfer",
 		"slug": "transfer",
-		"description": "Takes a bank threshold and receive a text file with puppets that have that bank or higher."
+		"description": "Takes a bank threshold and receive a text file with puppets that have that bank or higher.",
+		"image": "🪙"
 	},
 	{
 		"name": "Sheetify",
 		"slug": "sheetify",
-		"description": "Make a click sheet out of a bunch of links."
+		"description": "Make a click sheet out of a bunch of links.",
+		"image": "📜"
 	}
 ]

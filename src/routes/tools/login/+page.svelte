@@ -42,6 +42,7 @@
 
 <ToolContent
 	toolTitle="Login Sheet"
+	icon="➡️"
 	caption="Generate links to help you quickly log back into containers."
 	author="Kractero"
 	link="https://github.com/Kractero/cards-utilities/tree/main/log_into_containers"

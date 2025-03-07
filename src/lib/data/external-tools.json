@@ -2,21 +2,25 @@
 	{
 		"name": "Legendary Tracker",
 		"slug": "legends",
-		"description": "View legendaries and whether they are CTE or not."
+		"description": "View legendaries and whether they are CTE or not.",
+		"image": "🗓️"
 	},
 	{
 		"name": "Kee (Queries)",
 		"slug": "https://queries.kractero.com",
-		"description": "Query cards from all seasons based on certain parameters."
+		"description": "Query cards from all seasons based on certain parameters.",
+		"image": "✍️"
 	},
 	{
 		"name": "Bazaar",
 		"slug": "https://bazaar.kractero.com",
-		"description": "View historical trade information dating back to April 1st, 2018."
+		"description": "View historical trade information dating back to April 1st, 2018.",
+		"image": "🏛️"
 	},
 	{
 		"name": "Ledger",
 		"slug": "https://ledger.kractero.com",
-		"description": "Data and statistics for the top 100 nations."
+		"description": "Data and statistics for the top 100 nations.",
+		"image": "📒"
 	}
 ]

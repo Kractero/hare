@@ -50,6 +50,7 @@
 
 <ToolContent
 	toolTitle="RCES"
+	icon="📝"
 	originalBlurb="Sheet maker rewritten in JS for browser use by Kractero"
 	author="Racoda"
 	link="https://github.com/dithpri/RCES#puppet-links-sheet"

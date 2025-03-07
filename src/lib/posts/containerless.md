@@ -16,7 +16,7 @@ Containerless farming also offers more flexibility, as it can be used in any bro
 
 To do this:
 
-1. Install https://raw.githubusercontent.com/Kractero/hare/refs/heads/main/static/scs.user.js, likely the permanent link, watch for updates (shouldnt be too frequent after the initial bit)
+1. Install https://raw.githubusercontent.com/Kractero/userscripts/refs/heads/main/scs.user.js, likely the permanent link, watch for updates (shouldnt be too frequent after the initial bit)
 
 2. On lines ten and eleven, set your main nation and password. Multi-password setups (where puppets have different passwords) are not supported at the moment.
 

@@ -136,7 +136,7 @@
 	}
 </script>
 
-<ToolContent toolTitle="Orphans" caption="Get a list of cards not in any collection." />
+<ToolContent toolTitle="Orphans" icon="🔍" caption="Get a list of cards not in any collection." />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">

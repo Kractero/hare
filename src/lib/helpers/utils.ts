@@ -1,8 +1,7 @@
 import { writable } from 'svelte/store'
 import { pushState } from '$app/navigation'
-import { z } from 'zod'
 
-export const semverVersion = '5.5.7'
+export const semverVersion = '5.5.8'
 export const calverVersion = '2024.03.05'
 
 export const domain = writable()
@@ -24,28 +23,24 @@ export const urlParameters = (tool: string, main: string) => {
 	return `generated_by=Hare__v${calverVersion}_${tool}__author_main_nation_Kractero__usedBy_${main}`
 }
 
-export const userAgent = z
-	.string()
-	.max(40, 'Nation name must be 40 characters or less')
-	.refine(
-		name => /^[a-zA-Z0-9\s\-_]+$/.test(name),
-		'Sorry! Nation names can only contain Latin letters, numbers, spaces, and hyphens.'
-	)
-	.refine(
-		name => name.split(/[\s-]+/).every(word => word.length <= 26),
-		'Each word within the nation name must be no longer than 26 characters'
-	)
-
 export function checkUserAgent(ua: string) {
-	const validate = userAgent.safeParse(ua)
-	if (!validate.success) {
-		return validate.error.errors.map(error => {
-			return {
-				field: 'useragent',
-				message: error.message,
-			}
-		})
+	if (ua.length > 40) {
+		return [{ field: 'useragent', message: 'Nation name must be 40 characters or less' }]
 	}
+
+	if (!/^[a-zA-Z0-9\s\-_]+$/.test(ua)) {
+		return [
+			{
+				field: 'useragent',
+				message: 'Sorry! Nation names can only contain Latin letters, numbers, spaces, and hyphens.',
+			},
+		]
+	}
+
+	if (ua.split(/[\s-]+/).some(word => word.length > 26)) {
+		return [{ field: 'useragent', message: 'Each word within the nation name must be no longer than 26 characters' }]
+	}
+
 	return []
 }
 

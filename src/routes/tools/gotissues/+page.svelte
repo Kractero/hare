@@ -164,6 +164,7 @@
 
 <ToolContent
 	toolTitle="gotIssues"
+	icon="🗒️"
 	caption="An even faster way to answer issues with JavaScript."
 	author="9003"
 	originalBlurb="rewritten in JS for browser use by Kractero"

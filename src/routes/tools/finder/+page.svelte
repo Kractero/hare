@@ -333,6 +333,7 @@
 
 <ToolContent
 	toolTitle="Finder"
+	icon="🔎"
 	caption="Find which of the specified nations have which of the specified cards."
 	author="Kractero"
 	link="https://github.com/Kractero/cards-utilities/blob/main/finder.py"

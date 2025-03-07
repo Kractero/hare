@@ -56,17 +56,18 @@
 
 <ToolContent
 	toolTitle="Decorator"
+	icon="🎨"
 	caption="Upload the same flag or banner to puppets."
 	additional={`<p class="text-xs mb-1">
 	For mode banners, this script needs
-	<a class="underline" href="https://hare.kractero.com/banner.user.js" target="_blank" rel="noreferrer noopener">
+	<a class="underline" href="https://raw.githubusercontent.com/Kractero/userscripts/refs/heads/main/hare/decorator/banner.user.js" target="_blank" rel="noreferrer noopener">
 		the banner userscript
 	</a>. Set the link to the image in line 13 of the userscript.</p>
 	<p class="text-xs mb-16">
 	 For mode flags, this script needs
-	 <a class="underline" href="https://hare.kractero.com/flag.user.js" target="_blank" rel="noreferrer noopener">
+	 <a class="underline" href="https://raw.githubusercontent.com/Kractero/userscripts/refs/heads/main/hare/decorator/flag.user.js" target="_blank" rel="noreferrer noopener">
 		the flag userscript
-	</a> and <a class="underline" href="https://hare.kractero.com/flagautocloser.user.js" target="_blank" rel="noreferrer noopener">an autocloser to close the settings page (if its referrer is upload_flag)</a>. For flags, set the link to the image in line 13 of the userscript.
+	</a> and <a class="underline" href="https://raw.githubusercontent.com/Kractero/userscripts/refs/heads/main/hare/decorator/flagautocloser.user.js" target="_blank" rel="noreferrer noopener">an autocloser to close the settings page (if its referrer is upload_flag)</a>. For flags, set the link to the image in line 13 of the userscript.
 	</p>`} />
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">

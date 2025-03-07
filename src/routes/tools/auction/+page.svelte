@@ -214,6 +214,7 @@
 
 <ToolContent
 	toolTitle="Auction"
+	icon="🏛️"
 	caption="A transfer tool."
 	additional={`<p class="mb-2">
 	Mode Transfer will first sum the total amount of transfer cards located on the main nation. It will then figure out how many times
@@ -226,7 +227,7 @@
 </p>
 <p class="mb-2">
 	Requires the
-	<a class="underline" href="https://hare.kractero.com/auction.user.js" target="_blank" rel="noreferrer noopener">
+	<a class="underline" href="https://raw.githubusercontent.com/Kractero/userscripts/refs/heads/main/hare/auction/auction.user.js" target="_blank" rel="noreferrer noopener">
 		hare auction userscript
 	</a>
 	to be useful.

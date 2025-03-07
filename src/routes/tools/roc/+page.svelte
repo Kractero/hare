@@ -109,6 +109,7 @@
 
 <ToolContent
 	toolTitle="Rate of Change"
+	icon="📈"
 	caption="Get the rate of change in deck value for the top X NS players, over X Days."
 	author="Thorn1000"
 	originalBlurb="rewritten in JS for browser use by Kractero"
