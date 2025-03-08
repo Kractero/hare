@@ -6,9 +6,9 @@
 	import { toggleMode } from 'mode-watcher'
 </script>
 
-<header class="mb-32 mt-3 flex w-full items-center justify-between">
+<header class="mt-3 mb-32 flex w-full items-center justify-between">
 	<a href={`/`} class="flex items-center gap-2">
-		<img src="/favicon.png" alt="Hare" />
+		<img class="h-[58px] w-12" src="/favicon.png" alt="" />
 		<h2 class="ml-2 text-3xl font-semibold tracking-tight">Hare</h2>
 	</a>
 	<div class="flex gap-1 sm:gap-4">
@@ -16,11 +16,12 @@
 			<p class="hidden text-xl font-semibold sm:block">Settings</p>
 			<Button variant="outline" size="icon">
 				<Settings />
+				<span class="sr-only">Open config</span>
 			</Button>
 		</a>
 		<Button onclick={toggleMode} variant="outline" size="icon">
-			<Sun class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-			<Moon class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+			<Sun class="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+			<Moon class="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
 			<span class="sr-only">Toggle theme</span>
 		</Button>
 	</div>
