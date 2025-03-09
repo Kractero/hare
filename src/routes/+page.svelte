@@ -22,7 +22,11 @@
 		<Linkbar />
 	</div>
 	<div class="col-span-full mx-auto max-lg:hidden lg:col-span-6">
-		<img src="hare2.jpg" alt="hare" />
+		<picture class="w-[512px]">
+			<source srcset="hare2.webp" type="image/webp" />
+			<source srcset="hare2.jpg" type="image/jpeg" />
+			<img src="hare2.jpg" alt="Hare" />
+		</picture>
 	</div>
 </div>
 
