@@ -1,12 +1,12 @@
 <script>
 	import '../app.css'
 
-	import { onMount } from 'svelte'
+	import { afterNavigate } from '$app/navigation'
 	import Header from '$lib/components/Header.svelte'
 	import { log } from '$lib/helpers/utils'
 	import { ModeWatcher } from 'mode-watcher'
 
-	onMount(() => {
+	afterNavigate(() => {
 		log()
 		window.addEventListener('sveltekit:navigation-end', () => log())
 	})

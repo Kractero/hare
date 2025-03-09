@@ -48,15 +48,17 @@ export function checkUserAgent(ua: string) {
 export const canonicalize = (str: string) => str.toLowerCase().replaceAll(' ', '_')
 
 export async function log(trigger?: string, errorMessage?: string) {
+	if (localStorage.getItem('debug') === 'true') return
+
 	const data: {
-		url: URL
+		url: string
 		referrer: string
 		siteVersion: string
 		trigger: string
 		timestamp: string
 		errorMessage?: string
 	} = {
-		url: new URL(window.location.href),
+		url: window.location.href,
 		referrer: document.referrer || 'hare',
 		siteVersion: calverVersion,
 		trigger: trigger || 'navigation',
