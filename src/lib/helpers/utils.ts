@@ -1,8 +1,8 @@
 import { writable } from 'svelte/store'
 import { pushState } from '$app/navigation'
 
-export const semverVersion = '5.5.8'
-export const calverVersion = '2024.03.05'
+export const semverVersion = '5.5.9'
+export const calverVersion = '2024.04.01'
 
 export const domain = writable()
 
@@ -10,6 +10,7 @@ export const pushHistory = (params: string) => {
 	const currentURL = window.location.href
 	const baseURL = currentURL.split('?')[0]
 	pushState(`${baseURL}${params}`, `${baseURL}${params}`)
+	log('tool')
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,3 +46,29 @@ export function checkUserAgent(ua: string) {
 }
 
 export const canonicalize = (str: string) => str.toLowerCase().replaceAll(' ', '_')
+
+export async function log(trigger?: string, errorMessage?: string) {
+	if (localStorage.getItem('debug') === 'true') return
+
+	const data: {
+		url: string
+		referrer: string
+		siteVersion: string
+		trigger: string
+		timestamp: string
+		errorMessage?: string
+	} = {
+		url: window.location.href,
+		referrer: document.referrer || 'hare',
+		siteVersion: calverVersion,
+		trigger: trigger || 'navigation',
+		timestamp: new Date().toISOString(),
+	}
+
+	if (errorMessage) data.errorMessage = errorMessage || ''
+
+	await fetch('/api/athena', {
+		method: 'POST',
+		body: JSON.stringify(data),
+	})
+}

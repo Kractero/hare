@@ -24,6 +24,7 @@
 	async function onSubmit(e: Event) {
 		e.preventDefault()
 		pushHistory(`?main=${main}&mode=${mode}`)
+		content = []
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		downloadable = false
