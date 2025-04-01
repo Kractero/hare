@@ -20,12 +20,6 @@ If this tool has helped you, consider starring the repo or [gifting me a leg](ht
 
 You'd be better off reading [here](https://hare.kractero.com/resources/guides/prereqs) but below is a brief look.
 
-### Mozilla Firefox
-
-Only Firefox supports containers.
-
-If you already use Firefox as your main browser, I suggest setting up a separate profile or using a different Firefox derivative (e.g., ESR, Nightly, Floorp, Waterfox) to avoid any mix-ups with your main nation.
-
 ### A Userscript Manager
 
 A userscript allows you to extend a website's functionality beyond what is available with the website's current scripts. All modern browsers support userscript managers. For ease of use, I suggest using TamperMonkey. However, if you prefer open-source software, ViolentMonkey is a good alternative.
@@ -54,6 +48,14 @@ Many scripts generate an HTML sheet that almost necessitates the use of an autoc
 A caveat with any autocloser is that it may interfere with normal gameplay. It's recommended to enable or disable it as needed, or alternatively, use a separate browser profile or browser to avoid disruptions.
 
 ### Containers (optional)
+
+#### Mozilla Firefox
+
+Only Firefox supports containers.
+
+If you already use Firefox as your main browser, I suggest setting up a separate profile or using a different Firefox derivative (e.g., ESR, Nightly, Floorp, Waterfox) to avoid any mix-ups with your main nation.
+
+#### Containers
 
 Containers are a Firefox-only feature that allows you to create multiple mini profiles or sessions within one profile, each maintaining its own cookies and state. This means you can have one container for each nation, making it easy to manage many puppets.
 

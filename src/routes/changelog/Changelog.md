@@ -1,5 +1,13 @@
 # Changelog
 
+## 2025-4-01
+
+### Fixes
+
+1. Login Sheet
+
+   - Existing login links clear when start is clicked.
+
 ## 2025-3-05
 
 ### Adjustments
