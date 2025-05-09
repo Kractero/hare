@@ -1,5 +1,13 @@
 # Changelog
 
+## 2025-5-08
+
+### Fixes
+
+1. Sheetify
+
+   - Sheetify will work without needing to pass a link that already contains a nation or container name. For example, just base page=settings without nation=test/page=settings
+
 ## 2025-4-01
 
 ### Fixes

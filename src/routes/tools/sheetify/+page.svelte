@@ -42,6 +42,10 @@
 				modifiedLink = modifiedLink.replace(regexContainer, `container=${nation_formatted}`)
 			} else if (regexNation.test(link)) {
 				modifiedLink = modifiedLink.replace(regexNation, `nation=${nation_formatted}`)
+			} else {
+				if (link.includes('page=')) {
+					modifiedLink = link.replace(/page=/, `nation=${nation_formatted}/container=${nation_formatted}/page=`)
+				}
 			}
 
 			content.push({
