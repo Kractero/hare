@@ -81,6 +81,7 @@
 		let failedGiftCount = 0
 
 		const giftedCards = new Set()
+		const soldCards = new Set()
 
 		async function gift(cnx: string, nsp: string | undefined, nation: string, id: string, season: string, cg: string) {
 			let token = ''
@@ -111,13 +112,17 @@
 		if (findMode === 'Specific Cards') {
 			const toFind = finderlist.split('\n')
 			const matches = toFind.map(matcher => matcher.split(','))
-			progress += `<p>Finding -> ${toFind.map(card => card.trim()).join(', ')}</p>`
+			progress += `<p>Finding -> ${toFind.length} cards...</p>`
 			if (matches.length < puppetList.length) {
 				progress += `<p>More puppets than cards, proceeding...</p>`
 				for (let i = 0; i < matches.length; i++) {
 					progress += `<p>Processing card ${i + 1}/${matches.length} cards</p>`
 					if (mode === 'Gift One' && giftedCards.size > 0 && toFind.length > 0 && giftedCards.size === toFind.length) {
 						progress += `<p class="text-blue-400">All cards provided have been gifted, skipping remaining puppets`
+						break
+					}
+					if (mode === 'Sell One' && soldCards.size > 0 && toFind.length > 0 && soldCards.size === toFind.length) {
+						progress += `<p class="text-blue-400">All cards provided have been sold, skipping remaining puppets`
 						break
 					}
 					if (abortController.signal.aborted || stopped) {
@@ -150,6 +155,10 @@
 								progress += `<p class="text-blue-400">Already gifted ${id}.</p>`
 								continue
 							}
+							if (soldCards.has(id) && mode === 'Sell One') {
+								progress += `<p class="text-blue-400">Already sold ${id}.`
+								continue
+							}
 
 							let currentNationXPin = ''
 							const { nation, nationSpecificPassword } = matchedPuppet
@@ -177,12 +186,10 @@
 									} else {
 										progress += `<p class="text-green-400">${nation} owns ${id}!</p>`
 										content.push({
-											url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters(
-												'Finder',
-												main
-											)}&giftto=${currGiftee.toLowerCase().replaceAll(' ', '_')}`,
+											url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}${urlParameters('Finder', main)}`,
 											tableText: `Link to ${nation}`,
 										})
+										soldCards.add(id)
 									}
 									findCount++
 								}
@@ -197,6 +204,11 @@
 						progress += `<p class="text-blue-400">All cards provided have been gifted, skipping remaining puppets`
 						continue
 					}
+					if (mode === 'Sell One' && soldCards.size > 0 && toFind.length > 0 && soldCards.size === toFind.length) {
+						progress += `<p class="text-blue-400">All cards provided have been sold, skipping remaining puppets`
+						break
+					}
+
 					let currentNationXPin = ''
 					const { nation, nationSpecificPassword } = puppetList[i]
 
@@ -222,6 +234,10 @@
 									progress += `<p class="text-blue-400">Already gifted ${id}.`
 									continue
 								}
+								if (soldCards.has(id) && mode === 'Sell One') {
+									progress += `<p class="text-blue-400">Already sold ${id}.`
+									continue
+								}
 								let matchingEntries = matches.filter(match => match[0] === String(id))
 
 								if (matchingEntries.length > 0) {
@@ -244,9 +260,10 @@
 											} else {
 												progress += `<p class="text-green-400">${nation} owns ${id}!`
 												content.push({
-													url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${currGiftee}`,
+													url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('Finder', main)}`,
 													tableText: `Link to ${nation}`,
 												})
+												soldCards.add(id)
 											}
 											findCount++
 										}
@@ -303,9 +320,10 @@
 							} else {
 								progress += `<p class="text-green-400">${nation} owns ${id}!`
 								content.push({
-									url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${giftee}`,
+									url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('Finder', main)}`,
 									tableText: `Link to ${nation}`,
 								})
+								soldCards.add(id)
 							}
 							findCount++
 						}
@@ -386,7 +404,7 @@
 		<FormSelect
 			bind:bindValue={mode}
 			id="mode"
-			items={findMode === 'Specific Cards' ? ['Gift', 'Sell', 'Gift One'] : ['Gift', 'Sell']}
+			items={findMode === 'Specific Cards' ? ['Gift', 'Sell', 'Gift One', 'Sell One'] : ['Gift', 'Sell']}
 			label="Gift Behavior" />
 		<div class="flex max-w-lg justify-center gap-2">
 			<Buttons
