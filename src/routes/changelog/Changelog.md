@@ -1,5 +1,21 @@
 # Changelog
 
+## 2025-05-30
+
+### Adjustments
+
+1. JunkDaJunk
+
+   - Use the junk api 🙏🙏🙏🙏🙏🙏
+
+## 2025-5-12
+
+### Features
+
+1. Finder
+
+   - Sell one similar to gift one implemented
+
 ## 2025-5-08
 
 ### Fixes

@@ -193,6 +193,7 @@
 		}
 		progress += `<p class="font-bold">Initiating JunkDaJunk...</p>`
 
+		let junkedCards = 0
 		let currCard = 0
 		let currSellCard = 0
 		for (let i = 0; i < puppetList.length; i++) {
@@ -332,11 +333,32 @@
 							progress += `<p>${i + 1}/${
 								cards.length
 							} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue}</p>`
-							content.push({
-								url: `${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1`,
-								tableText: `Link to Junk`,
-							})
-							currCard = currCard + 1
+							let token = ''
+							const url = `${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&mode=`
+							const prepare = await parseXML(
+								`${url}prepare&c=junkcard`,
+								main,
+								currentNationXPin ? '' : nationSpecificPassword ? nationSpecificPassword : password,
+								currentNationXPin || ''
+							)
+
+							if (!currentNationXPin) currentNationXPin = prepare['x-pin'] || ''
+
+							token = prepare.NATION.SUCCESS
+
+							const junk = await parseXML(`${url}execute&c=junkcard&token=${token}`, main, '', currentNationXPin)
+
+							if (junk.NATION && junk.NATION.ERROR) {
+								progress += `<p class="text-red-400">${nation} failed to junk ${id}</p>`
+								content.push({
+									url: `${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1`,
+									tableText: `Link to Junk`,
+								})
+								currCard = currCard + 1
+							} else {
+								progress += `<p class="text-green-400">${nation} junked ${id}</p>`
+								junkedCards = junkedCards + 1
+							}
 						} else {
 							if (mode === 'Gift') {
 								let giftto = giftee
@@ -401,7 +423,7 @@
 			}
 		}
 		content = [...content, ...sellContent]
-		progress += `<p>Finished processing ${puppetList.length} nations, adding ${currCard + currSellCard} to sheet.</p>`
+		progress += `<p>Finished processing ${puppetList.length} nations, junking ${junkedCards} and adding ${currCard + currSellCard} to sheet.</p>`
 		downloadable = true
 		stoppable = false
 		window.removeEventListener('beforeunload', beforeUnload)
