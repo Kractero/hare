@@ -133,7 +133,7 @@
 					const matchGiftee = card[2]
 					const cardInfo = await parseXML(
 						`https://www.nationstates.net/cgi-bin/api.cgi?q=card+owners;cardid=${card[0]};season=${matchSeason}`,
-						'Card Info'
+						main
 					)
 					const owners = cardInfo.CARD.OWNERS
 					const id = cardInfo.CARD.CARDID

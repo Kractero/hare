@@ -7,6 +7,13 @@
 1. JunkDaJunk
 
    - Use the junk api 🙏🙏🙏🙏🙏🙏
+   - Always need the password for junking
+
+### Fixes
+
+1. Finder
+
+   - Pass the right user agent
 
 ## 2025-5-12
 
