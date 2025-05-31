@@ -372,7 +372,6 @@
 									})
 									currCard = currCard + 1
 								} else {
-									progress += `<p class="text-green-400">${nation} junked ${id}</p>`
 									junkedCards = junkedCards + 1
 								}
 							}
