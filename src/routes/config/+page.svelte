@@ -85,16 +85,18 @@
 				localStorageObject[key] = localStorage.getItem(key) || localStorageObject[key]
 			}
 		})
-		if (typeof localStorageObject.junkdajunkRarities === 'string') {
-			localStorageObject.junkdajunkRarities = JSON.parse(localStorageObject.junkdajunkRarities)
-		}
-		if (typeof localStorageObject.junkdajunkRaritiesBid === 'string') {
-			localStorageObject.junkdajunkRaritiesBid = JSON.parse(localStorageObject.junkdajunkRaritiesBid)
-		}
 
-		if (!localStorage.getItem('junkdajunkRaritiesBid')) {
-			localStorageObject.junkdajunkRaritiesBid = localStorageObject.junkdajunkRarities
-		}
+		const rarities = [
+			'junkdajunkRarities',
+			'junkdajunkRaritiesBid',
+			'junkdajunkRaritiesSell',
+			'junkdajunkRaritiesBidSell',
+		]
+		rarities.forEach(key => {
+			if (typeof localStorageObject[key] === 'string') {
+				localStorageObject[key] = JSON.parse(localStorageObject[key])
+			}
+		})
 	})
 
 	async function onSubmit(e: Event) {
@@ -109,14 +111,15 @@
 					if (curr[rarity] !== conf[rarity]) changes.push(key)
 				})
 				localStorage.setItem(key, JSON.stringify(localStorageObject.junkdajunkRarities))
-			} else if (key === 'junkdajunkRaritiesBid') {
+			} else if (['junkdajunkRaritiesBid', 'junkdajunkRaritiesSell', 'junkdajunkRaritiesBidSell'].includes(key)) {
 				const rarities = localStorage.getItem(key)
+
 				const curr = rarities ? JSON.parse(rarities) : {}
-				const conf = localStorageObject.junkdajunkRaritiesBid
+				const conf = localStorageObject[key]
 
 				Object.keys(conf).forEach(rarity => {
 					if (!curr[rarity]) {
-						curr[rarity] = localStorageObject.junkdajunkRarities[rarity]
+						curr[rarity] = localStorageObject[key][rarity]
 					}
 				})
 
