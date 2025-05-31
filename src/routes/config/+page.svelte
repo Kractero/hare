@@ -8,6 +8,7 @@
 	import Rarities from '$lib/components/Rarities.svelte'
 	import Button from '$lib/components/ui/button/button.svelte'
 	import { Toaster } from '$lib/components/ui/sonner'
+	import { defaultPrices } from '$lib/helpers/utils'
 	import { toast } from 'svelte-sonner'
 
 	const localStorageObject: { [key: string]: any } = $state({
@@ -37,25 +38,16 @@
 		junkdajunkFlagWhitelist: '',
 		junkdajunkFinderList: '',
 		jdjMode: 'Gift',
+		junkMethod: 'API',
 		jdjCheckMode: 'Advanced',
 		findMode: 'Specific Cards',
 		giftLegendaries: true,
 		giftOverMVValue: 10,
 		finderMode: 'Gift',
-		junkdajunkRarities: {
-			common: 0.5,
-			uncommon: 1,
-			rare: 1,
-			'ultra-rare': 1,
-			epic: 1,
-		},
-		junkdajunkRaritiesBid: {
-			common: 0.5,
-			uncommon: 1,
-			rare: 1,
-			'ultra-rare': 1,
-			epic: 1,
-		},
+		junkdajunkRarities: defaultPrices,
+		junkdajunkRaritiesBid: defaultPrices,
+		junkdajunkRaritiesSell: defaultPrices,
+		junkdajunkRaritiesBidSell: defaultPrices,
 		finderGiftee: '',
 		junkdajunkOwnerCount: '',
 		junkdajunkCardCount: '',
@@ -241,6 +233,11 @@
 		<FormInput label="Gift To" bind:bindValue={localStorageObject.finderGiftee} id="giftee" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">JunkDaJunk</h2>
 		<FormSelect
+			bind:bindValue={localStorageObject.junkMethod}
+			id="junkMethod"
+			items={['API', 'Manual']}
+			label="Junk Mode" />
+		<FormSelect
 			bind:bindValue={localStorageObject.jdjCheckMode}
 			id="checkMode"
 			items={['Advanced', 'Simple']}
@@ -249,7 +246,9 @@
 			id="jdjmode"
 			label="Behavior"
 			bind:bindValue={localStorageObject.jdjMode}
-			items={['Gift', 'Sell', 'Exclude']} />
+			items={localStorageObject.jdjCheckMode === 'Advanced'
+				? ['Gift', 'Sell', 'Gift/Sell', 'Exclude']
+				: ['Gift', 'Sell', 'Exclude']} />
 		<FormTextArea label="Card ID Whitelist" bind:bindValue={localStorageObject.junkdajunkFinderList} id="jdjfind" />
 		<FormTextArea
 			label="Regional Whitelist"
@@ -258,8 +257,20 @@
 		<FormTextArea label="Flag Whitelist" bind:bindValue={localStorageObject.junkdajunkFlagWhitelist} id="flags" />
 		<FormInput label="Card Count Threshold" bind:bindValue={localStorageObject.junkdajunkCardCount} id="card" />
 		<FormInput label="Owner Threshold" bind:bindValue={localStorageObject.junkdajunkOwnerCount} id="owner" />
-		<Rarities bind:rarities={localStorageObject.junkdajunkRarities} />
-		<Rarities bind:rarities={localStorageObject.junkdajunkRaritiesBid} />
+		<Rarities
+			label={`Rarity Market Value Threshold${localStorageObject.jdjMode === 'Gift/Sell' ? ' Gifting' : ''}`}
+			bind:rarities={localStorageObject.junkdajunkRarities} />
+		<Rarities
+			label={`Rarity Lowest Bid Value Threshold${localStorageObject.jdjMode === 'Gift/Sell' ? ' Gifting' : ''}`}
+			bind:rarities={localStorageObject.junkdajunkRaritiesBid} />
+		{#if localStorageObject.jdjMode === 'Gift/Sell'}
+			<Rarities
+				label={`Rarity Market Value Threshold${localStorageObject.jdjMode === 'Gift/Sell' ? ' Selling' : ''}`}
+				bind:rarities={localStorageObject.junkdajunkRaritiesSell} />
+			<Rarities
+				label={`Rarity Lowest Bid Value Threshold${localStorageObject.jdjMode === 'Gift/Sell' ? ' Selling' : ''}`}
+				bind:rarities={localStorageObject.junkdajunkRaritiesBidSell} />
+		{/if}
 		<FormSelect
 			type="multiple"
 			bind:bindValue={localStorageObject.junkdajunkOmittedSeasons}

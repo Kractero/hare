@@ -2,12 +2,14 @@
 	import FormInput from '$lib/components/FormInput.svelte'
 
 	interface Props {
+		label: string
 		rarities: { common: number; uncommon: number; rare: number; 'ultra-rare': number; epic: number }
 	}
 
-	let { rarities = $bindable() }: Props = $props()
+	let { label, rarities = $bindable() }: Props = $props()
 </script>
 
+<p class="w-24">{label}</p>
 <div class="flex flex-col gap-4">
 	<div class="flex max-w-lg items-center justify-between gap-4">
 		<FormInput label={'Common'} bind:bindValue={rarities.common} id="common" required={true} />

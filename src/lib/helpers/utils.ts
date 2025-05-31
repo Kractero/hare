@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store'
 import { pushState } from '$app/navigation'
 
-export const semverVersion = '5.7.2'
+export const semverVersion = '5.7.3'
 export const calverVersion = '2024.05.30'
 
 export const domain = writable()
@@ -46,6 +46,14 @@ export function checkUserAgent(ua: string) {
 }
 
 export const canonicalize = (str: string) => str.toLowerCase().replaceAll(' ', '_')
+
+export const defaultPrices = {
+	common: 0.5,
+	uncommon: 1,
+	rare: 1,
+	'ultra-rare': 1,
+	epic: 1,
+}
 
 export async function log(trigger?: string, errorMessage?: string) {
 	if (localStorage.getItem('debug') === 'true') return

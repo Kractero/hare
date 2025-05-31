@@ -157,3 +157,11 @@ export interface Point {
 	TIMESTAMP: string
 	SCORE: string
 }
+
+export interface Prices {
+	common: number
+	uncommon: number
+	rare: number
+	'ultra-rare': number
+	epic: number
+}

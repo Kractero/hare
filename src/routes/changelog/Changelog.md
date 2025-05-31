@@ -8,12 +8,21 @@
 
    - Use the junk api 🙏🙏🙏🙏🙏🙏
    - Always need the password for junking
+   - Do not add the list of ids passed into whitelist to the url, because this crashes the page if your list is very long. It should already be stored in localstorage.
+   - Store the advanced/simple mode in the url.
+   - Setting to set api or manual junking.
+   - Gifted cards added to a list which gets processed when all of the cards on the current nation are evaluated.
+   - Gift/Sell mode
 
 ### Fixes
 
 1. Finder
 
    - Pass the right user agent
+
+2. JunkDaJunk
+
+   - Properly canonicalize the region name.
 
 ## 2025-5-12
 
