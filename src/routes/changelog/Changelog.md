@@ -12,7 +12,7 @@
    - Store the advanced/simple mode in the url.
    - Setting to set api or manual junking.
    - Gifted cards added to a list which gets processed when all of the cards on the current nation are evaluated.
-   - Gift/Sell mode
+   - Gift and Sell mode
 
 ### Fixes
 

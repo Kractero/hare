@@ -36,7 +36,7 @@ When a card is marked as not junk, junkDaJunk will attempt to gift the card to t
 
 When a card is marked as not junk, junkDaJunk will add it to a sale sheet.
 
-3. Gift/Sell (only usable with **Advanced** mode)
+3. Gift and Sell (only usable with **Advanced** mode)
    When a card is marked as not junk, junkDaJunk will dynamically choose whether to gift or sell a card based on its market value and bid activity:
 
    - If the the card's highest bid exceeds the gift rarity lowest bid or the market value does, the card will be gifted.

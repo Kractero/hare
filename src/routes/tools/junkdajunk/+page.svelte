@@ -306,7 +306,7 @@
 								}
 							}
 
-							if (category !== 'legendary' && mode === 'Gift/Sell') {
+							if (category !== 'legendary' && mode === 'Gift and Sell') {
 								if (highestBid >= raritiesLowestBid[category] || parseFloat(marketValue) >= raritiesMV[category]) {
 									junk = false
 									reason = `<span class="text-blue-400">matches gift conditions</span>`
@@ -513,26 +513,26 @@
 		{/if} -->
 		<div class="flex max-w-lg justify-between gap-4">
 			<Rarities
-				label={`Rarity Market Value Threshold${mode === 'Gift/Sell' ? ' Gifting' : ''}`}
+				label={`Rarity Market Value Threshold${mode === 'Gift and Sell' ? ' Gifting' : ''}`}
 				bind:rarities={raritiesMV} />
 		</div>
 		{#if checkMode === 'Advanced'}
 			<div class="flex max-w-lg justify-between gap-4">
 				<Rarities
-					label={`Rarity Lowest Bid Value Threshold${mode === 'Gift/Sell' ? ' Gifting' : ''}`}
+					label={`Rarity Lowest Bid Value Threshold${mode === 'Gift and Sell' ? ' Gifting' : ''}`}
 					bind:rarities={raritiesLowestBid} />
 			</div>
 		{/if}
-		{#if mode === 'Gift/Sell'}
+		{#if mode === 'Gift and Sell'}
 			<div class="flex max-w-lg justify-between gap-4">
 				<Rarities
-					label={`Rarity Market Value Threshold${mode === 'Gift/Sell' ? ' Selling' : ''}`}
+					label={`Rarity Market Value Threshold${mode === 'Gift and Sell' ? ' Selling' : ''}`}
 					bind:rarities={raritiesMVSell} />
 			</div>
 
 			<div class="flex max-w-lg justify-between gap-4">
 				<Rarities
-					label={`Rarity Lowest Bid Value Threshold${mode === 'Gift/Sell' ? ' Selling' : ''}`}
+					label={`Rarity Lowest Bid Value Threshold${mode === 'Gift and Sell' ? ' Selling' : ''}`}
 					bind:rarities={raritiesLowestBidSell} />
 			</div>
 		{/if}
@@ -549,7 +549,7 @@
 		<FormSelect
 			bind:bindValue={mode}
 			id="mode"
-			items={checkMode === 'Advanced' ? ['Gift', 'Sell', 'Gift/Sell', 'Exclude'] : ['Gift', 'Sell', 'Exclude']}
+			items={checkMode === 'Advanced' ? ['Gift', 'Sell', 'Gift and Sell', 'Exclude'] : ['Gift', 'Sell', 'Exclude']}
 			label="Behavior" />
 		<Buttons
 			stopButton={true}

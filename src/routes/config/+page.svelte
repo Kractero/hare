@@ -250,7 +250,7 @@
 			label="Behavior"
 			bind:bindValue={localStorageObject.jdjMode}
 			items={localStorageObject.jdjCheckMode === 'Advanced'
-				? ['Gift', 'Sell', 'Gift/Sell', 'Exclude']
+				? ['Gift', 'Sell', 'Gift and Sell', 'Exclude']
 				: ['Gift', 'Sell', 'Exclude']} />
 		<FormTextArea label="Card ID Whitelist" bind:bindValue={localStorageObject.junkdajunkFinderList} id="jdjfind" />
 		<FormTextArea
@@ -261,17 +261,17 @@
 		<FormInput label="Card Count Threshold" bind:bindValue={localStorageObject.junkdajunkCardCount} id="card" />
 		<FormInput label="Owner Threshold" bind:bindValue={localStorageObject.junkdajunkOwnerCount} id="owner" />
 		<Rarities
-			label={`Rarity Market Value Threshold${localStorageObject.jdjMode === 'Gift/Sell' ? ' Gifting' : ''}`}
+			label={`Rarity Market Value Threshold${localStorageObject.jdjMode === 'Gift and Sell' ? ' Gifting' : ''}`}
 			bind:rarities={localStorageObject.junkdajunkRarities} />
 		<Rarities
-			label={`Rarity Lowest Bid Value Threshold${localStorageObject.jdjMode === 'Gift/Sell' ? ' Gifting' : ''}`}
+			label={`Rarity Lowest Bid Value Threshold${localStorageObject.jdjMode === 'Gift and Sell' ? ' Gifting' : ''}`}
 			bind:rarities={localStorageObject.junkdajunkRaritiesBid} />
-		{#if localStorageObject.jdjMode === 'Gift/Sell'}
+		{#if localStorageObject.jdjMode === 'Gift and Sell'}
 			<Rarities
-				label={`Rarity Market Value Threshold${localStorageObject.jdjMode === 'Gift/Sell' ? ' Selling' : ''}`}
+				label={`Rarity Market Value Threshold${localStorageObject.jdjMode === 'Gift and Sell' ? ' Selling' : ''}`}
 				bind:rarities={localStorageObject.junkdajunkRaritiesSell} />
 			<Rarities
-				label={`Rarity Lowest Bid Value Threshold${localStorageObject.jdjMode === 'Gift/Sell' ? ' Selling' : ''}`}
+				label={`Rarity Lowest Bid Value Threshold${localStorageObject.jdjMode === 'Gift and Sell' ? ' Selling' : ''}`}
 				bind:rarities={localStorageObject.junkdajunkRaritiesBidSell} />
 		{/if}
 		<FormSelect
