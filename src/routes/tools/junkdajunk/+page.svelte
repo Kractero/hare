@@ -527,13 +527,13 @@
 			<div class="flex max-w-lg justify-between gap-4">
 				<Rarities
 					label={`Rarity Market Value Threshold${mode === 'Gift/Sell' ? ' Selling' : ''}`}
-					bind:rarities={raritiesLowestBid} />
+					bind:rarities={raritiesMVSell} />
 			</div>
 
 			<div class="flex max-w-lg justify-between gap-4">
 				<Rarities
 					label={`Rarity Lowest Bid Value Threshold${mode === 'Gift/Sell' ? ' Selling' : ''}`}
-					bind:rarities={raritiesLowestBid} />
+					bind:rarities={raritiesLowestBidSell} />
 			</div>
 		{/if}
 		<FormSelect
