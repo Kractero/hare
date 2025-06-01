@@ -213,7 +213,7 @@
 						}
 
 						let junk = true
-						let sell = false
+						let sell = true
 						let reason = ''
 
 						const conditions = [
@@ -319,7 +319,7 @@
 									highestBid >= raritiesLowestBidSell[category] ||
 									parseFloat(marketValue) >= raritiesMVSell[category]
 								) {
-									sell = true
+									sell = false
 									reason = `matches sale conditions`
 								}
 							}
@@ -391,7 +391,7 @@
 								}
 							}
 						} else {
-							if (mode === 'Gift' || (mode === 'Gift and Sell' && sell !== true)) {
+							if (mode === 'Gift' || (mode === 'Gift and Sell' && sell === false)) {
 								let giftto = giftee
 								findSplit.forEach(findid => {
 									const matchGiftee = findid[2]
