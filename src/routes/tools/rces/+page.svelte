@@ -10,7 +10,7 @@
 	const abortController = new AbortController()
 	let domain = ''
 	let main = $state('')
-	let progress = $state('')
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let puppets = $state('')
 	let content = $state('')
 	let errors: Array<{ field: string | number; message: string }> = $state([])

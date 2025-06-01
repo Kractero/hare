@@ -8,7 +8,7 @@
 	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 
 	let domain = $state('')
-	let progress = $state('')
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let downloadable = $state(false)
 	let puppets = $state('')
@@ -34,7 +34,7 @@
 				tableText: `Link to ${puppetList[i]}`,
 			})
 		}
-		progress = '<p>Finished processing</p>'
+		progress = [{ text: 'Finished processing', color: 'green' }]
 		downloadable = true
 	}
 </script>

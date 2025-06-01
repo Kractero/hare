@@ -13,7 +13,8 @@
 
 	const abortController = new AbortController()
 	let domain = ''
-	let progress = $state('')
+	let info = $state<Array<{ text: string; color?: string }>>([])
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let downloadable = $state(false)
 	let content = $state(
 		`<tr><th>Nation</th><th class='sort' data-order='none'>Bank</th><th class='sort' data-order='none'>Deck Value</th><th class='sort' data-order='none'>Junk Value</th><th class='sort' data-order='none'>Card Count</th>$</tr>\n`
@@ -50,7 +51,8 @@
 		stoppable = true
 		stopped = false
 		content = `<tr><th>Nation</th><th class='sort' data-order='none'>Bank</th><th class='sort' data-order='none'>Deck Value</th><th class='sort' data-order='none'>Junk Value</th><th class='sort' data-order='none'>Card Count</th>${mode === 'Include' ? "<th class='sort' data-order='none'>Issues</th><th class='sort' data-order='none'>Packs</th>" : ''}<th class='sort' data-order='none'>Legendary Count</th>${transferCard && '<th>Transfer Card</th>'}</tr>\n`
-		progress = '<p>Initiating Gold Retriever...</p>'
+		progress = []
+		info = [{ text: `Initiating Gold Retriever...` }]
 		let puppetList = puppets.split('\n')
 		let totals = {
 			bank: 0,
@@ -72,7 +74,7 @@
 			}
 			const nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
 			try {
-				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`
+				progress = [...progress, { text: `Processing ${nation} ${i + 1}/${puppetList.length}` }]
 				const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck+info`, main)
 
 				const deck = {
@@ -100,7 +102,7 @@
 				}
 
 				if (!deckInfo.CARDS.INFO) {
-					progress += `<p class="text-blue-400">Error processing ${nation}, likely not a real nation</p>`
+					info = [...info, { text: `Error processing ${nation}, likely not a real nation.`, color: 'red' }]
 					continue
 				}
 				deck.bank = Number(deckInfo.CARDS.INFO.BANK.toFixed(2))
@@ -158,10 +160,16 @@
 					${transferCard && `<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}/card=${transferCard.split(',')[0]}/season=${transferCard.split(',')[1]}?${urlParameters('Gold Retriever', main)}'>Transfer Card</a></p></td>`}
 				</tr>\n`
 			} catch (err) {
-				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
+				progress = [...progress, { text: `Error processing ${nation} with ${err}` }]
 			}
 		}
-		progress += `<p>Finished processing! You have a cumulative ${totals.bank.toFixed(2)} bank, ${totals.deckValue.toFixed(2)} deckValue, ${totals.junkValue.toFixed(2)} junk value, and ${totals.cardCount} cards. ${mode === 'Include' ? `${totals.issues} issues await you, and you have ${totals.packs} packs to open.` : ''}</p>`
+		progress = [
+			...progress,
+			{
+				text: `Finished processing! You have a cumulative ${totals.bank.toFixed(2)} bank, ${totals.deckValue.toFixed(2)} deckValue, ${totals.junkValue.toFixed(2)} junk value, and ${totals.cardCount} cards. ${mode === 'Include' ? `${totals.issues} issues await you, and you have ${totals.packs} packs to open.` : ''}`,
+				color: 'green',
+			},
+		]
 		downloadable = true
 		stoppable = false
 	}
@@ -203,5 +211,5 @@
 			bind:stoppable
 			bind:stopped />
 	</form>
-	<Terminal bind:progress />
+	<Terminal bind:progress bind:info />
 </div>

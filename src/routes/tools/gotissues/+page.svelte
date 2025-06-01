@@ -14,7 +14,8 @@
 
 	const abortController = new AbortController()
 	let domain = ''
-	let progress = $state('')
+	let info = $state<Array<{ text: string; color?: string }>>([])
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let counter = $state(0)
 	let downloadable = $state(false)
 	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
@@ -58,7 +59,12 @@
 		downloadable = false
 		stoppable = true
 		stopped = false
-		progress = `<p class="font-bold">Initiating gotIssues...mode set to ${mode} for ${mode === 'Issues' ? `${issueCount} issues` : `${packCount} packs`}</p>`
+		progress = []
+		info = [
+			{
+				text: `Initiating gotIssues...mode set to ${mode} for ${mode === 'Issues' ? `${issueCount} issues` : `${packCount} packs`}`,
+			},
+		]
 		counter = 0
 		content = []
 		let puppetList = puppets.split('\n')
@@ -78,7 +84,7 @@
 			}
 			const nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
 			try {
-				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`
+				progress = [...progress, { text: `Processing ${nation} ${i + 1}/${puppetList.length}` }]
 				const xmlObj = await parseXML(
 					`${domain}/cgi-bin/api.cgi?nation=${nation}&q=issues+packs`,
 					main,
@@ -88,7 +94,7 @@
 
 				if (mode === 'Both' || mode === 'Issues') {
 					if (packs && packs >= 9) {
-						progress += `<p class="text-blue-400">${nation} has over 9 packs, skipping issues</p>`
+						info = [...info, { text: `${nation} has over 9 packs, skipping issues`, color: 'blue' }]
 					} else {
 						const issues: Issue = xmlObj.NATION.ISSUES.ISSUE || []
 						let issueIds: Array<string> = []
@@ -128,7 +134,7 @@
 					packCount = packCount === 'All' ? '9' : packCount
 					const packsToOpen = Math.min(packs - Number(minPack), Number(packCount))
 					if (packs === 0) {
-						progress += `<p class="text-blue-400">${nation} has no packs, skipping!</p>`
+						info = [...info, { text: `${nation} has no packs, skipping!`, color: 'blue' }]
 						continue
 					}
 					if (packs >= Number(minPack)) {
@@ -148,15 +154,20 @@
 							packsCount++
 						}
 					} else {
-						progress += `<p class="text-blue-400">${nation} has less packs than ${minPack}, skipping!</p>`
+						info = [...info, { text: `${nation} has less packs than ${minPack}, skipping!`, color: 'blue' }]
 					}
 				}
 			} catch (err) {
-				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
+				info = [...info, { text: `Error processing ${nation} with ${err}`, color: 'red' }]
 			}
 		}
 		content = [...content, ...packContent]
-		progress += `<p>Finished processing ${puppetList.length} nations, equaling ${issuesCount} issues and ${packsCount} packs!</p>`
+		progress = [
+			...progress,
+			{
+				text: `Finished processing ${puppetList.length} nations, equaling ${issuesCount} issues and ${packsCount} packs!`,
+			},
+		]
 		downloadable = true
 		stoppable = false
 	}
@@ -214,5 +225,5 @@
 			<OpenButton bind:progress bind:openNewLinkArr={content} />
 		</Buttons>
 	</form>
-	<Terminal bind:progress />
+	<Terminal bind:progress bind:info />
 </div>

@@ -27,7 +27,8 @@
 
 	let dialogOpen = $state(false)
 	let domain = ''
-	let progress = $state('')
+	let info = $state<Array<{ text: string; color?: string }>>([])
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let stoppable = $state(false)
 	let stopped = $state(false)
@@ -139,37 +140,41 @@
 		downloadable = false
 		stoppable = true
 		stopped = false
-		progress = ''
+		progress = []
+		info = []
 		content = []
 		sellContent = []
 		let puppetList = puppets.split('\n')
-		const whiteList = regionalwhitelist ? regionalwhitelist.split('\n').map(region => canonicalize(region)) : []
-		if (whiteList.length > 0) {
-			progress += `<p>Whitelisting regions: ${whiteList.map(region => region.trim()).join(', ')}</p>`
+		const newInfo = []
+
+		newInfo.push({ text: `Initiating JunkDaJunk with ${checkMode} ${junkMethod} ${mode}` })
+
+		const regionalWhitelist = regionalwhitelist ? regionalwhitelist.split('\n').map(region => canonicalize(region)) : []
+		if (regionalWhitelist.length > 0) {
+			newInfo.push({ text: `Whitelisting regions: ${regionalWhitelist.map(region => region.trim()).join(', ')}` })
 		}
-		const fwhiteList = flagwhitelist ? flagwhitelist.split('\n') : []
-		if (fwhiteList.length > 0) {
-			progress += `<p>Whitelisting flags: ${fwhiteList.map(flag => flag.trim()).join(', ')}</p>`
+		const flagWhitelist = flagwhitelist ? flagwhitelist.split('\n') : []
+		if (flagWhitelist.length > 0) {
+			newInfo.push({ text: `Whitelisting flags: ${flagWhitelist.map(flag => flag.trim()).join(', ')}` })
 		}
 		const toFind = finderlist ? finderlist.split('\n') : []
 		if (toFind.length > 0) {
-			progress += `<p>Whitelisting cards: ${toFind.map(flag => flag.trim()).join(', ')}</p>`
+			newInfo.push({ text: `Whitelisting cards: ${toFind.length} cards whitelisted` })
 		}
+
+		if (skipseason && skipseason.length > 0) newInfo.push({ text: `Skipping seasons: ${skipseason}` })
+
+		if (skipexnation === true) newInfo.push({ text: `Skipping s1 exnations` })
+
+		// for (const [rarity, threshold] of Object.entries(raritiesMV))
+		// 	newInfo.push({ text: `${rarity} junk threshold at ${threshold}` })
+
+		// for (const [rarity, bid] of Object.entries(raritiesLowestBid))
+		// 	newInfo.push({ text: `${rarity} junk threshold at ${bid}` })
+
 		const findSplit = finderlist.split('\n').map(matcher => matcher.split(','))
-		if (skipseason) {
-			progress += `<p>Skipping seasons: ${skipseason}`
-		}
-		if (skipexnation === true) {
-			progress += `<p>Skipping s1 exnations</p>`
-		}
-		for (let i = 0; i < Object.entries(raritiesMV).length; i++) {
-			progress += `<p>${Object.entries(raritiesMV)[i][0]} junk threshold at ${Object.entries(raritiesMV)[i][1]}</p>`
-		}
-		const rarityLowestBidArr = Object.entries(raritiesLowestBid)
-		for (let i = 0; i < rarityLowestBidArr.length; i++) {
-			progress += `<p>${rarityLowestBidArr[i][0]} junk threshold at ${rarityLowestBidArr[i][1]}</p>`
-		}
-		progress += `<p class="font-bold">Initiating JunkDaJunk...</p>`
+
+		info = newInfo
 
 		let junkedCards = 0
 		let currCard = 0
@@ -187,11 +192,11 @@
 			}
 			nation = nation.toLowerCase().replaceAll(' ', '_')
 			try {
-				progress += `<p class="font-semibold">Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`
+				progress = [...progress, { text: `Processing ${nation} ${i + 1}/${puppetList.length} puppets` }]
 				const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck+info`, main)
 				let nationalBank = xmlDocument.CARDS.INFO.BANK
 				if (Number(jdjtransfer) !== -1 && nationalBank >= Number(jdjtransfer)) {
-					progress += `<p>Skipping ${nation} as they exceed <span class="text-blue-400">${jdjtransfer}</span> bank.</p>`
+					progress = [...progress, { text: `Skipping ${nation} as they exceed ${jdjtransfer} bank.`, color: 'blue' }]
 					continue
 				}
 				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD
@@ -236,7 +241,7 @@
 						for (const { check, reason: r } of conditions) {
 							if (check()) {
 								junk = false
-								reason = `<span class="text-blue-400">${r}</span>`
+								reason = `${r}`
 								break
 							}
 						}
@@ -274,7 +279,7 @@
 
 							const advancedConditions = [
 								{
-									check: () => fwhiteList.some(f => flag.includes(f)),
+									check: () => flagWhitelist.some(f => flag.includes(f)),
 									reason: `Flag is whitelisted ${flag}`,
 								},
 								{
@@ -293,7 +298,7 @@
 									reason: `S1 exnation`,
 								},
 								{
-									check: () => region && whiteList.includes(canonicalize(region)),
+									check: () => region && regionalWhitelist.includes(canonicalize(region)),
 									reason: `is in whitelisted ${region}`,
 								},
 							]
@@ -301,7 +306,7 @@
 							for (const { check, reason: r } of advancedConditions) {
 								if (check()) {
 									junk = false
-									reason = `<span class="text-blue-400">${r}</span>`
+									reason = `${r}`
 									break
 								}
 							}
@@ -309,13 +314,13 @@
 							if (category !== 'legendary' && mode === 'Gift and Sell') {
 								if (highestBid >= raritiesLowestBid[category] || parseFloat(marketValue) >= raritiesMV[category]) {
 									junk = false
-									reason = `<span class="text-blue-400">matches gift conditions</span>`
+									reason = `matches gift conditions`
 								} else if (
 									highestBid >= raritiesLowestBidSell[category] ||
 									parseFloat(marketValue) >= raritiesMVSell[category]
 								) {
 									sell = true
-									reason = `<span class="text-blue-400">matches sale conditions</span>`
+									reason = `matches sale conditions`
 								}
 							}
 						}
@@ -326,29 +331,39 @@
 								if (matchSeason) {
 									if (matchSeason === String(season)) {
 										junk = false
-										reason = `<span class="text-blue-400">is whitelisted card ${findid[0]} season ${season}</span>`
+										reason = `is whitelisted card ${findid[0]} season ${season}`
 									}
 								} else {
 									junk = false
-									reason = `<span class="text-blue-400">is whitelisted card ${findid}</span>`
+									reason = `is whitelisted card ${findid}`
 								}
 							}
 						})
 
 						if (junk) {
 							if (junkMethod === 'Manual') {
-								progress += `<p>${i + 1}/${
-									cards.length
-								} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue}</p>`
+								progress = [
+									...progress,
+									{
+										text: `${i + 1}/${
+											cards.length
+										} -> Adding to junk sheet S${season} ${category.toUpperCase()} ${id} with mv ${marketValue}`,
+									},
+								]
 								content.push({
 									url: `${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1`,
 									tableText: `Link to Junk`,
 								})
 								currCard = currCard + 1
 							} else {
-								progress += `<p>${i + 1}/${
-									cards.length
-								} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue}</p>`
+								progress = [
+									...progress,
+									{
+										text: `${i + 1}/${
+											cards.length
+										} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue}`,
+									},
+								]
 								let token = ''
 								const url = `${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&mode=`
 								const prepare = await parseXML(
@@ -365,7 +380,7 @@
 								const junk = await parseXML(`${url}execute&c=junkcard&token=${token}`, main, '', currentNationXPin)
 
 								if (junk.NATION && junk.NATION.ERROR) {
-									progress += `<p class="text-red-400">${nation} failed to junk ${id}, adding to sheet</p>`
+									info = [...info, { text: `${nation} failed to junk ${id}, adding to sheet`, color: 'red' }]
 									content.push({
 										url: `${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1`,
 										tableText: `Link to Junk`,
@@ -384,7 +399,13 @@
 										if (matchGiftee) giftto = matchGiftee
 									}
 								})
-								progress += `<p>${i + 1}/${cards.length} -> Giftable card ${id} moved to gift queue</p>`
+								progress = [
+									...progress,
+									{
+										text: `${i + 1}/${cards.length} -> Giftable card ${id} moved to gift queue - ${reason}`,
+										color: 'blue',
+									},
+								]
 								giftQueue.push({
 									gift: `${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftto}`,
 									sell: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}&giftto=${giftto.toLowerCase().replaceAll(' ', '_')}`,
@@ -392,7 +413,10 @@
 									success: `${nation} gifted ${id} to ${giftto} - ${reason}`,
 								})
 							} else {
-								progress += `<p>${i + 1}/${cards.length} -> Skipping ${id} - ${reason}!</p>`
+								progress = [
+									...progress,
+									{ text: `${i + 1}/${cards.length} -> Skipping ${id} - ${reason}!`, color: 'blue' },
+								]
 								if (mode === 'Sell') {
 									sellContent.push({
 										url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/jdj=view?${urlParameters('junkDaJunk', main)}`,
@@ -403,7 +427,7 @@
 							}
 						}
 					}
-					progress += `<p>Processing gift queue of size ${giftQueue.length}...</p>`
+					progress = [...progress, { text: `Processing gift queue of size ${giftQueue.length}...` }]
 					for (let i = 0; i < giftQueue.length; i++) {
 						let token = ''
 						const url = giftQueue[i].gift
@@ -425,25 +449,32 @@
 								url: giftQueue[i].sell,
 								tableText: `Link to Card`,
 							})
-							progress += `<p>${i + 1}/${giftQueue.length} -> <span class="text-red-400">${giftQueue[i].fail}</span></p>`
+							progress = [...progress, { text: `${i + 1}/${giftQueue.length} -> ${giftQueue[i].fail}`, color: 'red' }]
 							currSellCard = currSellCard + 1
 						} else {
-							progress += `<p>${i + 1}/${
-								giftQueue.length
-							} -> <span class="text-green-400">${giftQueue[i].success}</span></p>`
+							progress = [
+								...progress,
+								{ text: `${i + 1}/${giftQueue.length} -> ${giftQueue[i].success}`, color: 'green' },
+							]
 						}
 					}
 				} else {
 					if (cards && cards.length > 0 && cardcount)
-						progress += `<p class="text-blue-400">${nation} has less cards than ${cardcount}, skipping!</p>`
-					else progress += `<p class="text-blue-400">It is likely ${nation} has 0 cards, skipping!</p>`
+						progress = [...progress, { text: `${nation} has less cards than ${cardcount}, skipping!`, color: 'blue' }]
+					else progress = [...progress, { text: `It is likely ${nation} has 0 cards, skipping!`, color: 'blue' }]
 				}
 			} catch (err) {
-				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
+				info = [...info, { text: `Error processing ${nation} with ${err}`, color: 'red' }]
 			}
 		}
 		content = [...content, ...sellContent]
-		progress += `<p>Finished processing ${puppetList.length} nations, junking ${junkedCards} and adding ${currCard + currSellCard} to sheet.</p>`
+		progress = [
+			...progress,
+			{
+				text: `Finished processing ${puppetList.length} nations, junking ${junkedCards} and adding ${currCard + currSellCard} to sheet.`,
+				color: 'green',
+			},
+		]
 		if (content.length > 0) downloadable = true
 		stoppable = false
 		window.removeEventListener('beforeunload', beforeUnload)
@@ -561,5 +592,5 @@
 			<OpenButton bind:progress bind:openNewLinkArr={content} />
 		</Buttons>
 	</form>
-	<Terminal bind:progress />
+	<Terminal bind:progress bind:info />
 </div>

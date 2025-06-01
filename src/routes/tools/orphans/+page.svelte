@@ -12,7 +12,7 @@
 	const abortController = new AbortController()
 
 	let domain = ''
-	let progress = $state('')
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let stoppable = $state(false)
 	let stopped = $state(false)
 	let downloadable = $state(true)
@@ -20,18 +20,15 @@
 	let deck = $state('')
 	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let errors: Array<{ field: string | number; message: string }> = $state([])
-	// let collections = '';
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
 		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		deck = page.url.searchParams.get('deck') || (localStorage.getItem('orphansDeck') as string) || ''
-		// collections = page.url.searchParams.get('collections') || localStorage.getItem("orphansCollection") as string || "";
 	})
 	onDestroy(() => abortController.abort())
 
 	async function onSubmit(e: Event) {
 		e.preventDefault()
-		// ${collections ? `&collections=${collections}` : ""}
 		pushHistory(`?main=${main}${deck ? `&deck=${deck}` : ''}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 1) return
@@ -39,21 +36,8 @@
 		stopped = false
 		downloadable = false
 		content = []
-		progress = `<p class="font-bold">Initiating Orphans...</p>`
+		progress = [{ text: `Initiating Orphans...` }]
 		let collectionList: string[] = []
-		// let collectionList = collections.split('\n');
-
-		// if (collectionList[0] === "") {
-		//   const collections = await parseXML(`${domain}/cgi-bin/api.cgi?q=cards+collections;nationname=${deckList[0]}`, main)
-		//   if (collections.CARDS.COLLECTIONS) {
-		//     if (Array.isArray(collections.CARDS.COLLECTIONS.COLLECTION)) {
-		//       collectionList = collections.CARDS.COLLECTIONS.COLLECTION.map((collection: { COLLECTIONID: number; }) => collection.COLLECTIONID)
-		//     } else {
-		//       collectionList = [collections.CARDS.COLLECTIONS.COLLECTION.COLLECTIONID]
-		//     }
-		//   }
-		//   await sleep(600)
-		// }
 
 		const collections = await parseXML(`${domain}/cgi-bin/api.cgi?q=cards+collections;nationname=${deck}`, main)
 		if (collections.CARDS.COLLECTIONS) {
@@ -68,7 +52,7 @@
 
 		const collectionCards: Array<{ CARDID: number; SEASON: number }> = []
 		for (let i = 0; i < collectionList.length; i++) {
-			progress += `<p>Computing collection ${collectionList[i]}</p>`
+			progress = [...progress, { text: `Computing collection ${collectionList[i]}` }]
 			const cards = await parseXML(
 				`${domain}/cgi-bin/api.cgi?q=cards+collection;collectionid=${collectionList[i]}`,
 				main
@@ -97,7 +81,7 @@
 
 		const deckCards: Array<{ CARDID: number; SEASON: number }> = []
 		const cards = await parseXML(`${domain}/cgi-bin/api.cgi?q=cards+deck;nationname=${deck}`, main)
-		progress += `<p>Computing deck of ${deck}</p>`
+		progress = [...progress, { text: `Computing deck of ${deck}` }]
 		if (cards.CARDS && cards.CARDS.DECK && cards.CARDS.DECK.CARD) {
 			if (Array.isArray(cards.CARDS.DECK.CARD)) {
 				cards.CARDS.DECK.CARD.forEach((card: { CARDID: number; SEASON: number }) => {
@@ -130,7 +114,7 @@
 			})
 		})
 
-		progress += `<p>Found ${cardsNotInCollection.length} cards not in a collection</p>`
+		progress = [...progress, { text: `Found ${cardsNotInCollection.length} cards not in a collection`, color: 'green' }]
 		downloadable = true
 		stoppable = false
 	}

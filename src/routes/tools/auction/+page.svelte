@@ -2,7 +2,6 @@
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
-	import OpenButton from '$lib/components/buttons/OpenButton.svelte'
 	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
 	import FormInput from '$lib/components/FormInput.svelte'
 	import FormSelect from '$lib/components/FormSelect.svelte'
@@ -15,7 +14,8 @@
 	const abortController = new AbortController()
 
 	let domain = ''
-	let progress = $state('')
+	let info = $state<Array<{ text: string; color?: string }>>([])
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let downloadable = $state(false)
 	let stoppable = $state(false)
 	let stopped = $state(false)
@@ -50,11 +50,11 @@
 		downloadable = false
 		stoppable = true
 		stopped = false
-		progress = '<p>Initiating Auction...</p>'
 		let puppetList = puppets.split('\n')
-		let count = 0
 		let bank = 0
+		progress = []
 		content = []
+		info = [{ text: 'Initiating Auction...' }]
 		const findSplit = transferCards.split('\n').map(matcher => matcher.split(','))
 		const transferCounts: { [key: string]: { count: number; season: string; id: string } } = {}
 
@@ -63,7 +63,7 @@
 			for (const card of findSplit) {
 				let [id, season, bidsToPlace] = card
 				if (!season) {
-					progress += `<p class="text-red-400">You did not provide the season.</p>`
+					info = [...info, { text: 'You did not provide the season.', color: 'red' }]
 					stoppable = false
 					return
 				}
@@ -78,18 +78,12 @@
 				}
 			}
 
-			progress += `${mode === 'Bids' ? 'Bid' : 'Ask'} links generated`
+			info = [...info, { text: `${mode === 'Bids' ? 'Bid' : 'Ask'} links generated` }]
 		}
 
 		if (mode === 'Transfer') {
 			const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${auctionMain}&q=cards+deck+info`, main)
-			// const askBids = await parseXML(
-			// 	`https://www.nationstates.net/cgi-bin/api.cgi?q=cards+asksbids;nationname=${auctionMain}`,
-			// 	main
-			// )
 			let cards = deckInfo.CARDS.DECK.CARD
-			// let auction = askBids.CARDS.ASKS.ASK
-			// auction = auction ? (Array.isArray(auction) ? auction : [auction]) : []
 			cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
 
 			if (cards.length > 0) {
@@ -107,34 +101,14 @@
 				}
 
 				for (const [id, { count, season }] of Object.entries(transferCounts)) {
-					progress += `<p class="text-blue-400">${auctionMain} has ${count} copies of card ID ${id}, season ${season}</p>`
+					info = [
+						...info,
+						{ text: `${auctionMain} has ${count} copies of card ID ${id}, season ${season}`, color: 'blue' },
+					]
 				}
 			}
 
-			// const auctionCounts: { [key: string]: { count: number; season: string; id: string } } = {}
-
-			// for (const bid of auction) {
-			// 	const id = bid.CARDID
-			// 	const season = bid.SEASON
-
-			// 	if (!auctionCounts[id]) {
-			// 		auctionCounts[id] = { count: 0, season, id }
-			// 	}
-			// 	auctionCounts[id].count++
-			// }
-
-			// for (const [id, auctionData] of Object.entries(auctionCounts)) {
-			// 	if (transferCounts[id] && transferCounts[id].season === auctionData.season) {
-			// 		transferCounts[id].count = Math.max(0, transferCounts[id].count - auctionData.count)
-			// 	}
-			// }
-
-			// for (const [id, { count, season }] of Object.entries(transferCounts)) {
-			// 	progress += `<p class="text-blue-400">${auctionMain} now has ${count} copies of card ID ${id}, season ${season} after auction adjustments</p>`
-			// }
-
 			let currIndex = 0
-			let count = 0
 			let bids = []
 
 			const transferableIDs = Object.keys(transferCounts).filter(id => transferCounts[id].count > 0)
@@ -144,31 +118,36 @@
 					break
 				}
 				try {
-					progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`
+					progress = [...progress, { text: `Processing ${nation} ${i + 1}/${puppetList.length}` }]
 					const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck+info`, main)
 					let nationalBank = deckInfo.CARDS.INFO.BANK
 
 					if (nationalBank > Number(amount) && (Number(skip) < 0 || nationalBank < Number(skip))) {
 						let cardsTransferable = Math.floor(nationalBank / Number(amount))
-						progress += `<p class="text-green-400">${nation} can transfer ${cardsTransferable} cards!</p>`
+						progress = [...progress, { text: `${nation} can transfer ${cardsTransferable} cards!`, color: 'green' }]
 						while (cardsTransferable > 0 && transferableIDs.length > 0) {
 							let id = transferableIDs[currIndex]
 							let { count, season } = transferCounts[id]
 
 							if (!season) {
-								progress += `<p class="text-red-400">You did not provide the season.</p>`
+								progress = [...progress, { text: 'You did not provide the season.', color: 'red' }]
 								stoppable = false
 								return
 							}
 
 							if (count > 0 && transferCounts[id].count > 0) {
-								progress += `<p>${i + 1} Generated ask link for card ID ${id}, season ${season}</p>`
+								progress = [...progress, { text: `${i + 1} Generated ask link for card ID ${id}, season ${season}` }]
 								const singleAskLink = `${domain}/container=${canonicalize(auctionMain)}/nation=${canonicalize(auctionMain)}/page=deck/card=${id}/season=${season}?mode=ask&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
 								content.push({
 									url: singleAskLink,
 									tableText: `Link to Ask`,
 								})
-								progress += `<p>${i + 1} Generated bid link for card ID ${id}, season ${season} to ${canonicalize(nation)}</p>`
+								progress = [
+									...progress,
+									{
+										text: `${i + 1} Generated bid link for card ID ${id}, season ${season} to ${canonicalize(nation)}`,
+									},
+								]
 
 								const singleBidLink = `${domain}/container=${canonicalize(nation)}/nation=${canonicalize(nation)}/page=deck/card=${id}/season=${season}?mode=bid&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
 
@@ -183,7 +162,7 @@
 								if (transferCounts[id].count === 0) {
 									transferableIDs.splice(currIndex, 1)
 
-									currIndex--
+									if (currIndex > 0) currIndex--
 								}
 							}
 
@@ -192,19 +171,25 @@
 						bank += nationalBank
 					} else {
 						if (nationalBank < Number(amount)) {
-							progress += `<p class="text-yellow-400">${nation} cannot afford any cards (Bank: ${nationalBank}).</p>`
+							progress = [
+								...progress,
+								{ text: `${nation} cannot afford any cards (Bank: ${nationalBank}).`, color: 'yellow' },
+							]
 						} else {
-							progress += `<p class="text-yellow-400">${nation}'s bank ${nationalBank} exceeds the skip threshold of ${skip}.</p>`
+							progress = [
+								...progress,
+								{ text: `${nation}'s bank ${nationalBank} exceeds the skip threshold of ${skip}.`, color: 'yellow' },
+							]
 						}
 					}
 				} catch (err) {
-					progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
+					progress = [...progress, { text: `Error processing ${nation} with ${err}`, color: 'red' }]
 				}
 			}
 
 			content = [...content, ...bids]
 
-			progress += `Auction links generated`
+			progress = [...progress, { text: 'Auction links generated' }]
 		}
 
 		downloadable = true
@@ -258,5 +243,5 @@
 			bind:stopped>
 		</Buttons>
 	</form>
-	<Terminal bind:progress />
+	<Terminal bind:info bind:progress />
 </div>

@@ -12,7 +12,7 @@
 
 	const abortController = new AbortController()
 	let domain = ''
-	let progress = $state('')
+	let progress = $state<Array<{ text: string; color?: string; link?: { href: string; label: string } }>>([])
 	let stoppable = $state(false)
 	let stopped = $state(false)
 	let puppets = $state('')
@@ -44,7 +44,7 @@
 		stoppable = true
 		stopped = false
 		content = []
-		progress = '<p>Initiating Flag Finder...</p>'
+		progress = [{ text: 'Initiating Flag Finder...' }]
 		let flagsList = flags.split('\n')
 		let mottosList = mottos.split('\n')
 		let puppetsList = puppets.split('\n')
@@ -55,12 +55,25 @@
 				if (abortController.signal.aborted || stopped) {
 					break
 				}
-				progress += `<p>Computing ${nation}'s ${mode.toLowerCase() === 'flags' ? 'flags' : 'motto'}</p>`
+				progress = [
+					...progress,
+					{ text: `Computing ${nation}'s ${mode.toLowerCase() === 'flags' ? 'flags' : 'motto'}` },
+				]
 				if (mode.toLowerCase() === 'flags') {
 					const response = await parseXML(`${domain}/cgi-bin/api.cgi?nation=${nation}&q=flag`, main)
 					for (const flag of flagsList) {
 						if (response.NATION.FLAG.includes(flag)) {
-							progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="${domain}/nation=${nation}?${urlParameters('Flag_Manager', main)}" class="underline">${nation}</a> has flag containing ${flag}!</p>`
+							progress = [
+								...progress,
+								{
+									text: '',
+									color: 'green',
+									link: {
+										href: `${domain}/nation=${nation}?${urlParameters('Flag_Manager', main)}`,
+										label: `${nation} has flag containing ${flag}!`,
+									},
+								},
+							]
 							content.push({
 								url: `${domain}/nation=${nation}?${urlParameters('Flag_Finder', main)}`,
 								tableText: `Link to ${nation}`,
@@ -71,7 +84,17 @@
 					const response = await parseXML(`${domain}/cgi-bin/api.cgi?nation=${nation}&q=motto`, main)
 					for (const motto of mottosList) {
 						if (response.NATION.MOTTO.includes(motto)) {
-							progress += `<p class="text-green-400"><a target="_blank" rel="noreferrer noopener" href="${domain}/nation=${nation}?${urlParameters('Flag_Manager', main)}" class="underline">${nation}</a> has motto that includes '${motto}'!</p>`
+							progress = [
+								...progress,
+								{
+									text: '',
+									color: 'green',
+									link: {
+										href: `${domain}/nation=${nation}?${urlParameters('Flag_Manager', main)}`,
+										label: `${nation} has motto containing ${motto}!`,
+									},
+								},
+							]
 							content.push({
 								url: `${domain}/nation=${nation}?${urlParameters('Flag_Finder', main)}`,
 								tableText: `Link to ${nation}`,
@@ -80,10 +103,10 @@
 					}
 				}
 			} catch (err) {
-				progress += `<p class="text-red-400">Error occured on ${nation}: ${err}`
+				progress = [...progress, { text: `Error occured on ${nation}: ${err}`, color: 'red' }]
 			}
 		}
-		progress += `Flag finder finished searching!`
+		progress = [...progress, { text: 'Flag finder finished searching!', color: 'green' }]
 		stoppable = false
 		downloadable = true
 	}

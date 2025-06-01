@@ -14,7 +14,7 @@
 	const abortController = new AbortController()
 
 	let domain = ''
-	let progress = $state('')
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let stoppable = $state(false)
 	let stopped = $state(false)
 	let main = $state('')
@@ -45,7 +45,7 @@
 		let names: string[] = []
 		type rocTuple = [string, number]
 		let ratesOfChange: Array<rocTuple> = []
-		progress = ''
+		progress = []
 		if (!specific) {
 			for (let i = 0; i < Math.ceil(Number(top) / 20); i++) {
 				let start = 1 + i * 20
@@ -66,7 +66,7 @@
 			if (abortController.signal.aborted || stopped) {
 				break
 			}
-			progress += `<p>Evaluating ${nation}, ${j + 1}/${names.length}</p>`
+			progress = [...progress, { text: `Evaluating ${nation}, ${j + 1}/${names.length}` }]
 			const xml = await parseXML(
 				`${domain}/cgi-bin/api.cgi?nation=${nation};q=census;scale=86;mode=history;from=${fromTimestamp}`,
 				main
@@ -88,21 +88,39 @@
 		}
 		const fallers = ratesOfChange.slice().sort((a, b) => a[1] - b[1])
 		const risers = ratesOfChange.slice().sort((a, b) => b[1] - a[1])
-		progress = ''
-		progress += `<span class="font-bold">${specific ? 'Specific nations' : `TOP ${names.length}`} over ${days} days</span><br>`
+
+		progress = [...progress, { text: `${specific ? 'Specific nations' : `TOP ${names.length}`} over ${days} days` }]
+
 		for (let i = 0; i < ratesOfChange.length; i++) {
-			progress += `${i + 1}/${ratesOfChange.length} ${ratesOfChange[i][0]} | Rate of Change: ${ratesOfChange[i][1]}<br>`
+			progress = [
+				...progress,
+				{ text: `${i + 1}/${ratesOfChange.length} ${ratesOfChange[i][0]} | Rate of Change: ${ratesOfChange[i][1]}` },
+			]
 		}
+
 		if (names.length > 1) {
-			progress += `<span class="font-bold">Fastest growing of the ${specific ? 'specified nations' : `top ${names.length}`}</span><br>`
+			progress = [
+				...progress,
+				{ text: `Fastest growing of the ${specific ? 'specified nations' : `top ${names.length}`}`, color: 'yellow' },
+			]
 			for (let i = 0; i < risers.length; i++) {
-				progress += `${i + 1}/${risers.length} ${risers[i][0]} | Rate of Change: ${risers[i][1]}<br>`
+				progress = [
+					...progress,
+					{ text: `${i + 1}/${risers.length} ${risers[i][0]} | Rate of Change: ${risers[i][1]}` },
+				]
 			}
-			progress += `<span class="font-bold">Slowest growing of the ${specific ? 'specified nations' : `top ${names.length}`}</span><br>`
+			progress = [
+				...progress,
+				{ text: `Slowest growing of the ${specific ? 'specified nations' : `top ${names.length}`}`, color: 'yellow' },
+			]
 			for (let i = 0; i < fallers.length; i++) {
-				progress += `${i + 1}/${fallers.length} ${fallers[i][0]} | Rate of Change: ${fallers[i][1]}<br>`
+				progress = [
+					...progress,
+					{ text: `${i + 1}/${fallers.length} ${fallers[i][0]} | Rate of Change: ${fallers[i][1]}` },
+				]
 			}
 		}
+
 		stoppable = false
 	}
 </script>

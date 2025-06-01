@@ -1,11 +1,32 @@
 <script lang="ts">
-	interface Props {
-		progress: string | string[]
+	export let info: { text: string; color?: string }[] = []
+	export let progress: { text: string; color?: string; link?: { href: string; label: string } }[] = []
+
+	let terminal: HTMLDivElement
+
+	$: if (terminal) {
+		terminal.scrollTop = terminal.scrollHeight
 	}
 
-	let { progress = $bindable() }: Props = $props()
+	$: trimmedProgress = info && info.length > 0 ? progress.slice(-1000) : progress
 </script>
 
-<pre
-	class="focus-visible:ring-ringy inline-block w-full max-w-[496px] flex-1 whitespace-pre-wrap rounded-md border border-input bg-secondary px-3 py-2 font-mono text-sm font-medium ring-offset-background lg:max-w-5xl">{@html progress ||
-		''}</pre>
+<div
+	bind:this={terminal}
+	class="focus-visible:ring-ringy border-input bg-secondary ring-offset-background inline-block w-full max-w-[496px] flex-1 gap-4 rounded-md border px-3 py-2 font-mono text-sm font-medium whitespace-pre-wrap lg:max-w-5xl">
+	{#if info && info.length > 0}
+		{#each info as { text, color }, i (i)}
+			<p class={`my-0.5 ${color ? `text-${color}-400` : ''}`}>{text}</p>
+		{/each}
+	{/if}{#each trimmedProgress as { text, color, link }, i (i)}
+		<p class={`my-0.5 ${color ? `text-${color}-400` : ''}`}>
+			{#if text}
+				{text} {' '}
+			{/if}{#if link}
+				<a href={link.href} target="_blank" rel="noreferrer noopener" class="underline">
+					{link.label}
+				</a>
+			{/if}
+		</p>
+	{/each}
+</div>

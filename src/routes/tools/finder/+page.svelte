@@ -17,7 +17,8 @@
 
 	const abortController = new AbortController()
 	let domain = ''
-	let progress = $state('')
+	let info = $state<Array<{ text: string; color?: string }>>([])
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let downloadable = $state(false)
 	let stoppable = $state(false)
@@ -65,6 +66,7 @@
 		stoppable = true
 		stopped = false
 		content = []
+		progress = []
 		const puppetList = puppets.split('\n').map(puppet => {
 			if (puppet.includes(',')) {
 				const [nation, nationSpecificPassword] = puppet.split(',')
@@ -76,7 +78,7 @@
 				return { nation: puppet.toLowerCase().replaceAll(' ', '_') }
 			}
 		})
-		progress = '<p>Initiating Finder...</p>'
+		info = [{ text: `Initiating Finder...` }]
 		let findCount = 0
 		let failedGiftCount = 0
 
@@ -95,14 +97,14 @@
 			const gift = await parseXML(`${url}execute&c=giftcard&token=${token}`, main, '', cnx)
 
 			if (gift.NATION && gift.NATION.ERROR) {
-				progress += `<p class="text-red-400">${nation} failed to gift ${id} to ${giftee}</p>`
+				progress = [...progress, { text: `${nation} failed to gift ${id} to ${giftee}`, color: 'red' }]
 				content.push({
 					url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${cg.toLowerCase().replaceAll(' ', '_')}`,
 					tableText: `Link to ${nation}`,
 				})
 				failedGiftCount++
 			} else {
-				progress += `<p class="text-green-400">${nation} gifted ${id} to ${giftee}</p>`
+				progress = [...progress, { text: `${nation} gifted ${id} to ${giftee}`, color: 'green' }]
 				giftedCards.add(id)
 			}
 
@@ -112,17 +114,23 @@
 		if (findMode === 'Specific Cards') {
 			const toFind = finderlist.split('\n')
 			const matches = toFind.map(matcher => matcher.split(','))
-			progress += `<p>Finding -> ${toFind.length} cards...</p>`
+			info = [...info, { text: `Finding -> ${toFind.length} cards...` }]
 			if (matches.length < puppetList.length) {
-				progress += `<p>More puppets than cards, proceeding...</p>`
+				info = [...info, { text: `More puppets than cards, proceeding...` }]
 				for (let i = 0; i < matches.length; i++) {
-					progress += `<p>Processing card ${i + 1}/${matches.length} cards</p>`
+					progress = [...progress, { text: `Processing card ${i + 1}/${matches.length} cards` }]
 					if (mode === 'Gift One' && giftedCards.size > 0 && toFind.length > 0 && giftedCards.size === toFind.length) {
-						progress += `<p class="text-blue-400">All cards provided have been gifted, skipping remaining puppets`
+						progress = [
+							...progress,
+							{ text: `All cards provided have been gifted, skipping remaining puppets`, color: 'blue' },
+						]
 						break
 					}
 					if (mode === 'Sell One' && soldCards.size > 0 && toFind.length > 0 && soldCards.size === toFind.length) {
-						progress += `<p class="text-blue-400">All cards provided have been sold, skipping remaining puppets`
+						progress = [
+							...progress,
+							{ text: `All cards provided have been sold, skipping remaining puppets`, color: 'blue' },
+						]
 						break
 					}
 					if (abortController.signal.aborted || stopped) {
@@ -152,11 +160,11 @@
 							let frequency = ownerArr.filter(o => o === owner).length
 							processedOwners.add(owner)
 							if (giftedCards.has(id) && mode === 'Gift One') {
-								progress += `<p class="text-blue-400">Already gifted ${id}.</p>`
+								progress = [...progress, { text: `Already gifted ${id}`, color: 'blue' }]
 								continue
 							}
 							if (soldCards.has(id) && mode === 'Sell One') {
-								progress += `<p class="text-blue-400">Already sold ${id}.`
+								progress = [...progress, { text: `Already sold ${id}`, color: 'blue' }]
 								continue
 							}
 
@@ -172,7 +180,7 @@
 								let currGiftee = matchGiftee || giftee
 
 								if (matchSeason && matchSeason !== String(season)) {
-									progress += `<p class="text-blue-400">Found ${id} but not right season.</p>`
+									progress = [...progress, { text: `Found ${id} but not right season.`, color: 'blue' }]
 								} else {
 									if (mode.includes('Gift')) {
 										currentNationXPin = await gift(
@@ -184,7 +192,7 @@
 											currGiftee
 										)
 									} else {
-										progress += `<p class="text-green-400">${nation} owns ${id}!</p>`
+										progress = [...progress, { text: `${nation} owns ${id}, adding sell link!`, color: 'green' }]
 										content.push({
 											url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}${urlParameters('Finder', main)}`,
 											tableText: `Link to ${nation}`,
@@ -198,14 +206,20 @@
 					}
 				}
 			} else {
-				progress += `<p>More cards than puppets, proceeding...</p>`
+				info = [...info, { text: `More cards than puppets, proceeding...` }]
 				for (let i = 0; i < puppetList.length; i++) {
 					if (mode === 'Gift One' && giftedCards.size > 0 && toFind.length > 0 && giftedCards.size === toFind.length) {
-						progress += `<p class="text-blue-400">All cards provided have been gifted, skipping remaining puppets`
+						progress = [
+							...progress,
+							{ text: `All cards provided have been gifted, skipping remaining puppets`, color: 'blue' },
+						]
 						continue
 					}
 					if (mode === 'Sell One' && soldCards.size > 0 && toFind.length > 0 && soldCards.size === toFind.length) {
-						progress += `<p class="text-blue-400">All cards provided have been sold, skipping remaining puppets`
+						progress = [
+							...progress,
+							{ text: `All cards provided have been sold, skipping remaining puppets`, color: 'blue' },
+						]
 						break
 					}
 
@@ -217,7 +231,7 @@
 					}
 
 					try {
-						progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`
+						progress = [...progress, { text: `Processing ${nation} ${i + 1}/${puppetList.length} puppets` }]
 						const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck`, main)
 						let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD
 						cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
@@ -231,11 +245,11 @@
 								const season = cards[j].SEASON
 
 								if (giftedCards.has(id) && mode === 'Gift One') {
-									progress += `<p class="text-blue-400">Already gifted ${id}.`
+									progress = [...progress, { text: `Already gifted ${id}`, color: 'blue' }]
 									continue
 								}
 								if (soldCards.has(id) && mode === 'Sell One') {
-									progress += `<p class="text-blue-400">Already sold ${id}.`
+									progress = [...progress, { text: `Already sold ${id}`, color: 'blue' }]
 									continue
 								}
 								let matchingEntries = matches.filter(match => match[0] === String(id))
@@ -246,7 +260,7 @@
 										const matchGiftee = entry[2]
 										let currGiftee = matchGiftee || giftee
 										if (matchSeason && matchSeason !== String(season)) {
-											progress += `<p class="text-blue-400">${nation} found ${id} but not right season.`
+											progress = [...progress, { text: `${nation} found ${id} but not right season.`, color: 'blue' }]
 										} else {
 											if (mode.includes('Gift')) {
 												currentNationXPin = await gift(
@@ -258,7 +272,7 @@
 													currGiftee
 												)
 											} else {
-												progress += `<p class="text-green-400">${nation} owns ${id}!`
+												progress = [...progress, { text: `${nation} owns ${id}!`, color: 'green' }]
 												content.push({
 													url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('Finder', main)}`,
 													tableText: `Link to ${nation}`,
@@ -271,10 +285,10 @@
 								}
 							}
 						} else {
-							progress += `<p class="text-blue-400">It is likely ${nation} has 0 cards, skipping!`
+							progress = [...progress, { text: `It is likely ${nation} has 0 cards, skipping!`, color: 'blue' }]
 						}
 					} catch (err) {
-						progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
+						progress = [...progress, { text: `Error processing ${nation} with ${err}`, color: 'red' }]
 					}
 				}
 			}
@@ -282,7 +296,7 @@
 			let conditions = []
 			if (giftLegendaries) conditions.push('legendaries')
 			if (giftOverMVValue) conditions.push(`cards over ${giftOverMVValue} MV`)
-			progress += `<p>Finding ${conditions.join(', ')}</p>`
+			info = [...info, { text: `Finding ${conditions.join(', ')}` }]
 			for (let i = 0; i < puppetList.length; i++) {
 				let currentNationXPin = ''
 				const { nation, nationSpecificPassword } = puppetList[i]
@@ -292,7 +306,7 @@
 				}
 
 				try {
-					progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length} puppets</p>`
+					progress = [...progress, { text: `Processing ${nation} ${i + 1}/${puppetList.length} puppets` }]
 					const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck`, main)
 					let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD
 					cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
@@ -318,7 +332,7 @@
 							if (mode.includes('Gift')) {
 								currentNationXPin = await gift(currentNationXPin, nationSpecificPassword, nation, id, season, giftee)
 							} else {
-								progress += `<p class="text-green-400">${nation} owns ${id}!`
+								progress = [...progress, { text: `${nation} owns ${id}, adding to sell!`, color: 'green' }]
 								content.push({
 									url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('Finder', main)}`,
 									tableText: `Link to ${nation}`,
@@ -328,14 +342,20 @@
 							findCount++
 						}
 					} else {
-						progress += `<p class="text-blue-400">It is likely ${nation} has 0 cards, skipping!`
+						progress = [...progress, { text: `It is likely ${nation} has 0 cards, skipping!`, color: 'blue' }]
 					}
 				} catch (err) {
-					progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
+					progress = [...progress, { text: `Error processing ${nation} with ${err}`, color: 'red' }]
 				}
 			}
 		}
-		progress += `<p>Finished processing, found ${findCount} uniques, ${mode === 'Gift' ? `with ${failedGiftCount} failed gifts` : `on mode ${mode}.`}</p>`
+		progress = [
+			...progress,
+			{
+				text: `Finished processing, found ${findCount} uniques, ${mode === 'Gift' ? `with ${failedGiftCount} failed gifts` : `on mode ${mode}.`}`,
+				color: 'green',
+			},
+		]
 		downloadable = true
 		stoppable = false
 	}
@@ -420,5 +440,5 @@
 			</Buttons>
 		</div>
 	</form>
-	<Terminal bind:progress />
+	<Terminal bind:progress bind:info />
 </div>

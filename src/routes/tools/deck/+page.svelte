@@ -12,7 +12,7 @@
 	import type { Card } from '$lib/types'
 
 	let domain = ''
-	let progress = $state('')
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let main = $state('')
 	let checkObject = $state('')
 	let downloadable = $state(false)
@@ -37,7 +37,6 @@
 		pushHistory(`?main=${main}&nation=${checkObject}&mode=${mode}&type=${type}&duplicates=${duplicates}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
-		progress = ''
 		if (type.toLowerCase() === 'deck') {
 			const xml = await parseXML(`${domain}/cgi-bin/api.cgi?q=cards+deck;nationname=${checkObject}`, main)
 			let deckObj: Array<Card> = xml.CARDS.DECK.CARD
@@ -66,7 +65,7 @@
 			}
 		}
 		downloadable = true
-		progress += `<p>Finished processing</p>`
+		progress = [{ text: `Finished processing ${type} ${checkObject}`, color: 'green' }]
 	}
 </script>
 

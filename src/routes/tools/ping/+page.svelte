@@ -10,7 +10,8 @@
 
 	const abortController = new AbortController()
 	let domain = ''
-	let progress = $state('')
+	let info = $state<Array<{ text: string; color?: string }>>([])
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let stoppable = $state(false)
 	let stopped = $state(false)
 	let puppets = $state('')
@@ -61,9 +62,11 @@
 		downloadable = false
 		stoppable = true
 		stopped = false
-		progress = ''
+		progress = []
 		content = []
 		let puppetList = puppets.split('\n')
+
+		info = [{ text: `Initializing Pinger for ${puppetList.length} nations...` }]
 		for (let i = 0; i < puppetList.length; i++) {
 			let nation = puppetList[i]
 			let nationSpecificPassword = ''
@@ -80,7 +83,7 @@
 				nationSpecificPassword ? nationSpecificPassword : password
 			)
 			if (existence === false) {
-				progress += `<p class="text-red-400">Failed to log into ${nation}, adding to restore sheet...</p>`
+				info = [...info, { text: `Failed to log into ${nation}, adding to restore sheet...`, color: 'red' }]
 				let nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
 				content.push({
 					url: `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=login/test=1?${urlParameters('Pinger', main)}`,
@@ -89,10 +92,15 @@
 				restoreCount++
 			}
 			if (existence === true) {
-				progress += `<p>Successfully logged into ${nation}</p>`
+				progress = [...progress, { text: `Successfully logged into ${nation}` }]
 			}
 		}
-		progress += `<p>Finished processing ${puppetList.length} nations, logging into ${puppetList.length - restoreCount} nations and ready to restore ${restoreCount} nations</p>`
+		progress = [
+			...progress,
+			{
+				text: `Finished processing ${puppetList.length} nations, logging into ${puppetList.length - restoreCount} nations and ready to restore ${restoreCount} nations`,
+			},
+		]
 		stoppable = false
 		downloadable = true
 	}
@@ -127,5 +135,5 @@
 			bind:content
 			name="restore" />
 	</form>
-	<Terminal bind:progress />
+	<Terminal bind:progress bind:info />
 </div>

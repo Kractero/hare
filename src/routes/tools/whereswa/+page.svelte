@@ -9,7 +9,7 @@
 	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 
 	let domain = ''
-	let progress = $state('')
+	let progress = $state<Array<{ text: string; color?: string; link?: { href: string; label: string } }>>([])
 	let puppets = $state('')
 	let main = $state('')
 	let stoppable = $state(false)
@@ -26,14 +26,21 @@
 		pushHistory(`?main=${main}`)
 		errors = checkUserAgent('main')
 		if (errors.length > 0) return
-		progress = ''
 		stoppable = true
 		const puppetsList = puppets.split('\n')
 		const xml = await parseXML(`${domain}/cgi-bin/api.cgi?wa=1&q=members`, main)
 		const members = xml.WA.MEMBERS.split(',')
 		puppetsList.forEach(puppet => {
 			if (members.includes(puppet.toLowerCase().replace(' ', '_'))) {
-				progress = `<p>I found your WA on <a target="_blank" href="${domain}/nation=${puppet}?${urlParameters('Wheres My WA', main)}">${puppet}</a>.</p>`
+				progress = [
+					{
+						text: '',
+						link: {
+							href: `${domain}/nation=${puppet}?${urlParameters('Wheres My WA', main)}`,
+							label: `I found your WA on ${puppet}`,
+						},
+					},
+				]
 			}
 		})
 		stoppable = false

@@ -14,7 +14,7 @@
 
 	const abortController = new AbortController()
 	let domain = ''
-	let progress = $state('')
+	let progress = $state<Array<{ text: string; color?: string; link?: { href: string; label: string } }>>([])
 	let stopped = $state(false)
 	let stoppable = $state(false)
 	let source: string = $state('')
@@ -51,21 +51,30 @@
 		if (errors.length > 0) return
 		content = []
 		downloadable = false
-		progress = '<p>Initiating Endotart...</p>'
 		stoppable = true
 		stopped = false
+		progress = [{ text: 'Initiating Endotart...' }]
+
 		const whiteList = immune ? immune.split('\n').map(nation => nation.toLowerCase().replace(' ', '_')) : []
 
 		const regionalXML = await parseXML(`${domain}/cgi-bin/api.cgi?nation=${endotarter}&q=endorsements+region+wa`, main)
-		if (!regionalXML.NATION) progress += `<p class="text-red-400">Error finding ${endotarter}!</p>`
+		if (!regionalXML.NATION) progress = [...progress, { text: `Error finding ${endotarter}!`, color: 'red' }]
 		if ((regionalXML as Nation).NATION.UNSTATUS === 'Non-member') {
-			progress += `<p class="text-red-400">${endotarter} is not in the WA.</p>`
+			progress = [...progress, { text: `${endotarter} is not in the WA.`, color: 'red' }]
 			return
 		}
 
-		progress += `<p>Searching for the nations in ${regionalXML.NATION.REGION} not being endorsed by ${endotarter}, using the ${source}</p>`
+		progress = [
+			...progress,
+			{
+				text: `Searching for the nations in ${regionalXML.NATION.REGION} not being endorsed by ${endotarter}, using the ${source}.`,
+			},
+		]
 		if (whiteList.length > 0) {
-			progress += `<p>Nations immune to endocap: ${whiteList.map(region => region.trim()).join(', ')}</p>`
+			progress = [
+				...progress,
+				{ text: `Nations immune to endocap: ${whiteList.map(region => region.trim()).join(', ')}` },
+			]
 		}
 		const wamems = await parseXML(`${domain}/cgi-bin/api.cgi?region=${regionalXML.NATION.REGION}&q=wanations`, main)
 		const regionalWA = (wamems.REGION as NSRegion).UNNATIONS.split(',')
@@ -78,16 +87,19 @@
 			const utcMinus7Date = new Date(currentDate.getTime() - 7 * 60 * 60 * 1000)
 			utcMinus7Date.setDate(utcMinus7Date.getDate() - 1)
 			const date = utcMinus7Date.toISOString().slice(0, 10)
-			progress += `<p>Requesting ${date} national dump.</p>`
+			progress = [...progress, { text: `Requesting ${date} national dump.` }]
 			const nationRes = await fetch(`https://raw.githubusercontent.com/Kractero/himari/main/data/${date}-Nations.xml`, {
 				method: 'GET',
 			})
 			if (nationRes.status === 404) {
-				progress += `<p class="text-yellow-400">Could not find ${date} national dump, defaulting to the API.</p>`
+				progress = [
+					...progress,
+					{ text: `Could not find ${date} national dump, defaulting to the API.`, color: 'yellow' },
+				]
 				source = 'API'
 			} else {
-				progress += `<p class="text-green-400">Found ${date} national dump.</p>`
-				progress += `<p>Parsing dump for endotarting...</p>`
+				progress = [...progress, { text: `Found ${date} national dump.`, color: 'green' }]
+				progress = [...progress, { text: `Parsing dump for endotarting...`, color: 'green' }]
 				const regionText = await nationRes.text()
 				xml = parser.parse(regionText)
 			}
@@ -111,30 +123,86 @@
 				if (nations.length > 0) {
 					;({ NAME, ENDORSEMENTS } = nations[0])
 				} else {
-					progress += `<p class="text-yellow-400">${i + 1}/${regionalWA.length} ${regionalWA[i]} not found, likely not in the dump yet`
+					progress = [
+						...progress,
+						{
+							text: `${i + 1}/${regionalWA.length} ${regionalWA[i]} not found, likely not in the dump yet`,
+							color: 'yellow',
+						},
+					]
 				}
 			}
 			if (NAME) {
 				if (!ENDORSEMENTS) ENDORSEMENTS = ['']
 				if (endotarter.toLowerCase().replaceAll(' ', '_') === String(NAME).toLowerCase().replaceAll(' ', '_')) {
-					progress += `<p class="text-yellow-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> is the endotart nation.</p>`
+					progress = [
+						...progress,
+						{
+							text: `${i + 1}/${regionalWA.length}`,
+							color: 'yellow',
+							link: {
+								href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}`,
+								label: `${regionalWA[i]} is the endotart nation`,
+							},
+						},
+					]
 				} else if (limit) {
 					if (whiteList.includes(regionalWA[i])) {
-						progress += `<p class="text-yellow-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> is in your immune nations.</p>`
+						progress = [
+							...progress,
+							{
+								text: `${i + 1}/${regionalWA.length}`,
+								color: 'yellow',
+								link: {
+									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}`,
+									label: `${regionalWA[i]} is in your immune nations`,
+								},
+							},
+						]
 					} else if (
 						ENDORSEMENTS.length < Number(limit) &&
 						!ENDORSEMENTS.includes(endotarter.toLowerCase().replaceAll(' ', '_')) &&
 						regionalWA[i] !== endotarter.toLowerCase().replaceAll(' ', '_')
 					) {
-						progress += `<p class="text-green-400">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> is not being endorsed by ${endotarter}.</p>`
+						progress = [
+							...progress,
+							{
+								text: `${i + 1}/${regionalWA.length}`,
+								color: 'green',
+								link: {
+									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}`,
+									label: `${regionalWA[i]} is not being endorsed by ${endotarter}`,
+								},
+							},
+						]
 						content.push({
 							url: `${domain}/nation=${regionalWA[i]}#composebutton?${urlParameters('Endotart', main)}`,
 							tableText: `Link to ${regionalWA[i]}`,
 						})
 					} else if (ENDORSEMENTS.length > Number(limit)) {
-						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> has more than ${limit} endorsements.</p>`
+						progress = [
+							...progress,
+							{
+								text: `${i + 1}/${regionalWA.length}`,
+								color: 'red',
+								link: {
+									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}`,
+									label: `${regionalWA[i]} has more than ${limit} endorsements.`,
+								},
+							},
+						]
 					} else {
-						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> is already endorsed by ${endotarter}.</p>`
+						progress = [
+							...progress,
+							{
+								text: `${i + 1}/${regionalWA.length}`,
+								color: 'red',
+								link: {
+									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}`,
+									label: `${regionalWA[i]} is already endorsed by ${endotarter}.`,
+								},
+							},
+						]
 						if (inclusion === 'All') {
 							content.push({
 								url: `${domain}/nation=${regionalWA[i]}#composebutton?${urlParameters('Endotart', main)}`,
@@ -148,13 +216,33 @@
 						!ENDORSEMENTS.includes(endotarter.toLowerCase().replaceAll(' ', '_')) &&
 						regionalWA[i] !== endotarter.toLowerCase().replaceAll(' ', '_')
 					) {
-						progress += `<p class="text-green-400">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> is not being endorsed by ${endotarter}.</p>`
+						progress = [
+							...progress,
+							{
+								text: `${i + 1}/${regionalWA.length}`,
+								color: 'green',
+								link: {
+									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}`,
+									label: `${regionalWA[i]} is not being endorsed by ${endotarter}.`,
+								},
+							},
+						]
 						content.push({
 							url: `${domain}/nation=${regionalWA[i]}#composebutton?${urlParameters('Endotart', main)}`,
 							tableText: `Link to ${regionalWA[i]}`,
 						})
 					} else {
-						progress += `<p class="text-red-400 font-extralight">${i + 1}/${regionalWA.length} <a target="_blank" rel="noreferrer noopener" class="underline" href="https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}>${regionalWA[i]}</a> is already endorsed by ${endotarter}.</p>`
+						progress = [
+							...progress,
+							{
+								text: `${i + 1}/${regionalWA.length}`,
+								color: 'red',
+								link: {
+									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}`,
+									label: `${regionalWA[i]} is already endorsed by ${endotarter}.`,
+								},
+							},
+						]
 						if (inclusion === 'All') {
 							content.push({
 								url: `${domain}/nation=${regionalWA[i]}#composebutton?${urlParameters('Endotart', main)}`,
@@ -166,7 +254,10 @@
 				}
 			}
 		}
-		progress += `<p>Finished searching ${regionalXML.NATION.REGION} for nations not being endorsed by ${endotarter}</p>`
+		progress = [
+			...progress,
+			{ text: `Finished searching ${regionalXML.NATION.REGION} for nations not being endorsed by ${endotarter}.` },
+		]
 		stoppable = false
 		downloadable = true
 	}

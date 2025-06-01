@@ -14,7 +14,8 @@
 	const abortController = new AbortController()
 
 	let domain = ''
-	let progress = $state('')
+	let info = $state<Array<{ text: string; color?: string }>>([])
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let downloadable = $state(false)
 	let stoppable = $state(false)
 	let stopped = $state(false)
@@ -45,7 +46,8 @@
 		stoppable = true
 		stopped = false
 		transferrable = []
-		progress = '<p>Initiating Transfer List...</p>'
+		info = [{ text: `Initiating Transfer List...` }]
+		progress = []
 		let puppetList = puppets.split('\n')
 		let count = 0
 		let bank = 0
@@ -55,12 +57,12 @@
 				break
 			}
 			try {
-				progress += `<p>Processing ${nation} ${i + 1}/${puppetList.length}</p>`
+				progress = [...progress, { text: `Processing ${nation} ${i + 1}/${puppetList.length}` }]
 				const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck+info`, main)
 				if (mode === 'Bank') {
 					let nationalBank = deckInfo.CARDS.INFO.BANK
 					if (nationalBank >= Number(transfer)) {
-						progress += `<p class="text-green-400">${nation} can transfer!</p>`
+						info = [...info, { text: `${nation} can transfer!`, color: 'green' }]
 						count++
 						bank = nationalBank + bank
 						transferrable.push(nation)
@@ -90,18 +92,21 @@
 						).toFixed(2)
 					)
 					if (jv >= Number(transfer)) {
-						progress += `<p class="text-green-400">${nation} has enough junk value to transfer!</p>`
+						info = [...info, { text: `${nation} has enough junk value to transfer!`, color: 'green' }]
 						count++
 						bank = jv + bank
 						transferrable.push(nation)
 					}
 				}
 			} catch (err) {
-				progress += `<p class="text-red-400">Error processing ${nation} with ${err}</p>`
+				info = [...info, { text: `Error processing ${nation} with ${err}`, color: 'red' }]
 			}
 		}
 		content = transferrable.join('\n')
-		progress += `<p>Finished processing! You have a cumulative ${bank} ${mode} to transfer from ${count}.</p>`
+		progress = [
+			...progress,
+			{ text: `Finished processing! You have a cumulative ${bank} ${mode} to transfer from ${count}.`, color: 'green' },
+		]
 		downloadable = true
 		stoppable = false
 	}
@@ -127,5 +132,5 @@
 			bind:stoppable
 			bind:stopped />
 	</form>
-	<Terminal bind:progress />
+	<Terminal bind:progress bind:info />
 </div>

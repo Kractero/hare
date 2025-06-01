@@ -2,11 +2,11 @@
 	import Button from '$lib/components/ui/button/button.svelte'
 
 	interface Props {
-		progress?: string
+		progress?: Array<{ text: string; color?: string }>
 		openNewLinkArr?: Array<{ url: string; tableText: string; linkStyle?: string }>
 	}
 
-	let { progress = $bindable(''), openNewLinkArr = $bindable([]) }: Props = $props()
+	let { progress = $bindable([]), openNewLinkArr = $bindable([]) }: Props = $props()
 </script>
 
 <Button

@@ -10,7 +10,7 @@
 	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 
 	let domain = ''
-	let progress = $state('')
+	let progress = $state<Array<{ text: string; color?: string; link?: { href: string; label: string } }>>([])
 	let main = $state('')
 	let nennation = $state('')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
@@ -26,21 +26,30 @@
 		pushHistory(`?main=${main}&nennation=${nennation}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
-		progress = ''
+		progress = []
 		const xml = await parseXML(`${domain}/cgi-bin/api.cgi?nation=${nennation}&q=endorsements+region+wa`, main)
 		if (xml.NATION.UNSTATUS === 'Non-member') {
-			progress += `<p class="text-red-400">${nennation} is not in the WA.</p>`
+			progress = [...progress, { text: `${nennation} is not in the WA.`, color: 'red' }]
 			return
 		}
-		progress += `<p>Searching for the nations in ${xml.NATION.REGION} not endorsing ${nennation}</p>`
+		progress = [...progress, { text: `Searching for the nations in ${xml.NATION.REGION} not endorsing ${nennation}` }]
 		const wamems = await parseXML(`${domain}/cgi-bin/api.cgi?region=${xml.NATION.REGION}&q=wanations`, main)
 		const mainEndorsers = xml.NATION.ENDORSEMENTS.split(',')
 		wamems.REGION.UNNATIONS.split(',')
 			.filter((member: string) => !mainEndorsers.includes(member))
 			.forEach((member: string) => {
-				progress += `<p><a class="underline" href="${domain}/nation=${member}?${urlParameters('nen', main)}">${member}</a> is not endorsing ${nennation}.</p>`
+				progress = [
+					...progress,
+					{
+						text: '',
+						link: {
+							href: `${domain}/nation=${member}?${urlParameters('nen', main)}`,
+							label: `${member} is not endorsing ${nennation}`,
+						},
+					},
+				]
 			})
-		progress += `<p>Finished processing</p>`
+		progress = [...progress, { text: 'Finished processing' }]
 	}
 </script>
 

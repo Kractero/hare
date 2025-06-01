@@ -4,7 +4,7 @@
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 
-	let progress = $state('')
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let puppets = $state('')
 	let content: Array<string> = $state([])
 	let downloadable = $state(false)
@@ -12,19 +12,30 @@
 	async function onSubmit(e: Event) {
 		e.preventDefault()
 		downloadable = false
-		const puppetList = puppets.split('\n').map(nation => nation.toLowerCase().replaceAll(' ', '_'))
+
+		const puppetList = puppets
+			.split('\n')
+			.map(nation => nation.toLowerCase().replaceAll(' ', '_'))
+			.filter(Boolean)
+
 		const nationRules = puppetList
 			.map(nation => `@^.*\\.nationstates\\.net/(.*/)?nation=${nation}(/.*)?$ , ${nation}`)
 			.join('\n')
+
 		const containerRules = puppetList
 			.map(nation => `@^.*\\.nationstates\\.net/(.*/)?container=${nation}(/.*)?$ , ${nation}`)
 			.join('\n')
+
 		content = [nationRules, containerRules]
-		progress = `<p>Finished processing</p>`
-		progress += `<p>NATION RULES</p>`
-		progress += content[0]
-		progress += `<p>CONTAINER RULES</p>`
-		progress += content[1]
+
+		progress = [
+			{ text: 'Finished processing', color: 'green' },
+			{ text: 'NATION RULES' },
+			{ text: content[0] },
+			{ text: 'CONTAINER RULES' },
+			{ text: content[1] },
+		]
+
 		downloadable = true
 	}
 </script>

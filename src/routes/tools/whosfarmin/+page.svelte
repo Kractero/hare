@@ -10,7 +10,7 @@
 
 	const abortController = new AbortController()
 	let domain = ''
-	let progress = $state('')
+	let progress = $state<Array<{ text: string; color?: string; link?: { href: string; label: string } }>>([])
 	let main = $state('')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
@@ -26,7 +26,6 @@
 		pushHistory(`?main=${main}`)
 		errors = checkUserAgent('main')
 		if (errors.length > 0) return
-		progress = ''
 		const fetcha = await fetch(
 			'https://docs.google.com/spreadsheets/d/1MZ-4GLWAZDgB1TDvwtssEcVKHKunOKi3l90Jof1pBB4/export?format=tsv&id=1MZ-4GLWAZDgB1TDvwtssEcVKHKunOKi3l90Jof1pBB4&gid=733627866'
 		)
@@ -54,11 +53,18 @@
 			}
 		})
 		if (Object.keys(ownerList).length === 0) {
-			progress += `<p>It seems nobody is farming at the moment...</p>`
+			progress = [{ text: `It seems nobody is farming at the moment...` }]
 		} else {
 			Object.keys(ownerList).forEach(owner => {
-				progress += `<p><a class="underline" target="_blank" rel="noreferrer noopener"
-            href="${domain}/nation=${owner}?${urlParameters('Whos Farmin', main)}">${owner}</a> is currently farming!</p>\n`
+				progress = [
+					{
+						text: '',
+						link: {
+							href: `${domain}/nation=${owner}?${urlParameters('Whos Farmin', main)}`,
+							label: `${owner} is currently farming!`,
+						},
+					},
+				]
 			})
 		}
 	}

@@ -14,7 +14,7 @@
 	const abortController = new AbortController()
 
 	let domain = ''
-	let progress = $state('')
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let stoppable = $state(false)
 	let stopped = $state(false)
 	let main = $state('')
@@ -46,7 +46,7 @@
 		let cards = cardIds.split('\n')
 		let noMatch: Array<string> = []
 		let iterator: Array<{ [key: string]: any }> = []
-		progress = 'Initiating Queries...'
+		progress = [{ text: `'Initiating Signal...'` }]
 		if (mode === 'Collection' || mode === 'Deck') {
 			const collectionsOrDecksArr = collectionsOrDecks.split('\n')
 			for (let i = 0; i < collectionsOrDecksArr.length; i++) {
@@ -56,11 +56,11 @@
 						: `${domain}/cgi-bin/api.cgi?q=cards+${`deck;nationname=${collectionsOrDecksArr[i]}`}`
 				const xml = await parseXML(endpoint, main)
 				if (mode === 'Collection' && !(xml.CARDS.COLLECTION && xml.CARDS.COLLECTION.DECK.CARD)) {
-					progress += `<p class="text-red-400">Something is wrong with ${collectionsOrDecks[i]}!</p>`
+					progress = [...progress, { text: `Something is wrong with ${collectionsOrDecks[i]}!`, color: 'red' }]
 					return
 				}
 				if (mode === 'Deck' && !(xml.CARDS.DECK && xml.CARDS.DECK.CARD)) {
-					progress += `<p class="text-red-400">Something is wrong with ${collectionsOrDecks[i]}!</p>`
+					progress = [...progress, { text: `Something is wrong with ${collectionsOrDecks[i]}!`, color: 'red' }]
 					return
 				}
 				if (mode === 'Collection') {
@@ -75,7 +75,7 @@
 			const xml = await parseXML(`${domain}/cgi-bin/api.cgi?q=cards+asksbids;nationname=${asksBidsNation}`, main)
 			if (mode.includes('Asks')) {
 				if (!xml.CARDS.ASKS) {
-					progress += `<p class="text-red-400">${asksBidsNation} has no active asks</p>`
+					progress = [...progress, { text: `${asksBidsNation} has no active asks`, color: 'red' }]
 				} else {
 					const asks = Array.isArray(xml.CARDS.ASKS.ASK) ? xml.CARDS.ASKS.ASK : [xml.CARDS.ASKS.ASK]
 					iterator = mode.includes('Bids') ? [...iterator, ...asks] : asks
@@ -83,7 +83,7 @@
 			}
 			if (mode.includes('Bids')) {
 				if (!xml.CARDS.BIDS) {
-					progress += `<p class="text-red-400">${asksBidsNation} has no active bids</p>`
+					progress = [...progress, { text: `${asksBidsNation} has no active bids`, color: 'red' }]
 				} else {
 					const bids = Array.isArray(xml.CARDS.BIDS.BID) ? xml.CARDS.BIDS.BID : [xml.CARDS.BIDS.BID]
 					iterator = mode.includes('Asks') ? [...iterator, ...bids] : bids
@@ -94,7 +94,7 @@
 		cards.forEach(card => {
 			let season = card.split(',')[1]
 			let id = card.split(',')[0]
-			progress += `<p>Searching card ${id} from season ${season}...`
+			progress = [...progress, { text: `Searching card ${id} from season ${season}...` }]
 			for (let iteratorCard of iterator) {
 				if (iteratorCard.SEASON === Number(season) && iteratorCard.CARDID === Number(id)) return
 			}
@@ -104,9 +104,12 @@
 				tableText: `Link to Card ${id} Season ${season}`,
 			})
 			cardsCount++
-			progress += `<p class="text-green-400">Card ${id} from season ${season} not found within the provided parameters.</p>`
+			progress = [
+				...progress,
+				{ text: `Card ${id} from season ${season} not found within the provided parameters.`, color: 'green' },
+			]
 		})
-		progress += `<p>Finished processing, ${cardsCount} cards found.</p>`
+		progress = [...progress, { text: `Finished processing, ${cardsCount} cards found.` }]
 		downloadable = true
 		stoppable = false
 	}

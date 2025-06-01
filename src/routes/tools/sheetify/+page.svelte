@@ -10,7 +10,7 @@
 
 	let domain = $state('')
 	let puppets = $state('')
-	let progress = $state('')
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let downloadable = $state(false)
 	let link = $state('')
@@ -53,7 +53,7 @@
 				tableText: `Link ${i}`,
 			})
 		}
-		progress = '<p>Finished processing</p>'
+		progress = [{ text: 'Finished processing' }]
 		downloadable = true
 	}
 </script>

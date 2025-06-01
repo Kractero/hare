@@ -11,7 +11,7 @@
 	const abortController = new AbortController()
 
 	let domain = $state('')
-	let progress = $state('')
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let downloadable = $state(false)
 	let stoppable = $state(false)
@@ -40,7 +40,6 @@
 		stopped = false
 		counter = 0
 		content = []
-		progress = ''
 		const puppetList = puppets.split('\n').map(nation => nation.toLowerCase().replaceAll(' ', '_'))
 		for (let i = 0; i < puppetList.length; i++) {
 			content.push({
@@ -48,7 +47,7 @@
 				tableText: `Link to ${puppetList[i]}`,
 			})
 		}
-		progress += '<p>Finished processing</p>'
+		progress = [{ text: 'Finished processing' }]
 		downloadable = true
 		stoppable = false
 	}

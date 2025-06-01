@@ -1,5 +1,11 @@
 # Changelog
 
+## 2025-05-31
+
+### Adjustments
+
+The fake terminal truncates at 1000 lines on the Auction, Finder, Goldretriever, gotIssues, junkDaJunk, Ping, and Transfer tools. Any meaningful error messages per nation will be pushed to the top of the list.
+
 ## 2025-05-30
 
 ### Adjustments

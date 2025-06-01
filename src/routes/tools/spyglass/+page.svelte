@@ -12,7 +12,7 @@
 
 	let domain = ''
 	let main = $state('')
-	let progress = $state('')
+	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let workbook: any = $state()
 	let downloadable = $state(false)
 	let errors: Array<{ field: string | number; message: string }> = $state([])
@@ -39,11 +39,11 @@
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		downloadable = false
-		progress += `<p>Gathering founderless regions.</p>`
+		progress = [{ text: 'Gathering founderless regions.' }]
 		const governorless = await parseXML(`${domain}/cgi-bin/api.cgi?q=regionsbytag;tags=governorless`, main)
 		const governorlessArr = (governorless.WORLD as { REGIONS: string }).REGIONS.split(',')
 
-		progress += `<p>Gathering passwordless regions.</p>`
+		progress = [...progress, { text: 'Gathering passwordless regions.' }]
 		const passwordless = await parseXML(`${domain}/cgi-bin/api.cgi?q=regionsbytag;tags=-password`, main)
 		const passwordlessArr = (passwordless.WORLD as { REGIONS: string }).REGIONS.split(',')
 
@@ -51,12 +51,18 @@
 		const utcMinus7Date = new Date(currentDate.getTime() - 7 * 60 * 60 * 1000)
 		utcMinus7Date.setDate(utcMinus7Date.getDate() - 1)
 		const date = utcMinus7Date.toISOString().slice(0, 10)
-		progress += `<p>Requesting ${date} regional dump.</p>`
+		progress = [...progress, { text: `Requesting ${date} regional dump.` }]
 		let regionRes = await fetch(`https://raw.githubusercontent.com/Kractero/himari/main/data/${date}-Regions.xml`, {
 			method: 'GET',
 		})
 		if (regionRes.status === 404)
-			progress += `<p class="text-red-400">The ${date} dump has not been generated yet! The dump generation happens at 11 pm UTC-7.`
+			progress = [
+				...progress,
+				{
+					text: `The ${date} dump has not been generated yet! The dump generation happens at 11 pm UTC-7.`,
+					color: 'red',
+				},
+			]
 		const regionText = await regionRes.text()
 		const regionXML = parser.parse(regionText)
 		const regionList: Array<NSRegion> = regionXML.REGIONS.REGION
@@ -227,7 +233,7 @@
 		worksheet.getCell('M8').value = 1 / minor_per_nation
 		worksheet.getCell('M10').value = '1.0'
 		worksheet.getCell('M11').value = new Date().toISOString()
-		progress += `<p class="text-green-400">Glasses finished processing!</p>`
+		progress = [...progress, { text: `Glasses finished processing!` }]
 		downloadable = true
 	}
 </script>
