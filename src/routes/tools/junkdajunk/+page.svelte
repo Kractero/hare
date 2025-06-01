@@ -340,7 +340,7 @@
 							}
 						})
 
-						if (junk) {
+						if (junk && sell) {
 							if (junkMethod === 'Manual') {
 								progress = [
 									...progress,
@@ -391,6 +391,7 @@
 								}
 							}
 						} else {
+							console.log(sell)
 							if (mode === 'Gift' || (mode === 'Gift and Sell' && sell === false)) {
 								let giftto = giftee
 								findSplit.forEach(findid => {
@@ -520,7 +521,7 @@
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={true} />
-		{#if mode === 'Gift'}
+		{#if mode === 'Gift' || mode === 'Gift and Sell'}
 			<FormInput label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />
 		{/if}
 		<FormSelect bind:bindValue={junkMethod} id="junkMethod" items={['API', 'Manual']} label="Junk Mode" />
