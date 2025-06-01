@@ -391,7 +391,7 @@
 								}
 							}
 						} else {
-							if (mode === 'Gift') {
+							if (mode === 'Gift' || (mode === 'Gift and Sell' && sell !== true)) {
 								let giftto = giftee
 								findSplit.forEach(findid => {
 									const matchGiftee = findid[2]
@@ -417,7 +417,7 @@
 									...progress,
 									{ text: `${i + 1}/${cards.length} -> Skipping ${id} - ${reason}!`, color: 'blue' },
 								]
-								if (mode === 'Sell') {
+								if (mode === 'Sell' || (mode === 'Gift and Sell' && sell === true)) {
 									sellContent.push({
 										url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/jdj=view?${urlParameters('junkDaJunk', main)}`,
 										tableText: `Link to Card`,
