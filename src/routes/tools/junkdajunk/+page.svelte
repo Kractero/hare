@@ -417,7 +417,7 @@
 									...progress,
 									{ text: `${i + 1}/${cards.length} -> Skipping ${id} - ${reason}!`, color: 'blue' },
 								]
-								if (mode === 'Sell' || (mode === 'Gift and Sell' && sell === true)) {
+								if (mode === 'Sell' || mode === 'Gift and Sell') {
 									sellContent.push({
 										url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/jdj=view?${urlParameters('junkDaJunk', main)}`,
 										tableText: `Link to Card`,
