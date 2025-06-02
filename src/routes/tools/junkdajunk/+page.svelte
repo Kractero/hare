@@ -391,8 +391,7 @@
 								}
 							}
 						} else {
-							console.log(sell)
-							if (mode === 'Gift' || (mode === 'Gift and Sell' && sell === false)) {
+							if (mode === 'Gift' || (mode === 'Gift and Sell' && sell === true)) {
 								let giftto = giftee
 								findSplit.forEach(findid => {
 									const matchGiftee = findid[2]
