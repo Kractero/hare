@@ -97,7 +97,7 @@
 			const gift = await parseXML(`${url}execute&c=giftcard&token=${token}`, main, '', cnx)
 
 			if (gift.NATION && gift.NATION.ERROR) {
-				progress = [...progress, { text: `${nation} failed to gift ${id} to ${giftee}`, color: 'red' }]
+				info = [...info, { text: `${nation} failed to gift ${id} to ${giftee}`, color: 'red' }]
 				content.push({
 					url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('Finder', main)}&giftto=${cg.toLowerCase().replaceAll(' ', '_')}`,
 					tableText: `Link to ${nation}`,
@@ -288,7 +288,7 @@
 							progress = [...progress, { text: `It is likely ${nation} has 0 cards, skipping!`, color: 'blue' }]
 						}
 					} catch (err) {
-						progress = [...progress, { text: `Error processing ${nation} with ${err}`, color: 'red' }]
+						info = [...info, { text: `Error processing ${nation} with ${err}`, color: 'red' }]
 					}
 				}
 			}
@@ -345,7 +345,7 @@
 						progress = [...progress, { text: `It is likely ${nation} has 0 cards, skipping!`, color: 'blue' }]
 					}
 				} catch (err) {
-					progress = [...progress, { text: `Error processing ${nation} with ${err}`, color: 'red' }]
+					info = [...info, { text: `Error processing ${nation} with ${err}`, color: 'red' }]
 				}
 			}
 		}
