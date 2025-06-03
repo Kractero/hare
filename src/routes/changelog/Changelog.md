@@ -1,5 +1,11 @@
 # Changelog
 
+## 2025-06-03
+
+### Fixes
+
+Fix the terminal not outplaying colors by defining the colors in a separate object so Tailwind can detect them.
+
 ## 2025-05-31
 
 ### Adjustments

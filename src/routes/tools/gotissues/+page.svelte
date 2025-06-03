@@ -134,7 +134,7 @@
 					packCount = packCount === 'All' ? '9' : packCount
 					const packsToOpen = Math.min(packs - Number(minPack), Number(packCount))
 					if (packs === 0) {
-						info = [...info, { text: `${nation} has no packs, skipping!`, color: 'blue' }]
+						progress = [...progress, { text: `${nation} has no packs, skipping!`, color: 'blue' }]
 						continue
 					}
 					if (packs >= Number(minPack)) {

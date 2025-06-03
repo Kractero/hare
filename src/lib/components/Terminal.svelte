@@ -9,6 +9,13 @@
 	}
 
 	$: trimmedProgress = info && info.length > 0 ? progress.slice(-1000) : progress
+
+	const colors: Record<string, string> = {
+		green: 'text-green-400',
+		blue: 'text-blue-400',
+		white: 'text-red-400',
+		yellow: 'text-yellow-400',
+	}
 </script>
 
 <div
@@ -19,7 +26,7 @@
 			<p class={`my-0.5 ${color ? `text-${color}-400` : ''}`}>{text}</p>
 		{/each}
 	{/if}{#each trimmedProgress as { text, color, link }, i (i)}
-		<p class={`my-0.5 ${color ? `text-${color}-400` : ''}`}>
+		<p class={`my-0.5 ${color && colors[color] ? colors[color] : ''}`}>
 			{#if text}
 				{text} {' '}
 			{/if}{#if link}
