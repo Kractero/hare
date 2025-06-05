@@ -429,6 +429,10 @@
 					}
 					progress = [...progress, { text: `Processing gift queue of size ${giftQueue.length}...` }]
 					for (let i = 0; i < giftQueue.length; i++) {
+						if (abortController.signal.aborted || stopped) {
+							break
+						}
+
 						let token = ''
 						const url = giftQueue[i].gift
 						const prepare = await parseXML(
