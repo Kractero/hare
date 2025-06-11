@@ -1,5 +1,35 @@
 # Changelog
 
+## 2025-06-10
+
+### Adjustments
+
+1. JunkDaJunk
+
+   - Count as you junk at the top of the terminal (same value as what is outputted at the end) on API junk mode
+
+2. Finder
+
+   - A setting defaulted to false to tell finder to keep a copy of the card on the nation.
+
+   - Logic change for parsing matches. Logic changes for iteration in more cards than puppets.
+
+   - More puppets than cards should be faster, it no longer fetches the deck for no reason at all.
+
+   - Stopping should stop gifting properly.
+
+   - Fix bug where the gifter would be lost on more cards than puppets mode.
+
+### Fixes
+
+1. Config
+
+   - Changing theme via the config page changes the theme.
+
+2. Ledger
+
+   - Sorting the ledger with non-zero value works. Latest date should be used by default. please use the actual dedicated site instead of the one on hare
+
 ## 2025-06-03
 
 ### Fixes

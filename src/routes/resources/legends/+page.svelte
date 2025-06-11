@@ -61,6 +61,7 @@
 </script>
 
 <ToolContent
+	icon="🗓️"
 	toolTitle="Legendary Tracker"
 	caption="Track the existence of legendaries per season"
 	originalBlurb="rewritten in Svelte for Hare use by Kractero"
@@ -132,7 +133,7 @@
 </p>
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
-	<table class="w-full table-auto caption-bottom border-collapse whitespace-normal text-left">
+	<table class="w-full table-auto caption-bottom border-collapse text-left whitespace-normal">
 		<thead>
 			<tr>
 				<th>#</th>
@@ -145,9 +146,9 @@
 		</thead>
 		<tbody>
 			{#each json as nation}
-				<tr class="border-b-1 border border-black">
+				<tr class="border border-b-1 border-black">
 					<td class="text-xs">{nation.id}</td>
-					<td class="w-[150px] whitespace-normal break-words break-all p-2 text-xs md:w-auto md:p-4 md:text-base">
+					<td class="w-[150px] p-2 text-xs break-words break-all whitespace-normal md:w-auto md:p-4 md:text-base">
 						<a class="underline" rel="noreferrer noopener" target="_blank" href={`${domain}/nation=${nation.name}/`}
 							>{nation.name}</a>
 					</td>

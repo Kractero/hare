@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Footer from '$lib/components/Footer.svelte'
 	import Head from '$lib/components/Head.svelte'
-	import Linkbar from '$lib/components/Linkbar.svelte'
 	import Tool from '$lib/components/Tool.svelte'
+	import Button from '$lib/components/ui/button/button.svelte'
 	import externalTools from '$lib/data/external-tools.json'
 	import tools from '$lib/data/tools.json'
 
@@ -19,7 +19,17 @@
 			A central location for NationStates scripts.
 		</h1>
 		<p class="text-center font-light tracking-tight lg:text-left">Caffeine... I need more caffeine...</p>
-		<Linkbar />
+		<div class="mx-auto my-4 flex flex-1 flex-wrap items-center gap-1 lg:mx-0">
+			<Button href="/" variant={'secondary'}>
+				<span class="text-base">Home</span>
+			</Button>
+			<Button href="/changelog" variant={'secondary'}>
+				<span class="text-base">Changelog</span>
+			</Button>
+			<Button href="/resources" variant={'secondary'}>
+				<span class="text-base">Resources</span>
+			</Button>
+		</div>
 	</div>
 	<div class="col-span-full mx-auto max-lg:hidden lg:col-span-6">
 		<picture class="w-[512px]">

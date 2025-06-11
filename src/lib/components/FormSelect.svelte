@@ -1,7 +1,6 @@
 <script lang="ts">
 	import * as Select from '$lib/components/ui/select'
 
-	import FormSelectTheme from './FormSelectTheme.svelte'
 	import Label from './ui/label/label.svelte'
 
 	interface Props {
@@ -37,11 +36,7 @@
 		</Select.Trigger>
 		<Select.Content class="text-left">
 			{#each items as item, i}
-				{#if isTheme(item)}
-					<FormSelectTheme bind:item={items[i] as 'system' | 'light' | 'dark'} />
-				{:else}
-					<Select.Item value={item}>{item}</Select.Item>
-				{/if}
+				<Select.Item value={item}>{item}</Select.Item>
 			{/each}
 		</Select.Content>
 	</Select.Root>

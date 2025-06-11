@@ -3,7 +3,7 @@
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import Button from '$lib/components/ui/button/button.svelte'
 
-	const validHeaders = ['Nation', 'Deck Value', 'Junk Value', 'Bank', 'Card Count', 'Deck Capacity']
+	const validHeaders = ['Nation', 'Deck Value', 'Junk Value', 'Bank', 'Card Count', 'Deck Capacity', 'S4 Legendary']
 	const hideableHeaders = [
 		'Common',
 		'Uncommon',
@@ -59,26 +59,25 @@
 		ledger = await data.json()
 	}
 	onMount(() => {
-		fillTable()
-		const sortableColumns = ledgerTable!.querySelectorAll('.sort')
+		fillTable(maxDate)
+		const sortableColumns = document.querySelectorAll('.sort') as NodeListOf<HTMLTableColElement>
 		sortableColumns.forEach(col => {
 			col.addEventListener('click', () => {
-				const columnIndex = Array.from((col.parentNode! as HTMLTableRowElement).cells).indexOf(
-					col as HTMLTableCellElement
-				)
-				const rows = Array.from(ledgerTable!.rows).slice(1)
+				const table = document.querySelector('table')
+				const columnIndex = Array.from(col.parentNode!.children).indexOf(col)
+				const rows = Array.from(table!.rows).slice(1)
 				const currentOrder = col.getAttribute('data-order')
 				const newOrder = currentOrder === 'asc' ? 'desc' : 'asc'
 				rows.sort((a, b) => {
 					const aValue = parseFloat(a.cells[columnIndex].innerText)
 					const bValue = parseFloat(b.cells[columnIndex].innerText)
-					if (currentOrder === 'asc') {
+					if (newOrder === 'asc') {
 						return aValue > bValue ? 1 : aValue === bValue ? 0 : -1
 					} else {
 						return aValue > bValue ? -1 : aValue === bValue ? 0 : 1
 					}
 				})
-				ledgerTable!.append(...rows)
+				table!.append(...rows)
 				col.setAttribute('data-order', newOrder)
 			})
 		})
@@ -139,7 +138,7 @@
 						<tr class="border-border border-b">
 							<td></td>
 							{#each validHeaders as header}
-								<td class="p-4">{deck[header]}</td>
+								<td class="p-4">{!deck[header] ? 0 : deck[header]}</td>
 							{/each}
 							{#each hideableHeaders as header}
 								<td class="hideable hidden">

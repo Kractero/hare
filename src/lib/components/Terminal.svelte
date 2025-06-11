@@ -1,6 +1,7 @@
 <script lang="ts">
 	export let info: { text: string; color?: string }[] = []
 	export let progress: { text: string; color?: string; link?: { href: string; label: string } }[] = []
+	export let continuousUpdate: string = ''
 
 	let terminal: HTMLDivElement
 
@@ -25,7 +26,9 @@
 		{#each info as { text, color }, i (i)}
 			<p class={`my-0.5 ${color ? `text-${color}-400` : ''}`}>{text}</p>
 		{/each}
-	{/if}{#each trimmedProgress as { text, color, link }, i (i)}
+	{/if}{#if continuousUpdate}<p class="font-bold text-purple-400">
+			{continuousUpdate}
+		</p>{/if}{#each trimmedProgress as { text, color, link }, i (i)}
 		<p class={`my-0.5 ${color && colors[color] ? colors[color] : ''}`}>
 			{#if text}
 				{text} {' '}

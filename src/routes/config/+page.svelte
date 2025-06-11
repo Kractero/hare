@@ -9,6 +9,7 @@
 	import Button from '$lib/components/ui/button/button.svelte'
 	import { Toaster } from '$lib/components/ui/sonner'
 	import { defaultPrices } from '$lib/helpers/utils'
+	import { setMode } from 'mode-watcher'
 	import { toast } from 'svelte-sonner'
 
 	const localStorageObject: { [key: string]: any } = $state({
@@ -49,6 +50,7 @@
 		junkdajunkRaritiesSell: defaultPrices,
 		junkdajunkRaritiesBidSell: defaultPrices,
 		finderGiftee: '',
+		keepOne: false,
 		junkdajunkOwnerCount: '',
 		junkdajunkCardCount: '',
 		goldretrieverMode: 'Include',
@@ -127,6 +129,12 @@
 					if (curr[rarity] !== conf[rarity]) changes.push(key)
 				})
 				localStorage.setItem(key, JSON.stringify(conf))
+			} else if (key === 'theme') {
+				setMode(localStorageObject[key])
+				if (localStorage.getItem(key) !== String(localStorageObject[key])) {
+					changes.push(key)
+				}
+				localStorage.setItem(key, localStorageObject[key])
 			} else {
 				if (localStorage.getItem(key) !== String(localStorageObject[key])) {
 					changes.push(key)
@@ -300,6 +308,7 @@
 			bind:bindValue={localStorageObject.finderMode}
 			items={['Gift', 'Sell', 'Exclude']} />
 		<FormTextArea label="Card IDs to Find" bind:bindValue={localStorageObject.finderList} id="find" />
+		<FormCheckbox bind:checked={localStorageObject.keepOne} id="keepOne" label="Keep One Copy" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Flags</h2>
 		<FormSelect
 			id="flagmode"

@@ -29,6 +29,7 @@
 	let domain = ''
 	let info = $state<Array<{ text: string; color?: string }>>([])
 	let progress = $state<Array<{ text: string; color?: string }>>([])
+	let junkCounter = $state('')
 	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let stoppable = $state(false)
 	let stopped = $state(false)
@@ -388,6 +389,7 @@
 									currCard = currCard + 1
 								} else {
 									junkedCards = junkedCards + 1
+									junkCounter = junkMethod === 'API' ? `API has junked ${junkedCards}` : ''
 								}
 							}
 						} else {
@@ -596,5 +598,5 @@
 			<OpenButton bind:progress bind:openNewLinkArr={content} />
 		</Buttons>
 	</form>
-	<Terminal bind:progress bind:info />
+	<Terminal bind:progress bind:info bind:continuousUpdate={junkCounter} />
 </div>
