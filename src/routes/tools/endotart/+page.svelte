@@ -141,7 +141,7 @@
 							text: `${i + 1}/${regionalWA.length}`,
 							color: 'yellow',
 							link: {
-								href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}`,
+								href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}`,
 								label: `${regionalWA[i]} is the endotart nation`,
 							},
 						},
@@ -154,7 +154,7 @@
 								text: `${i + 1}/${regionalWA.length}`,
 								color: 'yellow',
 								link: {
-									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}`,
+									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}`,
 									label: `${regionalWA[i]} is in your immune nations`,
 								},
 							},
@@ -170,7 +170,7 @@
 								text: `${i + 1}/${regionalWA.length}`,
 								color: 'green',
 								link: {
-									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}`,
+									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}`,
 									label: `${regionalWA[i]} is not being endorsed by ${endotarter}`,
 								},
 							},
@@ -186,7 +186,7 @@
 								text: `${i + 1}/${regionalWA.length}`,
 								color: 'red',
 								link: {
-									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}`,
+									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}`,
 									label: `${regionalWA[i]} has more than ${limit} endorsements.`,
 								},
 							},
@@ -198,7 +198,7 @@
 								text: `${i + 1}/${regionalWA.length}`,
 								color: 'red',
 								link: {
-									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}`,
+									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}`,
 									label: `${regionalWA[i]} is already endorsed by ${endotarter}.`,
 								},
 							},
@@ -222,7 +222,7 @@
 								text: `${i + 1}/${regionalWA.length}`,
 								color: 'green',
 								link: {
-									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}`,
+									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}`,
 									label: `${regionalWA[i]} is not being endorsed by ${endotarter}.`,
 								},
 							},
@@ -238,7 +238,7 @@
 								text: `${i + 1}/${regionalWA.length}`,
 								color: 'red',
 								link: {
-									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}"}`,
+									href: `https://nationstates.net/nation=${regionalWA[i]}?${urlParameters('Endotart', main)}`,
 									label: `${regionalWA[i]} is already endorsed by ${endotarter}.`,
 								},
 							},

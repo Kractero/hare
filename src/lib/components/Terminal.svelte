@@ -16,6 +16,7 @@
 		blue: 'text-blue-400',
 		white: 'text-red-400',
 		yellow: 'text-yellow-400',
+		red: 'text-red-400',
 	}
 </script>
 
