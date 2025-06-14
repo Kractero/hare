@@ -7,7 +7,21 @@ order: 5
 category: containerless
 ---
 
-With the recent implementation of Cloudflare verification checks (referred to as "border patrol" in NationStates terms), farming via containers has become significantly more cumbersome. Each container must individually pass the verification check, making the process tedious. However, container farming is still possible as you can manually complete the check for each container and continue farming as usual. That said, this is time-consuming, and there is a risk that Cloudflare's stored verification cookies could be cleared at any time, requiring re-verification.
+<script>
+    import Post from "$lib/components/Post.svelte";
+
+    const gotIssues = {
+        description: "Using gotIssues to farm",
+        title: "gotIssues",
+        url: "/guides/gotIssues"
+    }
+</script>
+
+Containerless farming, as the name implies, is farming without containers. It uses a userscript which facilitates switching between various nations via logging in and logging out normally, rather than using isolated containers.
+
+**Requires:**
+
+- <a href="/resources/guides/prereqs">Userscript Monkey</a>
 
 ### Farming Containerless
 
@@ -21,24 +35,12 @@ To do this:
 
 2. On lines ten and eleven, set your main nation and password. Multi-password setups (where puppets have different passwords) are not supported at the moment.
 
-3. Disable containers if using firefox (visit the url about:addons, flip the toggle for containerise/cardtainers), or use a browser that doesn't have containers.
+3. If you are using containers, disable them. To do so, enter about:addons in the address bar and flip the toggle for containerise/cardtainers), or use a browser that doesn't have containers.
 
-### Notes
+### Next Steps
 
-**Is containerless slower or faster?**
+With containerless setup, you can use the core tool for speeding up the process of answering issues and opening packs, gotIssues.
 
-Your mileage may vary, and it's still too early to say for sure. Despite an extra click per puppet to switch (which ironically actually sends more requests to NationStates), some have noticed that containerless may actually be faster - here are some reasons that may be the case.
-
-1. The nature of containers is that they are isolated. The cookies, cache, browser storage are all isolated and must be loaded and dumped whenever a container is opened and closed. This can lead to a decrease in performance.
-
-2. Resources are not cached between containers, meaning fonts, images, css stylesheets, etc. need to be re-requested per container.
-
-3. The overhead of running cardtainers or containerise - this is likely negligible, but could play a role.
-
-**Why were containers used?**
-
-Containers are powerful and let you manage multiple nations at once without needing to switch. You can have multiple nations open in the same instance, each logged in.
-
-**What steps are now dead in containerless?**
-
-You no longer need to run Login Sheet and manage container rules.
+<div class="flex not-prose">
+  <Post description={gotIssues.description} title={gotIssues.title} url={gotIssues.url} />
+</div>

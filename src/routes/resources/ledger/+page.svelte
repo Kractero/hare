@@ -35,7 +35,6 @@
 	]
 	let ledgerTable: HTMLTableElement | undefined = $state()
 	let ledger: [{ [key: string]: number | string }] = $state([{}])
-	let body = $state()
 	let displayDate: string
 	let error: string = $state('')
 
@@ -133,7 +132,7 @@
 				</tr>
 			</thead>
 			{#if ledger}
-				<tbody bind:this={body}>
+				<tbody>
 					{#each ledger as deck}
 						<tr class="border-border border-b">
 							<td></td>

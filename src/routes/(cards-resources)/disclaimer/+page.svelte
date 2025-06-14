@@ -4,7 +4,7 @@
 
 <Head title={`Hare - Disclaimer`} description="Important disclaimer." />
 
-<div class="prose mx-auto flex max-w-lg flex-col gap-4 dark:prose-invert lg:max-w-5xl">
+<div class="prose dark:prose-invert mx-auto flex max-w-lg flex-col gap-4 lg:max-w-5xl">
 	<h2>TL;DR: READ THIS, read the rules ask for help if you need help understanding scripts,</h2>
 
 	<p>YOU A HUMAN MUST PUSH A BUTTON TO DO AN EVENT.</p>
@@ -15,7 +15,9 @@
 		as a user agent. Do not use any code that was given to you by people you do not know or trust even if it is created
 		by someone you know. If you do not know how to read code talk with the developer of the code to make sure that you
 		understand what the code is doing it is your responsibility to abide by scripting rules. And you should read them
-		they are located here (https://forum.nationstates.net/viewtopic.php?p=16394966#p16394966).
+		they are located here <a target="_blank" href="https://forum.nationstates.net/viewtopic.php?p=16394966#p16394966"
+			>OSRS</a
+		>.
 	</p>
 
 	<p>

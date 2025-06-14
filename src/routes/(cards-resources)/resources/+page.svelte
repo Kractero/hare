@@ -1,16 +1,12 @@
 <script lang="ts">
-	import Guides from '$lib/components/Guides.svelte'
 	import Head from '$lib/components/Head.svelte'
 
-	import type { PageData } from './$types'
-
-	interface Props {
-		data: PageData
-	}
-
-	let { data }: Props = $props()
+	// @ts-expect-error importing changelog markdown
+	import Docs from './Resources.md'
 </script>
 
 <Head title={'Hare - Guides'} description={'Various guides for NationStates cards.'} />
 
-<Guides data={data.groupedPosts} />
+<article class="prose dark:prose-invert mx-auto mb-24 max-w-lg p-4 md:max-w-3xl lg:max-w-5xl">
+	<Docs />
+</article>

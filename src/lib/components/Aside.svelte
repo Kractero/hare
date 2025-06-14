@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/state'
 	import type { Post } from '$lib/server/posts'
 	import ChevronDown from 'lucide-svelte/icons/chevron-down'
 	import Table2 from 'lucide-svelte/icons/table-2'

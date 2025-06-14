@@ -7,6 +7,8 @@ order: 6
 category: tools
 ---
 
+junkDaJunk is a tool that processes cards on a nation and junks them if they do not meet various conditions. This is a page that shows what each setting of junkDaJunk does. This isn't intended to be a guide on how to use it.
+
 ### Modes
 
 1. Advanced

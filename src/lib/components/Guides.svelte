@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { non_md } from '$lib/helpers/md'
+
 	import Post from './Post.svelte'
 
 	interface Props {
@@ -10,33 +12,9 @@
 	const posts = Object.values(data)
 		.flat()
 		.filter(post => !!post.description)
-
-	let non_md = [
-		{
-			title: 'Containerise',
-			author: 'Racoda',
-			url: 'https://www.nationstates.net/page=dispatch/id=1383002',
-			keywords: ['guides'],
-			description: 'Containers? What? Why? A detailed guide.',
-		},
-		{
-			title: 'North Pacific Cards Guide',
-			author: 'The Northern light',
-			url: 'https://www.nationstates.net/page=dispatch/id=1301085',
-			keywords: ['guides'],
-			description: 'Interested in Building Your Dream Deck?',
-		},
-		{
-			title: 'West Pacific Cards Guide',
-			author: 'The West Pacific',
-			url: 'https://www.nationstates.net/page=dispatch/id=1399925',
-			keywords: ['guides'],
-			description: "The West Pacific's guide to Trading Cards",
-		},
-	]
 </script>
 
-<div class="my-20">
+<div class="my-20 w-auto max-w-lg min-[712px]:w-[712px] md:max-w-3xl lg:max-w-5xl">
 	<h2 class="mb-1 text-center text-3xl font-bold">Guides</h2>
 
 	<p class="mb-16 text-center text-lg lg:w-auto">Various guides for setting up tools and prerequisites.</p>
