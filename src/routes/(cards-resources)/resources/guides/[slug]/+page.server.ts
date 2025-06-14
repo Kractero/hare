@@ -1,12 +1,14 @@
 import { error } from '@sveltejs/kit'
-import { posts } from '$lib/server/posts'
+import { groupedPosts } from '$lib/server/posts'
 
 import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({ params }) => {
 	const { slug } = params
 
-	const post = posts.find(post => slug === post.slug)
+	const post = Object.values(groupedPosts)
+		.flat()
+		.find(post => slug === post.slug)
 
 	if (!post) {
 		throw error(404, 'Post not found')
@@ -14,5 +16,6 @@ export const load: PageServerLoad = async ({ params }) => {
 
 	return {
 		post,
+		groupedPosts,
 	}
 }

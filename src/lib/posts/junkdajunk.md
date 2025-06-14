@@ -4,6 +4,7 @@ description: JunkDaJunk Parameters
 url: junkdajunk
 author: Kractero
 order: 6
+category: tools
 ---
 
 ### Modes

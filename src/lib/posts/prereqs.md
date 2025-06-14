@@ -4,6 +4,7 @@ description: Common prerequisites for card tools
 url: prereqs
 author: Kractero
 order: 1
+category: overview
 ---
 
 To install and effectively use most of these tools, having a basic understanding of your browser's capabilities is essential. Many trading card tools involve some degree of automation, whether through scripting or hotkeys.
@@ -11,8 +12,6 @@ To install and effectively use most of these tools, having a basic understanding
 However, no matter which method you choose, certain prerequisites will make your card farming journey smoother and more efficient. Before diving into any specific tool or method, it's important to ensure you have the _right browser_, a _userscript manager_, and _containers_ properly set up.
 
 Getting started may feel overwhelming, but with a little guidance, you'll find that everything falls into place smoothly. This guide will walk you through the essential prerequisites to get you up and running.
-
-It is important to note that while the Hare and Got Issues methods are popular for card farming, they are by no means the only options available. There are several alternative approaches, like RCES by Racoda, or other bespoke tools and strategies tailored to different playstyles and goals.
 
 1. [Note on Browsers](#browsers)
 2. [Installing Userscripts](#userscripts)
@@ -23,13 +22,13 @@ It is important to note that while the Hare and Got Issues methods are popular f
 
 Depending on your specific needs, you might not need to worry too much about this section. However, if you're serious about card farming, it's worth reading on.
 
-While userscripts can function on almost any browser—thanks to widespread support by userscript extensions—most advanced card farming tools rely on the use of containers. Unfortunately, this feature is only available in Firefox and its derivatives. So, if you're using a Chromium-based browser, you might want to consider switching. <a href="https://www.mozilla.org/en-US/firefox/new/" rel="noopener noreferrer" target="_blank">Installing Firefox is quick and easy.</a>
+Userscripts can function on almost any browser thanks to widespread support by userscript extensions. This means that **any** browser can be used to farm. In the past, Firefox was the only practical option due to it being the only major browser to support containers, but with the addition of border patrol, containers have become less viable of an option.
 
-<div class="flex gap-4 justify-center">
-    <a href="https://www.mozilla.org/en-US/firefox/new/" rel="noopener noreferrer" target="_blank">
-        <img src="https://ucarecdn.com/9dc9b403-3b4c-49ba-8154-20880be23d37/firefox_browser_logo_icon_152991-4214717325.png" alt="Firefox Browser Logo"/>
-    </a>
-</div>
+> Update: Firefox is no longer strictly required
+
+**Containers**
+
+If you want to use containers, you will need Firefox. <a href="https://www.mozilla.org/en-US/firefox/new/" rel="noopener noreferrer" target="_blank">Installing Firefox is quick and easy.</a>
 
 Other alternatives include Firefox ESR, Firefox Nightly, Firefox Developer Edition, LibreWolf, Floorp, Waterfox, and more. However, unless you're familiar with these versions, it's best to stick with the original Firefox.
 
@@ -45,7 +44,7 @@ For most people, userscripts are the gateway to taking their card farming to the
     </a>
 </div>
 
-There are a number of userscript managers, but I would recommend TamperMonkey for most users. It's modern, user-friendly, and works well with most scripts you'll find online. While it's not open source, it's reliable and widely used, making it the best choice for most people.
+There are a number of userscript managers, but I would recommend <a href="https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/" rel="noopener noreferrer">TamperMonkey</a> for most users. It's modern, user-friendly, and works well with most scripts you'll find online. While it's not open source, it's reliable and widely used, making it the best choice for most people.
 
 To add a script to TamperMonkey, simply click the TamperMonkey icon in your toolbar and select "Create a new script."
 
@@ -55,10 +54,7 @@ If after adding the extension the icon does not appear in your toolbar, you may 
 
 ![pin extension to bar](https://raw.githubusercontent.com/Kractero/hare/main/static/guides/pintotoolbar.png)
 
-For those who prefer open-source alternatives or are interested in exploring other options, here are a few:
-
-1. ViolentMonkey - A free and open-source option, though it has a smaller user base.
-2. FireMonkey - A newer, less common option that also manages user styles.
+For those who prefer open-source alternatives or are interested in exploring other options, use <a href="https://addons.mozilla.org/en-US/firefox/addon/violentmonkey/" rel="noopener noreferrer">ViolentMonkey</a>, it's what I use.
 
 ### <a name="containers">Containers</a>
 

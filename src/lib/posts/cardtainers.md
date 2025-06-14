@@ -4,6 +4,7 @@ description: Why to use Cardtainers
 url: cardtainers
 author: Kractero
 order: 3
+category: containers
 ---
 
 [Cardtainers](https://addons.mozilla.org/en-US/firefox/addon/cardtainers/) is a Firefox extension designed to simplify the management of containers specfically for NationStates.

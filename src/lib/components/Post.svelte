@@ -11,12 +11,12 @@
 
 <div class="group relative">
 	<a
-		href={`${url.includes('https') ? url : `/resources/guides/${url}`}`}
-		class="mx-auto block border-b border-border py-4 pr-8 transition-colors duration-300 ease-in-out group-hover:bg-secondary">
+		href={`${url}`}
+		class="border-border group-hover:bg-secondary mx-auto block border-b py-4 pr-8 transition-colors duration-300 ease-in-out">
 		<p class="px-2 font-semibold">
-			{title} -
-			<span class="text-xs font-light text-muted-foreground">{author}</span>
+			{title}
 		</p>
+		<p class="text-muted-foreground mb-2 px-2 text-xs font-light">{author}</p>
 		<p class="px-2 text-sm">{description}</p>
 	</a>
 </div>

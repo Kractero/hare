@@ -4,6 +4,7 @@ description: Avoiding the border patrol
 url: containerless
 author: Kractero
 order: 5
+category: containerless
 ---
 
 With the recent implementation of Cloudflare verification checks (referred to as "border patrol" in NationStates terms), farming via containers has become significantly more cumbersome. Each container must individually pass the verification check, making the process tedious. However, container farming is still possible as you can manually complete the check for each container and continue farming as usual. That said, this is time-consuming, and there is a risk that Cloudflare's stored verification cookies could be cleared at any time, requiring re-verification.

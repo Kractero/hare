@@ -4,23 +4,24 @@ description: Getting started with Hare
 url: getting-started
 author: Kractero
 order: 2
+category: overview
 ---
 
 Hare is a powerful tool that centralizes many browser-executable scripts, which typically otherwise would require Python installation and some knowledge of running Python scripts. This guide will walk you through setting up Hare and getting started with card farming, especially if you're new to the process.
 
-Before diving into this guide, I recommend reading the [previous article](prereqs) for a foundational understanding. While there may be some overlap, this guide focuses specifically on how to leverage Hare for efficient farming.
+Before diving into this guide, I recommend reading the [previous article](prereqs) so you have what you need. While there may be some overlap, this guide focuses specifically on how to use Hare to farm.
 
 ## 1. A Userscript Manager
 
 To extend a website's functionality and automate tasks, you'll need to install a userscript manager, like Tampermonkey
 
-[Install TamperMonkey](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/) from the official Mozilla Firefox Add-ons site.
+[Install TamperMonkey](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/) from the official Mozilla Firefox Add-ons site. You can also use ViolentMonkey or any other userscript manager.
 
 Once installed, click the TamperMonkey icon in your browser's toolbar Click "Create a new script" to open the script editor.
 
 ![add script to tampermonkey](https://raw.githubusercontent.com/Kractero/hare/main/static/guides/tampermonkey.png)
 
-Paste your script into the editor window. lick the "File" menu and select "Save" to activate the script.
+Paste your script into the editor window. Click the "File" menu and select "Save" to activate the script.
 
 TamperMonkey will now run the script automatically whenever you visit the specified site(s) matching its domain rule.
 

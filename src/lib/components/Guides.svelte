@@ -2,12 +2,15 @@
 	import Post from './Post.svelte'
 
 	interface Props {
-		data: {
-			posts: { author: string; description: string; title: string; url: string }[]
-		}
+		data: Record<string, any>
 	}
 
 	let { data }: Props = $props()
+
+	const posts = Object.values(data)
+		.flat()
+		.filter(post => !!post.description)
+
 	let non_md = [
 		{
 			title: 'Containerise',
@@ -33,14 +36,16 @@
 	]
 </script>
 
-<div class="mb-20">
+<div class="my-20">
 	<h2 class="mb-1 text-center text-3xl font-bold">Guides</h2>
 
 	<p class="mb-16 text-center text-lg lg:w-auto">Various guides for setting up tools and prerequisites.</p>
 
 	<div class="mx-auto grid max-w-lg grid-cols-1 justify-center gap-4 sm:grid-cols-2 lg:max-w-5xl">
-		{#each data.posts as post}
-			<Post author={post.author} description={post.description} title={post.title} url={post.url} />
+		{#each posts as post}
+			<ul class="space-y-1">
+				<Post author={post.author} description={post.description} title={post.title} url={post.url} />
+			</ul>
 		{/each}
 		{#each non_md as post}
 			<Post author={post.author} description={post.description} title={post.title} url={post.url} />

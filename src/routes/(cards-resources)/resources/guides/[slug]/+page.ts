@@ -9,5 +9,6 @@ export const load: PageLoad = async ({ data }) => {
 		layout: {
 			fullWidth: true,
 		},
+		posts: data.groupedPosts,
 	}
 }

@@ -4,6 +4,7 @@ description: Brief on containers
 url: containers
 author: Kractero
 order: 4
+category: containers
 ---
 
 There are many ways to manage puppets, such as using keybinds to switch between nations or other management tools. One of the most effective methods, especially for card farming, is through the use of the extension Containerise.
