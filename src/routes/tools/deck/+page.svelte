@@ -37,6 +37,12 @@
 		pushHistory(`?main=${main}&nation=${checkObject}&mode=${mode}&type=${type}&duplicates=${duplicates}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
+		progress = [
+			...progress,
+			{
+				text: `Computing ${checkObject}`,
+			},
+		]
 		if (type.toLowerCase() === 'deck') {
 			const xml = await parseXML(`${domain}/cgi-bin/api.cgi?q=cards+deck;nationname=${checkObject}`, main)
 			let deckObj: Array<Card> = xml.CARDS.DECK.CARD
@@ -45,10 +51,23 @@
 				content = Array.from(
 					new Set((deckObj as Card[]).map(card => (mode === 'Signal' ? `${card.CARDID},${card.SEASON}` : card.CARDID)))
 				).join('\n')
+				progress = [
+					...progress,
+					{
+						text: content,
+					},
+				]
+				console.log(progress)
 			} else {
 				content = Array.from(deckObj as Card[])
 					.map(card => (mode === 'Signal' ? `${card.CARDID},${card.SEASON}` : card.CARDID))
 					.join('\n')
+				progress = [
+					...progress,
+					{
+						text: content,
+					},
+				]
 			}
 		} else {
 			const xml = await parseXML(`${domain}/cgi-bin/api.cgi?q=cards+collection;collectionid=${checkObject}`, main)
@@ -58,14 +77,26 @@
 				content = Array.from(
 					new Set((collObj as Card[]).map(card => (mode === 'Signal' ? `${card.CARDID},${card.SEASON}` : card.CARDID)))
 				).join('\n')
+				progress = [
+					...progress,
+					{
+						text: content,
+					},
+				]
 			} else {
 				content = Array.from(collObj as Card[])
 					.map(card => (mode === 'Signal' ? `${card.CARDID},${card.SEASON}` : card.CARDID))
 					.join('\n')
+				progress = [
+					...progress,
+					{
+						text: content,
+					},
+				]
 			}
 		}
 		downloadable = true
-		progress = [{ text: `Finished processing ${type} ${checkObject}`, color: 'green' }]
+		progress = [...progress, { text: `Finished processing ${type} ${checkObject}`, color: 'green' }]
 	}
 </script>
 
