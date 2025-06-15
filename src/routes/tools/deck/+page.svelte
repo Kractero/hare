@@ -37,12 +37,7 @@
 		pushHistory(`?main=${main}&nation=${checkObject}&mode=${mode}&type=${type}&duplicates=${duplicates}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
-		progress = [
-			...progress,
-			{
-				text: `Computing ${checkObject}`,
-			},
-		]
+		progress = [{ text: `Computing ${checkObject}` }]
 		if (type.toLowerCase() === 'deck') {
 			const xml = await parseXML(`${domain}/cgi-bin/api.cgi?q=cards+deck;nationname=${checkObject}`, main)
 			let deckObj: Array<Card> = xml.CARDS.DECK.CARD
@@ -57,7 +52,6 @@
 						text: content,
 					},
 				]
-				console.log(progress)
 			} else {
 				content = Array.from(deckObj as Card[])
 					.map(card => (mode === 'Signal' ? `${card.CARDID},${card.SEASON}` : card.CARDID))

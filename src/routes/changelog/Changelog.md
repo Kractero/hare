@@ -1,5 +1,23 @@
 # Changelog
 
+## 2025-06-14
+
+Docs update
+
+### Adjustments
+
+1. Deck to IDs
+
+   - Outputs the text in the terminal/logs.
+
+### Fixes
+
+1. Finder
+
+   - Gift One / Sell One now works with the same id but different season.
+   - If more puppets than cards, you will get notified if no owners are found for that card.
+   - Keep one only runs if the puppet list contains one nation.
+
 ## 2025-06-10
 
 ### Adjustments

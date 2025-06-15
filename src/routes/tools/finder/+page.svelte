@@ -110,7 +110,7 @@
 				failedGiftCount++
 			} else {
 				progress = [...progress, { text: `${nation} gifted ${id} to ${cg}`, color: 'green' }]
-				giftedCards.add(id)
+				giftedCards.add(`${id},${season}`)
 			}
 
 			return cnx
@@ -134,6 +134,7 @@
 				info = [...info, { text: `More puppets than cards, proceeding...` }]
 				for (let i = 0; i < matches.length; i++) {
 					progress = [...progress, { text: `Processing card ${i + 1}/${matches.length} cards` }]
+					let found = false
 					if (mode === 'Gift One' && giftedCards.size > 0 && toFind.length > 0 && giftedCards.size === toFind.length) {
 						progress = [
 							...progress,
@@ -168,25 +169,26 @@
 					for (let i = 0; i < ownerArr.length; i++) {
 						const owner = ownerArr[i]
 						if (processedOwners.has(owner)) continue
-						const matchedPuppet = puppetList.find(puppet => puppet.nation === String(owner))
+						const matchedPuppet = puppetList.find(puppet => puppet.nation === owner)
 						if (matchedPuppet) {
+							found = true
 							let frequency = 0
 							for (const o of ownerArr) {
 								if (o === owner) frequency++
 							}
 							processedOwners.add(owner)
-							if (giftedCards.has(id) && mode === 'Gift One') {
+							if (giftedCards.has(`${id},${season}`) && mode === 'Gift One') {
 								progress = [...progress, { text: `Already gifted ${id}`, color: 'blue' }]
 								continue
 							}
-							if (soldCards.has(id) && mode === 'Sell One') {
+							if (soldCards.has(`${id},${season}`) && mode === 'Sell One') {
 								progress = [...progress, { text: `Already sold ${id}`, color: 'blue' }]
 								continue
 							}
 
 							const { nation, nationSpecificPassword } = matchedPuppet
 
-							if (keepOne === true) frequency = frequency - 1
+							if (keepOne === true && puppetList.length === 1) frequency = frequency - 1
 
 							let currentNationXPin = ''
 							for (let i = 0; i < frequency; i++) {
@@ -214,13 +216,15 @@
 											url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}${urlParameters('Finder', main)}`,
 											tableText: `Link to ${nation}`,
 										})
-										soldCards.add(id)
+										soldCards.add(`${id},${season}`)
 									}
 									findCount++
 								}
 							}
 						}
 					}
+
+					if (found === false) info = [...info, { text: `Could not find ${id}`, color: 'red' }]
 				}
 			} else {
 				info = [...info, { text: `More cards than puppets, proceeding...` }]
@@ -312,7 +316,7 @@
 											url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('Finder', main)}`,
 											tableText: `Link to ${nation}`,
 										})
-										soldCards.add(id)
+										soldCards.add(`${id},${season}`)
 									}
 									findCount++
 								}
@@ -370,7 +374,7 @@
 									url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}?${urlParameters('Finder', main)}`,
 									tableText: `Link to ${nation}`,
 								})
-								soldCards.add(id)
+								soldCards.add(`${id},${season}`)
 							}
 							findCount++
 						}
