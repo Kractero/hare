@@ -64,7 +64,7 @@
 					if (nationalBank >= Number(transfer)) {
 						info = [...info, { text: `${nation} can transfer!`, color: 'green' }]
 						count++
-						bank = nationalBank + bank
+						bank = Number(transfer) + bank
 						transferrable.push(nation)
 					}
 				}

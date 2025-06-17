@@ -169,7 +169,7 @@
 					for (let i = 0; i < ownerArr.length; i++) {
 						const owner = ownerArr[i]
 						if (processedOwners.has(owner)) continue
-						const matchedPuppet = puppetList.find(puppet => puppet.nation === owner)
+						const matchedPuppet = puppetList.find(puppet => puppet.nation === String(owner))
 						if (matchedPuppet) {
 							found = true
 							let frequency = 0
