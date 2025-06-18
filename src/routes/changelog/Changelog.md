@@ -1,5 +1,21 @@
 # Changelog
 
+## 2025-06-17
+
+Docs update
+
+### Adjustments
+
+1. Transfer
+
+   - Transfer's output of transferrable bank now properly calculates off of the transfer amount instead of the total bank.
+
+### Fixes
+
+1. Finder
+
+   - Finder outputs all cards that were unable to be found at the end. If keep one is checked, a card is considered found if it has 1 copy and did not get gifted.
+
 ## 2025-06-14
 
 Docs update

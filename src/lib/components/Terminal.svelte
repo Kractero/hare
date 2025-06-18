@@ -32,10 +32,11 @@
 		</p>{/if}{#each trimmedProgress as { text, color, link }, i (i)}
 		<p class={`my-0.5 ${color && colors[color] ? colors[color] : ''}`}>
 			{#if text}
-				{text} {' '}
+				{text}
 			{/if}{#if link}
+				{' '}
 				<a href={link.href} target="_blank" rel="noreferrer noopener" class="underline">
-					{link.label}
+					{`${link.label}`}
 				</a>
 			{/if}
 		</p>
