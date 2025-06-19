@@ -417,13 +417,15 @@
 				color: 'green',
 			},
 		]
-		progress = [
-			...progress,
-			{
-				text: `Could not find\n${other.trim()}`,
-				color: 'red',
-			},
-		]
+		if (other) {
+			progress = [
+				...progress,
+				{
+					text: `Could not find\n${other.trim()}`,
+					color: 'red',
+				},
+			]
+		}
 		downloadable = true
 		stoppable = false
 	}
