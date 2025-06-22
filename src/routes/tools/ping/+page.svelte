@@ -2,6 +2,7 @@
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
+	import OpenButton from '$lib/components/buttons/OpenButton.svelte'
 	import InputCredentials from '$lib/components/InputCredentials.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
@@ -133,7 +134,11 @@
 			downloadButton={true}
 			bind:downloadable
 			bind:content
-			name="restore" />
+			name="restore">
+			{#if content}
+				<OpenButton bind:progress bind:openNewLinkArr={content} />
+			{/if}
+		</Buttons>
 	</form>
 	<Terminal bind:progress bind:info />
 </div>
