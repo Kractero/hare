@@ -55,6 +55,7 @@
 	let finderlist = $state('')
 	let jdjtransfer = $state('-1')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
+	let junkUpTo = $state('-1')
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -123,6 +124,7 @@
 			false
 		jdjtransfer =
 			page.url.searchParams.get('jdjtransfer') || (localStorage.getItem('junkdajunkTransferBank') as string) || '-1'
+		junkUpTo = page.url.searchParams.get('junkUpTo') || (localStorage.getItem('junkUpTo') as string) || '-1'
 	})
 	onDestroy(() => abortController.abort())
 
@@ -133,7 +135,7 @@
 		}
 		e.preventDefault()
 		pushHistory(
-			`?main=${main}&mode=${mode}&junkMethod=${junkMethod}&checkMode=${checkMode}${giftee ? `&giftee=${giftee}` : ''}${owners ? `&owners=${owners}` : ''}${cardcount ? `&cardcount=${cardcount}` : ''}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ''}${flagwhitelist ? `&flags=${flagwhitelist.replaceAll('\n', ',')}` : ''}${skipseason && skipseason.length > 0 ? `&skipseason=${skipseason}` : ''}${skipexnation ? `&skipexnation=${skipexnation}` : ''}`
+			`?main=${main}&mode=${mode}&junkMethod=${junkMethod}&checkMode=${checkMode}${giftee ? `&giftee=${giftee}` : ''}${owners ? `&owners=${owners}` : ''}${cardcount ? `&cardcount=${cardcount}` : ''}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ''}${flagwhitelist ? `&flags=${flagwhitelist.replaceAll('\n', ',')}` : ''}${skipseason && skipseason.length > 0 ? `&skipseason=${skipseason}` : ''}${skipexnation ? `&skipexnation=${skipexnation}` : ''}${jdjtransfer ? `&jdjtransfer=${jdjtransfer}` : ''}${junkUpTo ? `&junkUpTo=${junkUpTo}` : ''}`
 		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -204,7 +206,10 @@
 				cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
 				if (cards && cards.length > 0 && cards.length > Number(cardcount)) {
 					const giftQueue = []
+					let localJunkCount = 0
 					for (let i = 0; i < cards.length; i++) {
+						if (localJunkCount >= Number(junkUpTo)) break
+
 						const id = cards[i].CARDID
 						const season = cards[i].SEASON
 						const marketValue = cards[i].MARKET_VALUE
@@ -389,6 +394,7 @@
 									currCard = currCard + 1
 								} else {
 									junkedCards = junkedCards + 1
+									localJunkCount = localJunkCount + 1
 									junkCounter = junkMethod === 'API' ? `API has junked ${junkedCards}` : ''
 								}
 							}
@@ -582,6 +588,7 @@
 			<FormCheckbox bind:checked={skipexnation} id="skipexnation" label="Skip Exnation" />
 		{/if}
 		<FormInput label={'Maximum Bank Threshold'} bind:bindValue={jdjtransfer} id="jdjtransfer" required={true} />
+		<FormInput label={'Junk Up To'} bind:bindValue={junkUpTo} id="junkUpTo" required={true} />
 		<FormSelect
 			bind:bindValue={mode}
 			id="mode"

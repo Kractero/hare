@@ -71,6 +71,7 @@
 		transferMode: 'Bank',
 		orphansDeck: '',
 		junkdajunkTransferBank: '-1',
+		junkUpTo: '-1',
 		loginSheetMode: 'UploadFlag',
 		auctionCards: '',
 		auctionMain: '',
@@ -294,6 +295,7 @@
 			bind:bindValue={localStorageObject.junkdajunkTransferBank}
 			id="jdjtransfer"
 			required={false} />
+		<FormInput label="Junk Up To" bind:bindValue={localStorageObject.junkUpTo} id="junkUpTo" required={false} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Finder</h2>
 		<FormSelect
 			bind:bindValue={localStorageObject.findMode}

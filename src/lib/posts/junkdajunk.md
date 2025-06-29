@@ -67,7 +67,10 @@ When a card is marked as not junk, junkDaJunk will simply ignore it.
 
 - The rarity lowest bid indicates to skip junking based on the card's rarity and configured lowest bid.
 
-- The maximum bank threshold cauindicates to skip JDJ if the nations bank exceeds the specified amount.
+- The maximum bank threshold indicates to skip junking if the nations bank exceeds the specified amount.
+  A value of `-1` means JDJ will never skip.
+
+- Junk Up To threshold indicates to skip junking after the specified amount of cards have been junked.
   A value of `-1` means JDJ will never skip.
 
 ### Recommended Usage
