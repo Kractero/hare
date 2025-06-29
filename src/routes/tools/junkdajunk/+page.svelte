@@ -208,7 +208,7 @@
 					const giftQueue = []
 					let localJunkCount = 0
 					for (let i = 0; i < cards.length; i++) {
-						if (localJunkCount >= Number(junkUpTo)) break
+						if (Number(junkUpTo) !== -1 && localJunkCount >= Number(junkUpTo)) break
 
 						const id = cards[i].CARDID
 						const season = cards[i].SEASON
