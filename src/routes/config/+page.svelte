@@ -290,12 +290,12 @@
 			items={['1', '2', '3', '4']}
 			label="Skip Seasons?" />
 		<FormCheckbox bind:checked={localStorageObject.junkdajunkExnation} id="skipexnation" label="Skip Exnation" />
-		<FormInput
+		<!-- <FormInput
 			label="Maximum Bank Threshold"
 			bind:bindValue={localStorageObject.junkdajunkTransferBank}
 			id="jdjtransfer"
-			required={false} />
-		<FormInput label="Junk Up To" bind:bindValue={localStorageObject.junkUpTo} id="junkUpTo" required={false} />
+			required={false} /> -->
+		<FormInput label="Process Up To" bind:bindValue={localStorageObject.junkUpTo} id="junkUpTo" required={false} />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Finder</h2>
 		<FormSelect
 			bind:bindValue={localStorageObject.findMode}

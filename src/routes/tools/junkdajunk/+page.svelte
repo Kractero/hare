@@ -53,7 +53,7 @@
 	let skipexnation = $state(false)
 	let sellContent: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let finderlist = $state('')
-	let jdjtransfer = $state('-1')
+	// let jdjtransfer = $state('-1')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 	let junkUpTo = $state('-1')
 
@@ -122,8 +122,8 @@
 			page.url.searchParams.get('skipexnation') === 'true' ||
 			localStorage.getItem('junkdajunkExnation') === 'true' ||
 			false
-		jdjtransfer =
-			page.url.searchParams.get('jdjtransfer') || (localStorage.getItem('junkdajunkTransferBank') as string) || '-1'
+		// jdjtransfer =
+		// 	page.url.searchParams.get('jdjtransfer') || (localStorage.getItem('junkdajunkTransferBank') as string) || '-1'
 		junkUpTo = page.url.searchParams.get('junkUpTo') || (localStorage.getItem('junkUpTo') as string) || '-1'
 	})
 	onDestroy(() => abortController.abort())
@@ -135,7 +135,7 @@
 		}
 		e.preventDefault()
 		pushHistory(
-			`?main=${main}&mode=${mode}&junkMethod=${junkMethod}&checkMode=${checkMode}${giftee ? `&giftee=${giftee}` : ''}${owners ? `&owners=${owners}` : ''}${cardcount ? `&cardcount=${cardcount}` : ''}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ''}${flagwhitelist ? `&flags=${flagwhitelist.replaceAll('\n', ',')}` : ''}${skipseason && skipseason.length > 0 ? `&skipseason=${skipseason}` : ''}${skipexnation ? `&skipexnation=${skipexnation}` : ''}${jdjtransfer ? `&jdjtransfer=${jdjtransfer}` : ''}${junkUpTo ? `&junkUpTo=${junkUpTo}` : ''}`
+			`?main=${main}&mode=${mode}&junkMethod=${junkMethod}&checkMode=${checkMode}${giftee ? `&giftee=${giftee}` : ''}${owners ? `&owners=${owners}` : ''}${cardcount ? `&cardcount=${cardcount}` : ''}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ''}${flagwhitelist ? `&flags=${flagwhitelist.replaceAll('\n', ',')}` : ''}${skipseason && skipseason.length > 0 ? `&skipseason=${skipseason}` : ''}${skipexnation ? `&skipexnation=${skipexnation}` : ''}${junkUpTo ? `&junkUpTo=${junkUpTo}` : ''}`
 		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -180,6 +180,7 @@
 		info = newInfo
 
 		let junkedCards = 0
+		let actionCount = 0
 		let currCard = 0
 		let currSellCard = 0
 		for (let i = 0; i < puppetList.length; i++) {
@@ -198,17 +199,16 @@
 				progress = [...progress, { text: `Processing ${nation} ${i + 1}/${puppetList.length} puppets` }]
 				const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck+info`, main)
 				let nationalBank = xmlDocument.CARDS.INFO.BANK
-				if (Number(jdjtransfer) !== -1 && nationalBank >= Number(jdjtransfer)) {
-					progress = [...progress, { text: `Skipping ${nation} as they exceed ${jdjtransfer} bank.`, color: 'blue' }]
-					continue
-				}
+				// if (Number(jdjtransfer) !== -1 && nationalBank >= Number(jdjtransfer)) {
+				// 	progress = [...progress, { text: `Skipping ${nation} as they exceed ${jdjtransfer} bank.`, color: 'blue' }]
+				// 	continue
+				// }
 				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD
 				cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
 				if (cards && cards.length > 0 && cards.length > Number(cardcount)) {
 					const giftQueue = []
-					let localJunkCount = 0
 					for (let i = 0; i < cards.length; i++) {
-						if (Number(junkUpTo) !== -1 && localJunkCount >= Number(junkUpTo)) break
+						if (Number(junkUpTo) !== -1 && actionCount >= Number(junkUpTo)) break
 
 						const id = cards[i].CARDID
 						const season = cards[i].SEASON
@@ -394,7 +394,7 @@
 									currCard = currCard + 1
 								} else {
 									junkedCards = junkedCards + 1
-									localJunkCount = localJunkCount + 1
+									actionCount = actionCount + 1
 									junkCounter = junkMethod === 'API' ? `API has junked ${junkedCards}` : ''
 								}
 							}
@@ -464,6 +464,7 @@
 							progress = [...progress, { text: `${i + 1}/${giftQueue.length} -> ${giftQueue[i].fail}`, color: 'red' }]
 							currSellCard = currSellCard + 1
 						} else {
+							actionCount = actionCount + 1
 							progress = [
 								...progress,
 								{ text: `${i + 1}/${giftQueue.length} -> ${giftQueue[i].success}`, color: 'green' },
@@ -587,8 +588,8 @@
 		{#if checkMode === 'Advanced'}
 			<FormCheckbox bind:checked={skipexnation} id="skipexnation" label="Skip Exnation" />
 		{/if}
-		<FormInput label={'Maximum Bank Threshold'} bind:bindValue={jdjtransfer} id="jdjtransfer" required={true} />
-		<FormInput label={'Junk Up To'} bind:bindValue={junkUpTo} id="junkUpTo" required={true} />
+		<!-- <FormInput label={'Maximum Bank Threshold'} bind:bindValue={jdjtransfer} id="jdjtransfer" required={true} /> -->
+		<FormInput label={'Process Up To'} bind:bindValue={junkUpTo} id="junkUpTo" required={true} />
 		<FormSelect
 			bind:bindValue={mode}
 			id="mode"
