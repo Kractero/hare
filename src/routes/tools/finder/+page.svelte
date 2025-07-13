@@ -170,7 +170,7 @@
 					let processedOwners = new Set<string>()
 
 					for (let i = 0; i < ownerArr.length; i++) {
-						const owner = ownerArr[i]
+						const owner = String(ownerArr[i])
 						if (processedOwners.has(owner)) continue
 						const matchedPuppet = puppetList.find(puppet => puppet.nation === owner)
 						if (matchedPuppet) {
