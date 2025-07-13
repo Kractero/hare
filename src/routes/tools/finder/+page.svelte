@@ -166,7 +166,9 @@
 
 					if (!owners) continue
 
-					let ownerArr: string[] = Array.isArray(owners.OWNER) ? owners.OWNER : [owners.OWNER]
+					let ownerArr: string[] = Array.isArray(owners.OWNER)
+						? owners.OWNER.map((owner: string | number) => String(owner))
+						: [String(owners.OWNER)]
 					let processedOwners = new Set<string>()
 
 					for (let i = 0; i < ownerArr.length; i++) {
