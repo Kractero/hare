@@ -34,7 +34,7 @@
 		let res = await fetch(`${domain}/cgi-bin/api.cgi?nation=${username}&q=ping`, {
 			headers: {
 				'X-Password': password,
-				'User-Agent': userAgent,
+				'User-Agent': `${userAgent} using Pinger`,
 			},
 		})
 		const existence = res.status
