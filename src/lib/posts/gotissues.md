@@ -15,9 +15,9 @@ gotIssues is the primary tool that enables card farming, as it allows you to cle
 
    Issues are intended to automatically close for gotIssues, but the condition on which it closes can depend on your preference.
 
-   - **Always close the issue, even if a pack was generated.**. <a href="https://raw.githubusercontent.com/dithpri/RCES/refs/heads/master/userscripts/issue_answering/NsDilemmaAutoClose.user.js">NSDilemmaAutoCloseAll</a> by Racoda.
+   - **Always close the issue, even if a pack was generated.** <a href="https://raw.githubusercontent.com/dithpri/RCES/refs/heads/master/userscripts/issue_answering/NsDilemmaAutoCloseAll.user.js">NSDilemmaAutoCloseAll</a> by Racoda.
 
-   - **Do not close the issue if a pack was generated.** <a href="https://raw.githubusercontent.com/dithpri/RCES/refs/heads/master/userscripts/issue_answering/NsDilemmaAutoCloseAll.user.js">NSDilemmaAutoClose</a> by Racoda.
+   - **Do not close the issue if a pack was generated.** <a href="https://raw.githubusercontent.com/dithpri/RCES/refs/heads/master/userscripts/issue_answering/NsDilemmaAutoClose.user.js">NSDilemmaAutoClose</a> by Racoda.
 
    gotIssues also supports packs, which can either be automatically closed or not. If you want to see the cards, do not use an autocloser for packs. Otherwise:
 
