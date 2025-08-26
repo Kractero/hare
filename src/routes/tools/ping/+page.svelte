@@ -19,7 +19,6 @@
 	let main = $state('')
 	let password = $state('')
 	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
-	let restoreCount = 0
 	let downloadable = $state(false)
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
@@ -87,10 +86,9 @@
 				info = [...info, { text: `Failed to log into ${nation}, adding to restore sheet...`, color: 'red' }]
 				let nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
 				content.push({
-					url: `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=login/test=1?${urlParameters('Pinger', main)}`,
+					url: `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=upload_flag/test=1?${urlParameters('Pinger', main)}`,
 					tableText: `Link to Restore ${nation}`,
 				})
-				restoreCount++
 			}
 			if (existence === true) {
 				progress = [...progress, { text: `Successfully logged into ${nation}` }]
@@ -99,7 +97,7 @@
 		progress = [
 			...progress,
 			{
-				text: `Finished processing ${puppetList.length} nations, logging into ${puppetList.length - restoreCount} nations and ready to restore ${restoreCount} nations`,
+				text: `Finished processing ${puppetList.length} nations, logging into ${puppetList.length - content.length} nations and ready to restore ${content.length} nations`,
 			},
 		]
 		stoppable = false
