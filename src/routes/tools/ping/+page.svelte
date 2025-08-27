@@ -86,7 +86,7 @@
 				info = [...info, { text: `Failed to log into ${nation}, adding to restore sheet...`, color: 'red' }]
 				let nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
 				content.push({
-					url: `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=upload_flag/test=1?${urlParameters('Pinger', main)}`,
+					url: `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=login/test=1?${urlParameters('Pinger', main)}`,
 					tableText: `Link to Restore ${nation}`,
 				})
 			}
@@ -113,13 +113,7 @@
 	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
 </p>
 <p class="text-xs mb-16">
-	To restore nations, YOU NEED CONTAINERS, as to maintain legality restores cannot be done automatically. To facilitate container-based revives,
-	<a class="underline" href="https://github.com/Kractero/userscripts/raw/main/container-login/autologautoclose.user.js" target="_blank" rel="noreferrer noopener">
-		autocloser
-	</a> and
-	<a class="underline" href="https://github.com/Kractero/userscripts/raw/main/container-login/autolog.user.js" target="_blank" rel="noreferrer noopener">
-		autolog
-	</a> are needed which does require configuration which you can read about in the repository.
+	To restore nations, you need <a class="underline" href="https://github.com/Kractero/userscripts/raw/main/container-login/autolog.user.js" target="_blank" rel="noreferrer noopener">autolog helper</a>, as to maintain legality restores cannot be done automatically.
 </p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
