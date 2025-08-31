@@ -315,6 +315,18 @@
 								}
 
 								for (let i = 0; i < effectiveCount; i++) {
+									if (
+										mode === 'Gift One' &&
+										giftedCards.size > 0 &&
+										toFind.length > 0 &&
+										giftedCards.size === toFind.length
+									) {
+										progress = [
+											...progress,
+											{ text: `${id},${season} already gifted from ${nation}, skipping`, color: 'blue' },
+										]
+										break
+									}
 									if (abortController.signal.aborted || stopped) {
 										break
 									}
