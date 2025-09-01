@@ -180,6 +180,7 @@
 		info = newInfo
 
 		let junkedCards = 0
+		let giftedCards = 0
 		let actionCount = 0
 		let currCard = 0
 		let currSellCard = 0
@@ -198,7 +199,7 @@
 			try {
 				progress = [...progress, { text: `Processing ${nation} ${i + 1}/${puppetList.length} puppets` }]
 				const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck+info`, main)
-				let nationalBank = xmlDocument.CARDS.INFO.BANK
+				// let nationalBank = xmlDocument.CARDS.INFO.BANK
 				// if (Number(jdjtransfer) !== -1 && nationalBank >= Number(jdjtransfer)) {
 				// 	progress = [...progress, { text: `Skipping ${nation} as they exceed ${jdjtransfer} bank.`, color: 'blue' }]
 				// 	continue
@@ -395,7 +396,10 @@
 								} else {
 									junkedCards = junkedCards + 1
 									actionCount = actionCount + 1
-									junkCounter = junkMethod === 'API' ? `API has junked ${junkedCards}` : ''
+									junkCounter =
+										junkMethod === 'API'
+											? `API has junked ${junkedCards}. API has gifted ${giftedCards}. API has processed ${junkedCards + giftedCards} in total.`
+											: ''
 								}
 							}
 						} else {
@@ -469,6 +473,11 @@
 								...progress,
 								{ text: `${i + 1}/${giftQueue.length} -> ${giftQueue[i].success}`, color: 'green' },
 							]
+							giftedCards = giftedCards + 1
+							junkCounter =
+								junkMethod === 'API'
+									? `API has junked ${junkedCards}. API has gifted ${giftedCards}. API has processed ${junkedCards + giftedCards} in total.`
+									: ''
 						}
 					}
 				} else {
@@ -484,7 +493,7 @@
 		progress = [
 			...progress,
 			{
-				text: `Finished processing ${puppetList.length} nations, junking ${junkedCards} and adding ${currCard + currSellCard} to sheet.`,
+				text: `Finished processing ${puppetList.length} nations, junking ${junkedCards}, gifting ${giftedCards}, and adding ${currCard + currSellCard} to sheet.`,
 				color: 'green',
 			},
 		]
