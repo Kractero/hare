@@ -68,7 +68,7 @@
 					return
 				}
 				if (!bidsToPlace) bidsToPlace = '1'
-				const singleLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/template-overall=none/card=${id}/season=${season}?mode=${mode === 'Bids' ? 'bid' : 'ask'}&amount=${amount}&${urlParameters('Auction', main)}`
+				const singleLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}/template-overall=none/season=${season}?mode=${mode === 'Bids' ? 'bid' : 'ask'}&amount=${amount}&${urlParameters('Auction', main)}`
 				for (let i = 0; i < Number(bidsToPlace); i++) {
 					counter++
 					content.push({
@@ -137,7 +137,7 @@
 
 							if (count > 0 && transferCounts[id].count > 0) {
 								progress = [...progress, { text: `${i + 1} Generated ask link for card ID ${id}, season ${season}` }]
-								const singleAskLink = `${domain}/container=${canonicalize(auctionMain)}/nation=${canonicalize(auctionMain)}/page=deck/template-overall=none/card=${id}/season=${season}?mode=ask&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
+								const singleAskLink = `${domain}/container=${canonicalize(auctionMain)}/nation=${canonicalize(auctionMain)}/page=deck/card=${id}/template-overall=none/season=${season}?mode=ask&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
 								content.push({
 									url: singleAskLink,
 									tableText: `Link to Ask`,
@@ -149,7 +149,7 @@
 									},
 								]
 
-								const singleBidLink = `${domain}/container=${canonicalize(nation)}/nation=${canonicalize(nation)}/page=deck/template-overall=none/card=${id}/season=${season}?mode=bid&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
+								const singleBidLink = `${domain}/container=${canonicalize(nation)}/nation=${canonicalize(nation)}/page=deck/card=${id}/template-overall=none/season=${season}?mode=bid&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
 
 								bids.push({
 									url: singleBidLink,
