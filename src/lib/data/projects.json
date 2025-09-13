@@ -24,7 +24,7 @@
 	{
 		"name": "NSRarityCalculator",
 		"author": "Sitethief",
-		"authorUrl": "",
+		"authorUrl": "https://www.nationstates.net/nation=Vylixan",
 		"url": "https://gist.github.com/Sitethief/460e7dad929ab51558348c3936abdced",
 		"keywords": ["rarity", "userscript"],
 		"description": "Calculate estimation of possible card rarity of a nation on NS",
