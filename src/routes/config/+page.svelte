@@ -310,7 +310,7 @@
 			bind:bindValue={localStorageObject.finderMode}
 			items={['Gift', 'Sell', 'Exclude']} />
 		<FormTextArea label="Card IDs to Find" bind:bindValue={localStorageObject.finderList} id="find" />
-		<FormCheckbox bind:checked={localStorageObject.keepOne} id="keepOne" label="Keep One Copy" />
+		<FormTextArea label="Keep X Copy" bind:bindValue={localStorageObject.keepOne} id="keepOne" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">Flags</h2>
 		<FormSelect
 			id="flagmode"

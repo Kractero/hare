@@ -32,7 +32,7 @@
 	let giftee = $state('')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 	let giftLegendaries = $state(true)
-	let keepOne = $state(false)
+	let keepOne = $state('1')
 	let giftOverMVValue = $state(10)
 	let findMode = $state('Specific Cards')
 
@@ -49,11 +49,7 @@
 			: localStorage.getItem('giftLegendaries') !== null
 				? localStorage.getItem('giftLegendaries') === 'true'
 				: true
-		keepOne = page.url.searchParams.has('keepOne')
-			? page.url.searchParams.get('keepOne') === 'true'
-			: localStorage.getItem('keepOne') !== null
-				? localStorage.getItem('keepOne') === 'true'
-				: false
+		keepOne = page.url.searchParams.get('keepOne') || localStorage.getItem('keepOne') || '1'
 		giftOverMVValue = parseFloat(
 			page.url.searchParams.get('giftOverMVValue') || localStorage.getItem('giftOverMVValue') || '10'
 		)
@@ -64,7 +60,7 @@
 	async function onSubmit(e: Event) {
 		e.preventDefault()
 		pushHistory(
-			`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ''}&findMode=${findMode}${findMode === 'General' ? `&giftLegendaries=${giftLegendaries}&giftOverMVValue=${giftOverMVValue}` : ''}`
+			`?main=${main}&mode=${mode}${giftee ? `&giftee=${giftee}` : ''}&findMode=${findMode}${findMode === 'General' ? `&giftLegendaries=${giftLegendaries}&giftOverMVValue=${giftOverMVValue}` : ''}${keepOne ? `&keepOne=${keepOne}` : ''}`
 		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -193,7 +189,9 @@
 
 							const { nation, nationSpecificPassword } = matchedPuppet
 
-							if (keepOne === true && puppetList.length === 1) frequency = frequency - 1
+							if (keepOne && puppetList.length === 1) {
+								frequency = frequency - Number(keepOne)
+							}
 
 							for (let i = 0; i < frequency; i++) {
 								if (abortController.signal.aborted || stopped) {
@@ -308,7 +306,7 @@
 									continue
 								}
 
-								const effectiveCount = keepOne ? originalCount - 1 : originalCount
+								const effectiveCount = keepOne ? originalCount - Number(keepOne) : originalCount
 								if (effectiveCount <= 0) {
 									if (foundSet.has(`${id},${season}`)) foundSet.delete(`${id},${season}`)
 									continue
@@ -435,7 +433,7 @@
 			progress = [
 				...progress,
 				{
-					text: `Could not find\n${other.trim()}`,
+					text: `Did not find\n${other.trim()}`,
 					color: 'red',
 				},
 			]
@@ -511,7 +509,7 @@
 			items={findMode === 'Specific Cards' ? ['Gift', 'Sell', 'Gift One', 'Sell One'] : ['Gift', 'Sell']}
 			label="Gift Behavior" />
 		{#if findMode === 'Specific Cards' && ['Gift', 'Sell'].includes(mode)}
-			<FormCheckbox bind:checked={keepOne} id="keepOne" label="Keep One Copy" />
+			<FormInput bind:bindValue={keepOne} id="keepOne" label="Keep X Copy" />
 		{/if}
 		<div class="flex max-w-lg justify-center gap-2">
 			<Buttons
