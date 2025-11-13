@@ -1,13 +1,14 @@
 import { writable } from 'svelte/store'
 import { pushState } from '$app/navigation'
 
-export const semverVersion = '5.7.9'
-export const calverVersion = '2025.06.17'
+export const semverVersion = '6.0.0'
+export const calverVersion = '2025.11.12'
 export const domain = writable()
 
 export const pushHistory = (params: string) => {
 	const currentURL = window.location.href
 	const baseURL = currentURL.split('?')[0]
+	// eslint-disable-next-line svelte/no-navigation-without-resolve
 	pushState(`${baseURL}${params}`, `${baseURL}${params}`)
 	log('tool')
 }

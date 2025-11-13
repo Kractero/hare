@@ -12,6 +12,7 @@
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import * as AlertDialog from '$lib/components/ui/alert-dialog'
+	import { giftCard } from '$lib/helpers/gift'
 	import { parseXML } from '$lib/helpers/parser'
 	import {
 		beforeUnload,
@@ -78,7 +79,10 @@
 			(localStorage.getItem('junkdajunkFlagWhitelist') as string) ||
 			''
 		finderlist = (localStorage.getItem('junkdajunkFinderList') as string) || ''
-		giftee = page.url.searchParams.get('giftee') || (localStorage.getItem('finderGiftee') as string) || ''
+		giftee =
+			page.url.searchParams.get('giftee')?.split(',').join('\n') ||
+			(localStorage.getItem('finderGiftee') as string) ||
+			''
 		raritiesMV = localStorage.getItem('junkdajunkRarities')
 			? JSON.parse(localStorage.getItem('junkdajunkRarities') as string)
 			: defaultPrices
@@ -135,7 +139,7 @@
 		}
 		e.preventDefault()
 		pushHistory(
-			`?main=${main}&mode=${mode}&junkMethod=${junkMethod}&checkMode=${checkMode}${giftee ? `&giftee=${giftee}` : ''}${owners ? `&owners=${owners}` : ''}${cardcount ? `&cardcount=${cardcount}` : ''}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ''}${flagwhitelist ? `&flags=${flagwhitelist.replaceAll('\n', ',')}` : ''}${skipseason && skipseason.length > 0 ? `&skipseason=${skipseason}` : ''}${skipexnation ? `&skipexnation=${skipexnation}` : ''}${junkUpTo ? `&junkUpTo=${junkUpTo}` : ''}`
+			`?main=${main}&mode=${mode}&junkMethod=${junkMethod}&checkMode=${checkMode}${giftee ? `&giftee=${giftee.split('\n').join(',')}` : ''}${owners ? `&owners=${owners}` : ''}${cardcount ? `&cardcount=${cardcount}` : ''}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ''}${flagwhitelist ? `&flags=${flagwhitelist.replaceAll('\n', ',')}` : ''}${skipseason && skipseason.length > 0 ? `&skipseason=${skipseason}` : ''}${skipexnation ? `&skipexnation=${skipexnation}` : ''}${junkUpTo ? `&junkUpTo=${junkUpTo}` : ''}`
 		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -184,6 +188,12 @@
 		let actionCount = 0
 		let currCard = 0
 		let currSellCard = 0
+
+		let gifteeQueue = giftee
+			.split('\n')
+			.map(name => name.trim())
+			.filter(Boolean)
+
 		for (let i = 0; i < puppetList.length; i++) {
 			let currentNationXPin = ''
 			let nation = puppetList[i]
@@ -419,10 +429,10 @@
 									},
 								]
 								giftQueue.push({
-									gift: `${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&to=${giftto}`,
-									sell: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}&giftto=${giftto.toLowerCase().replaceAll(' ', '_')}`,
-									fail: `${nation} failed to gift ${id} to ${giftto} - ${reason}`,
-									success: `${nation} gifted ${id} to ${giftto} - ${reason}`,
+									gift: `${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}`,
+									sell: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}`,
+									fail: `${nation} failed to gift ${id}`,
+									success: `${nation} gifted ${id} - ${reason}, received by`,
 								})
 							} else {
 								progress = [
@@ -441,39 +451,55 @@
 					}
 					progress = [...progress, { text: `Processing gift queue of size ${giftQueue.length}...` }]
 					for (let i = 0; i < giftQueue.length; i++) {
-						if (abortController.signal.aborted || stopped) {
+						if (abortController.signal.aborted || stopped) break
+
+						const { gift: url, success, fail } = giftQueue[i]
+
+						let attemptGiftee = gifteeQueue[0] || ''
+						if (!attemptGiftee) {
+							info = [...info, { text: `No available giftees remaining. Stopping gifting.`, color: 'red' }]
 							break
 						}
 
-						let token = ''
-						const url = giftQueue[i].gift
-						const prepare = await parseXML(
-							`${url}&mode=prepare&c=giftcard`,
+						const {
+							cnx: newXpin,
+							giftee: cg,
+							fail: failureReason,
+						} = await giftCard({
+							url,
 							main,
-							currentNationXPin ? '' : nationSpecificPassword ? nationSpecificPassword : password,
-							currentNationXPin || ''
-						)
+							cnx: currentNationXPin,
+							nsp: nationSpecificPassword,
+							password,
+							specificGiftee: attemptGiftee,
+						})
 
-						if (!currentNationXPin) currentNationXPin = prepare['x-pin'] || ''
+						currentNationXPin = newXpin
 
-						token = prepare.NATION.SUCCESS
+						if (failureReason === 'no capacity') {
+							progress = [
+								...progress,
+								{ text: `${i + 1}/${giftQueue.length} -> ${fail} - ${failureReason}`, color: 'red' },
+							]
+							gifteeQueue.shift()
+							i--
+							continue
+						}
 
-						const gift = await parseXML(`${url}&mode=execute&c=giftcard&token=${token}`, main, '', currentNationXPin)
-
-						if (gift.NATION && gift.NATION.ERROR) {
+						if (failureReason) {
 							sellContent.push({
 								url: giftQueue[i].sell,
 								tableText: `Link to Card`,
 							})
-							progress = [...progress, { text: `${i + 1}/${giftQueue.length} -> ${giftQueue[i].fail}`, color: 'red' }]
-							currSellCard = currSellCard + 1
-						} else {
-							actionCount = actionCount + 1
 							progress = [
 								...progress,
-								{ text: `${i + 1}/${giftQueue.length} -> ${giftQueue[i].success}`, color: 'green' },
+								{ text: `${i + 1}/${giftQueue.length} -> ${fail} - ${failureReason}`, color: 'red' },
 							]
-							giftedCards = giftedCards + 1
+							currSellCard++
+						} else {
+							actionCount++
+							progress = [...progress, { text: `${i + 1}/${giftQueue.length} -> ${success} ${cg}`, color: 'green' }]
+							giftedCards++
 							junkCounter =
 								junkMethod === 'API'
 									? `API has junked ${junkedCards}. API has gifted ${giftedCards}. API has processed ${junkedCards + giftedCards} in total.`
@@ -493,7 +519,7 @@
 		progress = [
 			...progress,
 			{
-				text: `Finished processing ${puppetList.length} nations, junking ${junkedCards}, gifting ${giftedCards}, and adding ${currCard + currSellCard} to sheet.`,
+				text: `Finished processing ${puppetList.length} nations, junked ${junkedCards}, gifted ${giftedCards}, and added ${currCard + currSellCard} to sheet.`,
 				color: 'green',
 			},
 		]
@@ -543,7 +569,7 @@
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={true} />
 		{#if mode === 'Gift' || mode === 'Gift and Sell'}
-			<FormInput label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />
+			<FormTextArea label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />
 		{/if}
 		<FormSelect bind:bindValue={junkMethod} id="junkMethod" items={['API', 'Manual']} label="Junk Mode" />
 		<FormSelect bind:bindValue={checkMode} id="checkMode" items={['Advanced', 'Simple']} label="Mode" />
@@ -556,13 +582,6 @@
 		{#if checkMode === 'Advanced'}
 			<FormInput label={'Owner Count Threshold'} bind:bindValue={owners} id="owners" />
 		{/if}
-		<!-- {#if mode === 'Sell' || mode === 'Exclude'}
-			<FormInput
-				label={'Gift Override'}
-				subTitle="Always gift over this (optional)"
-				bind:bindValue={giftOverride}
-				id="giftoverride" />
-		{/if} -->
 		<div class="flex max-w-lg justify-between gap-4">
 			<Rarities
 				label={`Rarity Market Value Threshold${mode === 'Gift and Sell' ? ' Gifting' : ''}`}
@@ -597,7 +616,6 @@
 		{#if checkMode === 'Advanced'}
 			<FormCheckbox bind:checked={skipexnation} id="skipexnation" label="Skip Exnation" />
 		{/if}
-		<!-- <FormInput label={'Maximum Bank Threshold'} bind:bindValue={jdjtransfer} id="jdjtransfer" required={true} /> -->
 		<FormInput label={'Process Up To'} bind:bindValue={junkUpTo} id="junkUpTo" required={true} />
 		<FormSelect
 			bind:bindValue={mode}

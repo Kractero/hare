@@ -1,5 +1,48 @@
 # Changelog
 
+## 2025-11-12
+
+### Adjustments
+
+1. Finder, JunkDaJunk
+   - Giftee has become a giftee queue. Specify multiple giftees which will be cycled out as each gets full. Finder and JunkDaJunk should do a general better job at skipping a nation if it has run out of bank and closing out early.
+
+## 2025-09-16
+
+### Adjustments
+
+1. Finder
+   - Keep up to X, have each nation keep up to X copies of the card.
+
+## 2025-09-13
+
+Add Sitethief's rarity calculator to tool list.
+
+## 2025-09-08
+
+- Older changes I don't remember why I did.
+
+### Adjustments
+
+1. Auction
+   - Use template-none for generated links
+
+## 2025-06-28
+
+9003 request
+
+### Adjustments
+
+1. JunkDaJunk
+   - Junk up to parameter, or stop junking after the specified amount of cards have been junked (all nations combined).
+
+## 2025-06-22
+
+### Adjustments
+
+1. Ping
+   - Open new link button for pinger for faster restoring.
+
 ## 2025-06-17
 
 Docs update
@@ -7,13 +50,11 @@ Docs update
 ### Adjustments
 
 1. Transfer
-
    - Transfer's output of transferrable bank now properly calculates off of the transfer amount instead of the total bank.
 
 ### Fixes
 
 1. Finder
-
    - Finder outputs all cards that were unable to be found at the end. If keep one is checked, a card is considered found if it has 1 copy and did not get gifted.
 
 ## 2025-06-14
@@ -23,13 +64,11 @@ Docs update
 ### Adjustments
 
 1. Deck to IDs
-
    - Outputs the text in the terminal/logs.
 
 ### Fixes
 
 1. Finder
-
    - Gift One / Sell One now works with the same id but different season.
    - If more puppets than cards, you will get notified if no owners are found for that card.
    - Keep one only runs if the puppet list contains one nation.
@@ -39,11 +78,9 @@ Docs update
 ### Adjustments
 
 1. JunkDaJunk
-
    - Count as you junk at the top of the terminal (same value as what is outputted at the end) on API junk mode
 
 2. Finder
-
    - A setting defaulted to false to tell finder to keep a copy of the card on the nation.
 
    - Logic change for parsing matches. Logic changes for iteration in more cards than puppets.
@@ -57,11 +94,9 @@ Docs update
 ### Fixes
 
 1. Config
-
    - Changing theme via the config page changes the theme.
 
 2. Ledger
-
    - Sorting the ledger with non-zero value works. Latest date should be used by default. please use the actual dedicated site instead of the one on hare
 
 ## 2025-06-03
@@ -81,7 +116,6 @@ The fake terminal truncates at 1000 lines on the Auction, Finder, Goldretriever,
 ### Adjustments
 
 1. JunkDaJunk
-
    - Use the junk api 🙏🙏🙏🙏🙏🙏
    - Always need the password for junking
    - Do not add the list of ids passed into whitelist to the url, because this crashes the page if your list is very long. It should already be stored in localstorage.
@@ -93,11 +127,9 @@ The fake terminal truncates at 1000 lines on the Auction, Finder, Goldretriever,
 ### Fixes
 
 1. Finder
-
    - Pass the right user agent
 
 2. JunkDaJunk
-
    - Properly canonicalize the region name.
 
 ## 2025-5-12
@@ -105,7 +137,6 @@ The fake terminal truncates at 1000 lines on the Auction, Finder, Goldretriever,
 ### Features
 
 1. Finder
-
    - Sell one similar to gift one implemented
 
 ## 2025-5-08
@@ -113,7 +144,6 @@ The fake terminal truncates at 1000 lines on the Auction, Finder, Goldretriever,
 ### Fixes
 
 1. Sheetify
-
    - Sheetify will work without needing to pass a link that already contains a nation or container name. For example, just base page=settings without nation=test/page=settings
 
 ## 2025-4-01
@@ -121,7 +151,6 @@ The fake terminal truncates at 1000 lines on the Auction, Finder, Goldretriever,
 ### Fixes
 
 1. Login Sheet
-
    - Existing login links clear when start is clicked.
 
 ## 2025-3-05
@@ -129,7 +158,6 @@ The fake terminal truncates at 1000 lines on the Auction, Finder, Goldretriever,
 ### Adjustments
 
 1. Auction
-
    - Setting for a skip threshold to skip puppets that have greater than that amount of bank.
 
 ## 2025-2-24
@@ -143,7 +171,6 @@ Setting index in downloaded sheets should work.
 ### Fixes
 
 1. Auction
-
    - Fix broken canonicalization.
 
 ## 2025-2-18
@@ -151,7 +178,6 @@ Setting index in downloaded sheets should work.
 ### Adjustments
 
 1. Auction
-
    - On Transfer, Auction places all the asks with the main before proceeding to bids. This allows it to work better with containerless so all bids on the same nation occur next to each other.
 
 ## 2025-2-16
@@ -159,7 +185,6 @@ Setting index in downloaded sheets should work.
 ### Adjustments
 
 1. Sheetify
-
    - Change how Sheetify works. It now uses a puppet list and now takes a link and if the link contains container= or nation=, it will replace whatever is currently there with the puppet name and make a sheet out of it.
 
 ## 2025-2-14
@@ -169,19 +194,15 @@ Host the containerless userscript.
 ### Fixes
 
 1. Auction, Creation, gotIssues
-
    - Minor changes reordering some query parameters (extra ?, weirdly placed) and consistently doing container=/nation=.
 
 2. Ping
-
    - Use page=login instead of page=upload_flag for reviving nations.
 
 3. Inscription
-
    - Remove commented out inscription code.
 
 4. Auction's Userscript
-
    - Logic to not focus when working with SCS, some conditionals to prevent errors.
 
 ## 2025-2-11
@@ -189,7 +210,6 @@ Host the containerless userscript.
 ### Features
 
 1. Finder
-
    - New mode for Finder to gift legendaries and cards over a certain market value. The current Finder (passing in id,season) is defaulted as findMode "Specific Cards". The legendaries and mv gifting is under the mode General.
 
      The existence of a separate mode as opposed to just lumping the logic into the existing functionality is because it is easier this way. If there are more puppets than cards, the logic is thrown out the window. When there are more puppets than cards, each card is searched for matching owners, as opposed to each owner being searched for cards, which defeats the purpose of the new options.
@@ -199,7 +219,6 @@ Host the containerless userscript.
 ### Fixes
 
 1. JDJ
-
    - If pulling from local storage, use the right name for the local storage variable, instead of forgetting to change it from the url param after copy pasting.
 
 ## 2025-2-02
@@ -207,7 +226,6 @@ Host the containerless userscript.
 ### Fixes
 
 1. Finder
-
    - Convert owners to string.
 
    - Add new line character to improperly formatted line in legendary preset.
@@ -217,7 +235,6 @@ Host the containerless userscript.
 ### Features
 
 1. NEW - Sheetify
-
    - Pass any series of links in, get a click sheet.
 
 ### Adjustments
@@ -225,17 +242,14 @@ Host the containerless userscript.
 Nation specific password logic changed, only for Finder.
 
 1. GotIssues
-
    - Output message on nations that have zero packs.
 
 2. Config
-
    - JDJ skip season will match jdj settings.
 
 ### Fixes
 
 1. Creator
-
    - Fix creator url on new tab sheet generation.
 
 ## 2025-1-20
@@ -245,11 +259,9 @@ Nation specific password logic changed, only for Finder.
 Input on sheets to control the placement if you know where you left off.
 
 1. GotIssues
-
    - Pack count is back. New setting to determine whether to autoclose.
 
 2. Auction
-
    - Auction Transfer no longer generates /mode=separate to separate the sheet, it just changes the tool name to Auction-Transfer.
 
 ## 2025-1-17
@@ -263,7 +275,6 @@ Clicking on a link in the table still controls the position of the open next lin
 If something is wrong with the index, the clear progress will reset the progress.
 
 1. JunkDaJunk
-
    - Changed season whitelisting to a multiple select. Don't Skip and Skip Offseasons are retired. Don't skip is possible by having nothing checked, skip offseasons by checking 1, 2, and 3.
 
    - Moved the logic around, so simple's parameters (id, season, rarity, market value) are checked first. This should save time as if a card is marked as junk it will no longer send an additional request for the advanced parameters.
@@ -271,7 +282,6 @@ If something is wrong with the index, the clear progress will reset the progress
    - The links to junk now say Link to Junk.
 
 2. Finder
-
    - Finder now performs on two different modes. If the amount of cards exceeds the amount of puppets, it will go through the cards and check their owners and perform finder tasks off that. if the amount of puppets exceeds the amount of cards, it will do the normal finder process. This should save time on tasks like gifting legendaries.
 
    - S4 legendaries added to legendary preset.
@@ -283,11 +293,9 @@ If something is wrong with the index, the clear progress will reset the progress
 Links that should reset their count to indicate a change (issues to packs, junk to sale) now reset to 1 properly.
 
 1. gotIssues
-
    - Pack only mode links now get added to right link queue for opening on Hare.
 
 2. Auction
-
    - Auction userscript splits at the query parameters.
 
 ## 2025-1-16
@@ -307,21 +315,17 @@ Prevents illegal behavior (holding down enter and automatically opening links, t
 ### Features
 
 1. JunkDaJunk
-
    - A "simple" mode for JDJ, which only checks card IDs, season, rarity, and market value. This is not as complex as the traditional mode but is way faster.
 
 ### Adjustments
 
 1. Inscription Assistant
-
    - Renamed to Decorator. Aspects related to inscribing cards removed (the inscribing part and the userscript, and viewing the card).
 
 2. Flag Manager
-
    - Renamed to Flag Finder, because the actual flag manager is Decorator.
 
 3. gotIssues
-
    - Removed pack banking.
 
 ## 2025-1-15
@@ -333,13 +337,11 @@ Open New Link button now uses keyup to prevent illegal behavior (holding down en
 ### Features
 
 1. Inscription Assistant
-
    - Flag mode, which works like banners, just point to a remote flag and go through the sheet.
 
 ### Adjustments
 
 1. Auction
-
    - Auction now requires season (obviously, why didn't it before) so it knows what card to list. You can know tell the amount of times to list it.
 
 ## 2025-1-04
@@ -347,20 +349,17 @@ Open New Link button now uses keyup to prevent illegal behavior (holding down en
 ### Features
 
 1. Finder
-
    - Gift One mode, which will gift one card from the specified IDs in total. For example, if you provide ten puppets and each owns a specified ID, only one copy will be gifted.
 
 ### Adjustments
 
 1. Legendary Tracker
-
    - S4 legendaries added.
    - Sorting sucks less, as you can know actually reset the sorting instead of being stuck after sorting once.
 
 ### Fixes
 
 1. Inscription Assistant
-
    - Don't clear terminal progress when stopped.
 
 ## 2025-1-02
@@ -368,13 +367,11 @@ Open New Link button now uses keyup to prevent illegal behavior (holding down en
 ### Features
 
 1. NEW - Inscription Assistant
-
    - Tool with two modes - one to upload banners/set them as primary, and one to click the inscribe button cards.
 
 ### Fixes
 
 1. Parameter generation for Creator, Containerise, Login Sheet
-
    - Updates the parameter generation to match the rest of the tools. This is a breaking change for Creator (theres an update to the userscript)
 
 2. Fixed missing ? before Pinger's url parameters
@@ -386,7 +383,6 @@ Open New Link button now uses keyup to prevent illegal behavior (holding down en
 ### Features
 
 1. NEW - Auctions
-
    - Given a bunch of cards, puppets, and main, creates a bunch of links to place bids and asks.
 
 ### Adjustments
@@ -406,7 +402,6 @@ Nobody ever used them, not worth the scroll space in settings.
 ### Adjustments
 
 1. JunkDaJunk
-
    - The removed mv > 10 check on the 12th has been reimplemented as just checking if the card is legendary. The reasoning behind its initial removal was to fallback to the rarity mv and rarity lowest bid thresholds, but I forgot legendaries weren't handled there.
 
 2. Rate of Change
@@ -489,7 +484,6 @@ Nobody ever used them, not worth the scroll space in settings.
 ### Features
 
 1. Endotart
-
    - Now generates a downloadable sheet pointing to #composebuttons for each nation. A new option has been added to include nations that you already endorse.
    - Fixed an oversight where nations with zero endorsements were skipped in endotart calculations for the XML sheet.
 
@@ -624,16 +618,13 @@ Merged the resources and guides page to resources, set up a redirect on guides t
 Home page search bar was removed.
 
 1. Resources
-
    - Removed the weird author filtering button click, replaced with some selects to sort by update/creation date, author, and category.
    - Removed the animations, they were unnecessary.
 
 2. Ledger
-
    - Should behave similarly to upstream Ledger and reflect its recent changes.
 
 3. Flag Manager
-
    - The motto mode now does an inclusive search on the motto instead of an exact match.
 
 4. JunkDaJunk
@@ -644,7 +635,6 @@ Home page search bar was removed.
 ### Fixes
 
 1. Approval List
-
    - If there are no current proposals in the selected council, it will now output that instead of crashing.
 
 2. Gold Retriever
@@ -653,7 +643,6 @@ Home page search bar was removed.
 ### Removed
 
 1. Guides
-
    - Removed the gotIssues guide due to it being out of date and relatively unnecessary.
 
    - Removed Yuno's transfer guide due to it being out of date.
@@ -661,7 +650,6 @@ Home page search bar was removed.
    - Removed suggestions of alternative userscript managers since nobody cares and just uses TamperMonkey (I prefer VioletMonkey).
 
 2. Resources
-
    - Removed Dispatches (the ones that also appeared in guides), Card Browser, Local Retriever, Container Login Assist, old Queries, Henson, DeathWatch, Creation Assistant, and Rota Fortunae Discord Issues. These were either older versions of my scripts that have been supplanted into Hare or aren't really related to cards.
 
 3. Trigonometry
@@ -672,7 +660,6 @@ Home page search bar was removed.
 ### Features
 
 1. gotIssues
-
    - You can now set the amount of issues to be added per call, default to 5.
 
 2. Config
@@ -750,7 +737,6 @@ Home page search bar was removed.
 ### Fixes
 
 1. Flag Manager
-
    - Tool is no longer pulling the wrong mode parameter.
 
 2. JunkDaJunk
@@ -789,11 +775,9 @@ Home page search bar was removed.
 ### Fixes
 
 1. User Agent
-
    - Comply with stupid disallowed headers on chromium browsers by passing the user agent as a parameter on all API calls.
 
 2. RCES, Gold Retriever
-
    - Improve tabbing experience in row from column to next column.
 
 3. Wiz
@@ -804,7 +788,6 @@ Home page search bar was removed.
 ### Adjustments
 
 1. Dark Mode
-
    - Darker dark mode
 
 2. Tool styling
@@ -813,7 +796,6 @@ Home page search bar was removed.
 ### Fixes
 
 1. Config
-
    - Remove required attribute from two inputs.
 
 2. Containerise
@@ -836,7 +818,6 @@ Home page search bar was removed.
 ### Features
 
 1. Config, Fast
-
    - New configuration setting to change the subdomain to fast.nationstates.net, set to www by default.
    - Change the theme immediately on configuration save.
 
@@ -862,7 +843,6 @@ Home page search bar was removed.
 ### Fixes
 
 1. All tools using User Agent
-
    - Specify me as owner and for hare.
 
 2. The year is 2024 now, fix wrong year changelogs.
@@ -910,7 +890,6 @@ Home page search bar was removed.
 ### Features
 
 1. Who's Farmin
-
    - Quick little tool that analyzes the world happenings shard for last 200 laws passed, and matches the names against 9003's puppet reporting sheet. This is all done in client and also not cached.
 
 2. Bad Ledger GUI
@@ -926,7 +905,6 @@ Home page search bar was removed.
 ### Fixes
 
 1. Theming
-
    - Revert internal logic which allowed for custom themes like the provided Amoled logic. This broke the behavior of the styling provided on guides and the changelog.
    - Amoled theme removed.
 
@@ -938,7 +916,6 @@ Home page search bar was removed.
 ### Features
 
 1. Bazaar
-
    - Add link to new external trade records website.
 
 2. RCES
@@ -971,7 +948,6 @@ Home page search bar was removed.
 ### Fixes
 
 1. Deck to IDs
-
    - Properly handle nations with only one card in their deck by converting the object to an array.
 
 2. Gold Retriever
@@ -1022,7 +998,6 @@ Home page search bar was removed.
 ### Features
 
 1. Finder, JunkDaJunk
-
    - Add a query parameter giftto for gift userscript purposes.
    - Handle failed gifts by adding them to another sheet and properly outputting to the 'terminal' that the gift failed.
 
@@ -1032,7 +1007,6 @@ Home page search bar was removed.
 ### Fixes
 
 1. Finder, JunkDaJunk
-
    - Remove autoclose from view links. On gift failures, add gift=1 to the sheet.
 
 2. Finder
@@ -1063,7 +1037,6 @@ Home page search bar was removed.
 ### Fixes
 
 1. JunkDaJunk
-
    - Fix variable name duplication on owner count to allow for owner count whitelisting.
 
 2. Finder
@@ -1081,15 +1054,12 @@ Home page search bar was removed.
 ### Features
 
 1. All tools that use the API
-
    - Add support for respecting the retry-after header when rate limited to respect the NationStates rate limit.
 
 2. Approvals
-
    - Utilize the helper parseXML function.
 
 3. Deck to IDs
-
    - Now default option to return card ids formatted with their season after (IE: id,season) for use with other tools like Signal and Finder.
 
 4. Where's WA
@@ -1100,7 +1070,6 @@ Home page search bar was removed.
 ### Features
 
 1. NEW - Deck to IDs
-
    - Given a deck, get a downloadable text file of ids.
 
 2. JunkDaJunk
@@ -1116,7 +1085,6 @@ Home page search bar was removed.
 ### Fixes
 
 1. JunkDaJunk
-
    - Cast the region returned from the NationStates into a string, to catch the case in which regions with only numbers in their name are parsed as a string.
 
 2. Legendary Tracker
@@ -1146,11 +1114,9 @@ Home page search bar was removed.
 ### Features
 
 1. NEW - Signal
-
    - A new tool that works with card queries. Given a list of card ids, you can get the cards from that ID list that are not present in the provided collections/decks/asks or bids.
 
 2. Pinger
-
    - Pinger now implements an iframe that allows for the restoration of nations.
 
 3. Statistics
@@ -1166,7 +1132,6 @@ Home page search bar was removed.
 ### Features
 
 1. NEW - Statistics
-
    - Add a new tool that takes a list of nations, then gets statistics like the mean, average, and total for the provided census stat categories.
 
 2. Config
@@ -1182,7 +1147,6 @@ Home page search bar was removed.
 ### Features
 
 1. NEW - Flag Manager
-
    - Add a new tool that takes a flag file name and finds all the nations with that specified flag.
 
 ## 2023-10-27
@@ -1212,7 +1176,6 @@ Stop Button added to all tools that can be stoppped.
 ### Features
 
 1. NEW - Legendary Tracker
-
    - Add a new resource to track the cte status of legendaries, converted to Svelte from [Ledger's tracker](https://ledger.kractero.com/legendaries).
 
 ## 2023-10-14 - 2023-10-19
@@ -1224,14 +1187,12 @@ Fix various issues with the url on form submission. Fixes to cards-resources.
 ### Adjustments
 
 1. JunkDaJunk
-
    - Properly sleep between gifts
    - Output the count in the outputted html table cells.
    - Sales should use a different counter.
    - Allow whitelisting seasons and exnation (S1).
 
 2. JunkDaJunk, Finder
-
    - Properly handle decks with 0/1 card/cards.
    - Implement specific gifting to certain nations with ,GIFTTO.
    - Fix region parsing for whitelist.
@@ -1250,20 +1211,16 @@ Merge card-resources into Hare.
 ### Adjustments
 
 1. Endotart
-
    - Add an option to use the endotart dumps instead of the API.
 
 2. Rate of Change
-
    - Allow nations to be put as input.
 
 3. GotIssues
-
    - Add a mode option to allow processing issues, packs, or both.
    - Properly handle 1 issue
 
 4. JunkDaJunk
-
    - Skip empty decks.
    - Option to check the amount of cards in a deck before deciding to junk or not.
 
@@ -1272,7 +1229,6 @@ Merge card-resources into Hare.
 ### Features
 
 1. NEW - Spyglass
-
    - Terrible Hare implementation of Spyglass.
 
 ## 2023-10-05
@@ -1280,31 +1236,24 @@ Merge card-resources into Hare.
 ### Features
 
 1. NEW - Approvals
-
    - Given a piece of WA legislation, get the delegates not approving it yet.
 
 2. NEW - Endotart
-
    - A endotarter for Hare
 
 3. NEW - Not Endorsing Nation
-
    - Tool to find nations in a region not endorsing the specified nation.
 
 4. NEW - Wiz
-
    - Provided nations, log their last login date.
 
 5. NEW - Finder
-
    - Given nations and a set of ids, gift/add to a sheet the cards if found.
 
 6. NEW - Creator
-
    - Outputs an html sheet that prefills the create_nation page with the hel pof two userscripts.
 
 7. NEW - Rate of Change
-
    - Get the rate of change for a specified stat for nations over an amount of time.
 
 ## 2023-10-01
