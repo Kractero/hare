@@ -260,7 +260,7 @@
 												gifteeList: gifteeQueue,
 											})
 
-											if (success) {
+											if (success || newXpin) {
 												if (existingEntry) {
 													existingEntry.xpin = newXpin
 												} else {
