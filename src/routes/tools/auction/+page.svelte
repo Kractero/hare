@@ -27,6 +27,7 @@
 	let transferCards = $state('')
 	let auctionMain = $state('')
 	let skip = $state('-1')
+	let template = $state('Overall-None')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
@@ -68,7 +69,7 @@
 					return
 				}
 				if (!bidsToPlace) bidsToPlace = '1'
-				const singleLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}/template-overall=none/season=${season}?mode=${mode === 'Bids' ? 'bid' : 'ask'}&amount=${amount}&${urlParameters('Auction', main)}`
+				const singleLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}${template === 'Overall-None' ? '/template-overall=none' : ''}/season=${season}?mode=${mode === 'Bids' ? 'bid' : 'ask'}&amount=${amount}&${urlParameters('Auction', main)}`
 				for (let i = 0; i < Number(bidsToPlace); i++) {
 					counter++
 					content.push({
@@ -137,7 +138,7 @@
 
 							if (count > 0 && transferCounts[id].count > 0) {
 								progress = [...progress, { text: `${i + 1} Generated ask link for card ID ${id}, season ${season}` }]
-								const singleAskLink = `${domain}/container=${canonicalize(auctionMain)}/nation=${canonicalize(auctionMain)}/page=deck/card=${id}/template-overall=none/season=${season}?mode=ask&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
+								const singleAskLink = `${domain}/container=${canonicalize(auctionMain)}/nation=${canonicalize(auctionMain)}/page=deck/card=${id}${template === 'Overall-None' ? '/template-overall=none' : ''}/season=${season}?mode=ask&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
 								content.push({
 									url: singleAskLink,
 									tableText: `Link to Ask`,
@@ -149,7 +150,7 @@
 									},
 								]
 
-								const singleBidLink = `${domain}/container=${canonicalize(nation)}/nation=${canonicalize(nation)}/page=deck/card=${id}/template-overall=none/season=${season}?mode=bid&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
+								const singleBidLink = `${domain}/container=${canonicalize(nation)}/nation=${canonicalize(nation)}/page=deck/card=${id}${template === 'Overall-None' ? '/template-overall=none' : ''}/season=${season}?mode=bid&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
 
 								bids.push({
 									url: singleBidLink,
@@ -222,7 +223,7 @@
 	On mode bid/ask, accepts the amount
 </p>`} />
 
-<div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
+<div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:main bind:errors />
 		{#if mode === 'Transfer'}
@@ -230,6 +231,7 @@
 		{/if}
 		<FormTextArea bind:bindValue={transferCards} label={'Cards'} id="transferCards" required />
 		<FormSelect id="mode" label="Mode" bind:bindValue={mode} items={['Transfer', 'Bids', 'Asks']} />
+		<FormSelect id="template" label="Template" bind:bindValue={template} items={['Overall-None', 'Regular']} />
 		<FormInput label="Main Nation" bind:bindValue={auctionMain} id="auctionMain" required={true} />
 		<FormInput label="Amount" bind:bindValue={amount} id="amount" required={true} />
 		<FormInput label="Skip Threshold" subTitle="-1 means don't skip" bind:bindValue={skip} id="skip" />

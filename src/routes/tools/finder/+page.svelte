@@ -115,6 +115,7 @@
 			xpin,
 			nsp,
 			password,
+			overrideGiftee,
 			gifteeList,
 		}: {
 			nation: string
@@ -124,9 +125,10 @@
 			xpin: string
 			nsp?: string
 			password: string
+			overrideGiftee: string
 			gifteeList: string[]
 		}) {
-			let attemptGiftee = gifteeList[0] || ''
+			let attemptGiftee = overrideGiftee || gifteeList[0] || ''
 			while (attemptGiftee) {
 				const {
 					cnx: newXpin,
@@ -145,7 +147,8 @@
 
 				if (fail === 'no capacity') {
 					info = [...info, { text: `${nation} failed to gift ${id} to ${cg}, ${fail}`, color: 'red' }]
-					gifteeList.shift()
+					if (!overrideGiftee) gifteeList.shift()
+					if (overrideGiftee) overrideGiftee = ''
 					attemptGiftee = gifteeList[0] || ''
 					continue
 				}
@@ -257,6 +260,7 @@
 												xpin: startingXpin,
 												nsp: nationSpecificPassword,
 												password,
+												overrideGiftee: matchGiftee,
 												gifteeList: gifteeQueue,
 											})
 
@@ -406,6 +410,7 @@
 												xpin: currentNationXPin,
 												nsp: nationSpecificPassword,
 												password,
+												overrideGiftee: giftee,
 												gifteeList: gifteeQueue,
 											})
 
@@ -475,6 +480,12 @@
 								}
 								const id = filteredCards[j].CARDID
 								const season = filteredCards[j].SEASON
+								let matchGiftee = ''
+
+								const match = matches.find(m => m.id === id && m.season === season)
+								if (match) {
+									matchGiftee = match.giftee
+								}
 
 								if (mode.includes('Gift') && keepGifting === true) {
 									const {
@@ -489,6 +500,7 @@
 										xpin: currentNationXPin,
 										nsp: nationSpecificPassword,
 										password,
+										overrideGiftee: matchGiftee,
 										gifteeList: gifteeQueue,
 									})
 
@@ -564,7 +576,7 @@
 	Password input for gifting is optional and will be disabled if the puppet list includes a comma for nation,password.
 </p>`} />
 
-<div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
+<div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials
 			bind:errors

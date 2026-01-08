@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-01-07
+
+### Adjustments
+
+1. Finder, JunkDaJunk
+   - Return specific giftee behavior in the card whitelists.
+
+2. Auction
+   - Option for template, with options overall-none and regular.
+
 ## 2025-11-12
 
 ### Adjustments

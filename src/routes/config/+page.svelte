@@ -76,7 +76,7 @@
 		auctionCards: '',
 		auctionMain: '',
 		auctionAmount: '',
-		auctionMode: 'Transfers',
+		auctionMode: 'Transfer',
 		auctionSkip: '-1',
 	})
 

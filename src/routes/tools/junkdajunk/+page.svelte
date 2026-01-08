@@ -164,9 +164,12 @@
 		if (flagWhitelist.length > 0) {
 			newInfo.push({ text: `Whitelisting flags: ${flagWhitelist.map(flag => flag.trim()).join(', ')}` })
 		}
-		const toFind = finderlist ? finderlist.split('\n') : []
-		if (toFind.length > 0) {
-			newInfo.push({ text: `Whitelisting cards: ${toFind.length} cards whitelisted` })
+
+		if (finderlist) {
+			const count = finderlist.split('\n').filter(Boolean).length
+			if (count > 0) {
+				newInfo.push({ text: `Whitelisting cards: ${count} cards whitelisted` })
+			}
 		}
 
 		if (skipseason && skipseason.length > 0) newInfo.push({ text: `Skipping seasons: ${skipseason}` })
@@ -417,6 +420,9 @@
 								let giftto = giftee
 								findSplit.forEach(findid => {
 									const matchGiftee = findid[2]
+									console.log(matchGiftee)
+									console.log(findid[0])
+									console.log(String(id))
 									if (findid[0] === String(id)) {
 										if (matchGiftee) giftto = matchGiftee
 									}
@@ -433,6 +439,7 @@
 									sell: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}`,
 									fail: `${nation} failed to gift ${id}`,
 									success: `${nation} gifted ${id} - ${reason}, received by`,
+									overrideGiftee: giftto,
 								})
 							} else {
 								progress = [
@@ -453,9 +460,9 @@
 					for (let i = 0; i < giftQueue.length; i++) {
 						if (abortController.signal.aborted || stopped) break
 
-						const { gift: url, success, fail } = giftQueue[i]
+						const { gift: url, success, fail, overrideGiftee } = giftQueue[i]
 
-						let attemptGiftee = gifteeQueue[0] || ''
+						let attemptGiftee = overrideGiftee ? overrideGiftee : gifteeQueue[0] || ''
 						if (!attemptGiftee) {
 							info = [...info, { text: `No available giftees remaining. Stopping gifting.`, color: 'red' }]
 							break
@@ -471,7 +478,7 @@
 							cnx: currentNationXPin,
 							nsp: nationSpecificPassword,
 							password,
-							specificGiftee: attemptGiftee,
+							specificGiftee: overrideGiftee || attemptGiftee,
 						})
 
 						currentNationXPin = newXpin
@@ -565,7 +572,7 @@
 		</p>
 	`} />
 
-<div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
+<div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={true} />
 		{#if mode === 'Gift' || mode === 'Gift and Sell'}
