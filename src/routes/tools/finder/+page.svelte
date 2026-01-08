@@ -32,7 +32,7 @@
 	let giftee = $state('')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 	let giftLegendaries = $state(true)
-	let keepOne = $state('1')
+	let keepOne = $state('0')
 	let giftOverMVValue = $state(10)
 	let findMode = $state('Specific Cards')
 
