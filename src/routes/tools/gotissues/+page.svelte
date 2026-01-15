@@ -166,6 +166,7 @@
 			...progress,
 			{
 				text: `Finished processing ${puppetList.length} nations, equaling ${issuesCount} issues and ${packsCount} packs!`,
+				color: 'green',
 			},
 		]
 		downloadable = true

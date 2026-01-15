@@ -7,6 +7,8 @@
 	}
 
 	let { progress = $bindable([]), openNewLinkArr = $bindable([]) }: Props = $props()
+
+	let openedCount = $state(0)
 </script>
 
 <Button
@@ -19,6 +21,7 @@
 			return
 		}
 		window.open(openNewLinkArr[0].url, '_blank')
+		openedCount++
 		openNewLinkArr.splice(0, 1)
 	}}
 	onclick={(e: any) => {
@@ -27,8 +30,9 @@
 				return
 			}
 			window.open(openNewLinkArr[0].url, '_blank')
+			openedCount++
 			openNewLinkArr.splice(0, 1)
 		}
 	}}>
-	Open Available Link
+	Open Available Link {openNewLinkArr.length > 0 ? `(${openedCount} / ${openNewLinkArr.length})` : ''}
 </Button>
