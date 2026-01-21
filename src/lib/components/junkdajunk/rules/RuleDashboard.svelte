@@ -2,6 +2,7 @@
 	import { Button } from '$lib/components/ui/button'
 	import { Label } from '$lib/components/ui/label'
 	import { getRuleSummary, type Rule } from '$lib/helpers/rules'
+	import { GripVertical } from 'lucide-svelte'
 
 	import RuleEditor from './RuleEditor.svelte'
 
@@ -9,6 +10,9 @@
 
 	let editingRule: Rule | null = $state(null)
 	let editingIndex: number = $state(-1)
+	let draggedItem: number | null = $state(null)
+	let dragOverItem: number | null = $state(null)
+	let dropPosition: 'before' | 'after' | null = $state(null)
 
 	function createNewRule(): Rule {
 		return {
@@ -45,18 +49,6 @@
 
 	function deleteRule(index: number) {
 		rules = rules.filter((_, i) => i !== index)
-	}
-
-	function moveRule(index: number, direction: 'up' | 'down') {
-		if (direction === 'up' && index > 0) {
-			const temp = rules[index]
-			rules[index] = rules[index - 1]
-			rules[index - 1] = temp
-		} else if (direction === 'down' && index < rules.length - 1) {
-			const temp = rules[index]
-			rules[index] = rules[index + 1]
-			rules[index + 1] = temp
-		}
 	}
 
 	function toggleRule(index: number) {
@@ -137,48 +129,61 @@
 			editingIndex = -1
 		}} />
 {:else}
-	<div class="flex flex-col gap-4">
+	<div class="flex flex-col gap-4" ondragover={e => e.preventDefault()}>
 		{#if rules.length === 0}
 			<div class="text-muted-foreground rounded-lg border border-dashed p-8 text-center">
 				No rules defined. Click "Add Rule" to get started.
 			</div>
 		{/if}
-		{#each rules as rule, i}
-			<div class={`bg-card text-card-foreground rounded-xl border shadow ${!rule.enabled ? 'opacity-50' : ''}`}>
-				<div class="flex items-center gap-4 p-4">
-					<div class="flex flex-col items-center gap-1">
-						<Button variant="ghost" size="sm" class="h-6 w-6 p-0" onclick={() => moveRule(i, 'up')} disabled={i === 0}>
-							▲
-						</Button>
-						<span class="text-muted-foreground text-xs">{i + 1}</span>
-						<Button
-							variant="ghost"
-							size="sm"
-							class="h-6 w-6 p-0"
-							onclick={() => moveRule(i, 'down')}
-							disabled={i === rules.length - 1}>
-							▼
-						</Button>
+		{#each rules as rule, i (rule.id)}
+			<div class="relative">
+				{#if dragOverItem === i && dropPosition === 'before'}
+					<div
+						class="bg-primary absolute -top-2.5 right-0 left-0 z-10 h-1 rounded-full shadow-[0_0_8px_rgba(var(--primary),0.5)]">
 					</div>
+				{/if}
 
-					<div class="flex-1">
-						<div class="flex items-center gap-2 font-medium">
-							<span>{getRuleSummary(rule)}</span>
+				<div
+					class={`bg-card text-card-foreground rounded-xl border shadow transition-all ${!rule.enabled ? 'opacity-50' : ''} ${draggedItem === i ? 'opacity-30' : ''}`}
+					draggable={true}
+					ondragstart={e => onDragStart(e, i)}
+					ondragover={e => onDragOver(e, i)}
+					ondragleave={onDragLeave}
+					ondrop={e => onDrop(e, i)}
+					role="listitem">
+					<div class="flex items-center gap-4 p-4">
+						<div class="cursor-move text-gray-400 hover:text-gray-600">
+							<GripVertical size={20} />
 						</div>
-						<div class="text-muted-foreground text-sm">
-							{rule.actions.map(a => `${a.type} ${a.target ? `to ${a.target}` : ''}`).join(', ')}
+						<div class="text-muted-foreground min-w-[20px] text-center font-mono text-xs">
+							{i + 1}
 						</div>
-					</div>
 
-					<div class="flex items-center gap-2">
-						<Button variant={rule.enabled ? 'default' : 'secondary'} size="sm" onclick={() => toggleRule(i)}>
-							{rule.enabled ? 'On' : 'Off'}
-						</Button>
-						<Button variant="secondary" size="sm" onclick={() => cloneRule(i)}>Clone</Button>
-						<Button variant="outline" size="sm" onclick={() => editRule(i)}>Edit</Button>
-						<Button variant="destructive" size="sm" onclick={() => deleteRule(i)}>Delete</Button>
+						<div class="flex-1">
+							<div class="flex items-center gap-2 font-medium">
+								<span>{getRuleSummary(rule)}</span>
+							</div>
+							<div class="text-muted-foreground text-sm">
+								{rule.actions.map(a => `${a.type} ${a.target ? `to ${a.target}` : ''}`).join(', ')}
+							</div>
+						</div>
+
+						<div class="flex items-center gap-2">
+							<Button variant={rule.enabled ? 'default' : 'secondary'} size="sm" onclick={() => toggleRule(i)}>
+								{rule.enabled ? 'On' : 'Off'}
+							</Button>
+							<Button variant="secondary" size="sm" onclick={() => cloneRule(i)}>Clone</Button>
+							<Button variant="outline" size="sm" onclick={() => editRule(i)}>Edit</Button>
+							<Button variant="destructive" size="sm" onclick={() => deleteRule(i)}>Delete</Button>
+						</div>
 					</div>
 				</div>
+
+				{#if dragOverItem === i && dropPosition === 'after'}
+					<div
+						class="bg-primary absolute right-0 -bottom-2.5 left-0 z-10 h-1 rounded-full shadow-[0_0_8px_rgba(var(--primary),0.5)]">
+					</div>
+				{/if}
 			</div>
 		{/each}
 
