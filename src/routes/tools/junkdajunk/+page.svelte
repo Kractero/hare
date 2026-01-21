@@ -8,12 +8,14 @@
 	import FormSelect from '$lib/components/FormSelect.svelte'
 	import FormTextArea from '$lib/components/FormTextArea.svelte'
 	import InputCredentials from '$lib/components/InputCredentials.svelte'
+	import RuleDashboard from '$lib/components/junkdajunk/rules/RuleDashboard.svelte'
 	import Rarities from '$lib/components/Rarities.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import * as AlertDialog from '$lib/components/ui/alert-dialog'
 	import { giftCard } from '$lib/helpers/gift'
 	import { parseXML } from '$lib/helpers/parser'
+	import { evaluateRule, getRuleSummary, ruleRequiresAdvancedData, type Action, type Rule } from '$lib/helpers/rules'
 	import {
 		beforeUnload,
 		canonicalize,
@@ -57,6 +59,17 @@
 	// let jdjtransfer = $state('-1')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 	let junkUpTo = $state('-1')
+	let configMode = $state('Classic')
+	let rules: Rule[] = $state([])
+	let rulesLoaded = $state(false)
+
+	$effect(() => {
+		if (rulesLoaded) localStorage.setItem('junkdajunkRules', JSON.stringify(rules))
+	})
+
+	$effect(() => {
+		if (rulesLoaded) localStorage.setItem('junkdajunkConfigMode', configMode)
+	})
 
 	onMount(() => {
 		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
@@ -129,6 +142,15 @@
 		// jdjtransfer =
 		// 	page.url.searchParams.get('jdjtransfer') || (localStorage.getItem('junkdajunkTransferBank') as string) || '-1'
 		junkUpTo = page.url.searchParams.get('junkUpTo') || (localStorage.getItem('junkUpTo') as string) || '-1'
+		configMode = localStorage.getItem('junkdajunkConfigMode') || 'Classic'
+		try {
+			const savedRules = localStorage.getItem('junkdajunkRules')
+			if (savedRules) rules = JSON.parse(savedRules)
+		} catch (e) {
+			console.error('Failed to load rules', e)
+		} finally {
+			rulesLoaded = true
+		}
 	})
 	onDestroy(() => abortController.abort())
 
@@ -219,15 +241,15 @@
 				// }
 				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD
 				cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
-				if (cards && cards.length > 0 && cards.length > Number(cardcount)) {
+				if (cards && cards.length > 0 && (configMode === 'Rules' || cards.length > Number(cardcount))) {
 					const giftQueue = []
-					for (let i = 0; i < cards.length; i++) {
+					for (let j = 0; j < cards.length; j++) {
 						if (Number(junkUpTo) !== -1 && actionCount >= Number(junkUpTo)) break
 
-						const id = cards[i].CARDID
-						const season = cards[i].SEASON
-						const marketValue = cards[i].MARKET_VALUE
-						const category = cards[i].CATEGORY
+						const id = cards[j].CARDID
+						const season = cards[j].SEASON
+						const marketValue = cards[j].MARKET_VALUE
+						const category = cards[j].CATEGORY
 						if (abortController.signal.aborted || stopped) {
 							break
 						}
@@ -235,95 +257,157 @@
 						let junk = true
 						let sell = true
 						let reason = ''
+						let giftTarget = ''
 
-						const conditions = [
-							{
-								check: () => skipseason.includes(String(season)),
-								reason: `is ignored season ${season}`,
-							},
-							{
-								check: () => category === 'legendary',
-								reason: `Legendary card`,
-							},
-							{
-								check: () => category !== 'legendary' && raritiesMV[category] && Number(raritiesMV[category]) === -1,
-								reason: `category set to gift`,
-							},
-							{
-								check: () =>
-									category !== 'legendary' &&
-									raritiesMV[category] &&
-									parseFloat(marketValue) >= Number(raritiesMV[category]),
-								reason: `has mv exceeding threshold`,
-							},
-						]
+						if (configMode === 'Rules') {
+							let advancedDataFetched = false
+							let advancedData: { region?: string; flag?: string; bid?: number; owners?: number } = {}
+							let matchedActions: Action[] = []
+							let matchedRuleSummary = ''
 
-						for (const { check, reason: r } of conditions) {
-							if (check()) {
-								junk = false
-								reason = `${r}`
-								break
-							}
-						}
+							for (const rule of rules) {
+								if (!rule.enabled) continue
 
-						if (junk === true && checkMode === 'Advanced') {
-							const xmlDocument = await parseXML(
-								`${domain}/cgi-bin/api.cgi?cardid=${id}&season=${season}&q=card+markets+info+owners`,
-								main
-							)
-							const card: Card = xmlDocument.CARD
-							const cardOwners = Array.isArray(card.OWNERS.OWNER)
-								? new Set(card.OWNERS.OWNER)
-								: new Set([card.OWNERS.OWNER])
-							const region = String(card.REGION)
-							const flag = String(card.FLAG)
-							let highestBid = 0
-							const markets = card.MARKETS ? card.MARKETS.MARKET : []
-							if (Array.isArray(markets)) {
-								markets.forEach(market => {
-									if (market.TYPE === 'bid') {
-										const price = parseFloat(market.PRICE)
-										if (price > highestBid) {
-											highestBid = price
+								if (ruleRequiresAdvancedData(rule) && !advancedDataFetched) {
+									// only fetch advanced data if JDJ hits a rule that needs it
+									// skips requests if earlier rules already matched
+									const cardDetailsXml = await parseXML(
+										`${domain}/cgi-bin/api.cgi?cardid=${id}&season=${season}&q=card+markets+info+owners`,
+										main
+									)
+									const card: Card = cardDetailsXml.CARD
+									const cardOwners = Array.isArray(card.OWNERS.OWNER)
+										? new Set(card.OWNERS.OWNER)
+										: new Set([card.OWNERS.OWNER])
+									const region = String(card.REGION)
+									const flag = String(card.FLAG)
+									let highestBid = 0
+									const markets = card.MARKETS ? card.MARKETS.MARKET : []
+									if (Array.isArray(markets)) {
+										markets.forEach(market => {
+											if (market.TYPE === 'bid') {
+												const price = parseFloat(market.PRICE)
+												if (price > highestBid) {
+													highestBid = price
+												}
+											}
+										})
+									} else {
+										if (markets && markets.TYPE === 'bid') {
+											const price = parseFloat(markets.PRICE)
+											if (price > highestBid) {
+												highestBid = price
+											}
 										}
 									}
-								})
-							} else {
-								if (markets.TYPE === 'bid') {
-									const price = parseFloat(markets.PRICE)
-									if (price > highestBid) {
-										highestBid = price
+
+									advancedData = {
+										region,
+										flag,
+										bid: highestBid,
+										owners: cardOwners.size,
 									}
+									advancedDataFetched = true
+								}
+
+								const { matched, actions } = evaluateRule(cards[j], rule, advancedData)
+								if (matched) {
+									matchedActions.push(...actions)
+									// Capture rule summary for logging
+									matchedRuleSummary = getRuleSummary(rule) + ` (Rule ${rules.indexOf(rule) + 1})`
+									// First match wins: stop processing subsequent rules immediately.
+									break
 								}
 							}
 
-							const advancedConditions = [
+							let shouldJunk = false
+							let shouldSell = false
+							let explicitNothing = false
+							giftTarget = ''
+
+							for (const action of matchedActions) {
+								if (action.type === 'Junk') shouldJunk = true
+								if (action.type === 'Sell') shouldSell = true
+								if (action.type === 'Nothing') explicitNothing = true
+								if (action.type === 'Gift') giftTarget = action.target || ''
+							}
+
+							if (explicitNothing && !giftTarget && !shouldJunk && !shouldSell) {
+								progress = [
+									...progress,
+									{
+										text: `${j + 1}/${cards.length} -> S${season} ${category.toUpperCase()} ${id} Rule matched: ${matchedRuleSummary} - Explicitly ignored`,
+										color: 'gray',
+									},
+								]
+								junk = false
+								sell = false
+							} else if (giftTarget) {
+								progress = [
+									...progress,
+									{
+										text: `${j + 1}/${cards.length} -> S${season} ${category.toUpperCase()} ${id} Rule matched: ${matchedRuleSummary} - Gift to ${giftTarget}${shouldSell ? ' and Sell' : ''}`,
+										color: 'green',
+									},
+									{
+										text: 'Added to gift queue',
+										color: 'gray',
+									},
+								]
+								giftQueue.push({
+									gift: `${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}`,
+									sell: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}`,
+									fail: `${nation} failed to gift ${id}`,
+									success: `${nation} gifted ${id} to ${giftTarget}`,
+									overrideGiftee: giftTarget,
+								})
+								// Don't junk if gifting
+								junk = false
+								sell = shouldSell
+								if (sell) reason = `Rule matched: ${matchedRuleSummary} - Sell`
+							} else if (shouldJunk) {
+								junk = true
+								reason = `Rule matched: ${matchedRuleSummary} - Junk`
+							} else if (shouldSell) {
+								sell = true
+								reason = `Rule matched: ${matchedRuleSummary} - Sell`
+								junk = false
+							} else {
+								progress = [
+									...progress,
+									{
+										text: `${j + 1}/${cards.length} -> Skipping S${season} ${category.toUpperCase()} ${id} - No matching actions`,
+										color: 'gray',
+									},
+								]
+								junk = false
+								sell = false
+							}
+						} else {
+							// CLASSIC LOGIC
+							const conditions = [
 								{
-									check: () => flagWhitelist.some(f => flag.includes(f)),
-									reason: `Flag is whitelisted ${flag}`,
+									check: () => skipseason.includes(String(season)),
+									reason: `is ignored season ${season}`,
 								},
 								{
-									check: () => owners && Number(owners) > cardOwners.size,
-									reason: `has less owners than ${owners}`,
+									check: () => category === 'legendary',
+									reason: `Legendary card`,
+								},
+								{
+									check: () => category !== 'legendary' && raritiesMV[category] && Number(raritiesMV[category]) === -1,
+									reason: `category set to gift`,
 								},
 								{
 									check: () =>
 										category !== 'legendary' &&
-										raritiesLowestBid[category] &&
-										highestBid >= Number(raritiesLowestBid[category]),
-									reason: `has high bid`,
-								},
-								{
-									check: () => !region && skipexnation,
-									reason: `S1 exnation`,
-								},
-								{
-									check: () => region && regionalWhitelist.includes(canonicalize(region)),
-									reason: `is in whitelisted ${region}`,
+										raritiesMV[category] &&
+										parseFloat(marketValue) >= Number(raritiesMV[category]),
+									reason: `has mv exceeding threshold`,
 								},
 							]
 
-							for (const { check, reason: r } of advancedConditions) {
+							for (const { check, reason: r } of conditions) {
 								if (check()) {
 									junk = false
 									reason = `${r}`
@@ -331,43 +415,109 @@
 								}
 							}
 
-							if (category !== 'legendary' && mode === 'Gift and Sell') {
-								if (highestBid >= raritiesLowestBid[category] || parseFloat(marketValue) >= raritiesMV[category]) {
-									junk = false
-									reason = `matches gift conditions`
-								} else if (
-									highestBid >= raritiesLowestBidSell[category] ||
-									parseFloat(marketValue) >= raritiesMVSell[category]
-								) {
-									sell = false
-									reason = `matches sale conditions`
-								}
-							}
-						}
-
-						findSplit.forEach(findid => {
-							const matchSeason = findid[1]
-							if (findid[0] === String(id)) {
-								if (matchSeason) {
-									if (matchSeason === String(season)) {
-										junk = false
-										reason = `is whitelisted card ${findid[0]} season ${season}`
-									}
+							if (junk === true && checkMode === 'Advanced') {
+								const cardDetailsXml = await parseXML(
+									`${domain}/cgi-bin/api.cgi?cardid=${id}&season=${season}&q=card+markets+info+owners`,
+									main
+								)
+								const card: Card = cardDetailsXml.CARD
+								const cardOwners = Array.isArray(card.OWNERS.OWNER)
+									? new Set(card.OWNERS.OWNER)
+									: new Set([card.OWNERS.OWNER])
+								const region = String(card.REGION)
+								const flag = String(card.FLAG)
+								let highestBid = 0
+								const markets = card.MARKETS ? card.MARKETS.MARKET : []
+								if (Array.isArray(markets)) {
+									markets.forEach(market => {
+										if (market.TYPE === 'bid') {
+											const price = parseFloat(market.PRICE)
+											if (price > highestBid) {
+												highestBid = price
+											}
+										}
+									})
 								} else {
-									junk = false
-									reason = `is whitelisted card ${findid}`
+									if (markets.TYPE === 'bid') {
+										const price = parseFloat(markets.PRICE)
+										if (price > highestBid) {
+											highestBid = price
+										}
+									}
+								}
+
+								const advancedConditions = [
+									{
+										check: () => flagWhitelist.some(f => flag.includes(f)),
+										reason: `Flag is whitelisted ${flag}`,
+									},
+									{
+										check: () => owners && Number(owners) > cardOwners.size,
+										reason: `has less owners than ${owners}`,
+									},
+									{
+										check: () =>
+											category !== 'legendary' &&
+											raritiesLowestBid[category] &&
+											highestBid >= Number(raritiesLowestBid[category]),
+										reason: `has high bid`,
+									},
+									{
+										check: () => !region && skipexnation,
+										reason: `S1 exnation`,
+									},
+									{
+										check: () => region && regionalWhitelist.includes(canonicalize(region)),
+										reason: `is in whitelisted ${region}`,
+									},
+								]
+
+								for (const { check, reason: r } of advancedConditions) {
+									if (check()) {
+										junk = false
+										reason = `${r}`
+										break
+									}
+								}
+
+								if (category !== 'legendary' && mode === 'Gift and Sell') {
+									if (highestBid >= raritiesLowestBid[category] || parseFloat(marketValue) >= raritiesMV[category]) {
+										junk = false
+										reason = `matches gift conditions`
+									} else if (
+										highestBid >= raritiesLowestBidSell[category] ||
+										parseFloat(marketValue) >= raritiesMVSell[category]
+									) {
+										sell = false
+										reason = `matches sale conditions`
+									}
 								}
 							}
-						})
+
+							findSplit.forEach(findid => {
+								const matchSeason = findid[1]
+								if (findid[0] === String(id)) {
+									if (matchSeason) {
+										if (matchSeason === String(season)) {
+											junk = false
+											reason = `is whitelisted card ${findid[0]} season ${season}`
+										}
+									} else {
+										junk = false
+										reason = `is whitelisted card ${findid}`
+									}
+								}
+							})
+						}
 
 						if (junk && sell) {
 							if (junkMethod === 'Manual') {
 								progress = [
 									...progress,
 									{
-										text: `${i + 1}/${
+										text: `${j + 1}/${
 											cards.length
-										} -> Adding to junk sheet S${season} ${category.toUpperCase()} ${id} with mv ${marketValue}`,
+										} -> Adding to junk sheet S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} (${reason})`,
 									},
 								]
 								content.push({
@@ -379,9 +529,9 @@
 								progress = [
 									...progress,
 									{
-										text: `${i + 1}/${
+										text: `${j + 1}/${
 											cards.length
-										} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue}`,
+										} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} (${reason})`,
 									},
 								]
 								let token = ''
@@ -397,9 +547,14 @@
 
 								token = prepare.NATION.SUCCESS
 
-								const junk = await parseXML(`${url}execute&c=junkcard&token=${token}`, main, '', currentNationXPin)
+								const junkResponse = await parseXML(
+									`${url}execute&c=junkcard&token=${token}`,
+									main,
+									'',
+									currentNationXPin
+								)
 
-								if (junk.NATION && junk.NATION.ERROR) {
+								if (junkResponse.NATION && junkResponse.NATION.ERROR) {
 									info = [...info, { text: `${nation} failed to junk ${id}, adding to sheet`, color: 'red' }]
 									content.push({
 										url: `${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1`,
@@ -416,51 +571,72 @@
 								}
 							}
 						} else {
-							if (mode === 'Gift' || (mode === 'Gift and Sell' && sell === true)) {
-								let giftto = giftee
-								findSplit.forEach(findid => {
-									const matchGiftee = findid[2]
-									console.log(matchGiftee)
-									console.log(findid[0])
-									console.log(String(id))
-									if (findid[0] === String(id)) {
-										if (matchGiftee) giftto = matchGiftee
+							if (configMode === 'Rules') {
+								if (sell) {
+									if (!giftTarget) {
+										progress = [
+											...progress,
+											{
+												text: `${j + 1}/${cards.length} -> Skipping S${season} ${category.toUpperCase()} ${id} - ${reason}!`,
+												color: 'blue',
+											},
+										]
 									}
-								})
-								progress = [
-									...progress,
-									{
-										text: `${i + 1}/${cards.length} -> Giftable card ${id} moved to gift queue - ${reason}`,
-										color: 'blue',
-									},
-								]
-								giftQueue.push({
-									gift: `${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}`,
-									sell: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}`,
-									fail: `${nation} failed to gift ${id}`,
-									success: `${nation} gifted ${id} - ${reason}, received by`,
-									overrideGiftee: giftto,
-								})
-							} else {
-								progress = [
-									...progress,
-									{ text: `${i + 1}/${cards.length} -> Skipping ${id} - ${reason}!`, color: 'blue' },
-								]
-								if (mode === 'Sell' || mode === 'Gift and Sell') {
+									const activeNation = giftTarget ? giftTarget : nation
 									sellContent.push({
-										url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/jdj=view?${urlParameters('junkDaJunk', main)}`,
+										url: `${domain}/page=deck/container=${activeNation}/nation=${activeNation}/card=${id}/season=${season}/jdj=view?${urlParameters('junkDaJunk', main)}`,
 										tableText: `Link to Card`,
 									})
 									currSellCard = currSellCard + 1
+								}
+							} else {
+								// Classic Mode
+								if (mode === 'Gift' || (mode === 'Gift and Sell' && sell === true)) {
+									let giftto = giftee
+									findSplit.forEach(findid => {
+										const matchGiftee = findid[2]
+										// console.log(matchGiftee)
+										// console.log(findid[0])
+										// console.log(String(id))
+										if (findid[0] === String(id)) {
+											if (matchGiftee) giftto = matchGiftee
+										}
+									})
+									progress = [
+										...progress,
+										{
+											text: `${j + 1}/${cards.length} -> Giftable card ${id} moved to gift queue - ${reason}`,
+											color: 'blue',
+										},
+									]
+									giftQueue.push({
+										gift: `${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}`,
+										sell: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}`,
+										fail: `${nation} failed to gift ${id}`,
+										success: `${nation} gifted ${id} - ${reason}, received by`,
+										overrideGiftee: giftto,
+									})
+								} else {
+									progress = [
+										...progress,
+										{ text: `${j + 1}/${cards.length} -> Skipping ${id} - ${reason}!`, color: 'blue' },
+									]
+									if (mode === 'Sell' || mode === 'Gift and Sell') {
+										sellContent.push({
+											url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/jdj=view?${urlParameters('junkDaJunk', main)}`,
+											tableText: `Link to Card`,
+										})
+										currSellCard = currSellCard + 1
+									}
 								}
 							}
 						}
 					}
 					progress = [...progress, { text: `Processing gift queue of size ${giftQueue.length}...` }]
-					for (let i = 0; i < giftQueue.length; i++) {
+					for (let k = 0; k < giftQueue.length; k++) {
 						if (abortController.signal.aborted || stopped) break
 
-						const { gift: url, success, fail, overrideGiftee } = giftQueue[i]
+						const { gift: url, success, fail, overrideGiftee } = giftQueue[k]
 
 						let attemptGiftee = overrideGiftee ? overrideGiftee : gifteeQueue[0] || ''
 						if (!attemptGiftee) {
@@ -486,26 +662,26 @@
 						if (failureReason === 'no capacity') {
 							progress = [
 								...progress,
-								{ text: `${i + 1}/${giftQueue.length} -> ${fail} - ${failureReason}`, color: 'red' },
+								{ text: `${k + 1}/${giftQueue.length} -> ${fail} - ${failureReason}`, color: 'red' },
 							]
 							gifteeQueue.shift()
-							i--
+							k--
 							continue
 						}
 
 						if (failureReason) {
 							sellContent.push({
-								url: giftQueue[i].sell,
+								url: giftQueue[k].sell,
 								tableText: `Link to Card`,
 							})
 							progress = [
 								...progress,
-								{ text: `${i + 1}/${giftQueue.length} -> ${fail} - ${failureReason}`, color: 'red' },
+								{ text: `${k + 1}/${giftQueue.length} -> ${fail} - ${failureReason}`, color: 'red' },
 							]
 							currSellCard++
 						} else {
 							actionCount++
-							progress = [...progress, { text: `${i + 1}/${giftQueue.length} -> ${success} ${cg}`, color: 'green' }]
+							progress = [...progress, { text: `${k + 1}/${giftQueue.length} -> ${success}`, color: 'green' }]
 							giftedCards++
 							junkCounter =
 								junkMethod === 'API'
@@ -575,60 +751,68 @@
 <div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={true} />
-		{#if mode === 'Gift' || mode === 'Gift and Sell'}
-			<FormTextArea label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />
-		{/if}
-		<FormSelect bind:bindValue={junkMethod} id="junkMethod" items={['API', 'Manual']} label="Junk Mode" />
-		<FormSelect bind:bindValue={checkMode} id="checkMode" items={['Advanced', 'Simple']} label="Mode" />
-		<FormTextArea bind:bindValue={finderlist} label={'Card ID Whitelist'} id="finderlist" />
-		{#if checkMode === 'Advanced'}
-			<FormTextArea bind:bindValue={regionalwhitelist} label={'Regional Whitelist'} id="regions" />
-			<FormTextArea bind:bindValue={flagwhitelist} label={'Flag Whitelist'} id="flags" />
-		{/if}
-		<FormInput label={'Card Count Threshold'} bind:bindValue={cardcount} id="cardcount" />
-		{#if checkMode === 'Advanced'}
-			<FormInput label={'Owner Count Threshold'} bind:bindValue={owners} id="owners" />
-		{/if}
-		<div class="flex max-w-lg justify-between gap-4">
-			<Rarities
-				label={`Rarity Market Value Threshold${mode === 'Gift and Sell' ? ' Gifting' : ''}`}
-				bind:rarities={raritiesMV} />
-		</div>
-		{#if checkMode === 'Advanced'}
-			<div class="flex max-w-lg justify-between gap-4">
-				<Rarities
-					label={`Rarity Lowest Bid Value Threshold${mode === 'Gift and Sell' ? ' Gifting' : ''}`}
-					bind:rarities={raritiesLowestBid} />
-			</div>
-		{/if}
-		{#if mode === 'Gift and Sell'}
-			<div class="flex max-w-lg justify-between gap-4">
-				<Rarities
-					label={`Rarity Market Value Threshold${mode === 'Gift and Sell' ? ' Selling' : ''}`}
-					bind:rarities={raritiesMVSell} />
-			</div>
+		<FormSelect bind:bindValue={configMode} id="configMode" items={['Classic', 'Rules']} label="Configuration Mode" />
 
+		{#if configMode === 'Rules'}
+			<RuleDashboard bind:rules />
+			<FormSelect bind:bindValue={junkMethod} id="junkMethod" items={['API', 'Manual']} label="Junk Mode" />
+			<FormInput label={'Process Up To'} bind:bindValue={junkUpTo} id="junkUpTo" required={true} />
+		{:else}
+			{#if mode === 'Gift' || mode === 'Gift and Sell'}
+				<FormTextArea label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />
+			{/if}
+			<FormSelect bind:bindValue={junkMethod} id="junkMethod" items={['API', 'Manual']} label="Junk Mode" />
+			<FormSelect bind:bindValue={checkMode} id="checkMode" items={['Advanced', 'Simple']} label="Mode" />
+			<FormTextArea bind:bindValue={finderlist} label={'Card ID Whitelist'} id="finderlist" />
+			{#if checkMode === 'Advanced'}
+				<FormTextArea bind:bindValue={regionalwhitelist} label={'Regional Whitelist'} id="regions" />
+				<FormTextArea bind:bindValue={flagwhitelist} label={'Flag Whitelist'} id="flags" />
+			{/if}
+			<FormInput label={'Card Count Threshold'} bind:bindValue={cardcount} id="cardcount" />
+			{#if checkMode === 'Advanced'}
+				<FormInput label={'Owner Count Threshold'} bind:bindValue={owners} id="owners" />
+			{/if}
 			<div class="flex max-w-lg justify-between gap-4">
 				<Rarities
-					label={`Rarity Lowest Bid Value Threshold${mode === 'Gift and Sell' ? ' Selling' : ''}`}
-					bind:rarities={raritiesLowestBidSell} />
+					label={`Rarity Market Value Threshold${mode === 'Gift and Sell' ? ' Gifting' : ''}`}
+					bind:rarities={raritiesMV} />
 			</div>
+			{#if checkMode === 'Advanced'}
+				<div class="flex max-w-lg justify-between gap-4">
+					<Rarities
+						label={`Rarity Lowest Bid Value Threshold${mode === 'Gift and Sell' ? ' Gifting' : ''}`}
+						bind:rarities={raritiesLowestBid} />
+				</div>
+			{/if}
+			{#if mode === 'Gift and Sell'}
+				<div class="flex max-w-lg justify-between gap-4">
+					<Rarities
+						label={`Rarity Market Value Threshold${mode === 'Gift and Sell' ? ' Selling' : ''}`}
+						bind:rarities={raritiesMVSell} />
+				</div>
+
+				<div class="flex max-w-lg justify-between gap-4">
+					<Rarities
+						label={`Rarity Lowest Bid Value Threshold${mode === 'Gift and Sell' ? ' Selling' : ''}`}
+						bind:rarities={raritiesLowestBidSell} />
+				</div>
+			{/if}
+			<FormSelect
+				type="multiple"
+				bind:bindValue={skipseason}
+				id="skipseason"
+				items={['1', '2', '3', '4']}
+				label="Skip Seasons?" />
+			{#if checkMode === 'Advanced'}
+				<FormCheckbox bind:checked={skipexnation} id="skipexnation" label="Skip Exnation" />
+			{/if}
+			<FormInput label={'Process Up To'} bind:bindValue={junkUpTo} id="junkUpTo" required={true} />
+			<FormSelect
+				bind:bindValue={mode}
+				id="mode"
+				items={checkMode === 'Advanced' ? ['Gift', 'Sell', 'Gift and Sell', 'Exclude'] : ['Gift', 'Sell', 'Exclude']}
+				label="Behavior" />
 		{/if}
-		<FormSelect
-			type="multiple"
-			bind:bindValue={skipseason}
-			id="skipseason"
-			items={['1', '2', '3', '4']}
-			label="Skip Seasons?" />
-		{#if checkMode === 'Advanced'}
-			<FormCheckbox bind:checked={skipexnation} id="skipexnation" label="Skip Exnation" />
-		{/if}
-		<FormInput label={'Process Up To'} bind:bindValue={junkUpTo} id="junkUpTo" required={true} />
-		<FormSelect
-			bind:bindValue={mode}
-			id="mode"
-			items={checkMode === 'Advanced' ? ['Gift', 'Sell', 'Gift and Sell', 'Exclude'] : ['Gift', 'Sell', 'Exclude']}
-			label="Behavior" />
 		<Buttons
 			stopButton={true}
 			bind:stopped
