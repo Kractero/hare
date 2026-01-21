@@ -5,6 +5,7 @@
 	import FormSelect from '$lib/components/FormSelect.svelte'
 	import FormTextArea from '$lib/components/FormTextArea.svelte'
 	import Head from '$lib/components/Head.svelte'
+	import RuleDashboard from '$lib/components/junkdajunk/rules/RuleDashboard.svelte'
 	import Rarities from '$lib/components/Rarities.svelte'
 	import Button from '$lib/components/ui/button/button.svelte'
 	import { Toaster } from '$lib/components/ui/sonner'
@@ -78,6 +79,8 @@
 		auctionAmount: '',
 		auctionMode: 'Transfer',
 		auctionSkip: '-1',
+		junkdajunkConfigMode: 'Classic',
+		junkdajunkRules: [],
 	})
 
 	onMount(() => {
@@ -100,6 +103,13 @@
 				localStorageObject[key] = JSON.parse(localStorageObject[key])
 			}
 		})
+
+		try {
+			const savedRules = localStorage.getItem('junkdajunkRules')
+			if (savedRules) localStorageObject.junkdajunkRules = JSON.parse(savedRules)
+		} catch (e) {
+			console.error('Failed to load rules', e)
+		}
 	})
 
 	async function onSubmit(e: Event) {
@@ -136,6 +146,11 @@
 					changes.push(key)
 				}
 				localStorage.setItem(key, localStorageObject[key])
+			} else if (key === 'junkdajunkRules') {
+				if (localStorage.getItem(key) !== JSON.stringify(localStorageObject[key])) {
+					changes.push(key)
+				}
+				localStorage.setItem(key, JSON.stringify(localStorageObject[key]))
 			} else {
 				if (localStorage.getItem(key) !== String(localStorageObject[key])) {
 					changes.push(key)
@@ -254,6 +269,14 @@
 			id="checkMode"
 			items={['Advanced', 'Simple']}
 			label="Mode" />
+		<FormSelect
+			bind:bindValue={localStorageObject.junkdajunkConfigMode}
+			id="configMode"
+			items={['Classic', 'Rules']}
+			label="Configuration Mode" />
+		{#if localStorageObject.junkdajunkConfigMode === 'Rules'}
+			<RuleDashboard bind:rules={localStorageObject.junkdajunkRules} />
+		{/if}
 		<FormSelect
 			id="jdjmode"
 			label="Behavior"
