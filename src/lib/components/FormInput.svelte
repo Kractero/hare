@@ -11,6 +11,7 @@
 		disabled?: boolean
 		type?: string
 		errors?: Array<{ field: string | number; message: string }>
+		editor?: boolean
 	}
 
 	let {
@@ -22,11 +23,12 @@
 		disabled = false,
 		type = '',
 		errors = $bindable([]),
+		editor = false,
 	}: Props = $props()
 	const rarities = ['common', 'uncommon', 'rare', 'ultra-rare', 'epic']
 </script>
 
-<div class={`flex w-full max-w-lg items-center justify-between gap-4`}>
+<div class={`${editor === true ? 'block' : 'flex'} w-full max-w-lg items-center justify-between gap-4`}>
 	<Label class={'w-24'} for={id}
 		>{label}
 		{#if subTitle}
@@ -36,6 +38,7 @@
 		class={`${rarities.includes(id) ? 'w-20' : 'max-w-max'} text-right text-base`}
 		{id}
 		type={type || 'text'}
+		{...type === 'number' ? { min: 0 } : {}}
 		bind:value={bindValue}
 		{required}
 		{disabled} />

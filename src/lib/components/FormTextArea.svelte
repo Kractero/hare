@@ -8,14 +8,15 @@
 		bindValue: string | number | undefined
 		subTitle?: string
 		required?: boolean
+		editor?: boolean
 	}
 
-	let { id, label, bindValue = $bindable(), subTitle = '', required = false }: Props = $props()
+	let { id, label, bindValue = $bindable(), subTitle = '', required = false, editor = false }: Props = $props()
 
 	// export let errors: Array<{ field: string | number; message: string }> = []
 </script>
 
-<div class={`flex max-w-lg items-center justify-between gap-4`}>
+<div class={`${editor == true ? 'block' : 'flex'} max-w-lg items-center justify-between gap-4`}>
 	<Label class={'w-24'} for={id}
 		>{label}
 		{#if subTitle}

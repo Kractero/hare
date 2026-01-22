@@ -129,7 +129,7 @@
 			editingIndex = -1
 		}} />
 {:else}
-	<div class="flex flex-col gap-4" ondragover={e => e.preventDefault()}>
+	<div role="button" tabindex="0" class="flex flex-col gap-4" ondragover={e => e.preventDefault()}>
 		{#if rules.length === 0}
 			<div class="text-muted-foreground rounded-lg border border-dashed p-8 text-center">
 				No rules defined. Click "Add Rule" to get started.
@@ -155,7 +155,7 @@
 						<div class="cursor-move text-gray-400 hover:text-gray-600">
 							<GripVertical size={20} />
 						</div>
-						<div class="text-muted-foreground min-w-[20px] text-center font-mono text-xs">
+						<div class="text-muted-foreground min-w-5 text-center font-mono text-xs">
 							{i + 1}
 						</div>
 

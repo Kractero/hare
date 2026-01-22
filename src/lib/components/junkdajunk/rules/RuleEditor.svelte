@@ -92,7 +92,7 @@
 	})
 </script>
 
-<div class="flex flex-col gap-6 p-4">
+<div class="flex flex-col gap-6">
 	<div class="flex flex-col gap-2">
 		<h2 class="text-xl font-bold">Rule Editor</h2>
 		<FormInput label="Rule Name (Optional)" bind:bindValue={rule.name} id="rule-name" />
@@ -113,7 +113,7 @@
 			</div>
 
 			{#each rule.conditions as condition, i}
-				<div class="flex flex-col gap-2 border-b pb-4 last:border-0 last:pb-0 md:flex-row md:items-end">
+				<div class="flex flex-col gap-2 border-b pb-4 last:border-0 last:pb-0 md:flex-row md:items-start">
 					<div class="flex-1">
 						<Label class="mb-1.5 block text-sm">Attribute</Label>
 						<select class="w-full rounded border px-2 py-2 text-sm" bind:value={condition.attribute}>
@@ -143,11 +143,13 @@
 							</select>
 						{:else if condition.operator === 'in list' || condition.operator === 'not in list'}
 							<FormTextArea
+								editor={true}
 								label="Values (newline or comma separated)"
 								bind:bindValue={condition.value}
 								id={`val-${i}`} />
 						{:else}
 							<FormInput
+								editor={true}
 								label="Value"
 								bind:bindValue={condition.value}
 								id={`val-${i}`}
