@@ -45,7 +45,7 @@ export function checkUserAgent(ua: string) {
 	return []
 }
 
-export const canonicalize = (str: string) => str.toLowerCase().replaceAll(' ', '_')
+export const canonicalize = (str: string) => str.trim().toLowerCase().replaceAll(' ', '_')
 
 export const defaultPrices = {
 	common: 0.5,
