@@ -88,7 +88,7 @@
 				const xmlObj = await parseXML(
 					`${domain}/cgi-bin/api.cgi?nation=${nation}&q=issues+packs`,
 					main,
-					nationSpecificPassword ? nationSpecificPassword : password?.replaceAll(' ', '_')
+					nationSpecificPassword ? nationSpecificPassword : password
 				)
 				const packs = xmlObj.NATION.PACKS
 

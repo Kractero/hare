@@ -122,7 +122,7 @@
 					const issuesAndPacks = await parseXML(
 						`${domain}/cgi-bin/api.cgi?nation=${nation}&q=issues+packs`,
 						main,
-						nationSpecificPassword ? nationSpecificPassword : password.replaceAll(' ', '_')
+						nationSpecificPassword ? nationSpecificPassword : password
 					)
 					const packs = issuesAndPacks.NATION.PACKS
 					const issues: Issue = issuesAndPacks.NATION.ISSUES.ISSUE || []
