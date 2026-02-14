@@ -9,6 +9,12 @@
 	let { progress = $bindable([]), openNewLinkArr = $bindable([]) }: Props = $props()
 
 	let openedCount = $state(0)
+
+	$effect(() => {
+		openNewLinkArr
+		progress
+		openedCount = 0
+	})
 </script>
 
 <Button
