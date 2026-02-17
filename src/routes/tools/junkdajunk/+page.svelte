@@ -234,11 +234,6 @@
 			try {
 				progress = [...progress, { text: `Processing ${nation} ${i + 1}/${puppetList.length} puppets` }]
 				const xmlDocument = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck+info`, main)
-				// let nationalBank = xmlDocument.CARDS.INFO.BANK
-				// if (Number(jdjtransfer) !== -1 && nationalBank >= Number(jdjtransfer)) {
-				// 	progress = [...progress, { text: `Skipping ${nation} as they exceed ${jdjtransfer} bank.`, color: 'blue' }]
-				// 	continue
-				// }
 				let cards: Array<Card> = xmlDocument.CARDS.DECK.CARD
 				cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
 				if (cards && cards.length > 0 && (configMode === 'Rules' || cards.length > Number(cardcount))) {
@@ -517,7 +512,7 @@
 									{
 										text: `${j + 1}/${
 											cards.length
-										} -> Adding to junk sheet S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} (${reason})`,
+										} -> Adding to junk sheet S${season} ${category.toUpperCase()} ${id} with mv ${marketValue}`,
 									},
 								]
 								content.push({
@@ -531,7 +526,7 @@
 									{
 										text: `${j + 1}/${
 											cards.length
-										} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue} (${reason})`,
+										} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue}`,
 									},
 								]
 								let token = ''
@@ -592,12 +587,9 @@
 							} else {
 								// Classic Mode
 								if (mode === 'Gift' || (mode === 'Gift and Sell' && sell === true)) {
-									let giftto = giftee
+									let giftto = gifteeQueue[0]
 									findSplit.forEach(findid => {
 										const matchGiftee = findid[2]
-										// console.log(matchGiftee)
-										// console.log(findid[0])
-										// console.log(String(id))
 										if (findid[0] === String(id)) {
 											if (matchGiftee) giftto = matchGiftee
 										}
@@ -613,8 +605,7 @@
 										gift: `${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}`,
 										sell: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/gift=1?${urlParameters('JunkDaJunk', main)}`,
 										fail: `${nation} failed to gift ${id}`,
-										success: `${nation} gifted ${id} - ${reason}, received by`,
-										overrideGiftee: giftto,
+										success: `${nation} gifted ${id} - ${reason}`,
 									})
 								} else {
 									progress = [
@@ -636,9 +627,9 @@
 					for (let k = 0; k < giftQueue.length; k++) {
 						if (abortController.signal.aborted || stopped) break
 
-						const { gift: url, success, fail, overrideGiftee } = giftQueue[k]
+						const { gift: url, success, fail } = giftQueue[k]
 
-						let attemptGiftee = overrideGiftee ? overrideGiftee : gifteeQueue[0] || ''
+						let attemptGiftee = gifteeQueue[0] || ''
 						if (!attemptGiftee) {
 							info = [...info, { text: `No available giftees remaining. Stopping gifting.`, color: 'red' }]
 							break
@@ -654,7 +645,7 @@
 							cnx: currentNationXPin,
 							nsp: nationSpecificPassword,
 							password,
-							specificGiftee: overrideGiftee || attemptGiftee,
+							specificGiftee: attemptGiftee,
 						})
 
 						currentNationXPin = newXpin
@@ -676,12 +667,18 @@
 							})
 							progress = [
 								...progress,
-								{ text: `${k + 1}/${giftQueue.length} -> ${fail} - ${failureReason}`, color: 'red' },
+								{
+									text: `${k + 1}/${giftQueue.length} -> ${fail} - ${failureReason} to ${attemptGiftee}`,
+									color: 'red',
+								},
 							]
 							currSellCard++
 						} else {
 							actionCount++
-							progress = [...progress, { text: `${k + 1}/${giftQueue.length} -> ${success}`, color: 'green' }]
+							progress = [
+								...progress,
+								{ text: `${k + 1}/${giftQueue.length} -> ${success} to ${attemptGiftee}`, color: 'green' },
+							]
 							giftedCards++
 							junkCounter =
 								junkMethod === 'API'
