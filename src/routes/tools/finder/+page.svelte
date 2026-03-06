@@ -146,11 +146,12 @@
 				xpin = newXpin
 
 				console.log(fail)
-				if (fail === 'no capacity' || fail === `No such nation: ${cg}.`) {
+				if (fail === 'no capacity' || fail === `No such nation: "${cg}".`) {
 					info = [...info, { text: `${nation} failed to gift ${id} to ${cg}, ${fail}`, color: 'red' }]
 					if (!overrideGiftee) gifteeList.shift()
 					if (overrideGiftee) overrideGiftee = ''
 					attemptGiftee = gifteeList[0] || ''
+					console.log(attemptGiftee)
 					continue
 				}
 
