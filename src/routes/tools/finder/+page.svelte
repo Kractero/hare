@@ -145,7 +145,7 @@
 
 				xpin = newXpin
 
-				if (fail === 'no capacity') {
+				if (fail === 'no capacity' || fail === 'No such nation') {
 					info = [...info, { text: `${nation} failed to gift ${id} to ${cg}, ${fail}`, color: 'red' }]
 					if (!overrideGiftee) gifteeList.shift()
 					if (overrideGiftee) overrideGiftee = ''

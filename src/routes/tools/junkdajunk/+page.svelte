@@ -650,7 +650,7 @@
 
 						currentNationXPin = newXpin
 
-						if (failureReason === 'no capacity') {
+						if (failureReason === 'no capacity' || failureReason === 'No such nation') {
 							progress = [
 								...progress,
 								{ text: `${k + 1}/${giftQueue.length} -> ${fail} - ${failureReason}`, color: 'red' },
