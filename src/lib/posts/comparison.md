@@ -3,8 +3,8 @@ title: Containers vs Containerless
 description: Comparing containers and containerless
 url: comparison
 author: Kractero
-order: 3
-category: overview
+order: 27
+category: deprecated
 ---
 
 Containers are the traditional method that has been used in cards to streamline card farming by allowing the process of switching between nations to be done automatically via Firefox's native container system.

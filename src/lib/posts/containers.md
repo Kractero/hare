@@ -3,8 +3,8 @@ title: Container Setup
 description: Setting up Containers for Farming
 url: containers
 author: Kractero
-order: 3
-category: containers
+order: 25
+category: deprecated
 ---
 
 <script>

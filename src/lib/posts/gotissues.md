@@ -9,19 +9,16 @@ category: tools
 
 gotIssues is the primary tool that enables card farming, as it allows you to clear all your puppet's issues and open packs through an html sheet.
 
-1. To use gotIssues effectively, you must first install the following userscript:
-
+1. To use gotIssues effectively, you must first install the following userscripts:
    - <a href="https://github.com/dithpri/RCES/raw/master/userscripts/issue_answering/NsIssueCompactorRand.user.js" target="_blank">NSIssueCompactorRand</a> by Racoda.
 
-   Issues are intended to automatically close for gotIssues, but the condition on which it closes can depend on your preference.
-
+   You will want to autoclose issues when using gotIssues to save time, but the condition on which it closes can depend on your preference.
    - **Always close the issue, even if a pack was generated.** <a href="https://raw.githubusercontent.com/dithpri/RCES/refs/heads/master/userscripts/issue_answering/NsDilemmaAutoCloseAll.user.js">NSDilemmaAutoCloseAll</a> by Racoda.
 
    - **Do not close the issue if a pack was generated.** <a href="https://raw.githubusercontent.com/dithpri/RCES/refs/heads/master/userscripts/issue_answering/NsDilemmaAutoClose.user.js">NSDilemmaAutoClose</a> by Racoda.
 
    gotIssues also supports packs, which can either be automatically closed or not. If you want to see the cards, do not use an autocloser for packs. Otherwise:
-
-   - If you want packs to autoclose, you need to install a pack autocloser, of which there are some variations. <a href="https://raw.githubusercontent.com/Kractero/userscripts/refs/heads/main/packAutocloser.user.js" target="_blank">This is the basic one</a>.
+   - If you want packs to autoclose, you need to install a pack autocloser. <a href="https://raw.githubusercontent.com/Kractero/userscripts/refs/heads/main/packAutocloser.user.js" target="_blank">This is the simplest one</a>.
 
 2. With the userscript installed and your containers properly set up, visit <a href="/tools/gotissues" target="_blank" rel="noreferrer noopener">gotIssues</a>.
 

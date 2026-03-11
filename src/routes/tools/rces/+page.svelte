@@ -29,6 +29,7 @@
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		downloadable = false
+		content = ''
 		let puppetList = puppets.split('\n')
 		for (let i = 0; i < puppetList.length; i++) {
 			let nation = puppetList[i].replaceAll(' ', '_').toLowerCase()

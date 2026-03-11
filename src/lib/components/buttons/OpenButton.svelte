@@ -13,7 +13,9 @@
 	$effect(() => {
 		openNewLinkArr
 		progress
-		openedCount = 0
+		if (progress.length === 1) {
+			openedCount = 0
+		}
 	})
 </script>
 
@@ -40,5 +42,5 @@
 			openNewLinkArr.splice(0, 1)
 		}
 	}}>
-	Open Available Link {openNewLinkArr.length > 0 ? `(${openedCount} / ${openNewLinkArr.length})` : ''}
+	Open Available Link {openNewLinkArr.length > 0 ? `(${openedCount} / ${openNewLinkArr.length + openedCount})` : ''}
 </Button>

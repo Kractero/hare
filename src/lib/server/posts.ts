@@ -25,13 +25,12 @@ const rawPosts = Object.entries(import.meta.glob<GlobEntry>('/src/lib/posts/**/*
 	}
 )
 
-// Add manual post
-rawPosts.push({
+rawPosts.splice(7, 0, {
 	title: 'Tools',
 	description: '',
 	url: '/resources/tools',
 	author: '',
-	order: 9999, // position this as you like
+	order: 7,
 	category: 'Utilities',
 	slug: 'tools',
 })

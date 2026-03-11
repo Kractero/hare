@@ -32,6 +32,8 @@
 		const regexContainer = /container=[^/&]+/
 		const regexNation = /nation=[^/&]+/
 
+		content = []
+
 		const puppetsList = puppets.split('\n')
 
 		for (let i = 0; i < puppetsList.length; i++) {

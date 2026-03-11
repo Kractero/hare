@@ -3,8 +3,8 @@ title: Cardtainers Advert
 description: Why to use Cardtainers
 url: cardtainers
 author: Kractero
-order: 4
-category: containers
+order: 26
+category: deprecated
 ---
 
 <a href="https://addons.mozilla.org/en-US/firefox/addon/cardtainers/" target="_blank">Cardtainers</a> is a Firefox extension designed to simplify the management of containers specfically for NationStates.

@@ -3,8 +3,8 @@ title: Containerless
 description: Avoiding the border patrol
 url: containerless
 author: Kractero
-order: 5
-category: containerless
+order: 24
+category: deprecated
 ---
 
 <script>

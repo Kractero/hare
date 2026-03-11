@@ -1,5 +1,41 @@
 # Changelog
 
+## 2026-03-11
+
+Adjusted the documentation to deprecate/move the Container-related stuff and Python out of the way. Recorded a video for SCS and TamperMonkey set-up/installation.
+
+### Fixes
+
+1. gotIssues, Pinger, Finder, JunkDaJunk
+   - Open New Link button will always show the total length, even as the size of the available link decreases, this is how it should have always worked.
+
+2. Sheetify, RCES
+   - Regenerating it will clear the original output.
+
+## 2026-03-06
+
+### Fixes
+
+1. Finder, JunkDaJunk
+   - The giftee queue will handle and skip nations that do not exist, particularly to handle mispellings.
+
+## 2026-02-17
+
+### Fixes
+
+1. Finder, JunkDaJunk
+   - Iterate the giftee queue properly. I don't remember what this was fixed for, this is why you write this stuff at the point of commit and not a month later.
+
+## 2026-02-13
+
+### Fixes
+
+1. Fix password in goldRetriever and Finder replacing spaces with underscores, merged from Merethin.
+
+## 2026-01-22
+
+Added rule-based JDJ, merged from Jiangbei.
+
 ## 2026-01-07
 
 ### Adjustments
