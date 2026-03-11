@@ -107,7 +107,7 @@ Containers aren't strictly necessary for farming, as you can use any puppet mana
 
 Containers are essentially isolated browser instances that retain their own cookies and sessions. This allows you to be logged in to multiple accounts at once.
 
-As mentioned [above](#browsers), the only browsers that support this feature are Firefox and its derivatives. Sorry to Chromium users.
+As mentioned above, the only browsers that support this feature are Firefox and its derivatives. Sorry to Chromium users.
 
 You have two main choices for containers:
 
