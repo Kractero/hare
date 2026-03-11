@@ -13,11 +13,11 @@ export const non_md = [
 		keywords: ['guides'],
 		description: "The West Pacific's guide to Trading Cards",
 	},
-	{
-		title: 'Containerise',
-		author: 'Racoda',
-		url: 'https://www.nationstates.net/page=dispatch/id=1383002',
-		keywords: ['guides'],
-		description: 'Containers? What? Why? A detailed guide.',
-	},
+	// {
+	// 	title: 'Containerise',
+	// 	author: 'Racoda',
+	// 	url: 'https://www.nationstates.net/page=dispatch/id=1383002',
+	// 	keywords: ['guides'],
+	// 	description: 'Containers? What? Why? A detailed guide.',
+	// },
 ]
