@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-04-03
+
+### Changes
+
+1. Auction
+
+- Replaced Skip Threshold with Keep, where the specified keep value changes auction to check for the value + the keep, so nations will retain bank equal to the value of keep after a transfer.
+
+### Fixes
+
+1. JunkDaJunk
+
+- Rule based JDJ should pull its own giftees and not need to default to the ones defined in classic.
+
 ## 2026-03-11
 
 Adjusted the documentation to deprecate/move the Container-related stuff and Python out of the way. Recorded a video for SCS and TamperMonkey set-up/installation.

@@ -26,7 +26,7 @@
 	let mode = $state('Transfer')
 	let transferCards = $state('')
 	let auctionMain = $state('')
-	let skip = $state('-1')
+	let keep = $state('1')
 	let template = $state('Overall-None')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
@@ -38,7 +38,7 @@
 		amount = page.url.searchParams.get('amount') || (localStorage.getItem('auctionAmount') as string) || '10'
 		auctionMain = page.url.searchParams.get('auctionMain') || (localStorage.getItem('auctionMain') as string) || ''
 		mode = page.url.searchParams.get('mode') || (localStorage.getItem('auctionMode') as string) || 'Transfer'
-		skip = page.url.searchParams.get('skip') || (localStorage.getItem('auctionSkip') as string) || '-1'
+		keep = page.url.searchParams.get('keep') || (localStorage.getItem('auctionKeep') as string) || '-1'
 	})
 
 	onDestroy(() => abortController.abort())
@@ -123,7 +123,8 @@
 					const deckInfo = await parseXML(`${domain}/cgi-bin/api.cgi?nationname=${nation}&q=cards+deck+info`, main)
 					let nationalBank = deckInfo.CARDS.INFO.BANK
 
-					if (nationalBank > Number(amount) && (Number(skip) < 0 || nationalBank < Number(skip))) {
+					const keepAmount = Number(keep) > 0 ? Number(keep) : 0
+					if (nationalBank >= Number(amount) + keepAmount) {
 						let cardsTransferable = Math.floor(nationalBank / Number(amount))
 						progress = [...progress, { text: `${nation} can transfer ${cardsTransferable} cards!`, color: 'green' }]
 						while (cardsTransferable > 0 && transferableIDs.length > 0) {
@@ -179,7 +180,10 @@
 						} else {
 							progress = [
 								...progress,
-								{ text: `${nation}'s bank ${nationalBank} exceeds the skip threshold of ${skip}.`, color: 'yellow' },
+								{
+									text: `${nation} cannot afford any cards (Bank: ${nationalBank}, needs ${Number(amount) + keepAmount}).`,
+									color: 'yellow',
+								},
 							]
 						}
 					}
@@ -234,7 +238,11 @@
 		<FormSelect id="template" label="Template" bind:bindValue={template} items={['Overall-None', 'Regular']} />
 		<FormInput label="Main Nation" bind:bindValue={auctionMain} id="auctionMain" required={true} />
 		<FormInput label="Amount" bind:bindValue={amount} id="amount" required={true} />
-		<FormInput label="Skip Threshold" subTitle="-1 means don't skip" bind:bindValue={skip} id="skip" />
+		<FormInput
+			label="Keep"
+			subTitle="Keep a certain amount of bank after auction (ex: setting 1 will only include nations with 1 bank over the amount)"
+			bind:bindValue={keep}
+			id="keep" />
 		<Buttons
 			downloadButton={true}
 			bind:downloadable

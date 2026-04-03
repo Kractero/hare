@@ -627,9 +627,9 @@
 					for (let k = 0; k < giftQueue.length; k++) {
 						if (abortController.signal.aborted || stopped) break
 
-						const { gift: url, success, fail } = giftQueue[k]
+						const { gift: url, success, fail, overrideGiftee } = giftQueue[k]
 
-						let attemptGiftee = gifteeQueue[0] || ''
+						let attemptGiftee = configMode === 'Rules' && overrideGiftee ? overrideGiftee : gifteeQueue[0] || ''
 						if (!attemptGiftee) {
 							info = [...info, { text: `No available giftees remaining. Stopping gifting.`, color: 'red' }]
 							break

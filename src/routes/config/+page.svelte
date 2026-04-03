@@ -78,7 +78,7 @@
 		auctionMain: '',
 		auctionAmount: '',
 		auctionMode: 'Transfer',
-		auctionSkip: '-1',
+		auctionKeep: '-1',
 		junkdajunkConfigMode: 'Classic',
 		junkdajunkRules: [],
 	})
@@ -392,9 +392,9 @@
 			bind:bindValue={localStorageObject.auctionMode}
 			items={['Transfer', 'Bids', 'Asks']} />
 		<FormInput
-			label="Skip Threshold"
-			subTitle="-1 means don't skip"
-			bind:bindValue={localStorageObject.auctionSkip}
+			label="Keep"
+			subTitle="-Keep a certain amount of bank after auction (ex: setting 1 will only include nations with 1 bank over the amount)"
+			bind:bindValue={localStorageObject.auctionKeep}
 			id="skip" />
 		<div class="flex max-w-lg justify-center">
 			<Button class="mx-auto w-max" variant="default" type="submit">Submit</Button>
