@@ -7,7 +7,7 @@
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { sleep } from '$lib/helpers/parser'
-	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
+	import { checkUserAgent, pushHistory } from '$lib/helpers/utils'
 
 	const abortController = new AbortController()
 	let domain = ''
@@ -83,15 +83,13 @@
 				nationSpecificPassword ? nationSpecificPassword : password
 			)
 			if (existence === false) {
-				info = [...info, { text: `Failed to log into ${nation}, adding to restore sheet...`, color: 'red' }]
-				let nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
-				content.push({
-					url: `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=login/test=1?${urlParameters('Pinger', main)}`,
-					tableText: `Link to Restore ${nation}`,
-				})
+				info = [
+					...info,
+					{ text: `Failed to log into ${nation}. Needs restore. ${i + 1}/${puppetList.length}`, color: 'red' },
+				]
 			}
 			if (existence === true) {
-				progress = [...progress, { text: `Successfully logged into ${nation}` }]
+				progress = [...progress, { text: `Successfully logged into ${nation} ${i + 1}/${puppetList.length}` }]
 			}
 		}
 		progress = [
