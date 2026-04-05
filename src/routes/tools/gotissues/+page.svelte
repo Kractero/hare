@@ -138,6 +138,14 @@
 						continue
 					}
 					if (packs >= Number(minPack)) {
+						if (packsToOpen < packs) {
+							const basePage = `${domain}/page=deck/nation=${nation_formatted}?close=me&${urlParameters('gotIssues', main)}`
+							if (mode === 'Both') {
+								packContent.push({ url: basePage, tableText: 'Base Page' })
+							} else {
+								content.push({ url: basePage, tableText: 'Base Page' })
+							}
+						}
 						for (let i = 0; i < packsToOpen; i++) {
 							const packLink = `${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}?open_loot_box=1&${urlParameters('gotIssues', main)}`
 							if (mode === 'Both') {
