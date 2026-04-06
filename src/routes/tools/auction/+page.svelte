@@ -94,14 +94,14 @@
 
 					const matchingEntries = findSplit.filter(match => match[0] === String(id) && match[1] === String(season))
 					if (matchingEntries.length > 0) {
-						if (!transferCounts[id]) {
-							transferCounts[id] = { count: 0, season, id }
+						if (!transferCounts[`${id}-${season}`]) {
+							transferCounts[`${id}-${season}`] = { count: 0, season, id }
 						}
-						transferCounts[id].count++
+						transferCounts[`${id}-${season}`].count++
 					}
 				}
 
-				for (const [id, { count, season }] of Object.entries(transferCounts)) {
+				for (const [, { count, season, id }] of Object.entries(transferCounts)) {
 					info = [
 						...info,
 						{ text: `${auctionMain} has ${count} copies of card ID ${id}, season ${season}`, color: 'blue' },
@@ -128,8 +128,8 @@
 						let cardsTransferable = Math.floor(nationalBank / Number(amount))
 						progress = [...progress, { text: `${nation} can transfer ${cardsTransferable} cards!`, color: 'green' }]
 						while (cardsTransferable > 0 && transferableIDs.length > 0) {
-							let id = transferableIDs[currIndex]
-							let { count, season } = transferCounts[id]
+							let key = transferableIDs[currIndex]
+							let { count, season, id } = transferCounts[key]
 
 							if (!season) {
 								progress = [...progress, { text: 'You did not provide the season.', color: 'red' }]
@@ -137,7 +137,7 @@
 								return
 							}
 
-							if (count > 0 && transferCounts[id].count > 0) {
+							if (count > 0 && transferCounts[key].count > 0) {
 								progress = [...progress, { text: `${i + 1} Generated ask link for card ID ${id}, season ${season}` }]
 								const singleAskLink = `${domain}/container=${canonicalize(auctionMain)}/nation=${canonicalize(auctionMain)}/page=deck/card=${id}${template === 'Overall-None' ? '/template-overall=none' : ''}/season=${season}?mode=ask&amount=${amount}&${urlParameters('Auction-Transfer', main)}`
 								content.push({
@@ -158,10 +158,10 @@
 									tableText: `Link to Bid on ${canonicalize(nation)}`,
 								})
 
-								transferCounts[id].count--
+								transferCounts[key].count--
 								cardsTransferable--
 
-								if (transferCounts[id].count === 0) {
+								if (transferCounts[key].count === 0) {
 									transferableIDs.splice(currIndex, 1)
 
 									if (currIndex > 0) currIndex--
