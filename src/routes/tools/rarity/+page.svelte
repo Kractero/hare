@@ -58,7 +58,9 @@
 		const isWADelegate = nationApiResponse.NATION.UNSTATUS.includes('Delegate')
 		const cc = Array.isArray(nationApiResponse.NATION.WABADGES.WABADGE)
 			? nationApiResponse.NATION.WABADGES.WABADGE.length
-			: 1
+			: nationApiResponse.NATION.WABADGES.WABADGE
+				? 1
+				: 0
 
 		// remove z-day trash
 		const ranks: CensusRank[] = nationApiResponse.NATION.CENSUS.SCALE.filter(
@@ -252,12 +254,12 @@
 		]
 
 		const congrats: Record<string, string> = {
-			Common: `You are courageously common. (${total.toFixed(2)}) ${nextRarity ? `${(nextScore - total).toFixed(2)} points to ${nextRarity}.` : ''}`,
-			Uncommon: `You are upwardly uncommon. (${total.toFixed(2)}) ${nextRarity ? `${(nextScore - total).toFixed(2)} points to ${nextRarity}.` : ''}`,
-			Rare: `You are remarkably rare. (${total.toFixed(2)}) ${nextRarity ? `${(nextScore - total).toFixed(2)} points to ${nextRarity}.` : ''}`,
-			'Ultra Rare': `You are upwardly and remarkably ultra rare. (${total.toFixed(2)}) ${nextRarity ? `${(nextScore - total).toFixed(2)} points to ${nextRarity}.` : ''}`,
-			Epic: `You are epicly epic! (${total.toFixed(2)}) ${nextRarity ? `Only ${(nextScore - total).toFixed(2)} points to ${nextRarity}...` : ''}`,
-			Legendary: `You are legendarily legendary! (${total.toFixed(2)})`,
+			Common: `${calc} is courageously common. (${total.toFixed(2)}) ${nextRarity ? `${(nextScore - total).toFixed(2)} points to ${nextRarity}.` : ''}`,
+			Uncommon: `${calc} is upwardly uncommon. (${total.toFixed(2)}) ${nextRarity ? `${(nextScore - total).toFixed(2)} points to ${nextRarity}.` : ''}`,
+			Rare: `${calc} is remarkably rare. (${total.toFixed(2)}) ${nextRarity ? `${(nextScore - total).toFixed(2)} points to ${nextRarity}.` : ''}`,
+			'Ultra Rare': `${calc} is upwardly and remarkably ultra rare. (${total.toFixed(2)}) ${nextRarity ? `${(nextScore - total).toFixed(2)} points to ${nextRarity}.` : ''}`,
+			Epic: `${calc} is epicly epic! (${total.toFixed(2)}) ${nextRarity ? `Only ${(nextScore - total).toFixed(2)} points to ${nextRarity}...` : ''}`,
+			Legendary: `${calc} is legendarily legendary! (${total.toFixed(2)})`,
 		}
 
 		progress = [...progress, { text: congrats[rarity], color: rarity }]
