@@ -48,7 +48,7 @@
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		const nationApiResponse = await parseXML(
-			`${domain}/cgi-bin/api.cgi?nation=${calc}&q=wabadges+wa+census;scale=all;mode=rank+prank`,
+			`${domain}/cgi-bin/api.cgi?nation=${calc}&q=population+wabadges+wa+census;scale=all;mode=rank+prank`,
 			main
 		)
 
@@ -58,7 +58,7 @@
 		let gr = 0
 		let waEnd = 0
 		let iaEnd = 0
-		const isWAMember = nationApiResponse.NATION.UNSTATUS.includes('WA')
+		const pop = Number(nationApiResponse.NATION.POPULATION) / 1000
 		const isWADelegate = nationApiResponse.NATION.UNSTATUS.includes('Delegate')
 		const cc = Array.isArray(nationApiResponse.NATION.WABADGES.WABADGE)
 			? nationApiResponse.NATION.WABADGES.WABADGE.length
@@ -86,32 +86,30 @@
 			else if (scale.PRANK <= 10) gr++
 		})
 
-		const valWorldFirst = wf * 6
-		const valGold = g * 1.4
-		const valOrange = o * 0.2
-		const valGreen = gr * 0.02
+		const valWorldFirst = wf * 3
+		const valGold = g
+		const valOrange = o / 5
+		const valGreen = gr * 0.05
 
 		function computeWaIaVal(rank: number, factor: number) {
 			if (!rank) return 0
-			return Math.sqrt((1 / (factor * (rank + 60) ** 2)) * (rank + 60 + 10000))
+			return Math.sqrt((1 / (factor * (rank + 40) ** 2)) * (rank + 40 + 10000)) / 15
 		}
 		const valWaEnd = computeWaIaVal(waEnd, 0.001)
-		const valIaEnd = computeWaIaVal(iaEnd, 0.01)
-
-		const valWaMember = isWAMember ? 0.1 : 0
-		const valWaDelegate = isWADelegate ? 8 : 0
-		const valFounder = founder ? 4 : 0
-		const valGovernor = governor ? 4 : 0
+		const valIaEnd = computeWaIaVal(iaEnd, 0.001)
+		const valWaDelegate = isWADelegate ? 4 : 0
+		const valFounder = founder ? 3 : 0
+		const valGovernor = governor ? 3 : 0
 
 		const valEasterEggs = 1.25 * Math.sqrt(egg)
-		const valIssuesAuth = 2 * Math.sqrt(ia * 40)
-		const valGaAuth = 2 * Math.sqrt(gaResAuthoredVal * 15)
-		const valScAuth = 2 * Math.sqrt(scResAuthoredVal * 15)
-		const valUnAuth = 2 * Math.sqrt(unResAuthoredVal * 15)
-		const valCcCount = 2 * Math.sqrt(cc * 120)
-
-		const valGameMod = staff ? 50 : 0
-		const valRetiredMod = retiredmod ? 50 : 0
+		const valIssuesAuth = ia * 8 - (8 - 2.5) * Math.max(0, ia - 1)
+		const valGaAuth = gaResAuthoredVal * 2.4
+		const valScAuth = scResAuthoredVal * 2.4
+		const valUnAuth = unResAuthoredVal * 2.4
+		const valCcCount = cc * 11
+		const valGameMod = staff ? 35 : 0
+		const valRetiredMod = retiredmod ? 1 : 0
+		const valPop = pop / 8
 
 		const total = [
 			valWorldFirst,
@@ -120,7 +118,6 @@
 			valGreen,
 			valWaEnd,
 			valIaEnd,
-			valWaMember,
 			valWaDelegate,
 			valFounder,
 			valGovernor,
@@ -132,33 +129,16 @@
 			valCcCount,
 			valGameMod,
 			valRetiredMod,
+			valPop,
 		].reduce((acc, v) => acc + v, 0)
 
 		const tiers = [
-			{
-				name: 'Common',
-				max: 4,
-			},
-			{
-				name: 'Uncommon',
-				max: 9,
-			},
-			{
-				name: 'Rare',
-				max: 18,
-			},
-			{
-				name: 'Ultra Rare',
-				max: 36,
-			},
-			{
-				name: 'Epic',
-				max: 64,
-			},
-			{
-				name: 'Legendary',
-				max: Infinity,
-			},
+			{ name: 'Common', max: 2.7 },
+			{ name: 'Uncommon', max: 6.1 },
+			{ name: 'Rare', max: 12.1 },
+			{ name: 'Ultra Rare', max: 24.3 },
+			{ name: 'Epic', max: 43.1 },
+			{ name: 'Legendary', max: Infinity },
 		]
 
 		let rarity = ''
@@ -208,11 +188,6 @@
 				name: 'International Artwork rank',
 				val: valIaEnd,
 				calc: `√((1 / (0.01 * (IA Rank + 60)^2)) * ((IA Rank + 60) + 10000))`,
-			},
-			{
-				name: 'WA Member',
-				val: valWaMember,
-				calc: isWAMember ? 'Yes (+0.1)' : 'No',
 			},
 			{
 				name: 'WA Delegate',
@@ -269,6 +244,11 @@
 				val: valRetiredMod,
 				calc: retiredmod ? 'Yes (+6)' : 'No',
 			},
+			{
+				name: 'Population',
+				val: valPop,
+				calc: `${valPop}/8`,
+			},
 		]
 
 		const congrats: Record<string, string> = {
@@ -299,9 +279,9 @@
 	originalBlurb="rewritten for browser use by Kractero"
 	link="https://gist.github.com/Sitethief/460e7dad929ab51558348c3936abdced"
 	additional={`<p class="text-sm mb-16">
-    This calculator is guesswork and should be taken as an estimate. In particular, the tier thresholds were made years ago.
-	Some adjustments to the base calculation was made. I am assuming that paid badges do not contribute to
-    rarity. I am lumping all active site staff badges into one category.
+    This calculator is guesswork and should be taken as an estimate. It uses Fhaengshia's adjusted ratios with some of
+	Site's ratios (greens, eggs). The thresholds were also adjusted based on the knowledge that Wentland is the lowest leg,
+	with other ratios scaled based on the old thresholds.
 </p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
