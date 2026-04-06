@@ -19,7 +19,9 @@
 	let retiredmod = $state(false)
 	let staff = $state(false)
 	let ia = $state(0)
-	let res = $state(0)
+	let gaResAuthoredVal = $state(0)
+	let scResAuthoredVal = $state(0)
+	let unResAuthoredVal = $state(0)
 	let egg = $state(0)
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
@@ -32,14 +34,16 @@
 		staff = page.url.searchParams.get('staff') === 'true' ? true : false
 		retiredmod = page.url.searchParams.get('retired') === 'true' ? true : false
 		ia = Number(page.url.searchParams.get('ia')) || 0
-		res = Number(page.url.searchParams.get('res')) || 0
+		gaResAuthoredVal = Number(page.url.searchParams.get('ga')) || 0
+		scResAuthoredVal = Number(page.url.searchParams.get('sc')) || 0
+		unResAuthoredVal = Number(page.url.searchParams.get('un')) || 0
 		egg = Number(page.url.searchParams.get('egg')) || 0
 	})
 
 	async function onSubmit(e: Event) {
 		e.preventDefault()
 		pushHistory(
-			`?main=${main}&calc=${calc}&gov=${governor}&found=${founder}&staff=${staff}&retired=${retiredmod}&ia=${ia}&res=${res}&egg=${egg}`
+			`?main=${main}&calc=${calc}&gov=${governor}&found=${founder}&staff=${staff}&retired=${retiredmod}&ia=${ia}&ga=${gaResAuthoredVal}&sc=${scResAuthoredVal}&un=${unResAuthoredVal}&egg=${egg}`
 		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -101,7 +105,9 @@
 
 		const valEasterEggs = 1.25 * Math.sqrt(egg)
 		const valIssuesAuth = 2 * Math.sqrt(ia * 40)
-		const valGaAuth = 2 * Math.sqrt(res * 15)
+		const valGaAuth = 2 * Math.sqrt(gaResAuthoredVal * 15)
+		const valScAuth = 2 * Math.sqrt(scResAuthoredVal * 15)
+		const valUnAuth = 2 * Math.sqrt(unResAuthoredVal * 15)
 		const valCcCount = 2 * Math.sqrt(cc * 120)
 
 		const valGameMod = staff ? 50 : 0
@@ -121,6 +127,8 @@
 			valEasterEggs,
 			valIssuesAuth,
 			valGaAuth,
+			valScAuth,
+			valUnAuth,
 			valCcCount,
 			valGameMod,
 			valRetiredMod,
@@ -232,9 +240,19 @@
 				calc: `2 * √(${ia} * 40)`,
 			},
 			{
-				name: 'Resolutions Authored',
+				name: 'GA Resolutions Authored',
 				val: valGaAuth,
-				calc: `2 * √(${res} * 15)`,
+				calc: `2 * √(${valGaAuth} * 15)`,
+			},
+			{
+				name: 'SC Resolutions Authored',
+				val: valScAuth,
+				calc: `2 * √(${valScAuth} * 15)`,
+			},
+			{
+				name: 'UN Resolutions Authored',
+				val: valUnAuth,
+				calc: `2 * √(${valUnAuth} * 15)`,
 			},
 			{
 				name: 'Condemnations/Commendations',
@@ -295,13 +313,9 @@
 		<FormCheckbox disabled={retiredmod} bind:checked={staff} id="staff" label="Site Staff" />
 		<FormCheckbox disabled={staff} bind:checked={retiredmod} id="retiredmod" label="Retired Mod" />
 		<FormInput type="number" label={`Issues Authored`} bind:bindValue={ia} id="ia" required={true} />
-		<FormInput
-			type="number"
-			label={`Resolutions`}
-			subTitle="Sum GA, SC, UN"
-			bind:bindValue={res}
-			id="res"
-			required={true} />
+		<FormInput type="number" label={`GA Resolutions`} bind:bindValue={gaResAuthoredVal} id="ia" required={true} />
+		<FormInput type="number" label={`SC Resolutions`} bind:bindValue={scResAuthoredVal} id="ia" required={true} />
+		<FormInput type="number" label={`UN Resolutions`} bind:bindValue={unResAuthoredVal} id="ia" required={true} />
 		<FormInput type="number" label={`Easter Eggs`} bind:bindValue={egg} id="egg" required={true} />
 		<Buttons />
 	</form>
