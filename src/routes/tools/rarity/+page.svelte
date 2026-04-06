@@ -159,96 +159,35 @@
 		}
 
 		const factors = [
-			{
-				name: 'World #1 stats',
-				val: valWorldFirst,
-				calc: `${wf} * 6`,
-			},
-			{
-				name: 'Gold stats',
-				val: valGold,
-				calc: `${g} * 1.4`,
-			},
-			{
-				name: 'Orange stats',
-				val: valOrange,
-				calc: `${o} * 0.2`,
-			},
-			{
-				name: 'Green stats',
-				val: valGreen,
-				calc: `${gr} * 0.02`,
-			},
+			{ name: 'World #1 stats', val: valWorldFirst, calc: `${wf} * 3 = ${valWorldFirst.toFixed(2)}` },
+			{ name: 'Gold stats', val: valGold, calc: `${g} = ${valGold.toFixed(2)}` },
+			{ name: 'Orange stats', val: valOrange, calc: `${o} / 5 = ${valOrange.toFixed(2)}` },
+			{ name: 'Green stats', val: valGreen, calc: `${gr} * 0.02 = ${valGreen.toFixed(2)}` },
 			{
 				name: 'WA Endorsements rank',
 				val: valWaEnd,
-				calc: `√((1 / (0.001 * (WA Endo Rank + 60)^2)) * ((WA Endo Rank + 60) + 10000))`,
+				calc: `√((1 / (0.001 * (${waEnd} + 40)^2)) * ((${waEnd} + 40) + 10000)) / 15 = ${valWaEnd.toFixed(2)}`,
 			},
 			{
-				name: 'International Artwork rank',
+				name: 'Cards rank',
 				val: valIaEnd,
-				calc: `√((1 / (0.01 * (IA Rank + 60)^2)) * ((IA Rank + 60) + 10000))`,
+				calc: `√((1 / (0.001 * (${iaEnd} + 40)^2)) * ((${iaEnd} + 40) + 10000)) / 15 = ${valIaEnd.toFixed(2)}`,
 			},
-			{
-				name: 'WA Delegate',
-				val: valWaDelegate,
-				calc: isWADelegate ? 'Yes (+8)' : 'No',
-			},
-			{
-				name: 'Founder',
-				val: valFounder,
-				calc: founder ? 'Yes (+4)' : 'No',
-			},
-			{
-				name: 'Governor',
-				val: valGovernor,
-				calc: governor ? 'Yes (+4)' : 'No',
-			},
-			{
-				name: 'Easter Eggs',
-				val: valEasterEggs,
-				calc: `1.25 * √(${egg})`,
-			},
+			{ name: 'WA Delegate', val: valWaDelegate, calc: isWADelegate ? `Yes (+4)` : 'No' },
+			{ name: 'Founder', val: valFounder, calc: founder ? `Yes (+3)` : 'No' },
+			{ name: 'Governor', val: valGovernor, calc: governor ? `Yes (+3)` : 'No' },
 			{
 				name: 'Issues Authored',
 				val: valIssuesAuth,
-				calc: `2 * √(${ia} * 40)`,
+				calc: `${ia} * 8 - (8 - 2.5) * max(0, ${ia} - 1) = ${valIssuesAuth.toFixed(2)}`,
 			},
-			{
-				name: 'GA Resolutions Authored',
-				val: valGaAuth,
-				calc: `2 * √(${valGaAuth} * 15)`,
-			},
-			{
-				name: 'SC Resolutions Authored',
-				val: valScAuth,
-				calc: `2 * √(${valScAuth} * 15)`,
-			},
-			{
-				name: 'UN Resolutions Authored',
-				val: valUnAuth,
-				calc: `2 * √(${valUnAuth} * 15)`,
-			},
-			{
-				name: 'Condemnations/Commendations',
-				val: valCcCount,
-				calc: `2 * √(${cc} * 120)`,
-			},
-			{
-				name: 'Site Staff',
-				val: valGameMod,
-				calc: staff ? 'Yes (+50)' : 'No',
-			},
-			{
-				name: 'Retired Mod',
-				val: valRetiredMod,
-				calc: retiredmod ? 'Yes (+6)' : 'No',
-			},
-			{
-				name: 'Population',
-				val: valPop,
-				calc: `${valPop}/8`,
-			},
+			{ name: 'GA Resolutions Authored', val: valGaAuth, calc: `${gaResAuthoredVal} * 2.4 = ${valGaAuth.toFixed(2)}` },
+			{ name: 'SC Resolutions Authored', val: valScAuth, calc: `${scResAuthoredVal} * 2.4 = ${valScAuth.toFixed(2)}` },
+			{ name: 'UN Resolutions Authored', val: valUnAuth, calc: `${unResAuthoredVal} * 2.4 = ${valUnAuth.toFixed(2)}` },
+			{ name: 'Condemnations/Commendations', val: valCcCount, calc: `${cc} * 11 = ${valCcCount.toFixed(2)}` },
+			{ name: 'Site Staff', val: valGameMod, calc: staff ? `Yes (+35)` : 'No' },
+			{ name: 'Retired Mod', val: valRetiredMod, calc: retiredmod ? `Yes (+1)` : 'No' },
+			{ name: 'Population', val: valPop, calc: `${pop} / 8 = ${valPop.toFixed(2)}` },
 		]
 
 		const congrats: Record<string, string> = {
