@@ -17,6 +17,12 @@
 		white: 'text-red-400',
 		yellow: 'text-yellow-400',
 		red: 'text-red-400',
+		Common: '#c9c9c9',
+		Uncommon: '#60d774',
+		Rare: '#5ab2de',
+		'Ultra Rare': '#d171e3',
+		Epic: '#d59b62',
+		Legendary: '#e4c21b',
 	}
 </script>
 
@@ -30,7 +36,9 @@
 	{/if}{#if continuousUpdate}<p class="font-bold text-purple-400">
 			{continuousUpdate}
 		</p>{/if}{#each trimmedProgress as { text, color, link }, i (i)}
-		<p class={`my-0.5 ${color && colors[color] ? colors[color] : ''}`}>
+		<p
+			class={`my-0.5 ${color && colors[color] ? (colors[color].startsWith('#') ? '' : colors[color]) : ''}`}
+			style={`${color && colors[color]?.startsWith('#') ? `color: ${colors[color]}` : ''}`}>
 			{#if text}
 				{text}
 			{/if}{#if link}

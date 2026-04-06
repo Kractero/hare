@@ -7,9 +7,10 @@
 		label: string
 		subTitle?: string
 		checked: boolean
+		disabled?: boolean
 	}
 
-	let { id, label, subTitle = '', checked = $bindable() }: Props = $props()
+	let { id, label, subTitle = '', checked = $bindable(), disabled = false }: Props = $props()
 </script>
 
 <div class={`flex max-w-lg items-center justify-between gap-4`}>
@@ -18,5 +19,5 @@
 		{#if subTitle}
 			<span class="text-xs">{subTitle}</span>
 		{/if}</Label>
-	<Checkbox bind:checked id="1" />
+	<Checkbox {disabled} bind:checked id="1" />
 </div>
