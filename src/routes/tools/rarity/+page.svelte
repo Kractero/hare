@@ -176,6 +176,7 @@
 			{ name: 'WA Delegate', val: valWaDelegate, calc: isWADelegate ? `Yes (+4)` : 'No' },
 			{ name: 'Founder', val: valFounder, calc: founder ? `Yes (+3)` : 'No' },
 			{ name: 'Governor', val: valGovernor, calc: governor ? `Yes (+3)` : 'No' },
+			{ name: 'Easter Eggs', val: valEasterEggs, calc: `1.25 * √(${egg})` },
 			{
 				name: 'Issues Authored',
 				val: valIssuesAuth,
