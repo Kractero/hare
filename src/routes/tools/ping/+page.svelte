@@ -7,7 +7,7 @@
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { sleep } from '$lib/helpers/parser'
-	import { checkUserAgent, pushHistory } from '$lib/helpers/utils'
+	import { checkUserAgent, pushHistory, urlParameters } from '$lib/helpers/utils'
 
 	const abortController = new AbortController()
 	let domain = ''
@@ -87,6 +87,11 @@
 					...info,
 					{ text: `Failed to log into ${nation}. Needs restore. ${i + 1}/${puppetList.length}`, color: 'red' },
 				]
+				let nation_formatted = nation.toLowerCase().replaceAll(' ', '_')
+				content.push({
+					url: `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=login/test=1?${urlParameters('Pinger', main)}`,
+					tableText: `Link to Restore ${nation}`,
+				})
 			}
 			if (existence === true) {
 				progress = [...progress, { text: `Successfully logged into ${nation} ${i + 1}/${puppetList.length}` }]
@@ -125,9 +130,6 @@
 			bind:downloadable
 			bind:content
 			name="restore">
-			{#if content}
-				<OpenButton bind:progress bind:openNewLinkArr={content} />
-			{/if}
 		</Buttons>
 	</form>
 	<Terminal bind:progress bind:info />
