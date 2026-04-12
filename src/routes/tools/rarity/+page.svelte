@@ -133,11 +133,11 @@
 		].reduce((acc, v) => acc + v, 0)
 
 		const tiers = [
-			{ name: 'Common', max: 2.7 },
-			{ name: 'Uncommon', max: 6.1 },
-			{ name: 'Rare', max: 12.1 },
-			{ name: 'Ultra Rare', max: 24.3 },
-			{ name: 'Epic', max: 43.1 },
+			{ name: 'Common', max: 2.8 },
+			{ name: 'Uncommon', max: 6.3 },
+			{ name: 'Rare', max: 12.6 },
+			{ name: 'Ultra Rare', max: 25.2 },
+			{ name: 'Epic', max: 44.876 },
 			{ name: 'Legendary', max: Infinity },
 		]
 

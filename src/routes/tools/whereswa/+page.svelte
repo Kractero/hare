@@ -26,10 +26,12 @@
 		pushHistory(`?main=${main}`)
 		errors = checkUserAgent('main')
 		if (errors.length > 0) return
+		progress = []
 		stoppable = true
 		const puppetsList = puppets.split('\n')
 		const xml = await parseXML(`${domain}/cgi-bin/api.cgi?wa=1&q=members`, main)
 		const members = xml.WA.MEMBERS.split(',')
+		let waFound = false
 		puppetsList.forEach(puppet => {
 			if (members.includes(puppet.toLowerCase().replace(' ', '_'))) {
 				progress = [
@@ -41,8 +43,16 @@
 						},
 					},
 				]
+				waFound = true
 			}
 		})
+		if (waFound === false) {
+			progress = [
+				{
+					text: 'No WA found',
+				},
+			]
+		}
 		stoppable = false
 	}
 </script>
