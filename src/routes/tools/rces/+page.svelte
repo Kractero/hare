@@ -60,7 +60,7 @@
 	Is not as configurable as the original, but I think default config had sane defaults.
 </p>`} />
 
-<div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
+<div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:main bind:puppets authenticated={false} {errors} />
 		<Buttons downloadButton={true} bind:downloadable bind:content type="html" name="RCES" />

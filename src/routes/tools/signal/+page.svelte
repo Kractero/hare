@@ -120,7 +120,7 @@
 	icon="📶"
 	caption="Given card ids, provide decks, collections, or check asks for bids for what's missing." />
 
-<div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
+<div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		<FormTextArea label="Card IDs" bind:bindValue={cardIds} id="cardIds" required />

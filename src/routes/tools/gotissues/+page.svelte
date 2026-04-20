@@ -202,7 +202,7 @@
 	Password input is optional and will be disabled if the puppet list includes a comma for nation,password.
 </p>`} />
 
-<div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
+<div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={true} />
 		<FormSelect id="mode" label="Issues and Packs" bind:bindValue={mode} items={['Both', 'Issues', 'Packs']} />

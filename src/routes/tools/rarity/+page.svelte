@@ -224,7 +224,7 @@
 	with other ratios scaled based on the old thresholds.
 </p>`} />
 
-<div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
+<div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		<FormInput label={`Nation`} bind:bindValue={calc} id="calc" required={true} />

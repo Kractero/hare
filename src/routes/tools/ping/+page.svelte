@@ -119,7 +119,7 @@
 	To restore nations, you need <a class="underline" href="https://github.com/Kractero/userscripts/raw/main/container-login/autolog.user.js" target="_blank" rel="noreferrer noopener">autolog helper</a>, as to maintain legality restores cannot be done automatically.
 </p>`} />
 
-<div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
+<div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets bind:password authenticated={true} />
 		<Buttons

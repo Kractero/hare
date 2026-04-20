@@ -13,7 +13,7 @@
 	title={'Hare'}
 	description={'Humble Automated Runner for Executing nationstates scripts. A central location to run NationStates scripts.'} />
 
-<div class="mb-12 grid grid-cols-12 items-center justify-between md:max-w-5xl lg:w-[1024px]">
+<div class="mb-12 grid grid-cols-12 items-center justify-between md:max-w-5xl lg:w-5xl">
 	<div class="col-span-full flex flex-col gap-2 lg:col-span-6">
 		<h1 class="mb-4 text-center text-5xl font-bold tracking-tight lg:text-left">
 			A central location for NationStates scripts.

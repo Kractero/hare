@@ -69,7 +69,7 @@
 	link="https://ledger.kractero.com/legendaries"
 	additional={`<p class="mb-16">As of ${date} (11:30 PM/23:30 UTC-7)</p>`} />
 
-<div class="mb-4 flex flex-col justify-between gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
+<div class="mb-4 flex flex-col justify-between gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<div>
 		<h2 class="mb-2 text-lg font-semibold">Per-Season</h2>
 		{#if counts.length > 0}
@@ -132,7 +132,7 @@
 	season or not.
 </p>
 
-<div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
+<div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<table class="w-full table-auto caption-bottom border-collapse text-left whitespace-normal">
 		<thead>
 			<tr>

@@ -99,7 +99,7 @@
 	icon="🃏"
 	caption={'Turn a deck into a text file of card ids, duplicates ignored.'} />
 
-<div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
+<div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:main bind:errors />
 		<FormInput

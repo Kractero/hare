@@ -62,7 +62,7 @@
 
 <ToolContent toolTitle="Sheetify" icon="📜" author="Kractero" caption="Make a click sheet out of a bunch of links." />
 
-<div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
+<div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:main bind:puppets authenticated={false} {errors} />
 		<FormInput label={'NS Link'} bind:bindValue={link} id="link" />

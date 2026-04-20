@@ -136,7 +136,7 @@
 	Behavior Specific indicates to search for specific nation's RoC, and is enabled only when top is empty.
 </p>`} />
 
-<div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
+<div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:errors bind:main />
 		{#if mode === 'Top'}

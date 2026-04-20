@@ -68,7 +68,7 @@
 		the flag userscript
 	</a> and <a class="underline" href="https://raw.githubusercontent.com/Kractero/userscripts/refs/heads/main/hare/decorator/flagautocloser.user.js" target="_blank" rel="noreferrer noopener">an autocloser to close the settings page (if its referrer is upload_flag)</a>. For flags, set the link to the image in line 13 of the userscript.
 	</p>`} />
-<div class="flex flex-col gap-8 break-normal lg:w-[1024px] lg:max-w-5xl lg:flex-row">
+<div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
 		<FormSelect id="mode" label="Mode" bind:bindValue={mode} items={['Flags', 'Banners']} />
