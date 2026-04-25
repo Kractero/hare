@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte'
 	import Button from '$lib/components/ui/button/button.svelte'
 
 	interface Props {
@@ -10,6 +11,8 @@
 	let busy = $state(false)
 	let lastNation = $state('')
 	let buttonEl = $state<HTMLElement | null>(null)
+
+	onMount(() => buttonEl?.focus())
 
 	const getNation = (url: string) => {
 		const part = url.split('nation=')[1]
@@ -55,10 +58,8 @@
 			if (!document.hidden) reset()
 		}
 		document.addEventListener('visibilitychange', onVisible)
-		window.addEventListener('focus', reset)
 		return () => {
 			document.removeEventListener('visibilitychange', onVisible)
-			window.removeEventListener('focus', reset)
 		}
 	})
 </script>
