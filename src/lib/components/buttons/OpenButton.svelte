@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { flushSync } from 'svelte'
 	import Button from '$lib/components/ui/button/button.svelte'
 
 	interface Props {
@@ -9,14 +8,33 @@
 	let { progress = $bindable([]), openNewLinkArr = $bindable([]) }: Props = $props()
 	let openedCount = $state(0)
 	let busy = $state(false)
+	let lastNation = $state('')
+	let buttonEl = $state<HTMLElement | null>(null)
+
+	const getNation = (url: string) => {
+		const part = url.split('nation=')[1]
+		return part ? part.split('/')[0].split('&')[0].split('?')[0] : ''
+	}
 
 	const openLink = () => {
-		if (openNewLinkArr.length === 0 || busy) return
-		busy = true
+		if (openNewLinkArr.length === 0) return
+		const nation = getNation(openNewLinkArr[0].url)
+		if (nation !== lastNation && busy) return
+		lastNation = nation
 		window.open(openNewLinkArr[0].url, '_blank')
 		openedCount++
 		openNewLinkArr.splice(0, 1)
 	}
+
+	$effect(() => {
+		const url = openNewLinkArr[0]?.url
+		if (!url) return
+		const nation = getNation(url)
+		if (nation !== lastNation) {
+			lastNation = nation
+			busy = true
+		}
+	})
 
 	$effect(() => {
 		openNewLinkArr
@@ -28,10 +46,10 @@
 
 	$effect(() => {
 		const reset = () => {
-			flushSync(() => {
-				busy = false
-			})
-			buttonEl?.focus()
+			const nation = getNation(openNewLinkArr[0]?.url ?? '')
+			if (nation !== lastNation) return
+			busy = false
+			setTimeout(() => buttonEl?.focus(), 0)
 		}
 		const onVisible = () => {
 			if (!document.hidden) reset()
@@ -43,8 +61,6 @@
 			window.removeEventListener('focus', reset)
 		}
 	})
-
-	let buttonEl = $state<HTMLElement | null>(null)
 </script>
 
 <Button
