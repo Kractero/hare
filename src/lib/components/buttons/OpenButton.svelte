@@ -28,7 +28,7 @@
 
 	$effect(() => {
 		const url = openNewLinkArr[0]?.url
-		if (!url) return
+		if (!url || url.includes('open_loot_box')) return
 		const nation = getNation(url)
 		if (nation !== lastNation && lastNation !== '') {
 			lastNation = nation
@@ -46,7 +46,9 @@
 
 	$effect(() => {
 		const reset = () => {
-			const nation = getNation(openNewLinkArr[0]?.url ?? '')
+			const url = openNewLinkArr[0]?.url
+			if (!url || !url.includes('open_loot_box')) return
+			const nation = getNation(url)
 			if (nation !== lastNation) return
 			busy = false
 			setTimeout(() => buttonEl?.focus(), 0)
@@ -55,9 +57,7 @@
 			if (!document.hidden) reset()
 		}
 		document.addEventListener('visibilitychange', onVisible)
-		return () => {
-			document.removeEventListener('visibilitychange', onVisible)
-		}
+		return () => document.removeEventListener('visibilitychange', onVisible)
 	})
 </script>
 
