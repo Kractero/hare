@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte'
 	import Button from '$lib/components/ui/button/button.svelte'
 
 	interface Props {
@@ -11,8 +10,6 @@
 	let busy = $state(false)
 	let lastNation = $state('')
 	let buttonEl = $state<HTMLElement | null>(null)
-
-	onMount(() => buttonEl?.focus())
 
 	const getNation = (url: string) => {
 		const part = url.split('nation=')[1]
@@ -33,7 +30,7 @@
 		const url = openNewLinkArr[0]?.url
 		if (!url) return
 		const nation = getNation(url)
-		if (nation !== lastNation) {
+		if (nation !== lastNation && lastNation !== '') {
 			lastNation = nation
 			busy = true
 		}
