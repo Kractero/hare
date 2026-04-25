@@ -29,12 +29,12 @@
 		const onVisible = () => {
 			if (!document.hidden) {
 				busy = false
-				setTimeout(() => buttonEl?.focus(), 0)
+				buttonEl?.focus()
 			}
 		}
 		const onFocus = () => {
 			busy = false
-			setTimeout(() => buttonEl?.focus(), 0)
+			buttonEl?.focus()
 		}
 		document.addEventListener('visibilitychange', onVisible)
 		window.addEventListener('focus', onFocus)
