@@ -28,7 +28,7 @@
 
 	$effect(() => {
 		const url = openNewLinkArr[0]?.url
-		if (!url || url.includes('open_loot_box')) return
+		if (!url || !url.includes('open_loot_box')) return
 		const nation = getNation(url)
 		if (nation !== lastNation && lastNation !== '') {
 			lastNation = nation
