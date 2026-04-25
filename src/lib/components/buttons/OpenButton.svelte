@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { flushSync } from 'svelte'
 	import Button from '$lib/components/ui/button/button.svelte'
 
 	interface Props {
@@ -26,21 +27,20 @@
 	})
 
 	$effect(() => {
-		const onVisible = () => {
-			if (!document.hidden) {
+		const reset = () => {
+			flushSync(() => {
 				busy = false
-				buttonEl?.focus()
-			}
-		}
-		const onFocus = () => {
-			busy = false
+			})
 			buttonEl?.focus()
 		}
+		const onVisible = () => {
+			if (!document.hidden) reset()
+		}
 		document.addEventListener('visibilitychange', onVisible)
-		window.addEventListener('focus', onFocus)
+		window.addEventListener('focus', reset)
 		return () => {
 			document.removeEventListener('visibilitychange', onVisible)
-			window.removeEventListener('focus', onFocus)
+			window.removeEventListener('focus', reset)
 		}
 	})
 
