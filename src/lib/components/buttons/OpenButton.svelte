@@ -20,6 +20,7 @@
 		if (openNewLinkArr.length === 0) return
 		const nation = getNation(openNewLinkArr[0].url)
 		if (nation !== lastNation && busy) return
+		if (lastNation === '') busy = false
 		lastNation = nation
 		window.open(openNewLinkArr[0].url, '_blank')
 		openedCount++
