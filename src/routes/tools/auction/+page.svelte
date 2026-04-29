@@ -109,11 +109,17 @@
 				}
 			}
 
+			const totalTransferable = Object.values(transferCounts).reduce((sum, { count }) => sum + count, 0)
+			let currentTransferred = 0
 			let currIndex = 0
 			let bids = []
 
 			const transferableIDs = Object.keys(transferCounts).filter(id => transferCounts[id].count > 0)
 			for (let i = 0; i < puppetList.length; i++) {
+				if (transferableIDs.length === 0) {
+					progress = [...progress, { text: 'All cards have been assigned. Stopping early.', color: 'green' }]
+					break
+				}
 				let nation = puppetList[i]
 				if (abortController.signal.aborted || stopped) {
 					break
@@ -126,6 +132,8 @@
 					const keepAmount = Number(keep) > 0 ? Number(keep) : 0
 					if (nationalBank >= Number(amount) + keepAmount) {
 						let cardsTransferable = Math.floor(nationalBank / Number(amount))
+						const initialTransferable = cardsTransferable
+						const progressIndex = progress.length
 						progress = [...progress, { text: `${nation} can transfer ${cardsTransferable} cards!`, color: 'green' }]
 						while (cardsTransferable > 0 && transferableIDs.length > 0) {
 							let key = transferableIDs[currIndex]
@@ -160,6 +168,9 @@
 
 								transferCounts[key].count--
 								cardsTransferable--
+								currentTransferred++
+
+								progress[progressIndex].text = `${nation} can transfer ${initialTransferable} cards! (${currentTransferred} of ${totalTransferable})`
 
 								if (transferCounts[key].count === 0) {
 									transferableIDs.splice(currIndex, 1)
