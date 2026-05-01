@@ -274,25 +274,7 @@
 				regionCardIds = await fetchKotamaCardIdCache(
 					regions.map(r => ({ key: r, clause: `region-IS-${r.replaceAll('_', ' ')}` }))
 				)
-			} else if (checkMode === 'Advanced' && regionalWhitelist.length > 0) {
-				regionCardIds = await fetchKotamaCardIdCache(
-					regionalWhitelist.map(r => ({ key: r, clause: `region-IS-${r.replaceAll('_', ' ')}` }))
-				)
-			}
-		} catch (err) {
-			info = [...info, { text: `Error fetching region card lists: ${err}`, color: 'red' }]
-			stoppable = false
-			window.removeEventListener('beforeunload', beforeUnload)
-			return
-		}
-
-		try {
-			if (configMode === 'Rules') {
-				const regions = [...new Set(rules.filter(r => r.enabled).flatMap(r => getRuleRegionCacheKeys(r)))]
-				regionCardIds = await fetchKotamaCardIdCache(
-					regions.map(r => ({ key: r, clause: `region-IS-${r.replaceAll('_', ' ')}` }))
-				)
-			} else if (checkMode === 'Advanced' && regionalWhitelist.length > 0) {
+			} else if (regionalWhitelist.length > 0) {
 				regionCardIds = await fetchKotamaCardIdCache(
 					regionalWhitelist.map(r => ({ key: r, clause: `region-IS-${r.replaceAll('_', ' ')}` }))
 				)
