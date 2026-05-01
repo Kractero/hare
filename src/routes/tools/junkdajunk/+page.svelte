@@ -15,7 +15,15 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog'
 	import { giftCard } from '$lib/helpers/gift'
 	import { parseXML } from '$lib/helpers/parser'
-	import { evaluateRule, getRuleSummary, ruleRequiresAdvancedData, type Action, type Rule } from '$lib/helpers/rules'
+	import {
+		evaluateRule,
+		getRuleRegionCacheKeys,
+		getRuleSummary,
+		ruleRequiresCardDetails,
+		type Action,
+		type AdvancedRuleData,
+		type Rule,
+	} from '$lib/helpers/rules'
 	import {
 		beforeUnload,
 		canonicalize,
@@ -62,6 +70,10 @@
 	let configMode = $state('Classic')
 	let rules: Rule[] = $state([])
 	let rulesLoaded = $state(false)
+
+	type KotamaCardList = {
+		cards?: Array<{ id: number }>
+	}
 
 	$effect(() => {
 		if (rulesLoaded) localStorage.setItem('junkdajunkRules', JSON.stringify(rules))
@@ -154,6 +166,43 @@
 	})
 	onDestroy(() => abortController.abort())
 
+	async function fetchRegionCardIds(region: string) {
+		const params = new URLSearchParams({
+			select: 'min',
+			clauses: `region-IS-${region.replaceAll('_', ' ')}`,
+			ua: main,
+			limit: '252525252525',
+		})
+		const response = await fetch(`https://kotama.kractero.com/api?${params}`, {
+			signal: abortController.signal,
+		})
+
+		if (!response.ok) {
+			throw new Error(`Kotama returned ${response.status} for ${region}`)
+		}
+
+		const data: KotamaCardList = await response.json()
+		return new Set((data.cards || []).map(card => Number(card.id)))
+	}
+
+	async function fetchRulesRegionCardIds() {
+		const regions = [...new Set(rules.filter(rule => rule.enabled).flatMap(rule => getRuleRegionCacheKeys(rule)))]
+		const regionCardIds = new Map<string, Set<number>>()
+
+		if (regions.length === 0) return regionCardIds
+
+		progress = [...progress, { text: `Fetching card IDs for ${regions.length} region rule checks...` }]
+
+		for (const region of regions) {
+			if (abortController.signal.aborted || stopped) break
+			const cardIds = await fetchRegionCardIds(region)
+			regionCardIds.set(region, cardIds)
+			progress = [...progress, { text: `Cached ${cardIds.size} cards from ${region.replaceAll('_', ' ')}` }]
+		}
+
+		return regionCardIds
+	}
+
 	async function onSubmit(e: Event) {
 		if (downloadable) {
 			dialogOpen = true
@@ -213,11 +262,23 @@
 		let actionCount = 0
 		let currCard = 0
 		let currSellCard = 0
+		let regionCardIds = new Map<string, Set<number>>()
 
 		let gifteeQueue = giftee
 			.split('\n')
 			.map(name => name.trim())
 			.filter(Boolean)
+
+		if (configMode === 'Rules') {
+			try {
+				regionCardIds = await fetchRulesRegionCardIds()
+			} catch (err) {
+				info = [...info, { text: `Error fetching region card lists: ${err}`, color: 'red' }]
+				stoppable = false
+				window.removeEventListener('beforeunload', beforeUnload)
+				return
+			}
+		}
 
 		for (let i = 0; i < puppetList.length; i++) {
 			let currentNationXPin = ''
@@ -256,15 +317,15 @@
 
 						if (configMode === 'Rules') {
 							let advancedDataFetched = false
-							let advancedData: { region?: string; flag?: string; bid?: number; owners?: number } = {}
+							let advancedData: AdvancedRuleData = { regionCardIds }
 							let matchedActions: Action[] = []
 							let matchedRuleSummary = ''
 
 							for (const rule of rules) {
 								if (!rule.enabled) continue
 
-								if (ruleRequiresAdvancedData(rule) && !advancedDataFetched) {
-									// only fetch advanced data if JDJ hits a rule that needs it
+								if (ruleRequiresCardDetails(rule) && !advancedDataFetched) {
+									// only fetch full card details if JDJ hits a rule that needs data not covered by the region cache
 									// skips requests if earlier rules already matched
 									const cardDetailsXml = await parseXML(
 										`${domain}/cgi-bin/api.cgi?cardid=${id}&season=${season}&q=card+markets+info+owners`,
@@ -297,6 +358,7 @@
 									}
 
 									advancedData = {
+										regionCardIds,
 										region,
 										flag,
 										bid: highestBid,

@@ -49,20 +49,47 @@ export interface Rule {
     actions: Action[]
 }
 
+export interface AdvancedRuleData {
+    region?: string
+    regionCardIds?: Map<string, Set<number>>
+    flag?: string
+    bid?: number
+    owners?: number
+}
+
 function normalizeString(str: string | number): string {
     return canonicalize(String(str))
 }
 
-export function ruleRequiresAdvancedData(rule: Rule): boolean {
+export function isRegionCacheableCondition(condition: Condition): boolean {
+    return condition.attribute === 'Region' && ['=', '!=', 'in list', 'not in list'].includes(condition.operator)
+}
+
+export function getRuleRegionCacheKeys(rule: Rule): string[] {
+    const regions = new Set<string>()
+
+    rule.conditions.forEach(condition => {
+        if (!isRegionCacheableCondition(condition)) return
+
+        const values = condition.operator === 'in list' || condition.operator === 'not in list'
+            ? condition.value.split(/[\n,]+/)
+            : [condition.value]
+
+        values.map(region => canonicalize(region)).filter(Boolean).forEach(region => regions.add(region))
+    })
+
+    return [...regions]
+}
+
+export function ruleRequiresCardDetails(rule: Rule): boolean {
     if (!rule.enabled) return false
-    const advancedAttributes: Attribute[] = ['Region', 'Flag', 'Bid', 'Owner Count']
-    return rule.conditions.some(c => advancedAttributes.includes(c.attribute))
+    return rule.conditions.some(c => ['Flag', 'Bid', 'Owner Count'].includes(c.attribute) || (c.attribute === 'Region' && !isRegionCacheableCondition(c)))
 }
 
 export function evaluateCondition(
     condition: Condition,
     card: Card,
-    advancedData?: { region?: string; flag?: string; bid?: number; owners?: number }
+    advancedData?: AdvancedRuleData
 ): boolean {
     let { attribute, operator, value } = condition
     let cardValue: string | number | undefined
@@ -81,6 +108,18 @@ export function evaluateCondition(
             cardValue = Number(card.CARDID)
             break
         case 'Region':
+            if (isRegionCacheableCondition(condition) && advancedData?.regionCardIds) {
+                const cardId = Number(card.CARDID)
+                const inRegion = (region: string) => advancedData.regionCardIds?.get(canonicalize(region))?.has(cardId) || false
+
+                if (operator === '=') return inRegion(value)
+                if (operator === '!=') return !inRegion(value)
+
+                const list = value.split(/[\n,]+/).map(s => canonicalize(s)).filter(Boolean)
+                const inAnyRegion = list.some(region => advancedData.regionCardIds?.get(region)?.has(cardId))
+                return operator === 'in list' ? inAnyRegion : !inAnyRegion
+            }
+
             cardValue = advancedData?.region?.toLowerCase() || ''
             value = value.toLowerCase()
             break
@@ -141,7 +180,7 @@ export function evaluateCondition(
 export function evaluateRule(
     card: Card,
     rule: Rule,
-    advancedData?: { region?: string; flag?: string; bid?: number; owners?: number }
+    advancedData?: AdvancedRuleData
 ): { matched: boolean; actions: Action[] } {
     if (!rule.enabled) return { matched: false, actions: [] }
 
