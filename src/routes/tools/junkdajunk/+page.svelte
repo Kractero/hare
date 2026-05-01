@@ -818,7 +818,7 @@
 			bind:downloadable
 			bind:content
 			name="junkDaJunk">
-			<OpenButton bind:progress bind:openNewLinkArr={content} />
+			<OpenButton bind:progress bind:openNewLinkArr={content} {stopped} {stoppable} />
 		</Buttons>
 	</form>
 	<Terminal bind:progress bind:info bind:continuousUpdate={junkCounter} />

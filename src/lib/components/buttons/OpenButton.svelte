@@ -4,8 +4,10 @@
 	interface Props {
 		progress?: Array<{ text: string; color?: string }>
 		openNewLinkArr?: Array<{ url: string; tableText: string; linkStyle?: string }>
+		stopped?: boolean
+		stoppable?: boolean
 	}
-	let { progress = $bindable([]), openNewLinkArr = $bindable([]) }: Props = $props()
+	let { progress = $bindable([]), openNewLinkArr = $bindable([]), stopped = false, stoppable = false }: Props = $props()
 	let openedCount = $state(0)
 	let busy = $state(false)
 	let lastNation = $state('')
@@ -43,6 +45,13 @@
 		if (progress.length === 1) {
 			openedCount = 0
 		}
+	})
+
+	$effect(() => {
+		stopped
+		stoppable
+		busy = false
+		lastNation = ''
 	})
 
 	$effect(() => {
