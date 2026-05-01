@@ -13,6 +13,7 @@
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import * as AlertDialog from '$lib/components/ui/alert-dialog'
+	import Button from '$lib/components/ui/button/button.svelte'
 	import { giftCard } from '$lib/helpers/gift'
 	import { parseXML } from '$lib/helpers/parser'
 	import {
@@ -166,41 +167,38 @@
 	})
 	onDestroy(() => abortController.abort())
 
-	async function fetchRegionCardIds(region: string) {
+	async function fetchKotamaCardIds(clause: string, from?: string): Promise<Set<number>> {
 		const params = new URLSearchParams({
 			select: 'min',
-			clauses: `region-IS-${region.replaceAll('_', ' ')}`,
+			clauses: clause,
 			ua: main,
 			limit: '252525252525',
 		})
+		if (from) params.set('from', from)
 		const response = await fetch(`https://kotama.kractero.com/api?${params}`, {
 			signal: abortController.signal,
 		})
-
-		if (!response.ok) {
-			throw new Error(`Kotama returned ${response.status} for ${region}`)
-		}
-
+		if (!response.ok) throw new Error(`Kotama returned ${response.status} for ${clause}`)
 		const data: KotamaCardList = await response.json()
 		return new Set((data.cards || []).map(card => Number(card.id)))
 	}
 
-	async function fetchRulesRegionCardIds() {
-		const regions = [...new Set(rules.filter(rule => rule.enabled).flatMap(rule => getRuleRegionCacheKeys(rule)))]
-		const regionCardIds = new Map<string, Set<number>>()
+	async function fetchKotamaCardIdCache(
+		entries: { key: string; clause: string; from?: string }[]
+	): Promise<Map<string, Set<number>>> {
+		const cardIds = new Map<string, Set<number>>()
+		if (entries.length === 0) return cardIds
 
-		if (regions.length === 0) return regionCardIds
+		progress = [...progress, { text: `Fetching card IDs for ${entries.length} checks...` }]
 
-		progress = [...progress, { text: `Fetching card IDs for ${regions.length} region rule checks...` }]
-
-		for (const region of regions) {
+		for (const { key, clause, from } of entries) {
 			if (abortController.signal.aborted || stopped) break
-			const cardIds = await fetchRegionCardIds(region)
-			regionCardIds.set(region, cardIds)
-			progress = [...progress, { text: `Cached ${cardIds.size} cards from ${region.replaceAll('_', ' ')}` }]
+			const ids = await fetchKotamaCardIds(clause, from)
+			cardIds.set(key, ids)
+			progress = [...progress, { text: `Cached ${ids.size} cards for ${key}` }]
 		}
 
-		return regionCardIds
+		return cardIds
 	}
 
 	async function onSubmit(e: Event) {
@@ -263,21 +261,50 @@
 		let currCard = 0
 		let currSellCard = 0
 		let regionCardIds = new Map<string, Set<number>>()
+		let flagCardIds = new Map<string, Set<number>>()
 
 		let gifteeQueue = giftee
 			.split('\n')
 			.map(name => name.trim())
 			.filter(Boolean)
 
-		if (configMode === 'Rules') {
-			try {
-				regionCardIds = await fetchRulesRegionCardIds()
-			} catch (err) {
-				info = [...info, { text: `Error fetching region card lists: ${err}`, color: 'red' }]
-				stoppable = false
-				window.removeEventListener('beforeunload', beforeUnload)
-				return
+		try {
+			if (configMode === 'Rules') {
+				const regions = [...new Set(rules.filter(r => r.enabled).flatMap(r => getRuleRegionCacheKeys(r)))]
+				regionCardIds = await fetchKotamaCardIdCache(
+					regions.map(r => ({ key: r, clause: `region-IS-${r.replaceAll('_', ' ')}` }))
+				)
+			} else if (checkMode === 'Advanced' && regionalWhitelist.length > 0) {
+				regionCardIds = await fetchKotamaCardIdCache(
+					regionalWhitelist.map(r => ({ key: r, clause: `region-IS-${r.replaceAll('_', ' ')}` }))
+				)
 			}
+		} catch (err) {
+			info = [...info, { text: `Error fetching region card lists: ${err}`, color: 'red' }]
+			stoppable = false
+			window.removeEventListener('beforeunload', beforeUnload)
+			return
+		}
+
+		try {
+			if (configMode === 'Rules') {
+				const regions = [...new Set(rules.filter(r => r.enabled).flatMap(r => getRuleRegionCacheKeys(r)))]
+				regionCardIds = await fetchKotamaCardIdCache(
+					regions.map(r => ({ key: r, clause: `region-IS-${r.replaceAll('_', ' ')}` }))
+				)
+			} else if (checkMode === 'Advanced' && regionalWhitelist.length > 0) {
+				regionCardIds = await fetchKotamaCardIdCache(
+					regionalWhitelist.map(r => ({ key: r, clause: `region-IS-${r.replaceAll('_', ' ')}` }))
+				)
+				if (flagWhitelist.length > 0) {
+					flagCardIds = await fetchKotamaCardIdCache(flagWhitelist.map(f => ({ key: f, clause: `flag-IS-${f}` })))
+				}
+			}
+		} catch (err) {
+			info = [...info, { text: `Error fetching region card lists: ${err}`, color: 'red' }]
+			stoppable = false
+			window.removeEventListener('beforeunload', beforeUnload)
+			return
 		}
 
 		for (let i = 0; i < puppetList.length; i++) {
@@ -456,6 +483,14 @@
 									reason: `category set to gift`,
 								},
 								{
+									check: () => regionCardIds.size > 0 && [...regionCardIds.values()].some(set => set.has(Number(id))),
+									reason: `is in whitelisted region`,
+								},
+								{
+									check: () => flagCardIds.size > 0 && [...flagCardIds.values()].some(set => set.has(Number(id))),
+									reason: `is in whitelisted flag`,
+								},
+								{
 									check: () =>
 										category !== 'legendary' &&
 										raritiesMV[category] &&
@@ -505,10 +540,6 @@
 
 								const advancedConditions = [
 									{
-										check: () => flagWhitelist.some(f => flag.includes(f)),
-										reason: `Flag is whitelisted ${flag}`,
-									},
-									{
 										check: () => owners && Number(owners) > cardOwners.size,
 										reason: `has less owners than ${owners}`,
 									},
@@ -518,14 +549,6 @@
 											raritiesLowestBid[category] &&
 											highestBid >= Number(raritiesLowestBid[category]),
 										reason: `has high bid`,
-									},
-									{
-										check: () => !region && skipexnation,
-										reason: `S1 exnation`,
-									},
-									{
-										check: () => region && regionalWhitelist.includes(canonicalize(region)),
-										reason: `is in whitelisted ${region}`,
 									},
 								]
 
@@ -769,6 +792,22 @@
 		stoppable = false
 		window.removeEventListener('beforeunload', beforeUnload)
 	}
+
+	async function fetchPreset(name: string) {
+		if (name === 'S1CTE') {
+			const { default: raw } = await import('$lib/data/s1cte.txt?raw')
+			const nations = raw
+				.split('\n')
+				.filter(Boolean)
+				.map(id => `${id},1`)
+
+			// Append this to any existing card id whitelist to not overwrite
+			const existing = new Set(finderlist.split('\n').filter(Boolean))
+			const merged = [...existing, ...nations.filter(nation => !existing.has(nation))]
+			finderlist = merged.join('\n')
+			return
+		}
+	}
 </script>
 
 <AlertDialog.Root bind:open={dialogOpen}>
@@ -822,11 +861,15 @@
 			{/if}
 			<FormSelect bind:bindValue={junkMethod} id="junkMethod" items={['API', 'Manual']} label="Junk Mode" />
 			<FormSelect bind:bindValue={checkMode} id="checkMode" items={['Advanced', 'Simple']} label="Mode" />
+			<div class="-mb-6 flex flex-col">
+				<p class="text-muted-foreground mb-1 text-center font-light">Presets</p>
+				<div class="flex flex-wrap justify-center">
+					<Button tabindex={-1} onclick={() => fetchPreset('S1CTE')} variant="outline">S1 CTE</Button>
+				</div>
+			</div>
 			<FormTextArea bind:bindValue={finderlist} label={'Card ID Whitelist'} id="finderlist" />
-			{#if checkMode === 'Advanced'}
-				<FormTextArea bind:bindValue={regionalwhitelist} label={'Regional Whitelist'} id="regions" />
-				<FormTextArea bind:bindValue={flagwhitelist} label={'Flag Whitelist'} id="flags" />
-			{/if}
+			<FormTextArea bind:bindValue={regionalwhitelist} label={'Regional Whitelist'} id="regions" />
+			<FormTextArea bind:bindValue={flagwhitelist} label={'Flag Whitelist'} id="flags" />
 			<FormInput label={'Card Count Threshold'} bind:bindValue={cardcount} id="cardcount" />
 			{#if checkMode === 'Advanced'}
 				<FormInput label={'Owner Count Threshold'} bind:bindValue={owners} id="owners" />
@@ -862,9 +905,6 @@
 				id="skipseason"
 				items={['1', '2', '3', '4']}
 				label="Skip Seasons?" />
-			{#if checkMode === 'Advanced'}
-				<FormCheckbox bind:checked={skipexnation} id="skipexnation" label="Skip Exnation" />
-			{/if}
 			<FormInput label={'Process Up To'} bind:bindValue={junkUpTo} id="junkUpTo" required={true} />
 			<FormSelect
 				bind:bindValue={mode}
