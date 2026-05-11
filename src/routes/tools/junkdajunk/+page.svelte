@@ -18,9 +18,10 @@
 	import { parseXML } from '$lib/helpers/parser'
 	import {
 		evaluateRule,
+		getRuleFlagCacheKeys,
 		getRuleRegionCacheKeys,
 		getRuleSummary,
-		ruleRequiresCardDetails,
+		ruleNeedsCardDetailsForCard,
 		type Action,
 		type AdvancedRuleData,
 		type Rule,
@@ -270,10 +271,13 @@
 
 		try {
 			if (configMode === 'Rules') {
-				const regions = [...new Set(rules.filter(r => r.enabled).flatMap(r => getRuleRegionCacheKeys(r)))]
+				const enabledRules = rules.filter(r => r.enabled)
+				const regions = [...new Set(enabledRules.flatMap(getRuleRegionCacheKeys))]
+				const flags = [...new Set(enabledRules.flatMap(getRuleFlagCacheKeys))]
 				regionCardIds = await fetchKotamaCardIdCache(
 					regions.map(r => ({ key: r, clause: `region-IS-${r.replaceAll('_', ' ')}` }))
 				)
+				flagCardIds = await fetchKotamaCardIdCache(flags.map(f => ({ key: f, clause: `flag-IS-${f}` })))
 			} else if (regionalWhitelist.length > 0) {
 				regionCardIds = await fetchKotamaCardIdCache(
 					regionalWhitelist.map(r => ({ key: r, clause: `region-IS-${r.replaceAll('_', ' ')}` }))
@@ -283,7 +287,7 @@
 				}
 			}
 		} catch (err) {
-			info = [...info, { text: `Error fetching region card lists: ${err}`, color: 'red' }]
+			info = [...info, { text: `Error fetching cached card lists: ${err}`, color: 'red' }]
 			stoppable = false
 			window.removeEventListener('beforeunload', beforeUnload)
 			return
@@ -326,15 +330,15 @@
 
 						if (configMode === 'Rules') {
 							let advancedDataFetched = false
-							let advancedData: AdvancedRuleData = { regionCardIds }
+							let advancedData: AdvancedRuleData = { regionCardIds, flagCardIds }
 							let matchedActions: Action[] = []
 							let matchedRuleSummary = ''
 
 							for (const rule of rules) {
 								if (!rule.enabled) continue
 
-								if (ruleRequiresCardDetails(rule) && !advancedDataFetched) {
-									// only fetch full card details if JDJ hits a rule that needs data not covered by the region cache
+								if (ruleNeedsCardDetailsForCard(rule, cards[j], advancedData) && !advancedDataFetched) {
+									// only fetch full card details if JDJ hits a rule that needs data not covered by caches
 									// skips requests if earlier rules already matched
 									const cardDetailsXml = await parseXML(
 										`${domain}/cgi-bin/api.cgi?cardid=${id}&season=${season}&q=card+markets+info+owners`,
@@ -368,6 +372,7 @@
 
 									advancedData = {
 										regionCardIds,
+										flagCardIds,
 										region,
 										flag,
 										bid: highestBid,
