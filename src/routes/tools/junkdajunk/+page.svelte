@@ -126,35 +126,13 @@
 			: defaultPrices
 		owners = page.url.searchParams.get('owners') || (localStorage.getItem('junkdajunkOwnerCount') as string) || ''
 		cardcount = page.url.searchParams.get('cardcount') || (localStorage.getItem('junkdajunkCardCount') as string) || ''
-		if (page.url.searchParams.get('skipseason') !== null) {
-			if (
-				(page.url.searchParams.get('skipseason') as string) === "Don't Skip" ||
-				(page.url.searchParams.get('skipseason') as string) === 'Skip Offseasons'
-			) {
-				alert(`${page.url.searchParams.get('skipseason')} is no longer in use, please change it`)
-				skipseason = []
-			} else {
-				skipseason = [page.url.searchParams.get('skipseason') as string]
-			}
-		} else if (localStorage.getItem('junkdajunkOmittedSeasons')) {
-			if (
-				localStorage.getItem('junkdajunkOmittedSeasons') === "Don't Skip" ||
-				localStorage.getItem('junkdajunkOmittedSeasons') === 'Skip Offseasons'
-			) {
-				alert(`${localStorage.getItem('junkdajunkOmittedSeasons')} is no longer in use, please change it`)
-				skipseason = []
-			} else {
-				skipseason = [localStorage.getItem('junkdajunkOmittedSeasons') as string]
-			}
-		} else {
-			skipseason = []
-		}
+		const validSeasons = new Set(['1', '2', '3', '4'])
+		const rawSeasons = page.url.searchParams.get('skipseason') ?? localStorage.getItem('junkdajunkOmittedSeasons') ?? ''
+		skipseason = Array.from(new Set(rawSeasons.split(',').filter(s => validSeasons.has(s))))
 		skipexnation =
 			page.url.searchParams.get('skipexnation') === 'true' ||
 			localStorage.getItem('junkdajunkExnation') === 'true' ||
 			false
-		// jdjtransfer =
-		// 	page.url.searchParams.get('jdjtransfer') || (localStorage.getItem('junkdajunkTransferBank') as string) || '-1'
 		junkUpTo = page.url.searchParams.get('junkUpTo') || (localStorage.getItem('junkUpTo') as string) || '-1'
 		configMode = localStorage.getItem('junkdajunkConfigMode') || 'Classic'
 		try {
