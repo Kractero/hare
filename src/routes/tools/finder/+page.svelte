@@ -546,10 +546,14 @@
 	}
 
 	async function fetchPreset(name: string) {
+		if (name === 'S1CTE') {
+			const { default: raw } = await import('$lib/data/s1cte.txt?raw')
+			finderlist = raw.split('\n').filter(Boolean).join('\n')
+			return
+		}
 		const presets: {
 			[key: string]: string | { [key: string]: string }
 		} = await import('$lib/data/finderPresets.json')
-
 		finderlist = presets[name] as string
 	}
 </script>
@@ -594,6 +598,7 @@
 			<div class="-mb-6 flex flex-col">
 				<p class="text-muted-foreground mb-1 text-center font-light">Presets</p>
 				<div class="flex flex-wrap justify-center">
+					<Button tabindex={-1} onclick={() => fetchPreset('S1CTE')} variant="outline">S1 CTE</Button>
 					<Button tabindex={-1} onclick={() => fetchPreset('Legendaries')} variant={'outline'}>Legendaries</Button>
 					<Button tabindex={-1} onclick={() => fetchPreset('Fauzjhia')} variant={'outline'}>Fauzjhia</Button>
 					<Button tabindex={-1} onclick={() => fetchPreset('Mikeswill')} variant={'outline'}>Mikeswill</Button>
