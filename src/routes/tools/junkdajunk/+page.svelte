@@ -15,7 +15,7 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog'
 	import Button from '$lib/components/ui/button/button.svelte'
 	import { giftCard } from '$lib/helpers/gift'
-	import { parseXML } from '$lib/helpers/parser'
+	import { parseXML, sleep } from '$lib/helpers/parser'
 	import {
 		evaluateRule,
 		getRuleFlagCacheKeys,
@@ -175,6 +175,7 @@
 			const ids = await fetchKotamaCardIds(clause, from)
 			cardIds.set(key, ids)
 			progress = [...progress, { text: `Cached ${ids.size} cards for ${key}` }]
+			await sleep(0.6)
 		}
 
 		return cardIds
