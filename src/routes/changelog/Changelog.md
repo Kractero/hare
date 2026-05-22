@@ -1,5 +1,108 @@
 # Changelog
 
+## 2026-05-22
+
+### Features
+
+1. Deck to ID -> Cards to ID
+
+A new setting to pass a text field of nation names, which will return the dbid for each.
+
+2. JunkDaJunk
+
+JDJ will preprocess immediately at the start all cards matching the id.
+
+### Fixes
+
+1. Finder
+
+Build maps with more consistency, using X,X instead of X|X. If Keep X Copy is a boolean for some reason, adjust it to 0.
+
+2. GotIssues
+
+The testing mode of GotIssues, the one that stores remaining issues in the url as opposed to a new sheet entry for each, will clear remaining issues on a new start.
+
+### Fixes
+
+1. JunkDaJunk
+
+Between hitting the Kotama/Queries API, it should sleep exactly to not trigger the rate limit.
+
+## 2026-05-21
+
+### Fixes
+
+1. JunkDaJunk
+
+Between hitting the Kotama/Queries API, it should sleep exactly to not trigger the rate limit.
+
+## 2026-05-11
+
+### Fixes
+
+1. JunkDaJunk
+
+Fix checking of junkdajunkOmittedSeasons by treating the values as a set. This should fix the issue of potentially passing a series of commas.
+
+## 2026-05-01
+
+### Changes
+
+1. JunkDaJunk
+
+Caching extended to flags. S1 CTEs are now a preset.
+
+## 2026-04-29
+
+### Changes
+
+1. JunkDaJunk (Thank you Jiangbei)
+
+- Card ids for regions are cached from Kotama/Queries, allowing the logic to sink to simple as opposed to advanced.
+
+## 2026-04-28
+
+### Changes
+
+1. Auction (Thank you Rotenaple)
+
+- Show progress on Auction. Auction will also exit early when no cards are left to process.
+
+## 2026-04-26
+
+### Fixes
+
+Attempt a fix for failures associated with clicking too fast and the site being slow. I believe this was a pack related issue. Given this changelog is being written a month later, I do not remember the exact error case.
+
+## 2026-04-06
+
+### Features
+
+1. NEW - Rarity
+   - A rarity calculator based on Sitethief's script and some calculation changes.
+
+## 2026-04-05
+
+### Fixes
+
+1. Auction
+
+- Manage auction transfers using id-season instead of just the id.
+
+## 2026-04-04
+
+### Changes
+
+1. Pinger
+
+- Show progress on pinger.
+
+### Fixes
+
+1. GotIssues
+
+- Properly handle the min pack floor and pack count.
+
 ## 2026-04-03
 
 ### Changes

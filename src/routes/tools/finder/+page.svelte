@@ -52,7 +52,7 @@
 			: localStorage.getItem('giftLegendaries') !== null
 				? localStorage.getItem('giftLegendaries') === 'true'
 				: true
-		keepOne = page.url.searchParams.get('keepOne') || localStorage.getItem('keepOne') || '1'
+		keepOne = String(parseInt(page.url.searchParams.get('keepOne') || localStorage.getItem('keepOne') || '1') || 0)
 		giftOverMVValue = parseFloat(
 			page.url.searchParams.get('giftOverMVValue') || localStorage.getItem('giftOverMVValue') || '10'
 		)
@@ -145,13 +145,11 @@
 
 				xpin = newXpin
 
-				console.log(fail)
 				if (fail === 'no capacity' || fail === `No such nation: "${cg}".`) {
 					info = [...info, { text: `${nation} failed to gift ${id} to ${cg}, ${fail}`, color: 'red' }]
 					if (!overrideGiftee) gifteeList.shift()
 					if (overrideGiftee) overrideGiftee = ''
 					attemptGiftee = gifteeList[0] || ''
-					console.log(attemptGiftee)
 					continue
 				}
 
@@ -340,7 +338,7 @@
 
 							const cardIndex = new Map<string, number>()
 							for (const card of cards) {
-								const key = `${card.CARDID}|${card.SEASON}`
+								const key = `${card.CARDID},${card.SEASON}`
 								cardIndex.set(key, (cardIndex.get(key) || 0) + 1)
 							}
 
@@ -348,7 +346,7 @@
 							const filteredCards: Array<{ id: string; giftee: string; season: string; count: number }> = []
 
 							for (const match of matches) {
-								const key = `${match.id}|${match.season}`
+								const key = `${match.id},${match.season}`
 								if (seen.has(key)) continue
 								seen.add(key)
 
@@ -374,7 +372,7 @@
 										continue
 									}
 
-									const effectiveCount = keepOne ? originalCount - Number(keepOne) : originalCount
+									const effectiveCount = originalCount - (Number(keepOne) || 0)
 									if (effectiveCount <= 0) {
 										if (foundSet.has(`${id},${season}`)) foundSet.delete(`${id},${season}`)
 										continue

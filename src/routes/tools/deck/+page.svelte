@@ -5,6 +5,7 @@
 	import UserAgent from '$lib/components/formFields/UserAgent.svelte'
 	import FormInput from '$lib/components/FormInput.svelte'
 	import FormSelect from '$lib/components/FormSelect.svelte'
+	import FormTextArea from '$lib/components/FormTextArea.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import { parseXML } from '$lib/helpers/parser'
@@ -15,6 +16,7 @@
 	let progress = $state<Array<{ text: string; color?: string }>>([])
 	let main = $state('')
 	let checkObject = $state('')
+	let nationNames = $state('')
 	let downloadable = $state(false)
 	let content = $state('')
 	let mode = $state('Signal')
@@ -37,6 +39,26 @@
 		pushHistory(`?main=${main}&nation=${checkObject}&mode=${mode}&type=${type}&duplicates=${duplicates}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
+
+		if (type === 'Names') {
+			const names = nationNames
+				.split('\n')
+				.map(n => n.trim())
+				.filter(Boolean)
+			progress = [{ text: `Computing ${names.length} nations` }]
+			const ids: string[] = []
+			for (const name of names) {
+				const xml = await parseXML(`${domain}/cgi-bin/api.cgi?nation=${name}&q=dbid`, main)
+				const dbid = xml.NATION.DBID
+				ids.push(dbid)
+				progress = [...progress, { text: `${name} -> ${dbid}` }]
+			}
+			content = ids.join('\n')
+			downloadable = true
+			progress = [...progress, { text: `Finished processing ${names.length} nations`, color: 'green' }]
+			return
+		}
+
 		progress = [{ text: `Computing ${checkObject}` }]
 		if (type.toLowerCase() === 'deck') {
 			const xml = await parseXML(`${domain}/cgi-bin/api.cgi?q=cards+deck;nationname=${checkObject}`, main)
@@ -46,22 +68,12 @@
 				content = Array.from(
 					new Set((deckObj as Card[]).map(card => (mode === 'Signal' ? `${card.CARDID},${card.SEASON}` : card.CARDID)))
 				).join('\n')
-				progress = [
-					...progress,
-					{
-						text: content,
-					},
-				]
+				progress = [...progress, { text: content }]
 			} else {
 				content = Array.from(deckObj as Card[])
 					.map(card => (mode === 'Signal' ? `${card.CARDID},${card.SEASON}` : card.CARDID))
 					.join('\n')
-				progress = [
-					...progress,
-					{
-						text: content,
-					},
-				]
+				progress = [...progress, { text: content }]
 			}
 		} else {
 			const xml = await parseXML(`${domain}/cgi-bin/api.cgi?q=cards+collection;collectionid=${checkObject}`, main)
@@ -71,22 +83,12 @@
 				content = Array.from(
 					new Set((collObj as Card[]).map(card => (mode === 'Signal' ? `${card.CARDID},${card.SEASON}` : card.CARDID)))
 				).join('\n')
-				progress = [
-					...progress,
-					{
-						text: content,
-					},
-				]
+				progress = [...progress, { text: content }]
 			} else {
 				content = Array.from(collObj as Card[])
 					.map(card => (mode === 'Signal' ? `${card.CARDID},${card.SEASON}` : card.CARDID))
 					.join('\n')
-				progress = [
-					...progress,
-					{
-						text: content,
-					},
-				]
+				progress = [...progress, { text: content }]
 			}
 		}
 		downloadable = true
@@ -95,21 +97,27 @@
 </script>
 
 <ToolContent
-	toolTitle="Deck to IDs"
+	toolTitle="Cards to IDs"
 	icon="🃏"
 	caption={'Turn a deck into a text file of card ids, duplicates ignored.'} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<UserAgent bind:main bind:errors />
-		<FormInput
-			label={type.toLowerCase() === 'deck' ? `Nation` : 'Collection'}
-			bind:bindValue={checkObject}
-			id="checkObject"
-			required={true} />
-		<FormSelect id="type" label="Type" bind:bindValue={type} items={['Deck', 'Collection']} />
-		<FormSelect id="duplicates" label="Duplicates" bind:bindValue={duplicates} items={['Skip', 'Include']} />
-		<FormSelect id="mode" label="Mode" bind:bindValue={mode} items={['Signal', 'IDs']} />
+		{#if type !== 'Names'}
+			<FormInput
+				label={type.toLowerCase() === 'deck' ? `Nation` : 'Collection'}
+				bind:bindValue={checkObject}
+				id="checkObject"
+				required={true} />
+		{/if}
+		<FormSelect id="type" label="Type" bind:bindValue={type} items={['Deck', 'Collection', 'Names']} />
+		{#if type === 'Names'}
+			<FormTextArea label="Nation Names" bind:bindValue={nationNames} id="nationNames" required={true} />
+		{:else}
+			<FormSelect id="duplicates" label="Duplicates" bind:bindValue={duplicates} items={['Skip', 'Include']} />
+			<FormSelect id="mode" label="Mode" bind:bindValue={mode} items={['Signal', 'IDs']} />
+		{/if}
 		<Buttons downloadButton={true} bind:downloadable bind:content type="txt" name="Deck" />
 	</form>
 	<Terminal bind:progress />

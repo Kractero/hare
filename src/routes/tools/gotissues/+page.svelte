@@ -67,6 +67,7 @@
 		]
 		counter = 0
 		content = []
+		localStorage.removeItem('ns_remainingIssues')
 		let puppetList = puppets.split('\n')
 		let issuesCount = 0
 		let packsCount = 0

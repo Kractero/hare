@@ -232,6 +232,7 @@
 		// 	newInfo.push({ text: `${rarity} junk threshold at ${bid}` })
 
 		const findSplit = finderlist.split('\n').map(matcher => matcher.split(','))
+		const whitelistSet = new Set(findSplit.map(f => `${f[0]},${f[1] || ''}`))
 
 		info = newInfo
 
@@ -306,6 +307,14 @@
 						let sell = true
 						let reason = ''
 						let giftTarget = ''
+
+						if (whitelistSet.has(`${id},${season}`)) {
+							progress = [
+								...progress,
+								{ text: `${j + 1}/${cards.length} -> Skipping S${season} ${id} - whitelisted`, color: 'blue' },
+							]
+							continue
+						}
 
 						if (configMode === 'Rules') {
 							let advancedDataFetched = false
