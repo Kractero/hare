@@ -14,6 +14,7 @@
 	import ToolContent from '$lib/components/ToolContent.svelte'
 	import * as AlertDialog from '$lib/components/ui/alert-dialog'
 	import Button from '$lib/components/ui/button/button.svelte'
+	import { cardListEntryMatches, parseCardList } from '$lib/helpers/cardList'
 	import { giftCard } from '$lib/helpers/gift'
 	import { parseXML, sleep } from '$lib/helpers/parser'
 	import {
@@ -21,6 +22,7 @@
 		getRuleFlagCacheKeys,
 		getRuleRegionCacheKeys,
 		getRuleSummary,
+		isRegionCacheableCondition,
 		ruleNeedsCardDetailsForCard,
 		type Action,
 		type AdvancedRuleData,
@@ -188,6 +190,66 @@
 		return cardIds
 	}
 
+	function sortCardIds(cardIds: string[]): string[] {
+		return cardIds.sort((a, b) => {
+			const [aId, aSeason] = a.split(',').map(Number)
+			const [bId, bSeason] = b.split(',').map(Number)
+			return aSeason - bSeason || aId - bId
+		})
+	}
+
+	function rewriteRegionRulesWithCardIds(sourceRules: Rule[], regionCardIds: Map<string, Set<string>>): Rule[] {
+		let changed = false
+
+		const rewrittenRules = sourceRules.map(rule => {
+			if (!rule.enabled) return rule
+			const originalSummary = getRuleSummary(rule)
+			let ruleChanged = false
+
+			const conditions = rule.conditions.map(condition => {
+				if (!isRegionCacheableCondition(condition)) return condition
+
+				const regions = ['in list', 'not in list'].includes(condition.operator)
+					? condition.value.split(/[\n,]+/).map(value => canonicalize(value)).filter(Boolean)
+					: [canonicalize(condition.value)]
+				const ids = new Set<string>()
+				regions.forEach(region => regionCardIds.get(region)?.forEach(id => ids.add(id)))
+				changed = true
+				ruleChanged = true
+
+				return {
+					...condition,
+					attribute: 'Card ID' as const,
+					operator: ['=', 'in list'].includes(condition.operator) ? 'in list' as const : 'not in list' as const,
+					value: sortCardIds([...ids]).join('\n'),
+				}
+			})
+
+			return ruleChanged ? { ...rule, name: rule.name || originalSummary, conditions } : rule
+		})
+
+		return changed ? rewrittenRules : sourceRules
+	}
+
+	function findCommaSeparatedCardIdRule(rulesToCheck: Rule[]): number | undefined {
+		const ruleIndex = rulesToCheck.findIndex(
+			rule =>
+				rule.enabled &&
+				rule.conditions.some(condition => {
+					if (condition.attribute !== 'Card ID' || !['in list', 'not in list'].includes(condition.operator)) return false
+					return condition.value
+						.split('\n')
+						.map(line => line.trim())
+						.filter(Boolean)
+						.some(line => {
+							const parts = line.split(',').map(part => part.trim()).filter(Boolean)
+							return parts.length > 1 && !(parts.length === 2 && cardSeasons.includes(parts[1]))
+						})
+				})
+		)
+		return ruleIndex === -1 ? undefined : ruleIndex
+	}
+
 	async function onSubmit(e: Event) {
 		if (downloadable) {
 			dialogOpen = true
@@ -238,10 +300,26 @@
 		// for (const [rarity, bid] of Object.entries(raritiesLowestBid))
 		// 	newInfo.push({ text: `${rarity} junk threshold at ${bid}` })
 
-		const findSplit = finderlist.split('\n').map(matcher => matcher.split(','))
-		const whitelistSet = new Set(findSplit.map(f => `${f[0]},${f[1] || ''}`))
+		const findSplit = parseCardList(finderlist)
+		const whitelistSet = new Set(findSplit.map(f => `${f.id},${f.season || ''}`))
 
 		info = newInfo
+
+		if (configMode === 'Rules') {
+			const commaSeparatedRuleIndex = findCommaSeparatedCardIdRule(rules)
+			if (commaSeparatedRuleIndex !== undefined) {
+				info = [
+					...info,
+					{
+						text: `Rule ${commaSeparatedRuleIndex + 1} looks like it uses comma-separated Card ID values. Put one card per line, optionally as id,season.`,
+						color: 'red',
+					},
+				]
+				stoppable = false
+				window.removeEventListener('beforeunload', beforeUnload)
+				return
+			}
+		}
 
 		let junkedCards = 0
 		let giftedCards = 0
@@ -264,6 +342,7 @@
 				regionCardIds = await fetchKotamaCardIdCache(
 					regions.map(r => ({ key: r, clause: `region-IS-${r.replaceAll('_', ' ')}` }))
 				)
+				rules = rewriteRegionRulesWithCardIds(rules, regionCardIds)
 				flagCardIds = await fetchKotamaCardIdCache(flags.map(f => ({ key: f, clause: `flag-IS-${f}` })))
 			} else if (regionalWhitelist.length > 0) {
 				regionCardIds = await fetchKotamaCardIdCache(
@@ -557,17 +636,11 @@
 							}
 
 							findSplit.forEach(findid => {
-								const matchSeason = findid[1]
-								if (findid[0] === String(id)) {
-									if (matchSeason) {
-										if (matchSeason === String(season)) {
-											junk = false
-											reason = `is whitelisted card ${findid[0]} season ${season}`
-										}
-									} else {
-										junk = false
-										reason = `is whitelisted card ${findid}`
-									}
+								if (cardListEntryMatches(findid, id, season)) {
+									junk = false
+									reason = findid.season
+										? `is whitelisted card ${findid.id} season ${season}`
+										: `is whitelisted card ${findid.id}`
 								}
 							})
 						}
@@ -656,8 +729,8 @@
 								if (mode === 'Gift' || (mode === 'Gift and Sell' && sell === true)) {
 									let giftto = gifteeQueue[0]
 									findSplit.forEach(findid => {
-										const matchGiftee = findid[2]
-										if (findid[0] === String(id)) {
+										const matchGiftee = findid.extra[0]
+										if (findid.id === String(id)) {
 											if (matchGiftee) giftto = matchGiftee
 										}
 									})

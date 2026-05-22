@@ -144,7 +144,7 @@
 						{:else if condition.operator === 'in list' || condition.operator === 'not in list'}
 							<FormTextArea
 								editor={true}
-								label="Values (newline or comma separated)"
+								label="Values (one per line)"
 								bind:bindValue={condition.value}
 								id={`val-${i}`} />
 						{:else}

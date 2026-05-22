@@ -1,5 +1,6 @@
 import type { Card } from '$lib/types'
 import { canonicalize } from '$lib/helpers/utils'
+import { cardListEntryMatches, parseCardList } from '$lib/helpers/cardList'
 
 export type Attribute =
     | 'Rarity'
@@ -217,9 +218,10 @@ export function evaluateCondition(
             return !normalizeString(cardValue).includes(normalizeString(value))
         case 'in list':
         case 'not in list': {
-            // Use newlines or commas to separate for lists
-            const list = splitConditionValues(value).map(s => normalizeString(s)).filter(Boolean)
-            const inList = list.includes(normalizeString(cardValue))
+            // supports id and id,season
+            const inList = attribute === 'Card ID'
+                ? parseCardList(value).some(entry => cardListEntryMatches(entry, card.CARDID, card.SEASON))
+                : splitConditionValues(value).map(s => normalizeString(s)).filter(Boolean).includes(normalizeString(cardValue))
             return operator === 'in list' ? inList : !inList
         }
         case 'starts with':
