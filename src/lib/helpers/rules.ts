@@ -67,9 +67,22 @@ const LIST_OPERATORS = new Set<Operator>(['in list', 'not in list'])
 const CACHEABLE_OPERATORS = new Set<Operator>(['=', '!=', 'in list', 'not in list'])
 const NUMERIC_ATTRIBUTES = new Set<Attribute>(['Season', 'Card ID', 'Owner Count', 'Bid', 'Market Value'])
 const DETAIL_ATTRIBUTES = new Set<Attribute>(['Bid', 'Owner Count'])
+const SUMMARY_LIST_PREVIEW_COUNT = 3
 
 function splitConditionValues(value: string): string[] {
     return value.split(/[\n,]+/)
+}
+
+function formatListSummary(attribute: Attribute, value: string): string {
+    if (attribute === 'Card ID') {
+        const count = parseCardList(value).length
+        return count === 1 ? '1 card' : `${count} cards`
+    }
+
+    const values = splitConditionValues(value).map(s => s.trim()).filter(Boolean)
+    if (values.length <= SUMMARY_LIST_PREVIEW_COUNT) return values.join(', ')
+
+    return `${values.slice(0, SUMMARY_LIST_PREVIEW_COUNT).join(', ')} + ${values.length - SUMMARY_LIST_PREVIEW_COUNT} more`
 }
 
 function collectCacheKeys(
@@ -262,6 +275,7 @@ export function getRuleSummary(rule: Rule): string {
     const parts = rule.conditions.map(c => {
         let val = c.value
         if (c.attribute === 'Rarity' && !val) val = '(any)'
+        if (LIST_OPERATORS.has(c.operator)) val = formatListSummary(c.attribute, val)
         if ((c.attribute === 'Market Value' || c.attribute === 'Bid') && val && !isNaN(parseFloat(val))) {
             val = parseFloat(val).toFixed(2)
         }
