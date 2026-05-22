@@ -22,10 +22,12 @@
 		getRuleFlagCacheKeys,
 		getRuleRegionCacheKeys,
 		getRuleSummary,
+		isFlagCacheableCondition,
 		isRegionCacheableCondition,
 		ruleNeedsCardDetailsForCard,
 		type Action,
 		type AdvancedRuleData,
+		type Condition,
 		type Rule,
 	} from '$lib/helpers/rules'
 	import {
@@ -198,7 +200,12 @@
 		})
 	}
 
-	function rewriteRegionRulesWithCardIds(sourceRules: Rule[], regionCardIds: Map<string, Set<string>>): Rule[] {
+	function rewriteCachedRulesWithCardIds(
+		sourceRules: Rule[],
+		cardIdsByKey: Map<string, Set<string>>,
+		isCacheableCondition: (condition: Condition) => boolean,
+		normalize: (value: string) => string
+	): Rule[] {
 		let changed = false
 
 		const rewrittenRules = sourceRules.map(rule => {
@@ -207,13 +214,16 @@
 			let ruleChanged = false
 
 			const conditions = rule.conditions.map(condition => {
-				if (!isRegionCacheableCondition(condition)) return condition
+				if (!isCacheableCondition(condition)) return condition
 
-				const regions = ['in list', 'not in list'].includes(condition.operator)
-					? condition.value.split(/[\n,]+/).map(value => canonicalize(value)).filter(Boolean)
-					: [canonicalize(condition.value)]
+				const keys = ['in list', 'not in list'].includes(condition.operator)
+					? condition.value
+							.split(/[\n,]+/)
+							.map(value => normalize(value))
+							.filter(Boolean)
+					: [normalize(condition.value)].filter(Boolean)
 				const ids = new Set<string>()
-				regions.forEach(region => regionCardIds.get(region)?.forEach(id => ids.add(id)))
+				keys.forEach(key => cardIdsByKey.get(key)?.forEach(id => ids.add(id)))
 				changed = true
 				ruleChanged = true
 
@@ -229,6 +239,14 @@
 		})
 
 		return changed ? rewrittenRules : sourceRules
+	}
+
+	function rewriteRegionRulesWithCardIds(sourceRules: Rule[], regionCardIds: Map<string, Set<string>>): Rule[] {
+		return rewriteCachedRulesWithCardIds(sourceRules, regionCardIds, isRegionCacheableCondition, canonicalize)
+	}
+
+	function rewriteFlagRulesWithCardIds(sourceRules: Rule[], flagCardIds: Map<string, Set<string>>): Rule[] {
+		return rewriteCachedRulesWithCardIds(sourceRules, flagCardIds, isFlagCacheableCondition, flag => flag.trim())
 	}
 
 	function findCommaSeparatedCardIdRule(rulesToCheck: Rule[]): number | undefined {
@@ -344,10 +362,13 @@
 				)
 				rules = rewriteRegionRulesWithCardIds(rules, regionCardIds)
 				flagCardIds = await fetchKotamaCardIdCache(flags.map(f => ({ key: f, clause: `flag-IS-${f}` })))
-			} else if (regionalWhitelist.length > 0) {
-				regionCardIds = await fetchKotamaCardIdCache(
-					regionalWhitelist.map(r => ({ key: r, clause: `region-IS-${r.replaceAll('_', ' ')}` }))
-				)
+				rules = rewriteFlagRulesWithCardIds(rules, flagCardIds)
+			} else {
+				if (regionalWhitelist.length > 0) {
+					regionCardIds = await fetchKotamaCardIdCache(
+						regionalWhitelist.map(r => ({ key: r, clause: `region-IS-${r.replaceAll('_', ' ')}` }))
+					)
+				}
 				if (flagWhitelist.length > 0) {
 					flagCardIds = await fetchKotamaCardIdCache(flagWhitelist.map(f => ({ key: f, clause: `flag-IS-${f}` })))
 				}
