@@ -51,9 +51,9 @@ export interface Rule {
 
 export interface AdvancedRuleData {
     region?: string
-    regionCardIds?: Map<string, Set<number>>
+    regionCardIds?: Map<string, Set<string>>
     flag?: string
-    flagCardIds?: Map<string, Set<number>>
+    flagCardIds?: Map<string, Set<string>>
     bid?: number
     owners?: number
 }
@@ -93,14 +93,16 @@ function collectCacheKeys(
 
 function evaluateCachedMembership(
     cardId: number,
+    season: string | number,
     operator: Operator,
     value: string,
     normalize: (value: string) => string,
-    cacheMap?: Map<string, Set<number>>
+    cacheMap?: Map<string, Set<string>>
 ): boolean | undefined {
     if (!cacheMap || !CACHEABLE_OPERATORS.has(operator)) return undefined
 
-    const hasValue = (key: string) => cacheMap.get(normalize(key))?.has(cardId) || false
+    const cardKey = `${cardId},${season}`
+    const hasValue = (key: string) => cacheMap.get(normalize(key))?.has(cardKey) || false
     if (operator === '=') return hasValue(value)
     if (operator === '!=') return !hasValue(value)
 
@@ -170,14 +172,14 @@ export function evaluateCondition(
             cardValue = Number(card.CARDID)
             break
         case 'Region':
-            const regionMatch = evaluateCachedMembership(Number(card.CARDID), operator, value, canonicalize, advancedData?.regionCardIds)
+            const regionMatch = evaluateCachedMembership(Number(card.CARDID), card.SEASON, operator, value, canonicalize, advancedData?.regionCardIds)
             if (regionMatch !== undefined) return regionMatch
 
             cardValue = advancedData?.region?.toLowerCase() || ''
             value = value.toLowerCase()
             break
         case 'Flag':
-            const flagMatch = evaluateCachedMembership(Number(card.CARDID), operator, value, flag => flag.trim(), advancedData?.flagCardIds)
+            const flagMatch = evaluateCachedMembership(Number(card.CARDID), card.SEASON, operator, value, flag => flag.trim(), advancedData?.flagCardIds)
             if (flagMatch !== undefined) return flagMatch
 
             cardValue = advancedData?.flag || ''

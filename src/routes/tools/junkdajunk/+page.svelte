@@ -77,6 +77,8 @@
 		cards?: Array<{ id: number }>
 	}
 
+	const cardSeasons = ['1', '2', '3', '4']
+
 	$effect(() => {
 		if (rulesLoaded) localStorage.setItem('junkdajunkRules', JSON.stringify(rules))
 	})
@@ -126,7 +128,7 @@
 			: defaultPrices
 		owners = page.url.searchParams.get('owners') || (localStorage.getItem('junkdajunkOwnerCount') as string) || ''
 		cardcount = page.url.searchParams.get('cardcount') || (localStorage.getItem('junkdajunkCardCount') as string) || ''
-		const validSeasons = new Set(['1', '2', '3', '4'])
+		const validSeasons = new Set(cardSeasons)
 		const rawSeasons = page.url.searchParams.get('skipseason') ?? localStorage.getItem('junkdajunkOmittedSeasons') ?? ''
 		skipseason = Array.from(new Set(rawSeasons.split(',').filter(s => validSeasons.has(s))))
 		skipexnation =
@@ -146,36 +148,41 @@
 	})
 	onDestroy(() => abortController.abort())
 
-	async function fetchKotamaCardIds(clause: string, from?: string): Promise<Set<number>> {
+	async function fetchKotamaCardIds(clause: string, season: string): Promise<Set<string>> {
 		const params = new URLSearchParams({
 			select: 'min',
 			clauses: clause,
 			ua: main,
 			limit: '252525252525',
+			from: `S${season}`,
 		})
-		if (from) params.set('from', from)
 		const response = await fetch(`https://kotama.kractero.com/api?${params}`, {
 			signal: abortController.signal,
 		})
 		if (!response.ok) throw new Error(`Kotama returned ${response.status} for ${clause}`)
 		const data: KotamaCardList = await response.json()
-		return new Set((data.cards || []).map(card => Number(card.id)))
+		return new Set((data.cards || []).map(card => `${Number(card.id)},${season}`))
 	}
 
 	async function fetchKotamaCardIdCache(
-		entries: { key: string; clause: string; from?: string }[]
-	): Promise<Map<string, Set<number>>> {
-		const cardIds = new Map<string, Set<number>>()
+		entries: { key: string; clause: string }[]
+	): Promise<Map<string, Set<string>>> {
+		const cardIds = new Map<string, Set<string>>()
 		if (entries.length === 0) return cardIds
 
 		progress = [...progress, { text: `Fetching card IDs for ${entries.length} checks...` }]
 
-		for (const { key, clause, from } of entries) {
+		for (const { key, clause } of entries) {
+			const ids = new Set<string>()
+			for (const season of cardSeasons) {
+				if (abortController.signal.aborted || stopped) break
+				const seasonalIds = await fetchKotamaCardIds(clause, season)
+				seasonalIds.forEach(id => ids.add(id))
+				await sleep(0.6)
+			}
 			if (abortController.signal.aborted || stopped) break
-			const ids = await fetchKotamaCardIds(clause, from)
 			cardIds.set(key, ids)
 			progress = [...progress, { text: `Cached ${ids.size} cards for ${key}` }]
-			await sleep(0.6)
 		}
 
 		return cardIds
@@ -241,8 +248,8 @@
 		let actionCount = 0
 		let currCard = 0
 		let currSellCard = 0
-		let regionCardIds = new Map<string, Set<number>>()
-		let flagCardIds = new Map<string, Set<number>>()
+		let regionCardIds = new Map<string, Set<string>>()
+		let flagCardIds = new Map<string, Set<string>>()
 
 		let gifteeQueue = giftee
 			.split('\n')
@@ -458,11 +465,11 @@
 									reason: `category set to gift`,
 								},
 								{
-									check: () => regionCardIds.size > 0 && [...regionCardIds.values()].some(set => set.has(Number(id))),
+									check: () => regionCardIds.size > 0 && [...regionCardIds.values()].some(set => set.has(`${Number(id)},${season}`)),
 									reason: `is in whitelisted region`,
 								},
 								{
-									check: () => flagCardIds.size > 0 && [...flagCardIds.values()].some(set => set.has(Number(id))),
+									check: () => flagCardIds.size > 0 && [...flagCardIds.values()].some(set => set.has(`${Number(id)},${season}`)),
 									reason: `is in whitelisted flag`,
 								},
 								{
