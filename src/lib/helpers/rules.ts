@@ -1,5 +1,6 @@
 import type { Card } from '$lib/types'
 import { canonicalize } from '$lib/helpers/utils'
+import { cardListEntryMatches, parseCardList } from '$lib/helpers/cardList'
 
 export type Attribute =
     | 'Rarity'
@@ -51,9 +52,9 @@ export interface Rule {
 
 export interface AdvancedRuleData {
     region?: string
-    regionCardIds?: Map<string, Set<number>>
+    regionCardIds?: Map<string, Set<string>>
     flag?: string
-    flagCardIds?: Map<string, Set<number>>
+    flagCardIds?: Map<string, Set<string>>
     bid?: number
     owners?: number
 }
@@ -66,9 +67,22 @@ const LIST_OPERATORS = new Set<Operator>(['in list', 'not in list'])
 const CACHEABLE_OPERATORS = new Set<Operator>(['=', '!=', 'in list', 'not in list'])
 const NUMERIC_ATTRIBUTES = new Set<Attribute>(['Season', 'Card ID', 'Owner Count', 'Bid', 'Market Value'])
 const DETAIL_ATTRIBUTES = new Set<Attribute>(['Bid', 'Owner Count'])
+const SUMMARY_LIST_PREVIEW_COUNT = 3
 
 function splitConditionValues(value: string): string[] {
     return value.split(/[\n,]+/)
+}
+
+function formatListSummary(attribute: Attribute, value: string): string {
+    if (attribute === 'Card ID') {
+        const count = parseCardList(value).length
+        return count === 1 ? '1 card' : `${count} cards`
+    }
+
+    const values = splitConditionValues(value).map(s => s.trim()).filter(Boolean)
+    if (values.length <= SUMMARY_LIST_PREVIEW_COUNT) return values.join(', ')
+
+    return `${values.slice(0, SUMMARY_LIST_PREVIEW_COUNT).join(', ')} + ${values.length - SUMMARY_LIST_PREVIEW_COUNT} more`
 }
 
 function collectCacheKeys(
@@ -93,14 +107,16 @@ function collectCacheKeys(
 
 function evaluateCachedMembership(
     cardId: number,
+    season: string | number,
     operator: Operator,
     value: string,
     normalize: (value: string) => string,
-    cacheMap?: Map<string, Set<number>>
+    cacheMap?: Map<string, Set<string>>
 ): boolean | undefined {
     if (!cacheMap || !CACHEABLE_OPERATORS.has(operator)) return undefined
 
-    const hasValue = (key: string) => cacheMap.get(normalize(key))?.has(cardId) || false
+    const cardKey = `${cardId},${season}`
+    const hasValue = (key: string) => cacheMap.get(normalize(key))?.has(cardKey) || false
     if (operator === '=') return hasValue(value)
     if (operator === '!=') return !hasValue(value)
 
@@ -170,14 +186,14 @@ export function evaluateCondition(
             cardValue = Number(card.CARDID)
             break
         case 'Region':
-            const regionMatch = evaluateCachedMembership(Number(card.CARDID), operator, value, canonicalize, advancedData?.regionCardIds)
+            const regionMatch = evaluateCachedMembership(Number(card.CARDID), card.SEASON, operator, value, canonicalize, advancedData?.regionCardIds)
             if (regionMatch !== undefined) return regionMatch
 
             cardValue = advancedData?.region?.toLowerCase() || ''
             value = value.toLowerCase()
             break
         case 'Flag':
-            const flagMatch = evaluateCachedMembership(Number(card.CARDID), operator, value, flag => flag.trim(), advancedData?.flagCardIds)
+            const flagMatch = evaluateCachedMembership(Number(card.CARDID), card.SEASON, operator, value, flag => flag.trim(), advancedData?.flagCardIds)
             if (flagMatch !== undefined) return flagMatch
 
             cardValue = advancedData?.flag || ''
@@ -215,9 +231,10 @@ export function evaluateCondition(
             return !normalizeString(cardValue).includes(normalizeString(value))
         case 'in list':
         case 'not in list': {
-            // Use newlines or commas to separate for lists
-            const list = splitConditionValues(value).map(s => normalizeString(s)).filter(Boolean)
-            const inList = list.includes(normalizeString(cardValue))
+            // supports id and id,season
+            const inList = attribute === 'Card ID'
+                ? parseCardList(value).some(entry => cardListEntryMatches(entry, card.CARDID, card.SEASON))
+                : splitConditionValues(value).map(s => normalizeString(s)).filter(Boolean).includes(normalizeString(cardValue))
             return operator === 'in list' ? inList : !inList
         }
         case 'starts with':
@@ -258,6 +275,7 @@ export function getRuleSummary(rule: Rule): string {
     const parts = rule.conditions.map(c => {
         let val = c.value
         if (c.attribute === 'Rarity' && !val) val = '(any)'
+        if (LIST_OPERATORS.has(c.operator)) val = formatListSummary(c.attribute, val)
         if ((c.attribute === 'Market Value' || c.attribute === 'Bid') && val && !isNaN(parseFloat(val))) {
             val = parseFloat(val).toFixed(2)
         }
