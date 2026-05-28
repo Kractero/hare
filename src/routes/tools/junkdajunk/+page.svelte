@@ -96,13 +96,20 @@
 		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		puppets = (localStorage.getItem('gotissuesPuppets') as string) || ''
 		password = (localStorage.getItem('password') as string) || ''
+		configMode = page.url.searchParams.get('configMode') === 'Rules'
+			? 'Rules'
+			: localStorage.getItem('junkdajunkConfigMode') || 'Classic'
 		mode =
 			page.url.searchParams.get('mode') ||
 			(localStorage.getItem('jdjMode') as string) ||
 			(localStorage.getItem('finderMode') as string) ||
 			'Gift'
 		checkMode = page.url.searchParams.get('checkMode') || (localStorage.getItem('jdjCheckMode') as string) || 'Advanced'
-		junkMethod = page.url.searchParams.get('junk') || (localStorage.getItem('junkMethod') as string) || 'API'
+		junkMethod =
+			page.url.searchParams.get('junkMethod') ||
+			page.url.searchParams.get('junk') ||
+			(localStorage.getItem('junkMethod') as string) ||
+			'API'
 		regionalwhitelist =
 			page.url.searchParams.get('regions')?.replaceAll(',', '\n') ||
 			(localStorage.getItem('junkdajunkRegionalWhitelist') as string) ||
@@ -140,7 +147,6 @@
 			localStorage.getItem('junkdajunkExnation') === 'true' ||
 			false
 		junkUpTo = page.url.searchParams.get('junkUpTo') || (localStorage.getItem('junkUpTo') as string) || '-1'
-		configMode = localStorage.getItem('junkdajunkConfigMode') || 'Classic'
 		try {
 			const savedRules = localStorage.getItem('junkdajunkRules')
 			if (savedRules) rules = JSON.parse(savedRules)
@@ -274,9 +280,21 @@
 			return
 		}
 		e.preventDefault()
-		pushHistory(
-			`?main=${main}&mode=${mode}&junkMethod=${junkMethod}&checkMode=${checkMode}${giftee ? `&giftee=${giftee.split('\n').join(',')}` : ''}${owners ? `&owners=${owners}` : ''}${cardcount ? `&cardcount=${cardcount}` : ''}${regionalwhitelist ? `&regions=${regionalwhitelist.replaceAll('\n', ',')}` : ''}${flagwhitelist ? `&flags=${flagwhitelist.replaceAll('\n', ',')}` : ''}${skipseason && skipseason.length > 0 ? `&skipseason=${skipseason}` : ''}${skipexnation ? `&skipexnation=${skipexnation}` : ''}${junkUpTo ? `&junkUpTo=${junkUpTo}` : ''}`
-		)
+		const classicMode = configMode === 'Classic'
+		const historyParams = new URLSearchParams({ main, configMode, junkMethod })
+		if (junkUpTo) historyParams.set('junkUpTo', junkUpTo)
+		if (classicMode) {
+			historyParams.set('mode', mode)
+			historyParams.set('checkMode', checkMode)
+			if (giftee) historyParams.set('giftee', giftee.split('\n').join(','))
+			if (owners) historyParams.set('owners', owners)
+			if (cardcount) historyParams.set('cardcount', cardcount)
+			if (regionalwhitelist) historyParams.set('regions', regionalwhitelist.replaceAll('\n', ','))
+			if (flagwhitelist) historyParams.set('flags', flagwhitelist.replaceAll('\n', ','))
+			if (skipseason && skipseason.length > 0) historyParams.set('skipseason', skipseason.join(','))
+			if (skipexnation) historyParams.set('skipexnation', String(skipexnation))
+		}
+		pushHistory(`?${historyParams.toString()}`)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		window.addEventListener('beforeunload', beforeUnload)
@@ -290,27 +308,33 @@
 		let puppetList = puppets.split('\n')
 		const newInfo = []
 
-		newInfo.push({ text: `Initiating JunkDaJunk with ${checkMode} ${junkMethod} ${mode}` })
+		newInfo.push({
+			text: classicMode
+				? `Initiating JunkDaJunk with ${checkMode} ${junkMethod} ${mode}`
+				: `Initiating JunkDaJunk with Rules ${junkMethod}`,
+		})
 
-		const regionalWhitelist = regionalwhitelist ? regionalwhitelist.split('\n').map(region => canonicalize(region)) : []
+		const regionalWhitelist = classicMode && regionalwhitelist
+			? regionalwhitelist.split('\n').map(region => canonicalize(region))
+			: []
 		if (regionalWhitelist.length > 0) {
 			newInfo.push({ text: `Whitelisting regions: ${regionalWhitelist.map(region => region.trim()).join(', ')}` })
 		}
-		const flagWhitelist = flagwhitelist ? flagwhitelist.split('\n') : []
+		const flagWhitelist = classicMode && flagwhitelist ? flagwhitelist.split('\n') : []
 		if (flagWhitelist.length > 0) {
 			newInfo.push({ text: `Whitelisting flags: ${flagWhitelist.map(flag => flag.trim()).join(', ')}` })
 		}
 
-		if (finderlist) {
+		if (classicMode && finderlist) {
 			const count = finderlist.split('\n').filter(Boolean).length
 			if (count > 0) {
 				newInfo.push({ text: `Whitelisting cards: ${count} cards whitelisted` })
 			}
 		}
 
-		if (skipseason && skipseason.length > 0) newInfo.push({ text: `Skipping seasons: ${skipseason}` })
+		if (classicMode && skipseason && skipseason.length > 0) newInfo.push({ text: `Skipping seasons: ${skipseason}` })
 
-		if (skipexnation === true) newInfo.push({ text: `Skipping s1 exnations` })
+		if (classicMode && skipexnation === true) newInfo.push({ text: `Skipping s1 exnations` })
 
 		// for (const [rarity, threshold] of Object.entries(raritiesMV))
 		// 	newInfo.push({ text: `${rarity} junk threshold at ${threshold}` })
@@ -318,8 +342,8 @@
 		// for (const [rarity, bid] of Object.entries(raritiesLowestBid))
 		// 	newInfo.push({ text: `${rarity} junk threshold at ${bid}` })
 
-		const findSplit = parseCardList(finderlist)
-		const whitelistSet = new Set(findSplit.map(f => `${f.id},${f.season || ''}`))
+		const classicWhitelistEntries = classicMode ? parseCardList(finderlist) : []
+		const whitelistSet = new Set(classicWhitelistEntries.map(f => `${f.id},${f.season || ''}`))
 
 		info = newInfo
 
@@ -415,7 +439,7 @@
 						let reason = ''
 						let giftTarget = ''
 
-						if (whitelistSet.has(`${id},${season}`)) {
+						if (classicMode && whitelistSet.has(`${id},${season}`)) {
 							progress = [
 								...progress,
 								{ text: `${j + 1}/${cards.length} -> Skipping S${season} ${id} - whitelisted`, color: 'blue' },
@@ -656,7 +680,7 @@
 								}
 							}
 
-							findSplit.forEach(findid => {
+							classicWhitelistEntries.forEach(findid => {
 								if (cardListEntryMatches(findid, id, season)) {
 									junk = false
 									reason = findid.season
@@ -749,7 +773,7 @@
 								// Classic Mode
 								if (mode === 'Gift' || (mode === 'Gift and Sell' && sell === true)) {
 									let giftto = gifteeQueue[0]
-									findSplit.forEach(findid => {
+									classicWhitelistEntries.forEach(findid => {
 										const matchGiftee = findid.extra[0]
 										if (findid.id === String(id)) {
 											if (matchGiftee) giftto = matchGiftee
