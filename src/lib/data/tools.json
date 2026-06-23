@@ -142,5 +142,11 @@
 		"slug": "rarity",
 		"description": "Predict what rarity your nation would or will be. Please note this is not official.",
 		"image": "🏅"
+	},
+	{
+		"name": "Forecaster",
+		"slug": "forecaster",
+		"description": "A script that estimates you likelihood of obtaining a gold badge in NS.",
+		"image": "🌡️"
 	}
 ]
