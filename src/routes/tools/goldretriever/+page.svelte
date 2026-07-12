@@ -29,7 +29,7 @@
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
-		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
+		domain = `https://www.nationstates.net`
 		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		puppets = (localStorage.getItem('puppets') as string) || ''
 		password = (localStorage.getItem('password') as string) || ''

@@ -25,7 +25,7 @@
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
-		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
+		domain = `https://www.nationstates.net`
 		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		mode = page.url.searchParams.get('mode') || (localStorage.getItem('flagmanagerMode') as string) || 'Flags'
 		puppets = (localStorage.getItem('puppets') as string) || ''

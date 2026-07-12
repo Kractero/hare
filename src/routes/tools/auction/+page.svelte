@@ -31,7 +31,7 @@
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
-		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
+		domain = `https://www.nationstates.net`
 		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		puppets = (localStorage.getItem('puppets') as string) || ''
 		transferCards = (localStorage.getItem('auctionCards') as string) || ''
@@ -170,7 +170,8 @@
 								cardsTransferable--
 								currentTransferred++
 
-								progress[progressIndex].text = `${nation} can transfer ${initialTransferable} cards! (${currentTransferred} of ${totalTransferable})`
+								progress[progressIndex].text =
+									`${nation} can transfer ${initialTransferable} cards! (${currentTransferred} of ${totalTransferable})`
 
 								if (transferCounts[key].count === 0) {
 									transferableIDs.splice(currIndex, 1)

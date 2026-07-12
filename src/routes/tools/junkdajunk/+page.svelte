@@ -92,13 +92,14 @@
 	})
 
 	onMount(() => {
-		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
+		domain = `https://www.nationstates.net`
 		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		puppets = (localStorage.getItem('gotissuesPuppets') as string) || ''
 		password = (localStorage.getItem('password') as string) || ''
-		configMode = page.url.searchParams.get('configMode') === 'Rules'
-			? 'Rules'
-			: localStorage.getItem('junkdajunkConfigMode') || 'Classic'
+		configMode =
+			page.url.searchParams.get('configMode') === 'Rules'
+				? 'Rules'
+				: localStorage.getItem('junkdajunkConfigMode') || 'Classic'
 		mode =
 			page.url.searchParams.get('mode') ||
 			(localStorage.getItem('jdjMode') as string) ||
@@ -174,9 +175,7 @@
 		return new Set((data.cards || []).map(card => `${Number(card.id)},${season}`))
 	}
 
-	async function fetchKotamaCardIdCache(
-		entries: { key: string; clause: string }[]
-	): Promise<Map<string, Set<string>>> {
+	async function fetchKotamaCardIdCache(entries: { key: string; clause: string }[]): Promise<Map<string, Set<string>>> {
 		const cardIds = new Map<string, Set<string>>()
 		if (entries.length === 0) return cardIds
 
@@ -236,7 +235,7 @@
 				return {
 					...condition,
 					attribute: 'Card ID' as const,
-					operator: ['=', 'in list'].includes(condition.operator) ? 'in list' as const : 'not in list' as const,
+					operator: ['=', 'in list'].includes(condition.operator) ? ('in list' as const) : ('not in list' as const),
 					value: sortCardIds([...ids]).join('\n'),
 				}
 			})
@@ -260,13 +259,17 @@
 			rule =>
 				rule.enabled &&
 				rule.conditions.some(condition => {
-					if (condition.attribute !== 'Card ID' || !['in list', 'not in list'].includes(condition.operator)) return false
+					if (condition.attribute !== 'Card ID' || !['in list', 'not in list'].includes(condition.operator))
+						return false
 					return condition.value
 						.split('\n')
 						.map(line => line.trim())
 						.filter(Boolean)
 						.some(line => {
-							const parts = line.split(',').map(part => part.trim()).filter(Boolean)
+							const parts = line
+								.split(',')
+								.map(part => part.trim())
+								.filter(Boolean)
 							return parts.length > 1 && !(parts.length === 2 && cardSeasons.includes(parts[1]))
 						})
 				})
@@ -314,9 +317,8 @@
 				: `Initiating JunkDaJunk with Rules ${junkMethod}`,
 		})
 
-		const regionalWhitelist = classicMode && regionalwhitelist
-			? regionalwhitelist.split('\n').map(region => canonicalize(region))
-			: []
+		const regionalWhitelist =
+			classicMode && regionalwhitelist ? regionalwhitelist.split('\n').map(region => canonicalize(region)) : []
 		if (regionalWhitelist.length > 0) {
 			newInfo.push({ text: `Whitelisting regions: ${regionalWhitelist.map(region => region.trim()).join(', ')}` })
 		}
@@ -589,11 +591,14 @@
 									reason: `category set to gift`,
 								},
 								{
-									check: () => regionCardIds.size > 0 && [...regionCardIds.values()].some(set => set.has(`${Number(id)},${season}`)),
+									check: () =>
+										regionCardIds.size > 0 &&
+										[...regionCardIds.values()].some(set => set.has(`${Number(id)},${season}`)),
 									reason: `is in whitelisted region`,
 								},
 								{
-									check: () => flagCardIds.size > 0 && [...flagCardIds.values()].some(set => set.has(`${Number(id)},${season}`)),
+									check: () =>
+										flagCardIds.size > 0 && [...flagCardIds.values()].some(set => set.has(`${Number(id)},${season}`)),
 									reason: `is in whitelisted flag`,
 								},
 								{

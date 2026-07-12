@@ -28,7 +28,7 @@
 	let inclusion = $state('Unendorsed')
 
 	onMount(() => {
-		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
+		domain = `https://www.nationstates.net`
 		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		endotarter = page.url.searchParams.get('nation') || (localStorage.getItem('endotartEndotarter') as string) || ''
 		immune = page.url.searchParams.get('immune')

@@ -35,7 +35,7 @@
 	]
 	let ledgerTable: HTMLTableElement | undefined = $state()
 	let ledger: [{ [key: string]: number | string }] = $state([{}])
-	let displayDate: string
+	let displayDate: string = $state('')
 	let error: string = $state('')
 
 	const utcTime = new Date().getTime() + new Date().getTimezoneOffset() * 6000
@@ -56,6 +56,7 @@
 			return
 		}
 		ledger = await data.json()
+		displayDate = date
 	}
 	onMount(() => {
 		fillTable(maxDate)
@@ -143,7 +144,7 @@
 								<td class="hideable hidden">
 									{#if deck[header]}<a
 											target="_blank"
-											href={`https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net/nation=${deck.Nation}/page=deck/?filter=${header.toLowerCase()}`}>
+											href={`https://www.nationstates.net/nation=${deck.Nation}/page=deck/?filter=${header.toLowerCase()}`}>
 											{deck[header]}
 										</a>
 									{/if}

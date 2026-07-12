@@ -26,7 +26,7 @@
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
-		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
+		domain = `https://www.nationstates.net`
 		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		calc = page.url.searchParams.get('calc') || ''
 		governor = page.url.searchParams.get('gov') === 'true' ? true : false

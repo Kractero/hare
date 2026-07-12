@@ -23,7 +23,7 @@
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(async () => {
-		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
+		domain = `https://www.nationstates.net`
 		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		mode = page.url.searchParams.get('mode') || (localStorage.getItem('inscriptionMode') as string) || 'Banners'
 	})

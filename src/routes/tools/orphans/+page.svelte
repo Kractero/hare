@@ -21,7 +21,7 @@
 	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 	onMount(() => {
-		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
+		domain = `https://www.nationstates.net`
 		main = page.url.searchParams.get('main') || (localStorage.getItem('main') as string) || ''
 		deck = page.url.searchParams.get('deck') || (localStorage.getItem('orphansDeck') as string) || ''
 	})

@@ -15,7 +15,7 @@
 	const validHeaders = ['Name', 'S1', 'S2', 'S3', 'S4', '👍']
 	let counts: string | any[] = $state([])
 	onMount(async () => {
-		domain = `https://${localStorage.getItem('connectionUrl') || 'www'}.nationstates.net`
+		domain = `https://www.nationstates.net`
 		const activityRes = await fetch(`https://raw.githubusercontent.com/Kractero/himari/main/files/Legendaries.json`)
 		json = await activityRes.json()
 		const changelogres = await fetch(
