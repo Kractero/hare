@@ -31,18 +31,18 @@ export async function parseXML(url: string, userAgent: string, password?: string
 		const ratelimitReset = Number(response.headers.get('RateLimit-Reset'))
 		const retryAfter = Number(response.headers.get('Retry-After'))
 
-		if (response.status) {
+		if (!response.ok) {
+			if (response.status === 429) {
+				const waitTime = retryAfter > 0 ? retryAfter : ratelimitReset / ratelimitRemaining
+				await sleep(waitTime * 1000)
+				return await parseXML(url, userAgent, password ? password : '')
+			}
+
 			const code = response.status
 			const text = await response.text()
 			const match = text.match(/<h1[^>]*>(.*?)<\/h1>/s)
 			const message = match?.[1]?.trim()
 			throw new Error(message || `failed with error code ${code}`)
-		}
-
-		if (response.status === 429) {
-			const waitTime = retryAfter > 0 ? retryAfter : ratelimitReset / ratelimitRemaining
-			await sleep(waitTime * 1000)
-			return await parseXML(url, userAgent, password ? password : '')
 		}
 
 		if (ratelimitRemaining > 0) {
