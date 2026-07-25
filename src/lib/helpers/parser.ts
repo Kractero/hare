@@ -31,12 +31,12 @@ export async function parseXML(url: string, userAgent: string, password?: string
 		const ratelimitReset = Number(response.headers.get('RateLimit-Reset'))
 		const retryAfter = Number(response.headers.get('Retry-After'))
 
-		if (response.status === 404) {
-			return { status: `failed with error code 404` }
-		}
-
-		if (response.status === 409) {
-			return { status: `failed with error code 409` }
+		if (response.status) {
+			const code = response.status
+			const text = await response.text()
+			const match = text.match(/<h1[^>]*>(.*?)<\/h1>/s)
+			const message = match?.[1]?.trim()
+			throw new Error(message || `failed with error code ${code}`)
 		}
 
 		if (response.status === 429) {
@@ -60,5 +60,6 @@ export async function parseXML(url: string, userAgent: string, password?: string
 		if (error instanceof Error) {
 			log('error', error.message)
 		}
+		throw error
 	}
 }
