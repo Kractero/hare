@@ -3,7 +3,6 @@
 	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
 	import OpenButton from '$lib/components/buttons/OpenButton.svelte'
-	import FormCheckbox from '$lib/components/FormCheckbox.svelte'
 	import FormInput from '$lib/components/FormInput.svelte'
 	import FormSelect from '$lib/components/FormSelect.svelte'
 	import FormTextArea from '$lib/components/FormTextArea.svelte'
@@ -277,6 +276,15 @@
 		return ruleIndex === -1 ? undefined : ruleIndex
 	}
 
+	const rarityBank: Record<string, number> = {
+		common: 0.01,
+		uncommon: 0.05,
+		rare: 0.1,
+		'ultra-rare': 0.2,
+		epic: 0.5,
+		legendary: 1,
+	}
+
 	async function onSubmit(e: Event) {
 		if (downloadable) {
 			dialogOpen = true
@@ -368,6 +376,9 @@
 		let junkedCards = 0
 		let giftedCards = 0
 		let actionCount = 0
+		let junkRarityCounts: Record<string, number> = {}
+		let junkBankTotal = 0
+		let skippedCount = 0
 		let currCard = 0
 		let currSellCard = 0
 		let regionCardIds = new Map<string, Set<string>>()
@@ -446,6 +457,7 @@
 								...progress,
 								{ text: `${j + 1}/${cards.length} -> Skipping S${season} ${id} - whitelisted`, color: 'blue' },
 							]
+							skippedCount++
 							continue
 						}
 
@@ -532,6 +544,7 @@
 										color: 'gray',
 									},
 								]
+								skippedCount++
 								junk = false
 								sell = false
 							} else if (giftTarget) {
@@ -572,6 +585,7 @@
 										color: 'gray',
 									},
 								]
+								skippedCount++
 								junk = false
 								sell = false
 							}
@@ -748,6 +762,8 @@
 									currCard = currCard + 1
 								} else {
 									junkedCards = junkedCards + 1
+									junkRarityCounts[category] = (junkRarityCounts[category] || 0) + 1
+									junkBankTotal += rarityBank[category] ?? 0
 									actionCount = actionCount + 1
 									junkCounter =
 										junkMethod === 'API'
@@ -766,6 +782,7 @@
 												color: 'blue',
 											},
 										]
+										skippedCount++
 									}
 									const activeNation = giftTarget ? giftTarget : nation
 									sellContent.push({
@@ -802,6 +819,7 @@
 										...progress,
 										{ text: `${j + 1}/${cards.length} -> Skipping ${id} - ${reason}!`, color: 'blue' },
 									]
+									skippedCount++
 									if (mode === 'Sell' || mode === 'Gift and Sell') {
 										sellContent.push({
 											url: `${domain}/page=deck/container=${nation}/nation=${nation}/card=${id}/season=${season}/jdj=view?${urlParameters('junkDaJunk', main)}`,
@@ -893,6 +911,19 @@
 				color: 'green',
 			},
 		]
+		const totalJunked = Object.values(junkRarityCounts).reduce((a, b) => a + b, 0)
+		const rarityLine =
+			Object.entries(junkRarityCounts)
+				.map(([r, c]) => `${r}: ${c}`)
+				.join(', ') || 'none'
+
+		const totalStat = {
+			text: `Junked ${totalJunked} (${rarityLine}) — ${junkBankTotal.toFixed(2)} bank. Gifted ${giftedCards}. Skipped ${skippedCount}.`,
+			color: 'purple',
+		}
+
+		info = [totalStat, ...info]
+		progress = [...progress, totalStat]
 		if (content.length > 0) downloadable = true
 		stoppable = false
 		window.removeEventListener('beforeunload', beforeUnload)
