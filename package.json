@@ -51,7 +51,8 @@
 			"cookie": "^0.7.0"
 		},
 		"exceljs": {
-			"tmp": "^0.2.5"
+			"tmp": "^0.2.5",
+			"uuid": ">=14.0.0"
 		},
 		"@mapbox/node-pre-gyp": {
 			"tar": "^7.5.7"
