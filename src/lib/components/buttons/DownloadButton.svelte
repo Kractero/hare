@@ -12,7 +12,6 @@
 	let { downloadable = $bindable(false), content = $bindable([]), type = 'html', name }: Props = $props()
 
 	const getContentForDownload = () => {
-		console.log(type)
 		if (type === 'html') {
 			if (typeof content === 'string') {
 				return htmlContent(content, name)
