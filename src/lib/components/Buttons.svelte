@@ -19,7 +19,7 @@
 		downloadButton = false,
 		downloadable = $bindable(false),
 		content = $bindable([]),
-		type = '',
+		type = $bindable(''),
 		name = '',
 		stopped = $bindable(false),
 		stopButton = false,

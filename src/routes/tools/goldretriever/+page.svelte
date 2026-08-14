@@ -26,6 +26,7 @@
 	let password = $state('')
 	let mode = $state('')
 	let transferCard = $state('')
+	let type = $state('html')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
@@ -38,19 +39,26 @@
 			page.url.searchParams.get('goldretrieverTransferCard') ||
 			(localStorage.getItem('goldretrieverTransferCard') as string) ||
 			''
+		type = page.url.searchParams.get('type') || (localStorage.getItem('type') as string) || 'html'
 	})
 
 	onDestroy(() => abortController.abort())
 
 	async function onSubmit(e: Event) {
 		e.preventDefault()
-		pushHistory(`?main=${main}&mode=${mode}${transferCard && `&goldretrieverTransferCard=${transferCard}`}`)
+		pushHistory(
+			`?main=${main}&mode=${mode}${transferCard && `&goldretrieverTransferCard=${transferCard}`}&type=${type}`
+		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
 		downloadable = false
 		stoppable = true
 		stopped = false
-		content = `<tr><th>Nation</th><th class='sort' data-order='none'>Bank</th><th class='sort' data-order='none'>Deck Value</th><th class='sort' data-order='none'>Junk Value</th><th class='sort' data-order='none'>Card Count</th>${mode === 'Include' ? "<th class='sort' data-order='none'>Issues</th><th class='sort' data-order='none'>Packs</th>" : ''}<th class='sort' data-order='none'>Legendary Count</th>${transferCard && '<th>Transfer Card</th>'}</tr>\n`
+		if (content === 'html') {
+			content = `<tr><th>Nation</th><th class='sort' data-order='none'>Bank</th><th class='sort' data-order='none'>Deck Value</th><th class='sort' data-order='none'>Junk Value</th><th class='sort' data-order='none'>Card Count</th>${mode === 'Include' ? "<th class='sort' data-order='none'>Issues</th><th class='sort' data-order='none'>Packs</th>" : ''}<th class='sort' data-order='none'>Legendary Count</th>${transferCard && '<th>Transfer Card</th>'}</tr>\n`
+		} else {
+			content = `Nation,Bank,Deck Value,Junk Value,Card Count${mode === 'Include' ? ',Issues,Packs' : ''},Legendary Count${transferCard ? ',Transfer Card' : ''}\n`
+		}
 		progress = []
 		info = [{ text: `Initiating Gold Retriever...` }]
 		let puppetList = puppets.split('\n')
@@ -134,33 +142,44 @@
 					deck.packs = packs
 				}
 
+				progress = [
+					...progress,
+					{
+						text: `${nation} has ${deck.bank} bank, ${deck.deckValue} deck value, ${deck.junkValue} junk value, ${deck.cardCount} cards, ${deck.issues} issues, and ${deck.packs} packs.`,
+					},
+				]
+
 				totals.bank = totals.bank + deck.bank
 				totals.deckValue = totals.deckValue + deck.deckValue
 				totals.junkValue = totals.junkValue + deck.junkValue
 				totals.cardCount = totals.cardCount + deck.cardCount
 				totals.issues = totals.issues + deck.issues
 				totals.packs = totals.packs + deck.packs
-				content += `<tr>
-					<td><p><a target='_blank' href='${domain}/container=${nation_formatted}/nation=${nation_formatted}?${urlParameters('Gold Retriever', main)}'>${deck.nation}</a></p></td>
-					<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1?${urlParameters('Gold Retriever', main)}'>${deck.bank}</a></p></td>
-					<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1?${urlParameters('Gold Retriever', main)}'>${deck.deckValue}</a></p></td>
-					<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}?${urlParameters('Gold Retriever', main)}'>${deck.junkValue}</a></p></td>
-					<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}?${urlParameters('Gold Retriever', main)}'>${deck.cardCount}</a></p></td>
+				if (content === 'html') {
+					content += `<tr>
+		<td><p><a target='_blank' href='${domain}/container=${nation_formatted}/nation=${nation_formatted}?${urlParameters('Gold Retriever', main)}'>${deck.nation}</a></p></td>
+		<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1?${urlParameters('Gold Retriever', main)}'>${deck.bank}</a></p></td>
+		<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1?${urlParameters('Gold Retriever', main)}'>${deck.deckValue}</a></p></td>
+		<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}?${urlParameters('Gold Retriever', main)}'>${deck.junkValue}</a></p></td>
+		<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}?${urlParameters('Gold Retriever', main)}'>${deck.cardCount}</a></p></td>
 
-					${
-						mode === 'Include'
-							? `
-						<td><p><a target='_blank' href='${domain}/page=dilemmas/container=${nation_formatted}/nation=${nation_formatted}?${urlParameters('Gold Retriever', main)}'>${deck.issues}</a></p></td>
-						<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}?${urlParameters('Gold Retriever', main)}'>${deck.packs}</a></p></td>
-					`
-							: ''
-					}
+		${
+			mode === 'Include'
+				? `
+			<td><p><a target='_blank' href='${domain}/page=dilemmas/container=${nation_formatted}/nation=${nation_formatted}?${urlParameters('Gold Retriever', main)}'>${deck.issues}</a></p></td>
+			<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}?${urlParameters('Gold Retriever', main)}'>${deck.packs}</a></p></td>
+		`
+				: ''
+		}
 
-					<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1/?filter=legendary?${urlParameters('Gold Retriever', main)}'>${categoryCounts.legendary ? Number(categoryCounts.legendary) : 0}</a></p></td>
-					${transferCard && `<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}/card=${transferCard.split(',')[0]}/season=${transferCard.split(',')[1]}?${urlParameters('Gold Retriever', main)}'>Transfer Card</a></p></td>`}
-				</tr>\n`
+		<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1/?filter=legendary?${urlParameters('Gold Retriever', main)}'>${categoryCounts.legendary ? Number(categoryCounts.legendary) : 0}</a></p></td>
+		${transferCard && `<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}/card=${transferCard.split(',')[0]}/season=${transferCard.split(',')[1]}?${urlParameters('Gold Retriever', main)}'>Transfer Card</a></p></td>`}
+	</tr>\n`
+				} else {
+					content += `${deck.nation},${deck.bank},${deck.deckValue},${deck.junkValue},${deck.cardCount}${mode === 'Include' ? `,${deck.issues},${deck.packs}` : ''},${categoryCounts.legendary ? Number(categoryCounts.legendary) : 0}${transferCard ? ',Transfer Card' : ''}\n`
+				}
 			} catch (err) {
-				progress = [...progress, { text: `Error processing ${nation} with ${err}` }]
+				progress = [...progress, { text: `Error processing ${nation} with ${err}`, color: 'red' }]
 			}
 		}
 		progress = [
@@ -201,11 +220,12 @@
 			bind:bindValue={transferCard}
 			id="transferCard"
 			required={false} />
+		<FormSelect label="Export Type" id="type" bind:bindValue={type} items={['html', 'csv']} />
 		<Buttons
 			downloadButton={true}
 			bind:downloadable
 			bind:content
-			type="html"
+			bind:type
 			name="Gold Retriever"
 			stopButton={true}
 			bind:stoppable
