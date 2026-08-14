@@ -164,6 +164,7 @@
 
 				progress = [...progress, { text: `${nation} gifted ${id} to ${cg}`, color: 'green' }]
 				giftedCards.add(`${id},${season}`)
+				console.log(giftedCards)
 				return { success: true, xpin }
 			}
 
@@ -243,6 +244,15 @@
 
 								for (let i = 0; i < frequency; i++) {
 									if (abortController.signal.aborted || stopped) {
+										break
+									}
+
+									if (giftedCards.has(`${id},${season}`) && mode === 'Gift One') {
+										progress = [...progress, { text: `Already gifted ${id}`, color: 'blue' }]
+										break
+									}
+									if (soldCards.has(`${id},${season}`) && mode === 'Sell One') {
+										progress = [...progress, { text: `Already sold ${id}`, color: 'blue' }]
 										break
 									}
 
@@ -363,11 +373,12 @@
 
 							if (filteredCards && filteredCards.length > 0) {
 								for (const { id, season, count: originalCount, giftee } of filteredCards) {
-									if (giftedCards.has(id) && mode === 'Gift One') {
+									if (giftedCards.has(`${id},${season}`) && mode === 'Gift One') {
 										progress = [...progress, { text: `Already gifted ${id}`, color: 'blue' }]
 										continue
 									}
-									if (soldCards.has(id) && mode === 'Sell One') {
+
+									if (soldCards.has(`${id},${season}`) && mode === 'Sell One') {
 										progress = [...progress, { text: `Already sold ${id}`, color: 'blue' }]
 										continue
 									}
@@ -392,6 +403,15 @@
 											break
 										}
 										if (abortController.signal.aborted || stopped) {
+											break
+										}
+
+										if (giftedCards.has(`${id},${season}`) && mode === 'Gift One') {
+											progress = [...progress, { text: `Already gifted ${id}`, color: 'blue' }]
+											break
+										}
+										if (soldCards.has(`${id},${season}`) && mode === 'Sell One') {
+											progress = [...progress, { text: `Already sold ${id}`, color: 'blue' }]
 											break
 										}
 
