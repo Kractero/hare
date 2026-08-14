@@ -62,14 +62,15 @@
 		if (mode === 'Bids' || mode === 'Asks') {
 			let counter = 0
 			for (const card of findSplit) {
-				let [id, season, bidsToPlace] = card
+				let [id, season, bidsToPlace, askPrice] = card
 				if (!season) {
 					info = [...info, { text: 'You did not provide the season.', color: 'red' }]
 					stoppable = false
 					return
 				}
 				if (!bidsToPlace) bidsToPlace = '1'
-				const singleLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}${template === 'Overall-None' ? '/template-overall=none' : ''}/season=${season}?mode=${mode === 'Bids' ? 'bid' : 'ask'}&amount=${amount}&${urlParameters('Auction', main)}`
+				if (!askPrice) askPrice = amount
+				const singleLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}${template === 'Overall-None' ? '/template-overall=none' : ''}/season=${season}?mode=${mode === 'Bids' ? 'bid' : 'ask'}&amount=${amount}&askPrice=${askPrice}&${urlParameters('Auction', main)}`
 				for (let i = 0; i < Number(bidsToPlace); i++) {
 					counter++
 					content.push({
@@ -221,11 +222,11 @@
 	additional={`<p class="mb-2">
 	Mode Transfer will first sum the total amount of transfer cards located on the main nation. It will then figure out how many times
 	the provided puppets can transfer under the amount. It will then generate bid links equal to that amount, then ask links decrementing
-	until all possible transfers have links. On
+	until all possible transfers have links.
 </p>
 <p class="mb-2">
-	Mode Bid/Ask will just place one bid or ask with the amount from the main nation on each card. You can place more than one bid
-	if you include the amount, formatted like id,season,amount.
+	On Mode Bid/Ask will just place one bid or ask with the amount from the main nation on each card. You can place more than one bid
+	if you include the amount, formatted like id,season,amount,askprice.
 </p>
 <p class="mb-2">
 	Requires the
