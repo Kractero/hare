@@ -54,7 +54,7 @@
 		downloadable = false
 		stoppable = true
 		stopped = false
-		if (content === 'html') {
+		if (type === 'html') {
 			content = `<tr><th>Nation</th><th class='sort' data-order='none'>Bank</th><th class='sort' data-order='none'>Deck Value</th><th class='sort' data-order='none'>Junk Value</th><th class='sort' data-order='none'>Card Count</th>${mode === 'Include' ? "<th class='sort' data-order='none'>Issues</th><th class='sort' data-order='none'>Packs</th>" : ''}<th class='sort' data-order='none'>Legendary Count</th>${transferCard && '<th>Transfer Card</th>'}</tr>\n`
 		} else {
 			content = `Nation,Bank,Deck Value,Junk Value,Card Count${mode === 'Include' ? ',Issues,Packs' : ''},Legendary Count${transferCard ? ',Transfer Card' : ''}\n`
@@ -155,7 +155,7 @@
 				totals.cardCount = totals.cardCount + deck.cardCount
 				totals.issues = totals.issues + deck.issues
 				totals.packs = totals.packs + deck.packs
-				if (content === 'html') {
+				if (type === 'html') {
 					content += `<tr>
 		<td><p><a target='_blank' href='${domain}/container=${nation_formatted}/nation=${nation_formatted}?${urlParameters('Gold Retriever', main)}'>${deck.nation}</a></p></td>
 		<td><p><a target='_blank' href='${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}/value_deck=1?${urlParameters('Gold Retriever', main)}'>${deck.bank}</a></p></td>

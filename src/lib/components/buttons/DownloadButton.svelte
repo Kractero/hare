@@ -9,7 +9,7 @@
 		name: any
 	}
 
-	let { downloadable = $bindable(false), content = $bindable([]), type = 'html', name }: Props = $props()
+	let { downloadable = $bindable(false), content = $bindable([]), type = $bindable('html'), name }: Props = $props()
 
 	const getContentForDownload = () => {
 		if (type === 'html') {
