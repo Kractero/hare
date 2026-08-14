@@ -103,8 +103,8 @@
 			regions.push(regionObject)
 		}
 
-		let major = 5350
-		let minor = 3550
+		let major = 7150
+		let minor = 4450
 
 		const lastRegion = regions[regions.length - 1]
 		const firstRegion = regions[0]
