@@ -23,6 +23,8 @@
 	let puppets = $state('')
 	let content: Array<{ url: string; tableText: string; linkStyle?: string }> = $state([])
 	let amount = $state('10')
+	let bidAskPrice = $state('')
+	let bidAskPlace = $state('1')
 	let mode = $state('Transfer')
 	let transferCards = $state('')
 	let auctionMain = $state('')
@@ -39,13 +41,17 @@
 		auctionMain = page.url.searchParams.get('auctionMain') || (localStorage.getItem('auctionMain') as string) || ''
 		mode = page.url.searchParams.get('mode') || (localStorage.getItem('auctionMode') as string) || 'Transfer'
 		keep = page.url.searchParams.get('keep') || (localStorage.getItem('auctionKeep') as string) || '-1'
+		bidAskPrice = page.url.searchParams.get('bidAskPrice') || (localStorage.getItem('bidAskPrice') as string) || ''
+		bidAskPlace = page.url.searchParams.get('bidAskTimes') || (localStorage.getItem('bidAskTimes') as string) || '1'
 	})
 
 	onDestroy(() => abortController.abort())
 
 	async function onSubmit(e: Event) {
 		e.preventDefault()
-		pushHistory(`?main=${main}&amount=${amount}&mode=${mode}`)
+		pushHistory(
+			`?main=${main}&amount=${amount}&mode=${mode}&auctionMain=${auctionMain}&bidAskPrice=${bidAskPrice}&bidAskTimes=${bidAskPlace}`
+		)
 		errors = checkUserAgent('main')
 		if (errors.length > 0) return
 		downloadable = false
@@ -60,19 +66,21 @@
 		const transferCounts: { [key: string]: { count: number; season: string; id: string } } = {}
 
 		if (mode === 'Bids' || mode === 'Asks') {
-			let counter = 0
 			for (const card of findSplit) {
-				let [id, season, bidsToPlace, askPrice] = card
+				let [id, season, askPrice] = card
 				if (!season) {
 					info = [...info, { text: 'You did not provide the season.', color: 'red' }]
 					stoppable = false
 					return
 				}
-				if (!bidsToPlace) bidsToPlace = '1'
-				if (!askPrice) askPrice = amount
-				const singleLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}${template === 'Overall-None' ? '/template-overall=none' : ''}/season=${season}?mode=${mode === 'Bids' ? 'bid' : 'ask'}&amount=${amount}&askPrice=${askPrice}&${urlParameters('Auction', main)}`
-				for (let i = 0; i < Number(bidsToPlace); i++) {
-					counter++
+
+				const price = askPrice || bidAskPrice
+				const priceParam = price ? `&amount=${price}` : ''
+
+				const singleLink = `${domain}/container=${auctionMain}/nation=${auctionMain}/page=deck/card=${id}${template === 'Overall-None' ? '/template-overall=none' : ''}/season=${season}?mode=${mode === 'Bids' ? 'bid' : 'ask'}${priceParam}&${urlParameters('Auction', main)}`
+
+				const times = Number(bidAskPlace) > 0 ? Number(bidAskPlace) : 1
+				for (let i = 0; i < times; i++) {
 					content.push({
 						url: singleLink,
 						tableText: `Link to ${mode === 'Bids' ? 'bid' : 'ask'}`,
@@ -88,7 +96,7 @@
 			let cards = deckInfo.CARDS.DECK.CARD
 			cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
 
-			if (cards.length > 0) {
+			if (cards.lasength > 0) {
 				for (const card of cards) {
 					const id = card.CARDID
 					const season = card.SEASON
@@ -225,8 +233,7 @@
 	until all possible transfers have links.
 </p>
 <p class="mb-2">
-	On Mode Bid/Ask will just place one bid or ask with the amount from the main nation on each card. You can place more than one bid
-	if you include the amount, formatted like id,season,amount,askprice.
+	Mode Bid/Ask will place a bid or ask on each card listed. Price falls back to the price field if not specified. Times is how many of each ask or bid links get added to sheet.
 </p>
 <p class="mb-2">
 	Requires the
@@ -236,8 +243,8 @@
 	to be useful.
 </p>
 <p class="mb-16">
-	Requires id,season
-	On mode bid/ask, accepts the amount
+	Requires id,season.
+	On mode bid/ask, accepts the price
 </p>`} />
 
 <div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
@@ -250,7 +257,17 @@
 		<FormSelect id="mode" label="Mode" bind:bindValue={mode} items={['Transfer', 'Bids', 'Asks']} />
 		<FormSelect id="template" label="Template" bind:bindValue={template} items={['Overall-None', 'Regular']} />
 		<FormInput label="Main Nation" bind:bindValue={auctionMain} id="auctionMain" required={true} />
-		<FormInput label="Amount" bind:bindValue={amount} id="amount" required={true} />
+		{#if mode === 'Transfer'}
+			<FormTextArea bind:bindValue={puppets} id="puppets" label="Puppets" required={false} />
+			<FormInput label="Amount" bind:bindValue={amount} id="amount" required={true} />
+		{:else}
+			<FormInput label="Price" subTitle="Default price" bind:bindValue={bidAskPrice} id="bidAskPrice" />
+			<FormInput
+				label="Times"
+				subTitle="How many times to place the ask or bid"
+				bind:bindValue={bidAskPlace}
+				id="bidAskTimes" />
+		{/if}
 		<FormInput
 			label="Keep"
 			subTitle="Keep a certain amount of bank after auction (ex: setting 1 will only include nations with 1 bank over the amount)"
