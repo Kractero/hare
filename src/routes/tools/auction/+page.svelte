@@ -96,7 +96,7 @@
 			let cards = deckInfo.CARDS.DECK.CARD
 			cards = cards ? (Array.isArray(cards) ? cards : [cards]) : []
 
-			if (cards.lasength > 0) {
+			if (cards.length > 0) {
 				for (const card of cards) {
 					const id = card.CARDID
 					const season = card.SEASON
