@@ -5,8 +5,6 @@
 	import Button from '$lib/components/ui/button/button.svelte'
 	import externalTools from '$lib/data/external-tools.json'
 	import tools from '$lib/data/tools.json'
-
-	let searchTerm = ''
 </script>
 
 <Head
@@ -41,30 +39,14 @@
 </div>
 
 <div class="mx-auto flex w-full flex-wrap justify-around">
-	{#each tools.filter(project => {
-		if (searchTerm) {
-			return project.description.toLowerCase().includes(searchTerm.toLowerCase()) || project.name
-					.toLowerCase()
-					.includes(searchTerm.toLowerCase())
-		} else {
-			return project
-		}
-	}) as tool}
+	{#each tools as tool}
 		<Tool slug={`/tools/${tool.slug}`} tool={tool.name} description={tool.description} image={tool.image} />
 	{/each}
 </div>
 
 <h2 class="mx-auto mb-4 text-2xl font-semibold">Non-Scripts</h2>
 <div class="mx-auto flex w-full flex-wrap justify-around">
-	{#each externalTools.filter(project => {
-		if (searchTerm) {
-			return project.description.toLowerCase().includes(searchTerm.toLowerCase()) || project.name
-					.toLowerCase()
-					.includes(searchTerm.toLowerCase())
-		} else {
-			return project
-		}
-	}) as tool}
+	{#each externalTools as tool}
 		<Tool
 			slug={tool.slug.includes('https') ? tool.slug : `/resources/${tool.slug}`}
 			tool={tool.name}
