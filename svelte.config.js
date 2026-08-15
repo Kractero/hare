@@ -22,7 +22,7 @@ const config = {
 		adapter: adapter(),
 
 		prerender: {
-			entries: ["/", "/config", "/disclaimer", "/resources", "/resources/ledger", "/resources/guides", "/guides", "/guides/[slug]"]
+			entries: ["/", "/config", "/disclaimer", "/resources", "/resources/ledger", "/tools", "/resources/guides", "/guides", "/guides/[slug]"]
 		}
 	},
 };
