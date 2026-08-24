@@ -30,7 +30,7 @@
 		for (let i = 0; i < puppetList.length; i++) {
 			const nation_formatted = puppetList[i].toLowerCase().replaceAll(' ', '_')
 			content.push({
-				url: `${domain}/container=${nation_formatted}/nation=${nation_formatted}/page=create_nation/nation=${puppetList[i]}?${urlParameters(`Creator`, main)}`,
+				url: `${domain}/container=${nation_formatted}/page=create_nation?${urlParameters(`Creator`, main)}`,
 				tableText: `Link to ${puppetList[i]}`,
 			})
 		}

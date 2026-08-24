@@ -43,7 +43,7 @@
 		const puppetList = puppets.split('\n').map(nation => nation.toLowerCase().replaceAll(' ', '_'))
 		for (let i = 0; i < puppetList.length; i++) {
 			content.push({
-				url: `${domain}/page=deck/container=${puppetList[i]}/nation=${puppetList[i]}/page=${mode === 'Banners' ? 'banners' : 'upload_flag'}?${urlParameters(`Inscription_Assistant_${mode}`, main)}`,
+				url: `${domain}/container=${puppetList[i]}/nation=${puppetList[i]}/page=${mode === 'Banners' ? 'banners' : 'upload_flag'}?${urlParameters(`Inscription_Assistant_${mode}`, main)}`,
 				tableText: `Link to ${puppetList[i]}`,
 			})
 		}
