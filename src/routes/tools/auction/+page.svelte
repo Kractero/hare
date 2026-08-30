@@ -258,7 +258,6 @@
 		<FormSelect id="template" label="Template" bind:bindValue={template} items={['Overall-None', 'Regular']} />
 		<FormInput label="Main Nation" bind:bindValue={auctionMain} id="auctionMain" required={true} />
 		{#if mode === 'Transfer'}
-			<FormTextArea bind:bindValue={puppets} id="puppets" label="Puppets" required={false} />
 			<FormInput label="Amount" bind:bindValue={amount} id="amount" required={true} />
 		{:else}
 			<FormInput label="Price" subTitle="Default price" bind:bindValue={bidAskPrice} id="bidAskPrice" />
