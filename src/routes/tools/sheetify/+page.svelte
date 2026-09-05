@@ -47,6 +47,8 @@
 			} else {
 				if (link.includes('page=')) {
 					modifiedLink = link.replace(/page=/, `nation=${nation_formatted}/container=${nation_formatted}/page=`)
+				} else if (link.includes('region=')) {
+					modifiedLink = link.replace(/region=/, `nation=${nation_formatted}/container=${nation_formatted}/region=`)
 				}
 			}
 
