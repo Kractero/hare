@@ -32,7 +32,7 @@
 		for (let i = 0; i < puppetList.length; i++) {
 			const nation = puppetList[i]
 			content.push({
-				url: `${domain}/page=deck/container=${nation}/nation=${nation}/page=${mode === 'UploadFlag' ? 'upload_flag' : 'submit_issue'}/test=1?${urlParameters(`Login_Sheet`, main)}`,
+				url: `${domain}/container=${nation}/nation=${nation}/page=${mode === 'UploadFlag' ? 'upload_flag' : 'submit_issue'}/test=1?${urlParameters(`Login_Sheet`, main)}`,
 				tableText: `Link to ${puppetList[i]}`,
 			})
 		}
