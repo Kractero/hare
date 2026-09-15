@@ -22,7 +22,6 @@
 	let gaResAuthoredVal = $state(0)
 	let scResAuthoredVal = $state(0)
 	let unResAuthoredVal = $state(0)
-	let egg = $state(0)
 	let errors: Array<{ field: string | number; message: string }> = $state([])
 
 	onMount(() => {
@@ -37,13 +36,12 @@
 		gaResAuthoredVal = Number(page.url.searchParams.get('ga')) || 0
 		scResAuthoredVal = Number(page.url.searchParams.get('sc')) || 0
 		unResAuthoredVal = Number(page.url.searchParams.get('un')) || 0
-		egg = Number(page.url.searchParams.get('egg')) || 0
 	})
 
 	async function onSubmit(e: Event) {
 		e.preventDefault()
 		pushHistory(
-			`?main=${main}&calc=${calc}&gov=${governor}&found=${founder}&staff=${staff}&retired=${retiredmod}&ia=${ia}&ga=${gaResAuthoredVal}&sc=${scResAuthoredVal}&un=${unResAuthoredVal}&egg=${egg}`
+			`?main=${main}&calc=${calc}&gov=${governor}&found=${founder}&staff=${staff}&retired=${retiredmod}&ia=${ia}&ga=${gaResAuthoredVal}&sc=${scResAuthoredVal}&un=${unResAuthoredVal}`
 		)
 		errors = checkUserAgent(main)
 		if (errors.length > 0) return
@@ -101,7 +99,6 @@
 		const valFounder = founder ? 3 : 0
 		const valGovernor = governor ? 3 : 0
 
-		const valEasterEggs = 1.25 * Math.sqrt(egg)
 		const valIssuesAuth = ia * 8 - (8 - 2.5) * Math.max(0, ia - 1)
 		const valGaAuth = gaResAuthoredVal * 2.4
 		const valScAuth = scResAuthoredVal * 2.4
@@ -121,7 +118,6 @@
 			valWaDelegate,
 			valFounder,
 			valGovernor,
-			valEasterEggs,
 			valIssuesAuth,
 			valGaAuth,
 			valScAuth,
@@ -133,11 +129,11 @@
 		].reduce((acc, v) => acc + v, 0)
 
 		const tiers = [
-			{ name: 'Common', max: 2.8 },
-			{ name: 'Uncommon', max: 6.3 },
-			{ name: 'Rare', max: 12.6 },
-			{ name: 'Ultra Rare', max: 25.2 },
-			{ name: 'Epic', max: 44.876 },
+			{ name: 'Common', max: 2.542 },
+			{ name: 'Uncommon', max: 5.719 },
+			{ name: 'Rare', max: 11.439 },
+			{ name: 'Ultra Rare', max: 22.877 },
+			{ name: 'Epic', max: 40.74 },
 			{ name: 'Legendary', max: Infinity },
 		]
 
@@ -176,7 +172,6 @@
 			{ name: 'WA Delegate', val: valWaDelegate, calc: isWADelegate ? `Yes (+4)` : 'No' },
 			{ name: 'Founder', val: valFounder, calc: founder ? `Yes (+3)` : 'No' },
 			{ name: 'Governor', val: valGovernor, calc: governor ? `Yes (+3)` : 'No' },
-			{ name: 'Easter Eggs', val: valEasterEggs, calc: `1.25 * √(${egg})` },
 			{
 				name: 'Issues Authored',
 				val: valIssuesAuth,
@@ -220,7 +215,7 @@
 	link="https://gist.github.com/Sitethief/460e7dad929ab51558348c3936abdced"
 	additional={`<p class="text-sm mb-16">
     This calculator is guesswork and should be taken as an estimate. It uses Fhaengshia's adjusted ratios with some of
-	Site's ratios (greens, eggs). The thresholds were also adjusted based on the knowledge that Wentland is the lowest leg,
+	Site's ratios (greens). The thresholds were also adjusted based on the knowledge that Wentland is the lowest leg,
 	with other ratios scaled based on the old thresholds.
 </p>`} />
 
@@ -236,7 +231,6 @@
 		<FormInput type="number" label={`GA Resolutions`} bind:bindValue={gaResAuthoredVal} id="ia" required={true} />
 		<FormInput type="number" label={`SC Resolutions`} bind:bindValue={scResAuthoredVal} id="ia" required={true} />
 		<FormInput type="number" label={`UN Resolutions`} bind:bindValue={unResAuthoredVal} id="ia" required={true} />
-		<FormInput type="number" label={`Easter Eggs`} bind:bindValue={egg} id="egg" required={true} />
 		<Buttons />
 	</form>
 	<Terminal bind:progress />
