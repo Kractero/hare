@@ -148,7 +148,7 @@
 							}
 						}
 						for (let i = 0; i < packsToOpen; i++) {
-							const packLink = `${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}?open_loot_box=1&${urlParameters('gotIssues', main)}`
+							const packLink = `${domain}/page=deck/container=${nation_formatted}/nation=${nation_formatted}?${urlParameters('gotIssues', main)}`
 							if (mode === 'Both') {
 								packContent.push({
 									url: packLink,
