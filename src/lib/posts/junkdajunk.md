@@ -19,16 +19,6 @@ The standard/older junkdajunk mode, which checks flags, regions, owner count, bi
 
 Skips all of those and only checks ids, rarity, mv, and seasons. Quicker than davanced but less precise.
 
-### Junk Modes
-
-1. API
-
-Junks automatically via the API.
-
-2. Manual
-
-Adds it to an html sheet for manual junk processing.
-
 ### Behaviors
 
 1. Gift

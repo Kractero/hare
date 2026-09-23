@@ -59,7 +59,6 @@
 	let password = $state('')
 	let owners = $state('')
 	let cardcount = $state('')
-	let junkMethod = $state('API')
 	let checkMode = $state('Advanced')
 	let raritiesMV: Prices = $state(defaultPrices)
 	let raritiesLowestBid: Prices = $state(defaultPrices)
@@ -105,11 +104,6 @@
 			(localStorage.getItem('finderMode') as string) ||
 			'Gift'
 		checkMode = page.url.searchParams.get('checkMode') || (localStorage.getItem('jdjCheckMode') as string) || 'Advanced'
-		junkMethod =
-			page.url.searchParams.get('junkMethod') ||
-			page.url.searchParams.get('junk') ||
-			(localStorage.getItem('junkMethod') as string) ||
-			'API'
 		regionalwhitelist =
 			page.url.searchParams.get('regions')?.replaceAll(',', '\n') ||
 			(localStorage.getItem('junkdajunkRegionalWhitelist') as string) ||
@@ -292,7 +286,7 @@
 		}
 		e.preventDefault()
 		const classicMode = configMode === 'Classic'
-		const historyParams = new URLSearchParams({ main, configMode, junkMethod })
+		const historyParams = new URLSearchParams({ main, configMode })
 		if (junkUpTo) historyParams.set('junkUpTo', junkUpTo)
 		if (classicMode) {
 			historyParams.set('mode', mode)
@@ -321,8 +315,8 @@
 
 		newInfo.push({
 			text: classicMode
-				? `Initiating JunkDaJunk with ${checkMode} ${junkMethod} ${mode}`
-				: `Initiating JunkDaJunk with Rules ${junkMethod}`,
+				? `Initiating JunkDaJunk with ${checkMode} ${mode}`
+				: `Initiating JunkDaJunk with Rules`,
 		})
 
 		const regionalWhitelist =
@@ -710,66 +704,47 @@
 						}
 
 						if (junk && sell) {
-							if (junkMethod === 'Manual') {
-								progress = [
-									...progress,
-									{
-										text: `${j + 1}/${
-											cards.length
-										} -> Adding to junk sheet S${season} ${category.toUpperCase()} ${id} with mv ${marketValue}`,
-									},
-								]
+							progress = [
+								...progress,
+								{
+									text: `${j + 1}/${
+										cards.length
+									} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue}`,
+								},
+							]
+							let token = ''
+							const url = `${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&mode=`
+							const prepare = await parseXML(
+								`${url}prepare&c=junkcard`,
+								main,
+								currentNationXPin ? '' : nationSpecificPassword ? nationSpecificPassword : password,
+								currentNationXPin || ''
+							)
+
+							if (!currentNationXPin) currentNationXPin = prepare['x-pin'] || ''
+
+							token = prepare.NATION.SUCCESS
+
+							const junkResponse = await parseXML(
+								`${url}execute&c=junkcard&token=${token}`,
+								main,
+								'',
+								currentNationXPin
+							)
+
+							if (junkResponse.NATION && junkResponse.NATION.ERROR) {
+								info = [...info, { text: `${nation} failed to junk ${id}, adding to sheet`, color: 'red' }]
 								content.push({
 									url: `${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1`,
 									tableText: `Link to Junk`,
 								})
 								currCard = currCard + 1
 							} else {
-								progress = [
-									...progress,
-									{
-										text: `${j + 1}/${
-											cards.length
-										} -> Junking S${season} ${category.toUpperCase()} ${id} with mv ${marketValue}`,
-									},
-								]
-								let token = ''
-								const url = `${domain}/cgi-bin/api.cgi?nation=${nation}&cardid=${id}&season=${season}&mode=`
-								const prepare = await parseXML(
-									`${url}prepare&c=junkcard`,
-									main,
-									currentNationXPin ? '' : nationSpecificPassword ? nationSpecificPassword : password,
-									currentNationXPin || ''
-								)
-
-								if (!currentNationXPin) currentNationXPin = prepare['x-pin'] || ''
-
-								token = prepare.NATION.SUCCESS
-
-								const junkResponse = await parseXML(
-									`${url}execute&c=junkcard&token=${token}`,
-									main,
-									'',
-									currentNationXPin
-								)
-
-								if (junkResponse.NATION && junkResponse.NATION.ERROR) {
-									info = [...info, { text: `${nation} failed to junk ${id}, adding to sheet`, color: 'red' }]
-									content.push({
-										url: `${domain}/container=${nation}/nation=${nation}/page=ajax3/a=junkcard/card=${id}/season=${season}?${urlParameters('junkDaJunk', main)}&autoclose=1`,
-										tableText: `Link to Junk`,
-									})
-									currCard = currCard + 1
-								} else {
-									junkedCards = junkedCards + 1
-									junkRarityCounts[category] = (junkRarityCounts[category] || 0) + 1
-									junkBankTotal += rarityBank[category] ?? 0
-									actionCount = actionCount + 1
-									junkCounter =
-										junkMethod === 'API'
-											? `API has junked ${junkedCards}. API has gifted ${giftedCards}. API has processed ${junkedCards + giftedCards} in total.`
-											: ''
-								}
+								junkedCards = junkedCards + 1
+								junkRarityCounts[category] = (junkRarityCounts[category] || 0) + 1
+								junkBankTotal += rarityBank[category] ?? 0
+								actionCount = actionCount + 1
+								junkCounter = `API has junked ${junkedCards}. API has gifted ${giftedCards}. API has processed ${junkedCards + giftedCards} in total.`
 							}
 						} else {
 							if (configMode === 'Rules') {
@@ -888,10 +863,7 @@
 								{ text: `${k + 1}/${giftQueue.length} -> ${success} to ${attemptGiftee}`, color: 'green' },
 							]
 							giftedCards++
-							junkCounter =
-								junkMethod === 'API'
-									? `API has junked ${junkedCards}. API has gifted ${giftedCards}. API has processed ${junkedCards + giftedCards} in total.`
-									: ''
+							junkCounter = `API has junked ${junkedCards}. API has gifted ${giftedCards}. API has processed ${junkedCards + giftedCards} in total.`
 						}
 					}
 				} else {
@@ -989,13 +961,11 @@
 
 		{#if configMode === 'Rules'}
 			<RuleDashboard bind:rules />
-			<FormSelect bind:bindValue={junkMethod} id="junkMethod" items={['API', 'Manual']} label="Junk Mode" />
 			<FormInput label={'Process Up To'} bind:bindValue={junkUpTo} id="junkUpTo" required={true} />
 		{:else}
 			{#if mode === 'Gift' || mode === 'Gift and Sell'}
 				<FormTextArea label={'Gift To'} bind:bindValue={giftee} id="giftee" required={true} />
 			{/if}
-			<FormSelect bind:bindValue={junkMethod} id="junkMethod" items={['API', 'Manual']} label="Junk Mode" />
 			<FormSelect bind:bindValue={checkMode} id="checkMode" items={['Advanced', 'Simple']} label="Mode" />
 			<div class="-mb-6 flex flex-col">
 				<p class="text-muted-foreground mb-1 text-center font-light">Presets</p>

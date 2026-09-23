@@ -39,7 +39,6 @@
 		junkdajunkFlagWhitelist: '',
 		junkdajunkFinderList: '',
 		jdjMode: 'Gift',
-		junkMethod: 'API',
 		jdjCheckMode: 'Advanced',
 		findMode: 'Specific Cards',
 		giftLegendaries: true,
@@ -252,11 +251,6 @@
 			required={false} />
 		<FormInput label="Gift To" bind:bindValue={localStorageObject.finderGiftee} id="giftee" />
 		<h2 class="text-center text-2xl font-bold tracking-tight">JunkDaJunk</h2>
-		<FormSelect
-			bind:bindValue={localStorageObject.junkMethod}
-			id="junkMethod"
-			items={['API', 'Manual']}
-			label="Junk Mode" />
 		<FormSelect
 			bind:bindValue={localStorageObject.jdjCheckMode}
 			id="checkMode"
