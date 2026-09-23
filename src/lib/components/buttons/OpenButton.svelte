@@ -12,6 +12,7 @@
 	let busy = $state(false)
 	let lastNation = $state('')
 	let buttonEl = $state<HTMLElement | null>(null)
+	let openedWindow = $state<Window | null>(null)
 
 	const getNation = (url: string) => {
 		const part = url.split('nation=')[1]
@@ -24,9 +25,10 @@
 		if (nation !== lastNation && busy) return
 		if (lastNation === '') busy = false
 		lastNation = nation
-		window.open(openNewLinkArr[0].url, '_blank')
+		openedWindow = window.open(openNewLinkArr[0].url, '_blank')
 		openedCount++
 		openNewLinkArr.splice(0, 1)
+		busy = true
 	}
 
 	$effect(() => {
@@ -55,19 +57,15 @@
 	})
 
 	$effect(() => {
-		const reset = () => {
-			const url = openNewLinkArr[0]?.url
-			if (!url || !url.includes('open_loot_box')) return
-			const nation = getNation(url)
-			if (nation !== lastNation) return
-			busy = false
-			setTimeout(() => buttonEl?.focus(), 0)
-		}
-		const onVisible = () => {
-			if (!document.hidden) reset()
-		}
-		document.addEventListener('visibilitychange', onVisible)
-		return () => document.removeEventListener('visibilitychange', onVisible)
+		if (!openedWindow) return
+		const interval = setInterval(() => {
+			if (openedWindow?.closed) {
+				openedWindow = null
+				busy = false
+				setTimeout(() => buttonEl?.focus(), 0)
+			}
+		}, 4)
+		return () => clearInterval(interval)
 	})
 </script>
 

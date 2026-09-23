@@ -154,6 +154,7 @@ export const htmlContent = (
       let links = Array.from(linkElements).map((el) => el.href);
 
       let counter = 0;
+      let openedWindow = null;
 
       const updateProgress = () => {
         document.querySelector('#remaining').textContent = counter;
@@ -179,12 +180,12 @@ export const htmlContent = (
       updateButtonState()
 
       button.addEventListener('keyup', e => {
-        if (e.key !== 'Enter' || links.length === 0) return
+        if (e.key !== 'Enter' || links.length === 0 || button.disabled) return
         const link = links.shift()
-        window.open(link, '_blank')
+        openedWindow = window.open(link, '_blank')
+        button.disabled = true
         counter++
         updateProgress()
-        updateButtonState()
         const linkElement = document.querySelector(\`a[href='\${link}']\`)
         if (linkElement) {
           linkElement.closest('tr').remove()
@@ -193,12 +194,12 @@ export const htmlContent = (
       })
 
       button.addEventListener('click', e => {
-        if (e.pointerType === 'mouse' && links.length > 0) {
+        if (e.pointerType === 'mouse' && links.length > 0 && !button.disabled) {
           const link = links.shift()
-          window.open(link, '_blank')
+          openedWindow = window.open(link, '_blank')
+          button.disabled = true
           counter++
           updateProgress()
-          updateButtonState()
           const linkElement = document.querySelector(\`a[href='\${link}']\`)
           if (linkElement) {
             linkElement.closest('tr').remove()
@@ -206,6 +207,14 @@ export const htmlContent = (
           }
         }
       })
+
+      setInterval(() => {
+        if (openedWindow && openedWindow.closed) {
+          openedWindow = null
+          updateButtonState()
+          if (!button.disabled) button.focus()
+        }
+      }, 4)
 
       setIndexButton.addEventListener('click', () => {
         const index = parseInt(setIndexInput.value, 10);
