@@ -8,7 +8,6 @@
 
 	afterNavigate(() => {
 		log()
-		window.addEventListener('sveltekit:navigation-end', () => log())
 	})
 
 	/**

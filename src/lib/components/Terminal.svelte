@@ -1,15 +1,21 @@
 <script lang="ts">
-	export let info: { text: string; color?: string }[] = []
-	export let progress: { text: string; color?: string; link?: { href: string; label: string } }[] = []
-	export let continuousUpdate: string = ''
+	interface Props {
+		info?: { text: string; color?: string }[]
+		progress?: { text: string; color?: string; link?: { href: string; label: string } }[]
+		continuousUpdate?: string
+	}
+
+	let { info = $bindable([]), progress = $bindable([]), continuousUpdate = '' }: Props = $props()
 
 	let terminal: HTMLDivElement
 
-	$: if (terminal) {
-		terminal.scrollTop = terminal.scrollHeight
-	}
+	$effect(() => {
+		if (terminal && progress) {
+			terminal.scrollTop = terminal.scrollHeight
+		}
+	})
 
-	$: trimmedProgress = info && info.length > 0 ? progress.slice(-1000) : progress
+	let trimmedProgress = $derived(info && info.length > 0 ? progress.slice(-1000) : progress)
 
 	const colors: Record<string, string> = {
 		green: 'text-green-400',
