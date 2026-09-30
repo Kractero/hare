@@ -33,9 +33,9 @@ export async function parseXML(url: string, userAgent: string, password?: string
 
 		if (!response.ok) {
 			if (response.status === 429) {
-				const waitTime = retryAfter > 0 ? retryAfter : ratelimitReset / ratelimitRemaining
+				const waitTime = retryAfter || ratelimitReset || 30
 				await sleep(waitTime * 1000)
-				return await parseXML(url, userAgent, password ? password : '')
+				return await parseXML(url, userAgent, password ? password : '', xpin)
 			}
 
 			const code = response.status
