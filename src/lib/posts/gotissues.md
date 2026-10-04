@@ -13,9 +13,9 @@ gotIssues is the primary tool that enables card farming, as it allows you to cle
    - <a href="https://github.com/dithpri/RCES/raw/master/userscripts/issue_answering/NsIssueCompactorRand.user.js" target="_blank">NSIssueCompactorRand</a> by Racoda.
 
    You will want to autoclose issues when using gotIssues to save time, but the condition on which it closes can depend on your preference.
-   - **Always close the issue, even if a pack was generated.** <a href="https://raw.githubusercontent.com/dithpri/RCES/refs/heads/master/userscripts/issue_answering/NsDilemmaAutoCloseAll.user.js">NSDilemmaAutoCloseAll</a> by Racoda.
+   - **Always close the issue, even if a pack was generated.** <a href="https://raw.githubusercontent.com/Merethin/userscripts/refs/heads/main/autoclosers/issue-autocloser-plain-all.user.js">Captcha-Compatible Issue Autocloser (plain+all)</a> by Merethin.
 
-   - **Do not close the issue if a pack was generated.** <a href="https://raw.githubusercontent.com/dithpri/RCES/refs/heads/master/userscripts/issue_answering/NsDilemmaAutoClose.user.js">NSDilemmaAutoClose</a> by Racoda.
+   - **Do not close the issue if a pack was generated.** <a href="https://raw.githubusercontent.com/Merethin/userscripts/refs/heads/main/autoclosers/issue-autocloser-plain.user.js">Captcha-Compatible Issue Autocloser (plain)</a> by Merethin.
 
    gotIssues also supports packs, which can either be automatically closed or not. If you want to see the cards, do not use an autocloser for packs. Otherwise:
    - If you want packs to autoclose, you need to install a pack autocloser. <a href="https://raw.githubusercontent.com/Kractero/userscripts/refs/heads/main/packAutocloser.user.js" target="_blank">This is the simplest one</a>.
