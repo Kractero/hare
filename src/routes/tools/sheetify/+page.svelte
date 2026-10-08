@@ -53,7 +53,7 @@
 			}
 
 			content.push({
-				url: `${modifiedLink}${modifiedLink.includes('?') ? `&${urlParameters('Sheetify', main)}` : urlParameters('Sheetify', main)}`,
+				url: `${modifiedLink}${modifiedLink.includes('?') ? '&' : '?'}${urlParameters('Sheetify', main)}`,
 				tableText: `Link ${i}`,
 			})
 		}
