@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/state'
 	import type { Post } from '$lib/server/posts'
 	import ChevronDown from 'lucide-svelte/icons/chevron-down'
 	import Table2 from 'lucide-svelte/icons/table-2'
@@ -25,7 +24,7 @@
 	class="fixed top-14 z-30 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 overflow-y-auto border-r py-6 pr-2 md:sticky md:block lg:py-10">
 	<nav class="w-full space-y-6 px-4">
 		{#each Object.entries(posts) as [category, possts]}
-			<div>
+			<div class={category.toLowerCase() === 'deprecated' ? 'opacity-50' : ''}>
 				<h2 class="text-muted-foreground mb-2 text-sm font-semibold tracking-wide uppercase">
 					{category}
 				</h2>
@@ -49,7 +48,7 @@
 	<aside class="h-full w-full overflow-y-auto p-6 shadow-lg md:hidden">
 		<nav class="space-y-6">
 			{#each Object.entries(posts) as [category, possts]}
-				<div>
+				<div class={category.toLowerCase() === 'deprecated' ? 'opacity-50' : ''}>
 					<h2 class="text-muted-foreground mb-2 text-sm font-semibold tracking-wide uppercase">
 						{category}
 					</h2>
