@@ -140,7 +140,7 @@
 
 					const keepAmount = Number(keep) > 0 ? Number(keep) : 0
 					if (nationalBank >= Number(amount) + keepAmount) {
-						let cardsTransferable = Math.floor(nationalBank / Number(amount))
+						let cardsTransferable = Math.floor((nationalBank - keepAmount) / Number(amount))
 						const initialTransferable = cardsTransferable
 						const progressIndex = progress.length
 						progress = [...progress, { text: `${nation} can transfer ${cardsTransferable} cards!`, color: 'green' }]
