@@ -2,6 +2,8 @@
 	import { onMount } from 'svelte'
 	import { page } from '$app/state'
 	import Buttons from '$lib/components/Buttons.svelte'
+	import FormInput from '$lib/components/FormInput.svelte'
+	import Button from '$lib/components/ui/button/button.svelte'
 	import InputCredentials from '$lib/components/InputCredentials.svelte'
 	import Terminal from '$lib/components/Terminal.svelte'
 	import ToolContent from '$lib/components/ToolContent.svelte'
@@ -14,6 +16,18 @@
 	let puppets = $state('')
 	let main = $state('')
 	let errors: Array<{ field: string | number; message: string }> = $state([])
+	let baseName = $state('')
+	let start = $state(1)
+	let count = $state(10)
+
+	function generatePuppets() {
+		const name = baseName.trim()
+		const amount = Number(count)
+		if (!name || amount < 1) return
+		const generated = Array.from({ length: amount }, (_, i) => `${name}${Number(start) + i}`)
+		const existing = puppets.trim()
+		puppets = existing ? `${existing}\n${generated.join('\n')}` : generated.join('\n')
+	}
 
 	onMount(async () => {
 		domain = `https://www.nationstates.net`
@@ -55,6 +69,13 @@
 <div class="flex flex-col gap-8 break-normal lg:w-5xl lg:max-w-5xl lg:flex-row">
 	<form onsubmit={onSubmit} class="flex flex-col gap-8">
 		<InputCredentials bind:errors bind:main bind:puppets authenticated={false} />
+		<div class="flex max-w-lg flex-col gap-4 rounded-md border p-4">
+			<p class="text-sm font-medium">Generate puppet names</p>
+			<FormInput label="Base name" bind:bindValue={baseName} id="basename" />
+			<FormInput label="Start" bind:bindValue={start} id="start" type="number" />
+			<FormInput label="Count" bind:bindValue={count} id="count" type="number" />
+			<Button type="button" variant="outline" onclick={generatePuppets}>Add to puppets</Button>
+		</div>
 		<Buttons {downloadable} downloadButton={true} {content} name="Creator" />
 	</form>
 	<Terminal bind:progress />

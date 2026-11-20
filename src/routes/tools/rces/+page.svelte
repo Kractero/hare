@@ -1,3 +1,11 @@
+<!--
+ Copyright (c) 2021-2022 dithpri (Racoda) <dithpri@gmail.com>
+ This file is built using elements from RCES: https://github.com/dithpri/RCES
+ and retains its original MIT license. See LICENSE-MIT or https://github.com/dithpri/RCES/blob/master/LICENSE.md.
+
+ Modifications Copyright (c) 2026 Kractero
+ -->
+
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte'
 	import { page } from '$app/state'
